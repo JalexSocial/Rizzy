@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Rizzy.Antiforgery;
-using HtmxConfigJsonSerializerContext = Htmxor.Configuration.Serialization.HtmxConfigJsonSerializerContext;
+using Rizzy.Configuration.Serialization;
 
 namespace Rizzy.Configuration;
 

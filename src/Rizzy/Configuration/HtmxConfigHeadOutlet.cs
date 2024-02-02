@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Components;
-using HtmxConfigJsonSerializerContext = Htmxor.Configuration.Serialization.HtmxConfigJsonSerializerContext;
+using Rizzy.Configuration.Serialization;
 
 namespace Rizzy.Configuration;
 
@@ -10,7 +10,7 @@ namespace Rizzy.Configuration;
 /// </summary>
 /// <remarks>
 /// Configure the <see cref="HtmxConfig"/> via the 
-/// <see cref="HtmxorApplicationBuilderExtensions.AddHtmx(Microsoft.Extensions.Hosting.IHostApplicationBuilder, Action{Htmxor.Configuration.HtmxConfig}?)"/> 
+/// <see cref="HtmxorApplicationBuilderExtensions.AddHtmx(Microsoft.Extensions.Hosting.IHostApplicationBuilder, Action{HtmxConfig}?)"/> 
 /// method.
 /// </remarks>
 public class HtmxConfigHeadOutlet : IComponent

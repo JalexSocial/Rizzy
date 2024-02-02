@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Configuration;
+using Rizzy.Http;
 
 namespace Rizzy;
 

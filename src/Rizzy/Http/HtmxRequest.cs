@@ -1,4 +1,6 @@
-﻿namespace Rizzy.Http;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace Rizzy.Http;
 
 public class HtmxRequest(HttpContext context)
 {
