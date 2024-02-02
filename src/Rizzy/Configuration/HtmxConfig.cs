@@ -218,5 +218,5 @@ public record class HtmxConfig
     public bool? ScrollIntoViewOnBoost { get; set; }
 
     [JsonInclude, JsonPropertyName("antiforgery")]
-    internal HtmxAntiforgeryOptions? Antiforgery { get; init; }
+    public HtmxAntiforgeryOptions? Antiforgery { get; set; }
 }

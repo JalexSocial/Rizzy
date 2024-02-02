@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Options;
 using Rizzy.Configuration.Serialization;
 
 namespace Rizzy.Configuration;
@@ -8,25 +9,35 @@ namespace Rizzy.Configuration;
 /// This component will render a meta tag with the serialized <see cref="HtmxConfig"/> object,
 /// enabling customization of Htmx.
 /// </summary>
-/// <remarks>
-/// Configure the <see cref="HtmxConfig"/> via the 
-/// <see cref="HtmxorApplicationBuilderExtensions.AddHtmx(Microsoft.Extensions.Hosting.IHostApplicationBuilder, Action{HtmxConfig}?)"/> 
-/// method.
-/// </remarks>
 public class HtmxConfigHeadOutlet : IComponent
 {
-    [Inject] private HtmxConfig Config { get; set; } = default!;
+	private string _jsonConfig = string.Empty;
 
-    /// <inheritdoc/>
-    public void Attach(RenderHandle renderHandle)
-    {
-        var json = JsonSerializer.Serialize(Config, HtmxConfigJsonSerializerContext.Default.HtmxConfig);
-        renderHandle.Render(builder =>
-        {
-            builder.AddMarkupContent(0, @$"<meta name=""htmx-config"" content='{json}'>");
-        });
-    }
+	[Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
 
-    /// <inheritdoc/>
-    public Task SetParametersAsync(ParameterView parameters) => Task.CompletedTask;
+	/// <summary>
+	/// Specify a named configuration to use a non-default configuration
+	/// </summary>
+	[Parameter] public string? Configuration { get; set; } = default!;
+
+	/// <inheritdoc/>
+	public void Attach(RenderHandle renderHandle)
+	{
+		renderHandle.Render(builder =>
+		{
+			builder.AddMarkupContent(0, @$"<meta name=""htmx-config"" content='{_jsonConfig}'>");
+		});
+	}
+
+	public Task SetParametersAsync(ParameterView parameters)
+	{
+		Configuration = parameters.GetValueOrDefault<string?>("Configuration");
+
+		var config = string.IsNullOrEmpty(Configuration) ?
+			Options.Value : Options.Get(Configuration);
+
+		_jsonConfig = JsonSerializer.Serialize(config, HtmxConfig.JsonTypeInfo);
+
+		return Task.CompletedTask;
+	}
 }

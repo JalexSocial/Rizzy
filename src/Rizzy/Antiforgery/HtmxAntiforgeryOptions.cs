@@ -4,22 +4,24 @@ using Microsoft.Extensions.Options;
 namespace Rizzy.Antiforgery;
 
 /// <summary>
-/// Represents the options for Htmxor's antiforgery support.
+/// Represents the options for Rizzy's antiforgery support.
 /// </summary>
-internal class HtmxAntiforgeryOptions(IOptions<AntiforgeryOptions> antiforgeryOptions)
+public class HtmxAntiforgeryOptions
 {
-    /// <summary>
-    /// Gets the name of the form field used for antiforgery token.
-    /// </summary>
-    public string FormFieldName { get; } = antiforgeryOptions.Value.FormFieldName;
+	public bool IncludeAntiForgery { get; set; } = true;
 
-    /// <summary>
-    /// Gets the name of the header used for antiforgery token.
-    /// </summary>
-    public string? HeaderName { get; } = antiforgeryOptions.Value.HeaderName;
+	/// <summary>
+	/// Gets the name of the form field used for antiforgery token.
+	/// </summary>
+	public string FormFieldName { get; set; } = default!;
 
-    /// <summary>
-    /// Gets the name of the cookie used for antiforgery token.
-    /// </summary>
-    public string CookieName { get; } = "HX-XSRF-TOKEN";
+	/// <summary>
+	/// Gets the name of the header used for antiforgery token.
+	/// </summary>
+	public string? HeaderName { get; set; }
+
+	/// <summary>
+	/// Gets the name of the cookie used for antiforgery token.
+	/// </summary>
+	public string CookieName { get; set; } = "HX-XSRF-TOKEN";
 }

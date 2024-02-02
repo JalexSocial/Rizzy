@@ -1,4 +1,17 @@
+using Rizzy;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddRizzy()
+	.WithConfiguration(config =>
+	{
+		config.SelfRequestsOnly = true;
+	})
+	.WithConfiguration("articles", config =>
+	{
+		config.SelfRequestsOnly = true;
+		config.GlobalViewTransitions = true;
+	});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -15,6 +28,8 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseAntiforgery();
+app.UseRizzyAntiforgery();
 
 app.UseRouting();
 
