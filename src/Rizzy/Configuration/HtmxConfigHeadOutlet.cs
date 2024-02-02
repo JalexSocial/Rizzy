@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Configuration.Serialization;
 using Rizzy.Mvc;
+using Exception = System.Exception;
 
 namespace Rizzy.Configuration;
 
@@ -45,6 +46,8 @@ public class HtmxConfigHeadOutlet : ComponentBase
         if (AntiforgeryConfig.Value.IncludeAntiForgery)
         {
             var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
+
+            throw new Exception("Cannot modify singleton config with a scoped antiforgery request token");
 
             if (config.Antiforgery != null)
                 config.Antiforgery.RequestToken = tokens.RequestToken!;
