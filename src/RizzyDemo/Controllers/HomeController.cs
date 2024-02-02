@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using RizzyDemo.Models;
 using System.Diagnostics;
+using Rizzy.Mvc;
 
 namespace RizzyDemo.Controllers;
 
-public class HomeController : Controller
+public class HomeController : RzController
 {
 	private readonly ILogger<HomeController> _logger;
 
@@ -14,7 +15,9 @@ public class HomeController : Controller
 	}
 
 	public IActionResult Index()
-	{
+    {
+        var data = ViewData;
+
 		return View();
 	}
 
