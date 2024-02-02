@@ -1,4 +1,4 @@
-<img src="https://jalexsocial.github.io/Rizzy/media/rizzy-logo.png?cache=bust" width="600"/>
+<img src="https://jalexsocial.github.io/Rizzy/media/rizzy-logo.png?cache=bust1" width="600"/>
 
 # Rizzy MVC: Seamlessly blend the power of Razor Components with Asp.net and HTMX
 
@@ -45,7 +45,7 @@ To start using Rizzy in your Asp.net MVC project, follow these simple steps:
    services.AddRizzy();
    ```
 
-3. Coming soon
+3. Coming soon!
 
 4. Enjoy the benefits of Razor Components and HTMX in your Asp.net MVC application!
 
