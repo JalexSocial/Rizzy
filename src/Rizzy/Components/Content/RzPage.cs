@@ -1,18 +1,13 @@
-﻿using Microsoft.AspNetCore.Components;
-using Rizzy.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
+using Rizzy.Framework.Mvc;
 
-namespace Rizzy.Components;
+namespace Rizzy.Components.Content;
 
 public class RzPage : ComponentBase
 {

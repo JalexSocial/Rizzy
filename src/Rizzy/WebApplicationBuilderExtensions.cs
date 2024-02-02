@@ -29,7 +29,7 @@ public static class RizzyApplicationBuilderExtensions
 	/// </summary>
 	/// <param name="builder"></param>
 	/// <returns></returns>
-	public static IApplicationBuilder UseRizzyAntiforgery(this IApplicationBuilder builder)
+	public static IApplicationBuilder UseRizzy(this IApplicationBuilder builder)
 	{
 		builder.UseMiddleware<HtmxAntiforgeryMiddleware>();
 		return builder;

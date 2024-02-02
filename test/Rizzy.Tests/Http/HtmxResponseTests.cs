@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Rizzy.Configuration;
+using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http.Mock;
 using Rizzy.Http.Models;
 

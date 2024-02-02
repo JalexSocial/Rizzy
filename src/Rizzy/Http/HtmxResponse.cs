@@ -5,6 +5,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using Rizzy.Configuration;
+using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http.Models;
 
 namespace Rizzy.Http;

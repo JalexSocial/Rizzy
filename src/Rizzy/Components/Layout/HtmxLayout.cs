@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Rizzy.Framework.Mvc;
 using Rizzy.Http;
-using Rizzy.Mvc;
 
-namespace Rizzy.Components;
+namespace Rizzy.Components.Layout;
 
 public class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
 {

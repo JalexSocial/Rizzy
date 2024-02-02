@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Http;
 
-namespace Rizzy.Components;
+namespace Rizzy.Components.Content;
 
 /// <summary>
 /// Displays the specified page component, rendering it inside its layout

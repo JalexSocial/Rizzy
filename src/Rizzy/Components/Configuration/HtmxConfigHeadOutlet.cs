@@ -1,17 +1,15 @@
-﻿using System.Reflection.Metadata;
-using System.Security.Cryptography;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
-using Rizzy.Configuration.Serialization;
-using Rizzy.Mvc;
+using Rizzy.Configuration;
+using Rizzy.Configuration.Htmx;
 using Exception = System.Exception;
 
-namespace Rizzy.Configuration;
+namespace Rizzy.Components.Configuration;
 
 /// <summary>
 /// This component will render a meta tag with the serialized <see cref="HtmxConfig"/> object,
@@ -23,7 +21,9 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
 	[Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
     [Inject] private IAntiforgery Antiforgery { get; set; } = default!;
+    [Inject] private IOptionsSnapshot<RizzyConfig> RizzyConfig { get; set; } = default!;
 	[Inject] private IOptions<HtmxAntiforgeryOptions> AntiforgeryConfig { get; set; } = default!;
+
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
@@ -43,17 +43,24 @@ public class HtmxConfigHeadOutlet : ComponentBase
         var config = string.IsNullOrEmpty(Configuration) ?
             Options.Value : Options.Get(Configuration);
 
-        if (AntiforgeryConfig.Value.IncludeAntiForgery)
+        var contextUserConfig = config with
+        {
+	        Antiforgery = new HtmxConfig.AntiForgeryConfiguration
+	        {
+		        CookieName = AntiforgeryConfig.Value.CookieName,
+		        FormFieldName = AntiforgeryConfig.Value.FormFieldName,
+		        HeaderName = AntiforgeryConfig.Value.HeaderName,
+	        }
+		};
+
+        if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
         {
             var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
 
-            throw new Exception("Cannot modify singleton config with a scoped antiforgery request token");
-
-            if (config.Antiforgery != null)
-                config.Antiforgery.RequestToken = tokens.RequestToken!;
+            contextUserConfig.Antiforgery.RequestToken = tokens.RequestToken!;
         }
 
-        _jsonConfig = JsonSerializer.Serialize(config, HtmxConfig.JsonTypeInfo);
+		_jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxConfig.JsonTypeInfo);
 
         return Task.CompletedTask;
     }

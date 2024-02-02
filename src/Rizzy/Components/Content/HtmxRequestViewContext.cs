@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Rizzy.Http;
 
-namespace Rizzy.Components;
+namespace Rizzy.Components.Content;
 
 public class HtmxRequestViewContext
 {

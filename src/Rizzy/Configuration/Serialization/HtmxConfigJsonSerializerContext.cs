@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Rizzy.Configuration.Htmx;
+using Rizzy.Configuration.Htmx.Enum;
 
 namespace Rizzy.Configuration.Serialization;
 

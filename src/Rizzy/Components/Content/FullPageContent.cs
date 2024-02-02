@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Rizzy.Components;
+namespace Rizzy.Components.Content;
 
-public class HtmxContent : IComponent
+public class FullPageContent : IComponent
 {
     private RenderHandle renderHandle;
 
@@ -15,8 +15,7 @@ public class HtmxContent : IComponent
     public Task SetParametersAsync(ParameterView parameters)
     {
         parameters.SetParameterProperties(this);
-        ViewContext.SetHtmxContent(ChildContent);
-        if (ViewContext.Context.Request.IsHtmx)
+        if (!ViewContext.Context.Request.IsHtmx)
         {
             renderHandle.Render(ChildContent);
         }

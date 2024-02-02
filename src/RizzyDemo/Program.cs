@@ -1,4 +1,5 @@
 using Rizzy;
+using Rizzy.Configuration.Htmx;
 using RizzyDemo.Components.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,7 +35,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
-app.UseRizzyAntiforgery();
+app.UseRizzy();
 
 app.UseRouting();
 

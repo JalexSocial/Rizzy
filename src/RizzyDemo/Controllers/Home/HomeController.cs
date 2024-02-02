@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using Rizzy.Mvc;
+using Rizzy.Framework.Mvc;
 using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;

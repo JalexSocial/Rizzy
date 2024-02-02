@@ -8,8 +8,6 @@ namespace Rizzy.Antiforgery;
 /// </summary>
 public class HtmxAntiforgeryOptions
 {
-	public bool IncludeAntiForgery { get; set; } = true;
-
 	/// <summary>
 	/// Gets the name of the form field used for antiforgery token.
 	/// </summary>
@@ -19,11 +17,6 @@ public class HtmxAntiforgeryOptions
 	/// Gets the name of the header used for antiforgery token.
 	/// </summary>
 	public string? HeaderName { get; set; }
-
-    /// <summary>
-    /// Gets the the request token for the authenticated user.
-    /// </summary>
-	public string? RequestToken { get; set; }
 
 	/// <summary>
 	/// Gets the name of the cookie used for antiforgery token.

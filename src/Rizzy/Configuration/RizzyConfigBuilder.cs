@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
+using Rizzy.Configuration.Htmx;
 using Rizzy.Http;
 
 namespace Rizzy.Configuration;
@@ -27,7 +28,7 @@ public class RizzyConfigBuilder
 
         public void Configure(string? name, HtmxConfig options)
         {
-            options.Antiforgery = _antiforgeryOptions;
+            // Do nothing for now
         }
 
         public void Configure(HtmxConfig options) => Configure(Options.DefaultName, options);
@@ -89,7 +90,6 @@ public class RizzyConfigBuilder
         _builder.Services.Configure<HtmxAntiforgeryOptions>(opt =>
         {
             // Default to true, can be configured again after adding htmx if necessary
-            opt.IncludeAntiForgery = true;
             opt.FormFieldName = antiforgeryOptions.Value.FormFieldName;
             opt.HeaderName = antiforgeryOptions.Value.HeaderName;
             opt.CookieName = _defaultCookieName;

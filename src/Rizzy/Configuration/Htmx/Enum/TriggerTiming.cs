@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Configuration;
+﻿namespace Rizzy.Configuration.Htmx.Enum;
 
 public enum TriggerTiming
 {

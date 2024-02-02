@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Configuration;
+﻿namespace Rizzy.Configuration.Htmx.Enum;
 
 /// <summary>
 /// How to swap the response into the target element.

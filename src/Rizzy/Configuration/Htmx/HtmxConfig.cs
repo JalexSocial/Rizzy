@@ -2,19 +2,32 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Rizzy.Antiforgery;
+using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Configuration.Serialization;
 
-namespace Rizzy.Configuration;
+namespace Rizzy.Configuration.Htmx;
 
 /// <summary>
 /// Htmx configuration options.
 /// </summary>
 public record class HtmxConfig
 {
-    /// <summary>
-    /// Default <see cref="JsonSerializerOptions"/> used with <see cref="HtmxConfig"/>.
-    /// </summary>
-    public readonly static JsonTypeInfo<HtmxConfig> JsonTypeInfo = HtmxConfigJsonSerializerContext.Default.HtmxConfig;
+	internal class AntiForgeryConfiguration
+	{
+		[JsonPropertyName("formFieldName")]
+		public string? FormFieldName { get; set; }
+		[JsonPropertyName("headerName")]
+		public string? HeaderName { get; set; }
+		[JsonPropertyName("cookieName")]
+		public string? CookieName { get; set; }
+		[JsonPropertyName("requestToken")]
+		public string? RequestToken { get; set; }
+	}
+
+	/// <summary>
+	/// Default <see cref="JsonSerializerOptions"/> used with <see cref="HtmxConfig"/>.
+	/// </summary>
+	public readonly static JsonTypeInfo<HtmxConfig> JsonTypeInfo = HtmxConfigJsonSerializerContext.Default.HtmxConfig;
 
     /// <summary>
     /// Defaults to <see langword="true" /> if this property is null. really only useful for testing
@@ -218,5 +231,5 @@ public record class HtmxConfig
     public bool? ScrollIntoViewOnBoost { get; set; }
 
     [JsonInclude, JsonPropertyName("antiforgery")]
-    public HtmxAntiforgeryOptions? Antiforgery { get; set; }
+    internal AntiForgeryConfiguration? Antiforgery { get; set; } = null;
 }

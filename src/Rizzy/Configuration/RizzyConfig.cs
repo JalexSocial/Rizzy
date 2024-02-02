@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
+using Rizzy.Antiforgery;
 
 namespace Rizzy.Configuration;
 
@@ -11,7 +12,9 @@ public class RizzyConfig
 {
     private Type? _defaultLayout = null;
 
-    public Type? DefaultLayout
+    public AntiforgeryStrategy AntiforgeryStrategy { get; set; } = AntiforgeryStrategy.GenerateTokensPerPage;
+
+	public Type? DefaultLayout
     {
         get => _defaultLayout;
         set

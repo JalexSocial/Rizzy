@@ -1,19 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Rizzy.Components;
+using Rizzy.Components.Content;
 using Rizzy.Extensions;
 
-namespace Rizzy.Mvc;
+namespace Rizzy.Framework.Mvc;
 public class RzController : Controller
 {
     public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
