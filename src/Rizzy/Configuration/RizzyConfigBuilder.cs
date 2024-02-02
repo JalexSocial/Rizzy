@@ -44,6 +44,7 @@ public class RizzyConfigBuilder
 
         AddHtmxAntiForgery();
 
+        _builder.Services.AddHttpContextAccessor();
         _builder.Services.Configure<RizzyConfig>(configBuilder);
 
         // Make sure all HtmxConfig instances get properly configured

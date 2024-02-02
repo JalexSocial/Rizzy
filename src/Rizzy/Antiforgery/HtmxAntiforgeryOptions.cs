@@ -20,6 +20,11 @@ public class HtmxAntiforgeryOptions
 	/// </summary>
 	public string? HeaderName { get; set; }
 
+    /// <summary>
+    /// Gets the the request token for the authenticated user.
+    /// </summary>
+	public string? RequestToken { get; set; }
+
 	/// <summary>
 	/// Gets the name of the cookie used for antiforgery token.
 	/// </summary>

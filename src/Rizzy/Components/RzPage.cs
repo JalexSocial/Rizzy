@@ -8,10 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Rizzy.Configuration;
 
 namespace Rizzy.Components;
 
-public partial class RzPage : ComponentBase
+public class RzPage : ComponentBase
 {
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> _layoutAttributeCache = new();
     private Type? _layout = null;
@@ -23,7 +26,7 @@ public partial class RzPage : ComponentBase
             builder.OpenComponent<CascadingValue<TValue>>(0);
             builder.AddComponentParameter(1, "Value", value);
             builder.AddComponentParameter(2, "ChildContent", fragment);
-            builder.AddComponentParameter(3, "Name", "ViewContext");
+            //builder.AddComponentParameter(3, "Name", "ViewContext");
             builder.CloseComponent();
         }
     }
@@ -66,6 +69,14 @@ public partial class RzPage : ComponentBase
         {
             _layout = ComponentType.GetCustomAttribute<LayoutAttribute>()?.LayoutType;
             _layoutAttributeCache.TryAdd(ComponentType, _layout);
+        }
+
+        if (_layout == null)
+        {
+            var config = ViewContext?.HttpContext.RequestServices.GetRequiredService<IOptions<RizzyConfig>>();
+
+            if (config?.Value.DefaultLayout != null)
+                _layout = config?.Value.DefaultLayout;
         }
     }
 }

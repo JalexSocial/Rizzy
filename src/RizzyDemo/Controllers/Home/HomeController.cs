@@ -16,17 +16,11 @@ public class HomeController : RzController
         _logger = logger;
     }
 
-    public IResult Index()
-    {
-        var data = ViewData;
+    public IResult Index() => View<HomeIndex>();
 
-        return View<HomeIndex>();
-    }
+    public IResult Privacy() => View<Privacy>();
 
-    public IResult Privacy()
-    {
-        return View<Privacy>();
-    }
+    public IResult Information() => View<Information>();
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IResult Error()

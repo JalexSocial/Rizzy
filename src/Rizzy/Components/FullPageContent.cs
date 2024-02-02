@@ -15,7 +15,7 @@ public class FullPageContent : IComponent
     public Task SetParametersAsync(ParameterView parameters)
     {
         parameters.SetParameterProperties(this);
-        if (!ViewContext.Context.Request.IsHtmxRequest)
+        if (!ViewContext.Context.Request.IsHtmx)
         {
             renderHandle.Render(ChildContent);
         }

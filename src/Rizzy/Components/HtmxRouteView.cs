@@ -15,7 +15,7 @@ public class HtmxRouteView : RouteView
 
     protected override void Render(RenderTreeBuilder builder)
     {
-        if (Context.Request.IsHtmxRequest && Context.Request.Trigger is not null)
+        if (Context.Request.IsHtmx && Context.Request.Trigger is not null)
         {
             builder.OpenComponent(0, RouteData.PageType);
             foreach (var kvp in RouteData.RouteValues)
