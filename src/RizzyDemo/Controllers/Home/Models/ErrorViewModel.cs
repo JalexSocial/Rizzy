@@ -1,4 +1,4 @@
-namespace RizzyDemo.Models;
+namespace RizzyDemo.Controllers.Home.Models;
 
 public class ErrorViewModel
 {

@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
-using RizzyDemo.Models;
 using System.Diagnostics;
 using Rizzy.Mvc;
+using RizzyDemo.Components.Shared;
+using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;
 
 namespace RizzyDemo.Controllers.Home;
@@ -19,19 +20,22 @@ public class HomeController : RzController
     {
         var data = ViewData;
 
-        return View<HomeIndex>(new { });
+        return View<HomeIndex>();
     }
 
-    public IActionResult Privacy()
+    public IResult Privacy()
     {
-        return View();
+        return View<Privacy>();
     }
 
-    /*
-	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-	public IActionResult Error()
-	{
-		return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-	}
-	*/
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IResult Error()
+    {
+        return View<Error>(new { 
+            Model = new ErrorViewModel {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            }
+        });
+}
+
 }

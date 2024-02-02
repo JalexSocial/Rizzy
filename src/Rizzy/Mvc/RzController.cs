@@ -16,9 +16,7 @@ using Rizzy.Extensions;
 namespace Rizzy.Mvc;
 public class RzController : Controller
 {
-    public IResult View<TComponent>() where TComponent : IComponent => View<TComponent>(null);
-
-    public IResult View<TComponent>(object? data) where TComponent : IComponent =>
+    public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
         View<TComponent>(data.ToDictionary());
 
     public IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent

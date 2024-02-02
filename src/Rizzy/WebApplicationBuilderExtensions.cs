@@ -21,8 +21,8 @@ public static class RizzyApplicationBuilderExtensions
 	/// </summary>
 	/// <param name="builder"></param>
 	/// <param name="configBuilder"></param>
-	public static RizzyConfigBuilder AddRizzy(this IHostApplicationBuilder builder) =>
-		new RizzyConfigBuilder(builder);
+	public static RizzyConfigBuilder AddRizzy(this IHostApplicationBuilder builder, Action<RizzyConfig> configBuilder) =>
+		new RizzyConfigBuilder(builder, configBuilder);
 
 	/// <summary>
 	/// Enable Htmx to use antiforgery tokens to secure requests.

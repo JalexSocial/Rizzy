@@ -37,11 +37,14 @@ public class RizzyConfigBuilder
     /// Sets up default services for Rizzy
     /// </summary>
     /// <param name="builder"></param>
-    public RizzyConfigBuilder(IHostApplicationBuilder builder)
+    /// <param name="configBuilder"></param>
+    public RizzyConfigBuilder(IHostApplicationBuilder builder, Action<RizzyConfig> configBuilder)
     {
         _builder = builder;
 
         AddHtmxAntiForgery();
+
+        _builder.Services.Configure<RizzyConfig>(configBuilder);
 
         // Make sure all HtmxConfig instances get properly configured
         _builder.Services.AddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();
@@ -58,7 +61,7 @@ public class RizzyConfigBuilder
     /// </summary>
     /// <param name="configBuilder"></param>
     /// <returns></returns>
-    public RizzyConfigBuilder WithConfiguration(Action<HtmxConfig> configBuilder)
+    public RizzyConfigBuilder WithHtmxConfiguration(Action<HtmxConfig> configBuilder)
     {
         _builder.Services.Configure<HtmxConfig>(configBuilder);
 
@@ -70,7 +73,7 @@ public class RizzyConfigBuilder
     /// </summary>
     /// <param name="configBuilder"></param>
     /// <returns></returns>
-    public RizzyConfigBuilder WithConfiguration(string name, Action<HtmxConfig> configBuilder)
+    public RizzyConfigBuilder WithHtmxConfiguration(string name, Action<HtmxConfig> configBuilder)
     {
         _builder.Services.Configure<HtmxConfig>(name, configBuilder);
 

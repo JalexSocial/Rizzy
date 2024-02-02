@@ -2,6 +2,9 @@
 
 namespace Rizzy.Http;
 
+/// <summary>
+///  Provides access to Htmx Request and Responses 
+/// </summary>
 public class HtmxContext
 {
     public HtmxRequest Request { get; }

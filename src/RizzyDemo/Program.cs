@@ -1,13 +1,17 @@
 using Rizzy;
+using RizzyDemo.Components.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.AddRizzy()
-	.WithConfiguration(config =>
+builder.AddRizzy(config =>
+    {
+        config.DefaultLayout = typeof(AppLayout);
+    })
+	.WithHtmxConfiguration(config =>
 	{
 		config.SelfRequestsOnly = true;
 	})
-	.WithConfiguration("articles", config =>
+	.WithHtmxConfiguration("articles", config =>
 	{
 		config.SelfRequestsOnly = true;
 		config.GlobalViewTransitions = true;
