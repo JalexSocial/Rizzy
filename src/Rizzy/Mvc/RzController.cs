@@ -16,7 +16,12 @@ using Rizzy.Extensions;
 namespace Rizzy.Mvc;
 public class RzController : Controller
 {
-    public IResult View<TComponent>(object? data) where TComponent : IComponent
+    public IResult View<TComponent>() where TComponent : IComponent => View<TComponent>(null);
+
+    public IResult View<TComponent>(object? data) where TComponent : IComponent =>
+        View<TComponent>(data.ToDictionary());
+
+    public IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
     {
         var parameters = new Dictionary<string, object?>();
 
@@ -26,7 +31,7 @@ public class RzController : Controller
             this.ModelState);
 
         parameters.Add("ComponentType", typeof(TComponent));
-        parameters.Add("ComponentParameters", data.ToDictionary());
+        parameters.Add("ComponentParameters", data);
         parameters.Add("ViewContext", context);
 
         return new RazorComponentResult<RzPage>(parameters)

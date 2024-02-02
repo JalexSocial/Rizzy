@@ -11,9 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Components\Layout\" />
     <Folder Include="Components\Shared\" />
-    <Folder Include="Components\Views\" />
   </ItemGroup>
 
 </Project>

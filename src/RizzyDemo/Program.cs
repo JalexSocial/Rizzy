@@ -15,6 +15,7 @@ builder.AddRizzy()
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorComponents();
 
 var app = builder.Build();
 
