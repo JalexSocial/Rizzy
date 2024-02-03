@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.AddRizzy(config =>
 	{
-		config.RootLayout = typeof(HtmxLayout<AppLayout>);
+		config.RootComponent = typeof(HtmxApp<AppLayout>);
         config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
     })
 	.WithHtmxConfiguration(config =>

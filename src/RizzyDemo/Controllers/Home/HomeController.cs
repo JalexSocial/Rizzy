@@ -20,7 +20,16 @@ public class HomeController : RzController
 
     public IResult Privacy() => View<Privacy>();
 
-    public IResult Information() => View<Information>();
+    public IResult Information()
+    {
+		return View<Information>();
+    }
+
+    [HttpPost]
+    public IResult Information([FromForm] Person person)
+    {
+	    return View<Information>(new { Person = person });
+    }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IResult Error()

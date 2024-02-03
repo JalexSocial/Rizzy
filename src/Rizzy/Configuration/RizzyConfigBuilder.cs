@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -55,7 +58,14 @@ public class RizzyConfigBuilder
         // Configure a default htmx configuration
         _builder.Services.Configure<HtmxConfig>(config => { });
 
-        _builder.Services.AddScoped(srv => srv.GetRequiredService<IHttpContextAccessor>().HttpContext!.GetHtmxContext());
+		// Add url helper
+		_builder.Services.AddScoped<IUrlHelper>(provider =>
+		{
+			var helperFactory = provider.GetRequiredService<IUrlHelperFactory>();
+			var actionContextAccessor = provider.GetRequiredService<IActionContextAccessor>().ActionContext;
+
+			return helperFactory.GetUrlHelper(actionContextAccessor!);
+		});
     }
 
     /// <summary>

@@ -10,7 +10,7 @@
     <DebugType>embedded</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
-    <PackageId>Rizzy</PackageId>
+    <PackageId>Htmxor</PackageId>
     <Company>Michael Tanczos</Company>
     <Authors>Michael Tanczos, Egil Hansen</Authors>
     <Title>Rizzy - MVC and htmx with a Razor component model</Title>

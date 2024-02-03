@@ -25,20 +25,7 @@ public class RzPage : ComponentBase
 			builder.OpenComponent<CascadingValue<TValue>>(0);
 			builder.AddComponentParameter(1, "Value", value);
 			builder.AddComponentParameter(2, "ChildContent", fragment);
-			//builder.AddComponentParameter(3, "Name", "ViewContext");
 			builder.CloseComponent();
-		}
-	}
-
-	private class EmptyLayout : LayoutComponentBase
-	{
-		protected override void BuildRenderTree(RenderTreeBuilder builder)
-		{
-			builder.OpenElement(0, "html");
-			builder.OpenElement(1, "body");
-			builder.AddContent(2, Body);
-			builder.CloseElement();
-			builder.CloseElement();
 		}
 	}
 
@@ -46,8 +33,8 @@ public class RzPage : ComponentBase
 	{
 		ViewContextWrapper.CreateCascadingValue(builder, ViewContext, (builder2) => {
 
-			builder2.OpenComponent(4, RizzyConfig.Value.RootLayout ?? typeof(EmptyLayout));
-			builder2.AddAttribute(5, "Body", (RenderFragment)(builder3 =>
+			builder2.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
+			builder2.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
 			{
 				if (_layout != null)
 				{

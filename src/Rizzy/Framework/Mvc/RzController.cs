@@ -21,6 +21,8 @@ public class RzController : Controller
             this.ControllerContext.ActionDescriptor, 
             this.ModelState);
 
+        context.ComponentParameters = data;
+
         parameters.Add("ComponentType", typeof(TComponent));
         parameters.Add("ComponentParameters", data);
         parameters.Add("ViewContext", context);
@@ -49,7 +51,9 @@ public class RzController : Controller
 		    this.ControllerContext.ActionDescriptor,
 		    this.ModelState);
 
-	    parameters.Add("ComponentType", typeof(TComponent));
+	    context.ComponentParameters = data;
+
+        parameters.Add("ComponentType", typeof(TComponent));
 	    parameters.Add("ComponentParameters", data);
 	    parameters.Add("ViewContext", context);
 

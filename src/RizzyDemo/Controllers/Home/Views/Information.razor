@@ -1,5 +1,34 @@
-﻿<h3>Information</h3>
+﻿@using Rizzy.Framework.Mvc
+@using RizzyDemo.Controllers.Home.Models
+<h3>Information</h3>
+
+<EditForm EditContext="@editContext">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+
+	<div class="form-group">
+		<label for="name">Name:</label>
+		<InputText id="name" class="form-control" @bind-Value="Person.Name" />
+		<ValidationMessage For="@(() => Person.Name)" />
+	</div>
+
+	<button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
 
 @code {
+	private EditContext editContext;
+
+	[CascadingParameter] 
+	public RzViewContext? ViewContext { get; set; }
+
+	[Parameter]
+	public Person Person { get; set; } = new();
+
+	protected override void OnParametersSet()
+	{
+		editContext = ViewContext!.CreateEditContext<Person>(Person ?? new());
+
+		base.OnParametersSet();
+	}
 
 }
