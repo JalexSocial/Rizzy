@@ -1,12 +1,14 @@
 using Rizzy;
+using Rizzy.Components.Layout;
 using Rizzy.Configuration.Htmx;
 using RizzyDemo.Components.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.AddRizzy(config =>
-    {
-        config.DefaultLayout = typeof(AppLayout);
+	{
+		config.RootLayout = typeof(HtmxLayout<AppLayout>);
+        config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
     })
 	.WithHtmxConfiguration(config =>
 	{

@@ -11,8 +11,9 @@ namespace Rizzy.Configuration;
 public class RizzyConfig
 {
     private Type? _defaultLayout = null;
+    private Type? _rootLayout = null;
 
-    public AntiforgeryStrategy AntiforgeryStrategy { get; set; } = AntiforgeryStrategy.GenerateTokensPerPage;
+	public AntiforgeryStrategy AntiforgeryStrategy { get; set; } = AntiforgeryStrategy.GenerateTokensPerPage;
 
 	public Type? DefaultLayout
     {
@@ -25,4 +26,17 @@ public class RizzyConfig
             _defaultLayout = value;
         }
     }
+
+	public Type? RootLayout
+	{
+		get => _rootLayout;
+		set
+		{
+			if (value != null && !typeof(LayoutComponentBase).IsAssignableFrom(value))
+				throw new Exception($"{nameof(value)} is not a Razor layout component");
+
+			_rootLayout = value;
+		}
+	}
+
 }

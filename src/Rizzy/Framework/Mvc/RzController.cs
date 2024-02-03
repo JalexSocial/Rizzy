@@ -30,4 +30,32 @@ public class RzController : Controller
             PreventStreamingRendering = false
         };
     }
+
+    public IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent =>
+	    PartialView<TComponent>(data.ToDictionary());
+
+    /// <summary>
+    /// Renders a Razor component without a layout
+    /// </summary>
+    /// <typeparam name="TComponent"></typeparam>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
+    {
+	    var parameters = new Dictionary<string, object?>();
+
+	    RzViewContext context = new RzViewContext(this.HttpContext,
+		    this.RouteData,
+		    this.ControllerContext.ActionDescriptor,
+		    this.ModelState);
+
+	    parameters.Add("ComponentType", typeof(TComponent));
+	    parameters.Add("ComponentParameters", data);
+	    parameters.Add("ViewContext", context);
+
+	    return new RazorComponentResult<RzPartial>(parameters)
+	    {
+		    PreventStreamingRendering = false
+	    };
+    }
 }
