@@ -1,9 +1,10 @@
 ﻿@using Rizzy.Components.Form
 @using Rizzy.Framework.Mvc
 @using RizzyDemo.Controllers.Home.Models
+@using Microsoft.AspNetCore.Mvc
 <h3>Information</h3>
 
-<EditForm EditContext="@editContext">
+<EditForm EditContext="@ViewContext.EditContext">
 	<DataAnnotationsValidator />
 	<!--<RzInitialValidator/>-->
 	<ValidationSummary />
@@ -17,20 +18,16 @@
 	<button type="submit" class="btn btn-primary">Submit</button>
 </EditForm>
 
+@* ReSharper disable once CSharpWarnings::CS8618 *@
 @code {
-	private EditContext editContext;
+	[CascadingParameter]
+	public RzViewContext ViewContext { get; set; } 
 
-	[CascadingParameter] 
-	public RzViewContext? ViewContext { get; set; }
-
-	[Parameter]
 	public Person Person { get; set; } = new();
 
 	protected override void OnParametersSet()
 	{
-		editContext = ViewContext!.CreateEditContext<Person>(Person ?? new());
-
-		base.OnParametersSet();
+		Person = (Person)ViewContext.EditContext.Model;
 	}
 
 }

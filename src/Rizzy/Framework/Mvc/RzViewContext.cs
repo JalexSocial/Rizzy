@@ -14,7 +14,8 @@ public class RzViewContext
 	public RzViewContext(HttpContext httpContext,
 		RouteData routeData,
 		ActionDescriptor actionDescriptor,
-		ModelStateDictionary modelState
+		ModelStateDictionary modelState,
+		EditContext editContext
 	)
 	{
 		ArgumentNullException.ThrowIfNull(httpContext);
@@ -26,7 +27,10 @@ public class RzViewContext
 		RouteData = routeData;
 		ActionDescriptor = actionDescriptor;
 		ModelState = modelState;
+		EditContext = editContext;
 		Htmx = new HtmxContext(httpContext);
+
+		EditContext.Validate();
 	}
 
     public HtmxContext Htmx { get; init; }
@@ -53,46 +57,17 @@ public class RzViewContext
     public ModelStateDictionary ModelState { get; }
 
     /// <summary>
-    /// Gets or sets the <see cref="AspNetCore.Routing.RouteData"/> for the current request.
+    /// Gets the EditContext
     /// </summary>
-    /// <remarks>
-    /// The property setter is provided for unit test purposes only.
-    /// </remarks>
-    public Microsoft.AspNetCore.Routing.RouteData RouteData { get; set; }
+    public EditContext EditContext { get; init; }
+
+	/// <summary>
+	/// Gets or sets the <see cref="AspNetCore.Routing.RouteData"/> for the current request.
+	/// </summary>
+	/// <remarks>
+	/// The property setter is provided for unit test purposes only.
+	/// </remarks>
+	public Microsoft.AspNetCore.Routing.RouteData RouteData { get; set; }
 
     public Dictionary<string, object?> ComponentParameters { get; set; } = new();
-
-    public EditContext CreateEditContext<TModel>(TModel model) where TModel : class
-    {
-	    var editContext = new EditContext(model);
-	    var messageStore = new ValidationMessageStore(editContext);
-
-	    // Iterate over the ModelState entries
-	    foreach (var state in ModelState)
-	    {
-		    // Key represents the field name in the model
-		    var fieldKey = state.Key.CapitalizeFirstLetter();
-		    var fieldState = state.Value;
-
-		    var prefix = $"{model.GetType().Name}.";
-		    if (fieldKey.StartsWith(prefix))
-			    fieldKey = fieldKey.Substring(prefix.Length);
-
-		    // Construct a FieldIdentifier for the current field
-		    var fieldIdentifier = new FieldIdentifier(model, fieldKey);
-
-		    // Add model state errors to the ValidationMessageStore
-		    foreach (var error in fieldState.Errors)
-		    {
-			    var errorMessage = error.ErrorMessage;
-			    // Add the error message for the field to the message store
-			    messageStore.Add(fieldIdentifier, errorMessage);
-		    }
-	    }
-
-	    // Force the EditContext to consider the newly added messages
-	    editContext.NotifyValidationStateChanged();
-
-	    return editContext;
-    }
 }

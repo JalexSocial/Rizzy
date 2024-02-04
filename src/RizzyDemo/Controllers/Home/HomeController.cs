@@ -23,19 +23,17 @@ public class HomeController : RzController
 
     public IResult Information()
     {
+	    CreateEditContext(new Person());
+
 		return View<Information>();
     }
 
     [HttpPost]
-    public IResult Information([FromForm] Person person33)
+    public IResult Information([FromForm] Person person)
     {
-	    var modelState = this.ModelState;
-	    var editContext = new EditContext(person33);
-	    editContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
+        CreateEditContext(person);
 
-	    editContext.Validate();
-        
-	    return View<Information>(new { Person = person33 });
+	    return View<Information>();
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
