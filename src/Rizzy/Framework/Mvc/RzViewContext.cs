@@ -1,31 +1,33 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Routing;
+using Rizzy.Extensions;
 using Rizzy.Http;
 
 namespace Rizzy.Framework.Mvc;
 
 public class RzViewContext
 {
-    public RzViewContext(HttpContext httpContext,
-        RouteData routeData,
-        ActionDescriptor actionDescriptor,
-        ModelStateDictionary modelState
-        )
-    {
-        ArgumentNullException.ThrowIfNull(httpContext);
-        ArgumentNullException.ThrowIfNull(routeData);
-        ArgumentNullException.ThrowIfNull(actionDescriptor);
-        ArgumentNullException.ThrowIfNull(modelState);
+	public RzViewContext(HttpContext httpContext,
+		RouteData routeData,
+		ActionDescriptor actionDescriptor,
+		ModelStateDictionary modelState
+	)
+	{
+		ArgumentNullException.ThrowIfNull(httpContext);
+		ArgumentNullException.ThrowIfNull(routeData);
+		ArgumentNullException.ThrowIfNull(actionDescriptor);
+		ArgumentNullException.ThrowIfNull(modelState);
 
-        HttpContext = httpContext;
-        RouteData = routeData;
-        ActionDescriptor = actionDescriptor;
-        ModelState = modelState;
-        Htmx = new HtmxContext(httpContext);
-    }
+		HttpContext = httpContext;
+		RouteData = routeData;
+		ActionDescriptor = actionDescriptor;
+		ModelState = modelState;
+		Htmx = new HtmxContext(httpContext);
+	}
 
     public HtmxContext Htmx { get; init; }
 
@@ -43,7 +45,7 @@ public class RzViewContext
     /// <remarks>
     /// The property setter is provided for unit test purposes only.
     /// </remarks>
-    public HttpContext HttpContext { get; set; } 
+    public HttpContext HttpContext { get; set; }
 
     /// <summary>
     /// Gets the <see cref="ModelStateDictionary"/>.
@@ -69,8 +71,12 @@ public class RzViewContext
 	    foreach (var state in ModelState)
 	    {
 		    // Key represents the field name in the model
-		    var fieldKey = state.Key;
+		    var fieldKey = state.Key.CapitalizeFirstLetter();
 		    var fieldState = state.Value;
+
+		    var prefix = $"{model.GetType().Name}.";
+		    if (fieldKey.StartsWith(prefix))
+			    fieldKey = fieldKey.Substring(prefix.Length);
 
 		    // Construct a FieldIdentifier for the current field
 		    var fieldIdentifier = new FieldIdentifier(model, fieldKey);

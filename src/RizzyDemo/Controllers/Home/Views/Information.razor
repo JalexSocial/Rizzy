@@ -1,9 +1,11 @@
-﻿@using Rizzy.Framework.Mvc
+﻿@using Rizzy.Components.Form
+@using Rizzy.Framework.Mvc
 @using RizzyDemo.Controllers.Home.Models
 <h3>Information</h3>
 
 <EditForm EditContext="@editContext">
 	<DataAnnotationsValidator />
+	<!--<RzInitialValidator/>-->
 	<ValidationSummary />
 
 	<div class="form-group">

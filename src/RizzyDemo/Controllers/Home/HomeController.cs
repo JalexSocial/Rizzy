@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Components.Forms;
 using Rizzy.Framework.Mvc;
 using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;
@@ -26,9 +27,15 @@ public class HomeController : RzController
     }
 
     [HttpPost]
-    public IResult Information([FromForm] Person person)
+    public IResult Information([FromForm] Person person33)
     {
-	    return View<Information>(new { Person = person });
+	    var modelState = this.ModelState;
+	    var editContext = new EditContext(person33);
+	    editContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
+
+	    editContext.Validate();
+        
+	    return View<Information>(new { Person = person33 });
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

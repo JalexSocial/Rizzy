@@ -18,7 +18,7 @@ public class RzController : Controller
 
         RzViewContext context = new RzViewContext (this.HttpContext, 
             this.RouteData, 
-            this.ControllerContext.ActionDescriptor, 
+            this.ControllerContext.ActionDescriptor,
             this.ModelState);
 
         context.ComponentParameters = data;
