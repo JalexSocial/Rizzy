@@ -7,7 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
+using Rizzy.Components.Form.Helpers;
 using Rizzy.Configuration.Htmx;
+using Rizzy.Framework.Mvc;
 using Rizzy.Http;
 
 namespace Rizzy.Configuration;
@@ -66,6 +68,9 @@ public class RizzyConfigBuilder
 
 			return helperFactory.GetUrlHelper(actionContextAccessor!);
 		});
+
+		_builder.Services.AddSingleton<DataAnnotationsProcessor>();
+		_builder.Services.AddScoped<RzViewContext>();
     }
 
     /// <summary>

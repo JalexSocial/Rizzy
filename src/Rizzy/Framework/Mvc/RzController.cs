@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Components;
 using Rizzy.Components.Content;
 using Rizzy.Extensions;
@@ -10,12 +12,10 @@ using Rizzy.Extensions;
 namespace Rizzy.Framework.Mvc;
 public class RzController : Controller
 {
-	private EditContext? _editContext;
-
 	/// <summary>
 	/// Gets the EditContext
 	/// </summary>
-	public EditContext EditContext => _editContext;
+	public EditContext EditContext { get; private set; } = new EditContext(new object()); 
 
 	public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
         View<TComponent>(data.ToDictionary());
@@ -24,15 +24,11 @@ public class RzController : Controller
     {
         var parameters = new Dictionary<string, object?>();
 
-        RzViewContext context = new RzViewContext (this.HttpContext, 
-            this.RouteData, 
-            this.ControllerContext.ActionDescriptor,
-            this.ModelState,
-            this.EditContext);
+        RzViewContext context = HttpContext.RequestServices.GetRequiredService<RzViewContext>();
 
-        context.ComponentParameters = data;
+		context.ConfigureOnce(typeof(TComponent), data, EditContext, new ActionContext(HttpContext, RouteData, ControllerContext.ActionDescriptor));
 
-        parameters.Add("ComponentType", typeof(TComponent));
+		parameters.Add("ComponentType", typeof(TComponent));
         parameters.Add("ComponentParameters", data);
         parameters.Add("ViewContext", context);
 
@@ -55,13 +51,9 @@ public class RzController : Controller
     {
 	    var parameters = new Dictionary<string, object?>();
 
-	    RzViewContext context = new RzViewContext(this.HttpContext,
-		    this.RouteData,
-		    this.ControllerContext.ActionDescriptor,
-		    this.ModelState,
-		    this.EditContext);
+	    RzViewContext context = HttpContext.RequestServices.GetRequiredService<RzViewContext>();
 
-	    context.ComponentParameters = data;
+	    context.ConfigureOnce(typeof(TComponent), data, EditContext, new ActionContext(HttpContext, RouteData, ControllerContext.ActionDescriptor));
 
         parameters.Add("ComponentType", typeof(TComponent));
 	    parameters.Add("ComponentParameters", data);
@@ -75,15 +67,15 @@ public class RzController : Controller
 
     public EditContext CreateEditContext<TModel>(TModel model, bool useDataAnnotations = true) where TModel : class
     {
-	    _editContext = new EditContext(model);
+	    EditContext = new EditContext(model);
 
         // By default use data annotations as the validator
 	    if (useDataAnnotations)
 		{
-			_editContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
-			_editContext.Validate();
+			EditContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
+			EditContext.Validate();
 		}
 
-		return _editContext;
+		return EditContext;
     }
 }

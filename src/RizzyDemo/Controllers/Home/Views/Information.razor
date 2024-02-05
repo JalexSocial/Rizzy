@@ -2,32 +2,34 @@
 @using Rizzy.Framework.Mvc
 @using RizzyDemo.Controllers.Home.Models
 @using Microsoft.AspNetCore.Mvc
-<h3>Information</h3>
 
-<EditForm EditContext="@ViewContext.EditContext">
-	<DataAnnotationsValidator />
-	<!--<RzInitialValidator/>-->
-	<ValidationSummary />
+<div id="information">
 
-	<div class="form-group">
-		<label for="name">Name:</label>
-		<InputText id="name" class="form-control" @bind-Value="Person.Name" />
-		<ValidationMessage For="@(() => Person.Name)" />
-	</div>
+	<h3>Information</h3>
 
-	<button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
+	<RzEditForm hx-post="@ViewContext.FormUrl" hx-target="#information">
+		<RzValidationSummary/>
+
+		<div class="form-group">
+			<label for="name">Name:</label>
+			<RzInputText id="name" class="form-control" @bind-Value="Person.Name"/>
+			<RzValidationMessage For="@(() => Person.Name)"/>
+		</div>
+
+		<button type="submit" class="btn btn-primary">Submit</button>
+	</RzEditForm>
+
+</div>
 
 @* ReSharper disable once CSharpWarnings::CS8618 *@
 @code {
-	[CascadingParameter]
+	[Inject]
 	public RzViewContext ViewContext { get; set; } 
 
 	public Person Person { get; set; } = new();
 
-	protected override void OnParametersSet()
+	protected override void OnInitialized()
 	{
-		Person = (Person)ViewContext.EditContext.Model;
+		Person = ViewContext.FormModel<Person>();
 	}
-
 }

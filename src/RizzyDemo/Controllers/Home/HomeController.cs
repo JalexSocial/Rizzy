@@ -28,7 +28,7 @@ public class HomeController : RzController
 		return View<Information>();
     }
 
-    [HttpPost]
+    [HttpPost, ValidateAntiForgeryToken]
     public IResult Information([FromForm] Person person)
     {
         CreateEditContext(person);
