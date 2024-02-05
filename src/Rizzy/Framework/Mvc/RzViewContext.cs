@@ -14,9 +14,10 @@ using Rizzy.Http;
 
 namespace Rizzy.Framework.Mvc;
 
-public class RzViewContext(IHttpContextAccessor httpContextAccessor)
+public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper urlHelper)
 {
 	private bool _configured = false;
+    private string _formUrl = string.Empty;
 
 	public void ConfigureOnce(Type componentType, 
 		Dictionary<string, object?> componentParameters,
@@ -47,6 +48,11 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor)
     /// </remarks>
     public HttpContext HttpContext => httpContextAccessor.HttpContext!;
 
+    /// <summary>
+    /// Provides access to the MVC UrlHelper which contains methods to build URLs for ASP.NET MVC within an application.
+    /// </summary>
+    public IUrlHelper Url => urlHelper;
+
 	/// <summary>
 	/// Gets or sets the AspNetCore.Routing.RouteData for the current request.
 	/// </summary>
@@ -66,6 +72,15 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor)
 
     public ActionContext ActionContext { get; private set; } = default!;
 
+	/// <summary>
+	/// Retrieves the current data strongly-typed data model for EditContext. Note that EditContext must be set with a strongly-typed
+	/// model for the form model to be accessible.  This is essentially a shortcut for EditContext.Model which does the typecasting for
+	/// you.
+	/// </summary>
+	/// <typeparam name="TModel"></typeparam>
+	/// <returns></returns>
+	/// <exception cref="NullReferenceException"></exception>
+	/// <exception cref="InvalidOperationException"></exception>
     public TModel FormModel<TModel>()
     {
 	    if (EditContext?.Model is null)
@@ -77,5 +92,13 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor)
 		return (TModel)EditContext.Model;
 	}
 
-    public string FormUrl => HttpContext.Request.GetDisplayUrl();
+	/// <summary>
+	/// Returns the current action method url as a possible Form callback url but may be overridden manually in any form handler method
+	/// This value can be used inside of form Razor Component views
+	/// </summary>
+    public string FormUrl
+    {
+        get => _formUrl ?? HttpContext.Request.GetDisplayUrl();
+        set => _formUrl = value;
+    }
 }
