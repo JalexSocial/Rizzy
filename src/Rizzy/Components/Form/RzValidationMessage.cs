@@ -16,7 +16,7 @@ namespace Rizzy.Components.Form;
 
 public class RzValidationMessage<TValue> : ValidationMessage<TValue>
 {
-	private IDictionary<string, object> _mergedAttributes;
+	private IDictionary<string, object> _mergedAttributes = default!;
 	private string? _formattedValueExpression;
 	private bool _shouldGenerateFieldNames;
 	[CascadingParameter] EditContext EditContext { get; set; } = default!;

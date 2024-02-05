@@ -12,7 +12,6 @@ namespace Rizzy.Components.Content;
 public class RzPartial : ComponentBase
 {
 	private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> _layoutAttributeCache = new();
-	private Type? _layout = null;
 
 	private class EmptyLayout : LayoutComponentBase
 	{

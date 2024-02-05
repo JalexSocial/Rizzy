@@ -88,6 +88,7 @@ public class RizzyConfigBuilder
     /// <summary>
     /// Adds a named configuration for use inside an HtmxConfigHeadOutlet
     /// </summary>
+    /// <param name="name"></param>
     /// <param name="configBuilder"></param>
     /// <returns></returns>
     public RizzyConfigBuilder WithHtmxConfiguration(string name, Action<HtmxConfig> configBuilder)

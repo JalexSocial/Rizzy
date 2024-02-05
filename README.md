@@ -53,6 +53,11 @@ To start using Rizzy in your Asp.net MVC project, follow these simple steps:
 
 Contributions are welcome! If you encounter any issues, have feature requests, or would like to contribute to Rizzy, please [open an issue](https://github.com/jalexsocial/rizzy/issues) or submit a pull request.
 
+## Referenced Libraries
+
+1. Asp.net Client Validation - https://github.com/haacked/aspnet-client-validation
+
+
 ## License
 
 Rizzy is released under the [MIT License](https://opensource.org/licenses/MIT).

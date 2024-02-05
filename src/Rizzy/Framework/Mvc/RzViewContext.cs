@@ -48,7 +48,7 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor)
     public HttpContext HttpContext => httpContextAccessor.HttpContext!;
 
 	/// <summary>
-	/// Gets or sets the <see cref="AspNetCore.Routing.RouteData"/> for the current request.
+	/// Gets or sets the AspNetCore.Routing.RouteData for the current request.
 	/// </summary>
 	/// <remarks>
 	/// The property setter is provided for unit test purposes only.
