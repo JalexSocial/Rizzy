@@ -49,20 +49,22 @@ public class RzEditForm : ComponentBase
 		{
 			builder2.OpenComponent<EditForm>(4);
             builder2.AddAttribute(5, "id", FormContext.Id);
-            builder2.AddAttribute(6, "EditContext", FormContext.EditContext);
+            builder2.AddAttribute(6, "name", FormContext.FormName);
 
-			builder2.AddAttribute(7, "ChildContent", ChildContent);
+			builder2.AddAttribute(7, "EditContext", FormContext.EditContext);
+            builder2.AddAttribute(8, "FormName", FormContext.FormName);
+			builder2.AddAttribute(9, "ChildContent", ChildContent);
 
 			// Add form name as a class or other attribute
 			if (!string.IsNullOrWhiteSpace(FormContext.FormName))
 			{
-				builder2.AddAttribute(8, "FormName", FormContext.FormName);
+				builder2.AddAttribute(10, "FormName", FormContext.FormName);
 			}
 
 			// Use AddMultipleAttributes to add additional attributes
 			if (AdditionalAttributes != null)
 			{
-				builder2.AddMultipleAttributes(9, AdditionalAttributes);
+				builder2.AddMultipleAttributes(11, AdditionalAttributes);
 			}
 			builder2.CloseComponent();
 		}));
