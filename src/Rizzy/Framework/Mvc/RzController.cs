@@ -12,6 +12,9 @@ using Rizzy.Extensions;
 
 namespace Rizzy.Framework.Mvc;
 
+/// <summary>
+/// Base controller for Rizzy that provides access to Razor Component views
+/// </summary>
 public class RzController : Controller
 {
 	private string? _currentActionUrl; 
