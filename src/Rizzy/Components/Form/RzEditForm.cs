@@ -6,24 +6,19 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
+using Rizzy.Components.Form.Models;
 using Rizzy.Framework.Mvc;
 
 namespace Rizzy.Components.Form;
 
 public class RzEditForm : ComponentBase
 {
-	[Inject]
-	public RzViewContext ViewContext { get; set; } = default!;
+	[Inject] public RzViewContext ViewContext { get; set; } = default!;
 
-	[Parameter]
-	public EditContext? EditContext { get; set; }
+    [Parameter] public RzFormContext FormContext { get; set; } = default!;
 
-	[Parameter]
-	public RenderFragment<EditContext>? ChildContent { get; set; }
-
-	[Parameter]
-	public string? FormName { get; set; }
-
+	[Parameter] public RenderFragment<EditContext>? ChildContent { get; set; }
+	
 	// This dictionary is to capture unmatched values.
 	[Parameter(CaptureUnmatchedValues = true)]
 	public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
@@ -35,9 +30,14 @@ public class RzEditForm : ComponentBase
 		if (ViewContext is null)
 			throw new InvalidOperationException($"{nameof(RzViewContext)} must be registered as a service");
 
-		EditContext = ViewContext.EditContext;
+        if (FormContext is null)
+            throw new ArgumentException($"{nameof(RzFormContext)} is required");
 
-		base.OnParametersSet();
+		// If form id value set as an attribute then honor that
+        if (AdditionalAttributes?.ContainsKey("id") == true)
+            throw new InvalidOperationException("The form id value must be supplied only from the FormContext parameter");
+
+        base.OnParametersSet();
 	}
 
 	protected override void BuildRenderTree(RenderTreeBuilder builder)
@@ -48,20 +48,21 @@ public class RzEditForm : ComponentBase
 		builder.AddAttribute(3, "ChildContent", new RenderFragment((builder2) =>
 		{
 			builder2.OpenComponent<EditForm>(4);
-			builder2.AddAttribute(5, "EditContext", EditContext);
+            builder2.AddAttribute(5, "id", FormContext.Id);
+            builder2.AddAttribute(6, "EditContext", FormContext.EditContext);
 
-			builder2.AddAttribute(6, "ChildContent", ChildContent);
+			builder2.AddAttribute(7, "ChildContent", ChildContent);
 
 			// Add form name as a class or other attribute
-			if (!string.IsNullOrWhiteSpace(FormName))
+			if (!string.IsNullOrWhiteSpace(FormContext.FormName))
 			{
-				builder2.AddAttribute(7, "FormName", FormName); // Example, adjust as needed
+				builder2.AddAttribute(8, "FormName", FormContext.FormName);
 			}
 
 			// Use AddMultipleAttributes to add additional attributes
 			if (AdditionalAttributes != null)
 			{
-				builder2.AddMultipleAttributes(8, AdditionalAttributes);
+				builder2.AddMultipleAttributes(9, AdditionalAttributes);
 			}
 			builder2.CloseComponent();
 		}));

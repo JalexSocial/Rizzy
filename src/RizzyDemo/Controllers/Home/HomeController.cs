@@ -23,15 +23,15 @@ public class HomeController : RzController
 
     public IResult Information()
     {
-	    CreateEditContext(new Person());
-
+        ViewContext.TryAddFormContext("myForm", CurrentActionUrl, new Person());
+        
 		return View<Information>();
     }
 
     [HttpPost, ValidateAntiForgeryToken]
     public IResult Information([FromForm] Person person)
     {
-        CreateEditContext(person);
+        ViewContext.TryAddFormContext("myForm", CurrentActionUrl, person);
 
 	    return View<Information>();
     }

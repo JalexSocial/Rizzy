@@ -2,12 +2,14 @@
 @using Rizzy.Framework.Mvc
 @using RizzyDemo.Controllers.Home.Models
 @using Microsoft.AspNetCore.Mvc
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
+@using Rizzy.Components.Form.Models
 
 <div id="information">
 
 	<h3>Information</h3>
 
-	<RzEditForm hx-post="@ViewContext.FormUrl" hx-target="#information">
+	<RzEditForm FormContext="_formContext" hx-post="@_formContext?.FormUrl" hx-target="#information">
 		<RzValidationSummary/>
 
 		<div class="form-group">
@@ -23,13 +25,18 @@
 
 @* ReSharper disable once CSharpWarnings::CS8618 *@
 @code {
+    private RzFormContext? _formContext;
+
 	[Inject]
 	public RzViewContext ViewContext { get; set; } 
 
 	public Person Person { get; set; } = new();
 
 	protected override void OnInitialized()
-	{
-		Person = ViewContext.FormModel<Person>();
-	}
+    {
+        if (ViewContext.TryGetFormContext("myForm", out _formContext))
+        {
+            Person = _formContext.Model<Person>();
+        }
+    }
 }

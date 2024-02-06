@@ -8,37 +8,62 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
+using Rizzy.Components.Form;
+using Rizzy.Components.Form.Models;
 using Rizzy.Extensions;
 using Rizzy.Http;
 
 namespace Rizzy.Framework.Mvc;
 
+/// <summary>
+/// Represents the context for a view within an application, providing access to HTTP contexts, URL helpers, and component configurations.
+/// </summary>
 public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper urlHelper)
 {
-	private bool _configured = false;
-    private string _formUrl = string.Empty;
+    private readonly Dictionary<string, RzFormContext> _formContexts = [];
 
-	public void ConfigureOnce(Type componentType, 
-		Dictionary<string, object?> componentParameters,
-		EditContext editContext,
-		ActionContext actionContext)
+    /// <summary>
+    /// Configures the action context for the view context.
+    /// </summary>
+    /// <param name="actionContext">The action context to configure.</param>
+    /// <exception cref="InvalidOperationException">Thrown if the view context is already configured with an action context.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if the action context is null.</exception>
+	internal void ConfigureActionContext(ActionContext actionContext)
 	{
-		if (_configured) return;
+		if (ActionContext != default(ActionContext)) 
+            throw new InvalidOperationException("RzViewContext has already been configured with an ActionContext");
 
-		ArgumentNullException.ThrowIfNull(componentType);
-		ArgumentNullException.ThrowIfNull(componentParameters);
-		ArgumentNullException.ThrowIfNull(editContext);
-
-		ComponentType = componentType;
-		ComponentParameters = ComponentParameters;
-		EditContext = editContext;
+		ArgumentNullException.ThrowIfNull(actionContext);
 		ActionContext = actionContext;
-
-        _configured = true;
 	}
 
-    public HtmxContext Htmx => new HtmxContext(HttpContext);
+	/// <summary>
+	/// Configures the view component type and parameters.
+	/// </summary>
+	/// <param name="componentType">The component type.</param>
+	/// <param name="componentParameters">The component parameters.</param>
+	/// <exception cref="ArgumentNullException">Thrown if component type or parameters are null.</exception>
+	internal void ConfigureView(Type componentType,
+        Dictionary<string, object?> componentParameters)
+    {
+        ArgumentNullException.ThrowIfNull(componentType);
+        ArgumentNullException.ThrowIfNull(componentParameters);
+
+        ComponentType = componentType;
+
+        // Merge component parameters
+        foreach (var key in componentParameters.Keys)
+        {
+	        ComponentParameters[key] = componentParameters[key];
+        }
+    }
+
+	/// <summary>
+	/// Gets the Htmx context for the current request.
+	/// </summary>
+	public HtmxContext Htmx => new HtmxContext(HttpContext);
 
     /// <summary>
     /// Gets or sets the <see cref="Microsoft.AspNetCore.Http.HttpContext"/> for the current request.
@@ -63,42 +88,80 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
 
 	public Type ComponentType { get; private set; } = default!;
 
+	/// <summary>
+	/// This is a full list of all the parameters that are set on the component view
+	/// </summary>
     public Dictionary<string, object?> ComponentParameters { get; private set; } = new();
-
-    /// <summary>
-    /// Gets the EditContext
-    /// </summary>
-    public EditContext EditContext { get; private set; } = new(new object());
 
     public ActionContext ActionContext { get; private set; } = default!;
 
+    /// <summary>
+    /// Attempts to add a form context with the specified name and model.
+    /// </summary>
+    /// <param name="id">html id for the form</param>
+    /// <param name="formName">The name of the form.</param>
+    /// <param name="formAction"></param>
+    /// <param name="model">The model associated with the form.</param>
+    /// <param name="useDataAnnotations">Determines whether to use data annotations for validation.</param>
+    /// <returns>True if the form context was added successfully; otherwise, false.</returns>
+    public bool TryAddFormContext(string id, string formName, string formAction, object model, bool useDataAnnotations = true)
+    {
+        if (_formContexts.ContainsKey(formName))
+            return false;
+
+        var formContext = string.IsNullOrEmpty(id) ?
+            new RzFormContext(formName, formAction, model) :
+            new RzFormContext(id, formName, formAction, model);
+
+        // By default use data annotations as the validator
+        if (useDataAnnotations)
+        {
+            formContext.EditContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
+            formContext.EditContext.Validate();
+        }
+
+        _formContexts.Add(formName, formContext);
+
+        return true;
+    }
+
 	/// <summary>
-	/// Retrieves the current data strongly-typed data model for EditContext. Note that EditContext must be set with a strongly-typed
-	/// model for the form model to be accessible.  This is essentially a shortcut for EditContext.Model which does the typecasting for
-	/// you.
-	/// </summary>
-	/// <typeparam name="TModel"></typeparam>
+	/// Attempts to add a form context with the specified name and model.
+    /// </summary>
+	/// <param name="formName"></param>
+	/// <param name="model"></param>
+	/// <param name="useDataAnnotations"></param>
 	/// <returns></returns>
-	/// <exception cref="NullReferenceException"></exception>
-	/// <exception cref="InvalidOperationException"></exception>
-    public TModel FormModel<TModel>()
-    {
-	    if (EditContext?.Model is null)
-		    throw new NullReferenceException("EditContext was not configured properly on this context");
-
-	    if (EditContext.Model is not TModel)
-		    throw new InvalidOperationException($"FormModel is not of type '{typeof(TModel).Name}'. EditContext may have not been configured properly.");
-
-		return (TModel)EditContext.Model;
-	}
+	public bool TryAddFormContext(string formName, object model, bool useDataAnnotations = true) =>
+	    TryAddFormContext(string.Empty, formName, string.Empty, model, useDataAnnotations);
 
 	/// <summary>
-	/// Returns the current action method url as a possible Form callback url but may be overridden manually in any form handler method
-	/// This value can be used inside of form Razor Component views
+	/// Attempts to add a form context with the specified name and model.
+    /// </summary>
+	/// <param name="formName"></param>
+	/// <param name="formAction"></param>
+	/// <param name="model"></param>
+	/// <param name="useDataAnnotations"></param>
+	/// <returns></returns>
+	public bool TryAddFormContext(string formName, string formAction, object model, bool useDataAnnotations = true) =>
+	    TryAddFormContext(string.Empty, formName, formAction, model, useDataAnnotations);
+
+	/// <summary>
+	/// Attempts to get a form context by name.
 	/// </summary>
-    public string FormUrl
+	/// <param name="formName">The name of the form.</param>
+	/// <param name="context">The form context, if found.</param>
+	/// <returns>True if the form context was found; otherwise, false.</returns>
+	public bool TryGetFormContext(string formName, out RzFormContext context)
     {
-        get => _formUrl ?? HttpContext.Request.GetDisplayUrl();
-        set => _formUrl = value;
+        if (!_formContexts.ContainsKey(formName))
+        {
+            context = null!;
+            return false;
+        }
+
+        context = _formContexts[formName];
+
+        return true;
     }
 }

@@ -5,23 +5,24 @@ using RizzyDemo.Components.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// This must be added after AddControllers
 builder.AddRizzy(config =>
-	{
-		config.RootComponent = typeof(HtmxApp<AppLayout>);
+    {
+        config.RootComponent = typeof(HtmxApp<AppLayout>);
         config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
     })
-	.WithHtmxConfiguration(config =>
-	{
-		config.SelfRequestsOnly = true;
-	})
-	.WithHtmxConfiguration("articles", config =>
-	{
-		config.SelfRequestsOnly = true;
-		config.GlobalViewTransitions = true;
-	});
+    .WithHtmxConfiguration(config =>
+    {
+        config.SelfRequestsOnly = true;
+    })
+    .WithHtmxConfiguration("articles", config =>
+    {
+        config.SelfRequestsOnly = true;
+        config.GlobalViewTransitions = true;
+    });
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 builder.Services.AddRazorComponents();
 
 var app = builder.Build();

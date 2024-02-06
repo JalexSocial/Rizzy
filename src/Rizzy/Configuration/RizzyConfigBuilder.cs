@@ -50,6 +50,7 @@ public class RizzyConfigBuilder
 
         AddHtmxAntiForgery();
 
+        _builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         _builder.Services.AddHttpContextAccessor();
         _builder.Services.Configure<RizzyConfig>(configBuilder);
 

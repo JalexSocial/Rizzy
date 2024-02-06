@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
@@ -10,27 +11,38 @@ using Rizzy.Components.Content;
 using Rizzy.Extensions;
 
 namespace Rizzy.Framework.Mvc;
+
 public class RzController : Controller
 {
-	/// <summary>
-	/// Gets the EditContext
-	/// </summary>
-	public EditContext EditContext { get; private set; } = new EditContext(new object()); 
+	private string? _currentActionUrl; 
+	private RzViewContext? _viewContext = null;
+    
+    public RzViewContext ViewContext
+    {
+        get
+        {
+            if (_viewContext != null)
+                return _viewContext;
 
-	public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
+            _viewContext = HttpContext.RequestServices.GetRequiredService<RzViewContext>();
+            _viewContext.ConfigureActionContext(Url.ActionContext);
+
+            return _viewContext;
+        }
+    } 
+
+    public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
         View<TComponent>(data.ToDictionary());
 
     public IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
     {
         var parameters = new Dictionary<string, object?>();
 
-        RzViewContext context = HttpContext.RequestServices.GetRequiredService<RzViewContext>();
+        ViewContext.ConfigureView(typeof(TComponent), data);
 
-		context.ConfigureOnce(typeof(TComponent), data, EditContext, new ActionContext(HttpContext, RouteData, ControllerContext.ActionDescriptor));
-
-		parameters.Add("ComponentType", typeof(TComponent));
-        parameters.Add("ComponentParameters", data);
-        parameters.Add("ViewContext", context);
+		parameters.Add("ComponentType", ViewContext.ComponentType);
+        parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
+        parameters.Add("ViewContext", ViewContext);
 
         return new RazorComponentResult<RzPage>(parameters)
         {
@@ -51,31 +63,21 @@ public class RzController : Controller
     {
 	    var parameters = new Dictionary<string, object?>();
 
-	    RzViewContext context = HttpContext.RequestServices.GetRequiredService<RzViewContext>();
+        ViewContext.ConfigureView(typeof(TComponent), data);
 
-	    context.ConfigureOnce(typeof(TComponent), data, EditContext, new ActionContext(HttpContext, RouteData, ControllerContext.ActionDescriptor));
+        parameters.Add("ComponentType", ViewContext.ComponentType);
+        parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
+        parameters.Add("ViewContext", ViewContext);
 
-        parameters.Add("ComponentType", typeof(TComponent));
-	    parameters.Add("ComponentParameters", data);
-	    parameters.Add("ViewContext", context);
-
-	    return new RazorComponentResult<RzPartial>(parameters)
+		return new RazorComponentResult<RzPartial>(parameters)
 	    {
 		    PreventStreamingRendering = false
 	    };
     }
 
-    public EditContext CreateEditContext<TModel>(TModel model, bool useDataAnnotations = true) where TModel : class
-    {
-	    EditContext = new EditContext(model);
-
-        // By default use data annotations as the validator
-	    if (useDataAnnotations)
-		{
-			EditContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
-			EditContext.Validate();
-		}
-
-		return EditContext;
-    }
+    /// <summary>
+    /// Returns the current action method url as a possible Form callback url but may be overridden manually in any form handler method
+    /// This value can be used inside of form Razor Component views
+    /// </summary>
+    public string CurrentActionUrl => _currentActionUrl ??= Request.GetEncodedPathAndQuery();
 }
