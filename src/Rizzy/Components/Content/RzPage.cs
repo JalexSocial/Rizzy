@@ -15,8 +15,7 @@ public class RzPage : ComponentBase
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> _layoutAttributeCache = new();
     private Type? _layout = null;
 
-    [Inject]
-    public IOptions<RizzyConfig> RizzyConfig { get; set; } = default!;
+    [Inject] public IOptions<RizzyConfig> RizzyConfig { get; set; } = default!;
 
     private static class ViewContextWrapper
     {
@@ -33,7 +32,6 @@ public class RzPage : ComponentBase
     {
         ViewContextWrapper.CreateCascadingValue(builder, ViewContext, (builder2) =>
         {
-
             builder2.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
             builder2.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
             {

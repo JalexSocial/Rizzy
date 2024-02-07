@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Components.Form.Helpers;
+using Rizzy.Components.Swap.Services;
 using Rizzy.Configuration.Htmx;
 using Rizzy.Framework.Mvc;
 
@@ -69,7 +70,10 @@ public class RizzyConfigBuilder
         });
 
         _builder.Services.AddSingleton<DataAnnotationsProcessor>();
+
+        // Add additional scoped services
         _builder.Services.AddScoped<RzViewContext>();
+        _builder.Services.AddScoped<IHtmxSwapService, HtmxSwapService>();
     }
 
     /// <summary>

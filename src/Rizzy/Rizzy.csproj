@@ -54,4 +54,8 @@
     <None Include="..\..\docs\media\rizzy.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Components\Swap\Enum\" />
+  </ItemGroup>
+
 </Project>
