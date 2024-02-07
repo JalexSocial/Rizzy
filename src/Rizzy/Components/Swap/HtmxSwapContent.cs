@@ -5,7 +5,7 @@ using Rizzy.Components.Swap.Services;
 
 namespace Rizzy.Components.Swap;
 
-public class RzSwapContent : ComponentBase
+public class HtmxSwapContent : ComponentBase
 {
     [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;
 

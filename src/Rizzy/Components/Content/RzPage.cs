@@ -58,7 +58,7 @@ public class RzPage : ComponentBase
                 }
             }));
             builder2.CloseComponent();
-            builder2.OpenComponent<RzSwapContent>(15);
+            builder2.OpenComponent<HtmxSwapContent>(15);
             builder2.CloseComponent();
         });
     }

@@ -83,7 +83,7 @@ public class HtmxSwapService : IHtmxSwapService
                 else if (item.ContentType == RzContentType.Swappable)
                 {
                     // OpenComponent sequence number is set to a fixed value, as each component is unique in this context
-                    builder.OpenComponent(0, typeof(RzSwappable));
+                    builder.OpenComponent(0, typeof(HtmxSwappable));
 
                     // Attributes are added with explicit sequence numbers
                     builder.AddAttribute(1, "TargetId", item.TargetId);
