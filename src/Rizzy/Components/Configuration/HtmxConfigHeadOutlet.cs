@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using Microsoft.AspNetCore.Antiforgery;
+﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
-using Exception = System.Exception;
+using System.Text.Json;
 
 namespace Rizzy.Components.Configuration;
 
@@ -17,12 +16,12 @@ namespace Rizzy.Components.Configuration;
 /// </summary>
 public class HtmxConfigHeadOutlet : ComponentBase
 {
-	private string _jsonConfig = string.Empty;
+    private string _jsonConfig = string.Empty;
 
-	[Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
+    [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
     [Inject] private IAntiforgery Antiforgery { get; set; } = default!;
     [Inject] private IOptionsSnapshot<RizzyConfig> RizzyConfig { get; set; } = default!;
-	[Inject] private IOptions<HtmxAntiforgeryOptions> AntiforgeryConfig { get; set; } = default!;
+    [Inject] private IOptions<HtmxAntiforgeryOptions> AntiforgeryConfig { get; set; } = default!;
 
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
@@ -45,13 +44,13 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
         var contextUserConfig = config with
         {
-	        Antiforgery = new HtmxConfig.AntiForgeryConfiguration
-	        {
-		        CookieName = AntiforgeryConfig.Value.CookieName,
-		        FormFieldName = AntiforgeryConfig.Value.FormFieldName,
-		        HeaderName = AntiforgeryConfig.Value.HeaderName,
-	        }
-		};
+            Antiforgery = new HtmxConfig.AntiForgeryConfiguration
+            {
+                CookieName = AntiforgeryConfig.Value.CookieName,
+                FormFieldName = AntiforgeryConfig.Value.FormFieldName,
+                HeaderName = AntiforgeryConfig.Value.HeaderName,
+            }
+        };
 
         if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
         {
@@ -60,7 +59,7 @@ public class HtmxConfigHeadOutlet : ComponentBase
             contextUserConfig.Antiforgery.RequestToken = tokens.RequestToken!;
         }
 
-		_jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxConfig.JsonTypeInfo);
+        _jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxConfig.JsonTypeInfo);
 
         return Task.CompletedTask;
     }

@@ -1,7 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using FluentAssertions.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.JsonDiffPatch.Xunit;
 using System.Text.Json.Nodes;
-using FluentAssertions.Primitives;
 
 namespace Rizzy.FluentAssertions;
 

@@ -1,12 +1,11 @@
-﻿using System.Text;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using Rizzy.Configuration.Htmx.Enum;
+using Rizzy.Http.Models;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using Rizzy.Configuration;
-using Rizzy.Configuration.Htmx.Enum;
-using Rizzy.Http.Models;
 
 namespace Rizzy.Http;
 
@@ -33,10 +32,10 @@ public class HtmxResponse(HttpContext context)
     public HtmxResponse Location(string path, AjaxContext? context = null)
     {
         if (context == null)
-	        _headers[HtmxResponseHeaderNames.Location] = path;
+            _headers[HtmxResponseHeaderNames.Location] = path;
         else
         {
-	        JsonObject json = new();
+            JsonObject json = new();
             json.Add("path", JsonValue.Create(path));
 
             var ctxNode = JsonSerializer.SerializeToNode(context)!.AsObject();
@@ -44,7 +43,7 @@ public class HtmxResponse(HttpContext context)
             foreach (var prop in ctxNode.AsEnumerable())
             {
                 if (prop.Value != null)
-	                json.Add(prop.Key, prop.Value.DeepClone());
+                    json.Add(prop.Key, prop.Value.DeepClone());
             }
 
             _headers[HtmxResponseHeaderNames.Location] = JsonSerializer.Serialize(json);
@@ -72,9 +71,9 @@ public class HtmxResponse(HttpContext context)
     /// <returns></returns>
     public HtmxResponse PreventBrowserHistoryUpdate()
     {
-	    _headers[HtmxResponseHeaderNames.PushUrl] = "false";
+        _headers[HtmxResponseHeaderNames.PushUrl] = "false";
 
-	    return this;
+        return this;
     }
 
     /// <summary>
@@ -84,9 +83,9 @@ public class HtmxResponse(HttpContext context)
     /// <returns></returns>
     public HtmxResponse PreventBrowserCurrentUrlUpdate()
     {
-	    _headers[HtmxResponseHeaderNames.ReplaceUrl] = "false";
+        _headers[HtmxResponseHeaderNames.ReplaceUrl] = "false";
 
-	    return this;
+        return this;
     }
 
     /// <summary>

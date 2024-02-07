@@ -1,18 +1,8 @@
-﻿using System;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
-using Rizzy.Components.Form;
 using Rizzy.Components.Form.Models;
-using Rizzy.Extensions;
 using Rizzy.Http;
 
 namespace Rizzy.Framework.Mvc;
@@ -31,21 +21,21 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// <exception cref="InvalidOperationException">Thrown if the view context is already configured with an action context.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the action context is null.</exception>
 	internal void ConfigureActionContext(ActionContext actionContext)
-	{
-		if (ActionContext != default(ActionContext)) 
+    {
+        if (ActionContext != default(ActionContext))
             throw new InvalidOperationException("RzViewContext has already been configured with an ActionContext");
 
-		ArgumentNullException.ThrowIfNull(actionContext);
-		ActionContext = actionContext;
-	}
+        ArgumentNullException.ThrowIfNull(actionContext);
+        ActionContext = actionContext;
+    }
 
-	/// <summary>
-	/// Configures the view component type and parameters.
-	/// </summary>
-	/// <param name="componentType">The component type.</param>
-	/// <param name="componentParameters">The component parameters.</param>
-	/// <exception cref="ArgumentNullException">Thrown if component type or parameters are null.</exception>
-	internal void ConfigureView(Type componentType,
+    /// <summary>
+    /// Configures the view component type and parameters.
+    /// </summary>
+    /// <param name="componentType">The component type.</param>
+    /// <param name="componentParameters">The component parameters.</param>
+    /// <exception cref="ArgumentNullException">Thrown if component type or parameters are null.</exception>
+    internal void ConfigureView(Type componentType,
         Dictionary<string, object?> componentParameters)
     {
         ArgumentNullException.ThrowIfNull(componentType);
@@ -56,14 +46,14 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
         // Merge component parameters
         foreach (var key in componentParameters.Keys)
         {
-	        ComponentParameters[key] = componentParameters[key];
+            ComponentParameters[key] = componentParameters[key];
         }
     }
 
-	/// <summary>
-	/// Gets the Htmx context for the current request.
-	/// </summary>
-	public HtmxContext Htmx => new HtmxContext(HttpContext);
+    /// <summary>
+    /// Gets the Htmx context for the current request.
+    /// </summary>
+    public HtmxContext Htmx => new HtmxContext(HttpContext);
 
     /// <summary>
     /// Gets or sets the <see cref="Microsoft.AspNetCore.Http.HttpContext"/> for the current request.
@@ -78,19 +68,19 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// </summary>
     public IUrlHelper Url => urlHelper;
 
-	/// <summary>
-	/// Gets or sets the AspNetCore.Routing.RouteData for the current request.
-	/// </summary>
-	/// <remarks>
-	/// The property setter is provided for unit test purposes only.
-	/// </remarks>
-	public RouteData RouteData => HttpContext.GetRouteData();
+    /// <summary>
+    /// Gets or sets the AspNetCore.Routing.RouteData for the current request.
+    /// </summary>
+    /// <remarks>
+    /// The property setter is provided for unit test purposes only.
+    /// </remarks>
+    public RouteData RouteData => HttpContext.GetRouteData();
 
-	public Type ComponentType { get; private set; } = default!;
+    public Type ComponentType { get; private set; } = default!;
 
-	/// <summary>
-	/// This is a full list of all the parameters that are set on the component view
-	/// </summary>
+    /// <summary>
+    /// This is a full list of all the parameters that are set on the component view
+    /// </summary>
     public Dictionary<string, object?> ComponentParameters { get; private set; } = new();
 
     public ActionContext ActionContext { get; private set; } = default!;
@@ -104,11 +94,9 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// <param name="model">The model associated with the form.</param>
     /// <param name="useDataAnnotations">Determines whether to use data annotations for validation.</param>
     /// <returns>True if the form context was added successfully; otherwise, false.</returns>
-    public bool TryAddFormContext(string id, string formName, string formAction, object model, bool useDataAnnotations = true)
+    public RzFormContext AddFormContext(string id, string formName, string formAction, object model,
+	    bool useDataAnnotations = true)
     {
-        if (_formContexts.ContainsKey(formName))
-            return false;
-
         var formContext = string.IsNullOrEmpty(id) ?
             new RzFormContext(formName, formAction, model) :
             new RzFormContext(id, formName, formAction, model);
@@ -117,42 +105,42 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
         if (useDataAnnotations)
         {
             formContext.EditContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
-            formContext.EditContext.Validate();
+            //formContext.EditContext.Validate();
         }
 
-        _formContexts.Add(formName, formContext);
+        _formContexts[formName] = formContext;
 
-        return true;
+        return formContext;
     }
 
-	/// <summary>
-	/// Attempts to add a form context with the specified name and model.
+    /// <summary>
+    /// Attempts to add a form context with the specified name and model.
     /// </summary>
-	/// <param name="formName"></param>
-	/// <param name="model"></param>
-	/// <param name="useDataAnnotations"></param>
-	/// <returns></returns>
-	public bool TryAddFormContext(string formName, object model, bool useDataAnnotations = true) =>
-	    TryAddFormContext(string.Empty, formName, string.Empty, model, useDataAnnotations);
+    /// <param name="formName"></param>
+    /// <param name="model"></param>
+    /// <param name="useDataAnnotations"></param>
+    /// <returns></returns>
+    public RzFormContext AddFormContext(string formName, object model, bool useDataAnnotations = true) =>
+        AddFormContext(string.Empty, formName, string.Empty, model, useDataAnnotations);
 
-	/// <summary>
-	/// Attempts to add a form context with the specified name and model.
+    /// <summary>
+    /// Attempts to add a form context with the specified name and model.
     /// </summary>
-	/// <param name="formName"></param>
-	/// <param name="formAction"></param>
-	/// <param name="model"></param>
-	/// <param name="useDataAnnotations"></param>
-	/// <returns></returns>
-	public bool TryAddFormContext(string formName, string formAction, object model, bool useDataAnnotations = true) =>
-	    TryAddFormContext(string.Empty, formName, formAction, model, useDataAnnotations);
+    /// <param name="formName"></param>
+    /// <param name="formAction"></param>
+    /// <param name="model"></param>
+    /// <param name="useDataAnnotations"></param>
+    /// <returns></returns>
+    public RzFormContext AddFormContext(string formName, string formAction, object model, bool useDataAnnotations = true) =>
+        AddFormContext(string.Empty, formName, formAction, model, useDataAnnotations);
 
-	/// <summary>
-	/// Attempts to get a form context by name.
-	/// </summary>
-	/// <param name="formName">The name of the form.</param>
-	/// <param name="context">The form context, if found.</param>
-	/// <returns>True if the form context was found; otherwise, false.</returns>
-	public bool TryGetFormContext(string formName, out RzFormContext context)
+    /// <summary>
+    /// Attempts to get a form context by name.
+    /// </summary>
+    /// <param name="formName">The name of the form.</param>
+    /// <param name="context">The form context, if found.</param>
+    /// <returns>True if the form context was found; otherwise, false.</returns>
+    public bool TryGetFormContext(string formName, out RzFormContext context)
     {
         if (!_formContexts.ContainsKey(formName))
         {

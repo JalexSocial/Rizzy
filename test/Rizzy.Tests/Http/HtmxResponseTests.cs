@@ -1,7 +1,6 @@
 ﻿using Bunit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http.Mock;
 using Rizzy.Http.Models;
@@ -27,20 +26,20 @@ public class HtmxResponseTests : TestContext
     [Fact]
     public void Location_AddsLocationWIthAjaxContextHeader()
     {
-	    // Arrange
-	    var context = new MockHttpContext();
-	    var response = new HtmxResponse(context);
+        // Arrange
+        var context = new MockHttpContext();
+        var response = new HtmxResponse(context);
 
-	    var ajc = new AjaxContext
-	    {
-		    Target = "#testdiv"
-	    };
+        var ajc = new AjaxContext
+        {
+            Target = "#testdiv"
+        };
 
-	    // Act
-	    response.Location("/new-location", ajc);
+        // Act
+        response.Location("/new-location", ajc);
 
-	    // Assert
-	    Assert.Equal("{\"path\":\"/new-location\",\"target\":\"#testdiv\"}", context.Response.Headers[HtmxResponseHeaderNames.Location]);
+        // Assert
+        Assert.Equal("{\"path\":\"/new-location\",\"target\":\"#testdiv\"}", context.Response.Headers[HtmxResponseHeaderNames.Location]);
     }
 
     [Fact]
@@ -102,29 +101,29 @@ public class HtmxResponseTests : TestContext
     [Fact]
     public void PushUrl_AddsPushUrlBrowserHistoryHeader()
     {
-	    // Arrange
-	    var context = new DefaultHttpContext();
-	    var response = new HtmxResponse(context);
+        // Arrange
+        var context = new DefaultHttpContext();
+        var response = new HtmxResponse(context);
 
-	    // Act
-	    response.PreventBrowserHistoryUpdate();
+        // Act
+        response.PreventBrowserHistoryUpdate();
 
-	    // Assert
-	    Assert.Equal("false", context.Response.Headers[HtmxResponseHeaderNames.PushUrl]);
+        // Assert
+        Assert.Equal("false", context.Response.Headers[HtmxResponseHeaderNames.PushUrl]);
     }
 
     [Fact]
     public void ReplaceUrl_AddsReplaceUrlBrowserCUrrentUrlHeader()
     {
-	    // Arrange
-	    var context = new DefaultHttpContext();
-	    var response = new HtmxResponse(context);
+        // Arrange
+        var context = new DefaultHttpContext();
+        var response = new HtmxResponse(context);
 
-	    // Act
-	    response.PreventBrowserCurrentUrlUpdate();
+        // Act
+        response.PreventBrowserCurrentUrlUpdate();
 
-	    // Assert
-	    Assert.Equal("false", context.Response.Headers[HtmxResponseHeaderNames.ReplaceUrl]);
+        // Assert
+        Assert.Equal("false", context.Response.Headers[HtmxResponseHeaderNames.ReplaceUrl]);
     }
 
     [Fact]

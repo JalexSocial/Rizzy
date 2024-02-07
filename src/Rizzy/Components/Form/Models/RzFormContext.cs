@@ -1,11 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
 
 namespace Rizzy.Components.Form.Models;
 
@@ -118,7 +111,7 @@ public record RzFormContext
     /// Generates a unique identifier for a form context.
     /// </summary>
     /// <returns>A unique identifier string.</returns>
-    internal static string CreateId()
+    private static string CreateId()
     {
         return "frm" + Guid.NewGuid().ToString("N");
     }

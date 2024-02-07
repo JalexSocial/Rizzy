@@ -8,10 +8,10 @@ namespace Rizzy.Antiforgery;
 /// <summary>
 /// This will add a HX-XSRF-TOKEN to each response, no matter if it was initiated by HTMX or not.
 /// </summary>
-internal sealed class HtmxAntiforgeryMiddleware(IAntiforgery antiforgery, 
-	IOptions<HtmxAntiforgeryOptions> antiforgeryConfig, 
-	IOptions<RizzyConfig> rizzyConfig,
-	RequestDelegate next)
+internal sealed class HtmxAntiforgeryMiddleware(IAntiforgery antiforgery,
+    IOptions<HtmxAntiforgeryOptions> antiforgeryConfig,
+    IOptions<RizzyConfig> rizzyConfig,
+    RequestDelegate next)
 {
     private static readonly CookieOptions cookieOptions = new CookieOptions
     {
@@ -29,5 +29,5 @@ internal sealed class HtmxAntiforgeryMiddleware(IAntiforgery antiforgery,
         }
 
         await next.Invoke(context);
-	}
+    }
 }

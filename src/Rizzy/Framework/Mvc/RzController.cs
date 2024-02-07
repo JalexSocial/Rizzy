@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.Extensions.DependencyInjection;
-using Rizzy.Components;
 using Rizzy.Components.Content;
 using Rizzy.Extensions;
 
@@ -17,9 +14,9 @@ namespace Rizzy.Framework.Mvc;
 /// </summary>
 public class RzController : Controller
 {
-	private string? _currentActionUrl; 
-	private RzViewContext? _viewContext = null;
-    
+    private string? _currentActionUrl;
+    private RzViewContext? _viewContext = null;
+
     public RzViewContext ViewContext
     {
         get
@@ -32,7 +29,7 @@ public class RzController : Controller
 
             return _viewContext;
         }
-    } 
+    }
 
     public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
         View<TComponent>(data.ToDictionary());
@@ -43,7 +40,7 @@ public class RzController : Controller
 
         ViewContext.ConfigureView(typeof(TComponent), data);
 
-		parameters.Add("ComponentType", ViewContext.ComponentType);
+        parameters.Add("ComponentType", ViewContext.ComponentType);
         parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
         parameters.Add("ViewContext", ViewContext);
 
@@ -54,7 +51,7 @@ public class RzController : Controller
     }
 
     public IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent =>
-	    PartialView<TComponent>(data.ToDictionary());
+        PartialView<TComponent>(data.ToDictionary());
 
     /// <summary>
     /// Renders a Razor component without a layout
@@ -64,7 +61,7 @@ public class RzController : Controller
     /// <returns></returns>
     public IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
     {
-	    var parameters = new Dictionary<string, object?>();
+        var parameters = new Dictionary<string, object?>();
 
         ViewContext.ConfigureView(typeof(TComponent), data);
 
@@ -72,10 +69,10 @@ public class RzController : Controller
         parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
         parameters.Add("ViewContext", ViewContext);
 
-		return new RazorComponentResult<RzPartial>(parameters)
-	    {
-		    PreventStreamingRendering = false
-	    };
+        return new RazorComponentResult<RzPartial>(parameters)
+        {
+            PreventStreamingRendering = false
+        };
     }
 
     /// <summary>
