@@ -10,7 +10,6 @@ namespace Rizzy.Http;
 /// </summary>
 public class HtmxContext
 {
-	private readonly HttpContext _httpContext;
 	private readonly IOptionsSnapshot<HtmxConfig> _configOptions;
 
 	public HtmxContext(HttpContext context)
@@ -18,7 +17,6 @@ public class HtmxContext
 		Request = new HtmxRequest(context);
 		Response = new HtmxResponse(context);
 
-		_httpContext = context;
 		_configOptions = context.RequestServices.GetRequiredService<IOptionsSnapshot<HtmxConfig>>();
 
 		Configuration = _configOptions.Value;
