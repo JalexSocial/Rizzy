@@ -7,6 +7,7 @@ using Rizzy.Components.Layout;
 using Rizzy.Configuration;
 using Rizzy.Framework.Mvc;
 using System.Reflection;
+using Rizzy.Components.Swap;
 
 namespace Rizzy.Components.Content;
 
@@ -56,6 +57,8 @@ public class RzPage : ComponentBase
                     builder3.CloseComponent();
                 }
             }));
+            builder2.CloseComponent();
+            builder2.OpenComponent<RzSwapContent>(15);
             builder2.CloseComponent();
         });
     }

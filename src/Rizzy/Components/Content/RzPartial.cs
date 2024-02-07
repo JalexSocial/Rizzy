@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
+using Rizzy.Components.Swap;
 using Rizzy.Framework.Mvc;
 
 namespace Rizzy.Components.Content;
@@ -45,6 +46,8 @@ public class RzPartial : ComponentBase
                 builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
                 builder3.CloseComponent();
             }));
+            builder2.CloseComponent();
+            builder2.OpenComponent<RzSwapContent>(15);
             builder2.CloseComponent();
         });
     }
