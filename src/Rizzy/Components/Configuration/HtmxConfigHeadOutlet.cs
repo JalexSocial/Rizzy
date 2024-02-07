@@ -7,6 +7,7 @@ using Rizzy.Antiforgery;
 using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
 using System.Text.Json;
+using Rizzy.Framework.Mvc;
 
 namespace Rizzy.Components.Configuration;
 
@@ -18,6 +19,7 @@ public class HtmxConfigHeadOutlet : ComponentBase
 {
     private string _jsonConfig = string.Empty;
 
+    [Inject] private RzViewContext ViewContext { get; set; } = default!;
     [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
     [Inject] private IAntiforgery Antiforgery { get; set; } = default!;
     [Inject] private IOptionsSnapshot<RizzyConfig> RizzyConfig { get; set; } = default!;
@@ -39,10 +41,15 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-        var config = string.IsNullOrEmpty(Configuration) ?
-            Options.Value : Options.Get(Configuration);
+	    var config = ViewContext.Htmx.Configuration;
 
-        var contextUserConfig = config with
+	    if (!string.IsNullOrEmpty(Configuration))
+	    {
+		    config = Options.Get(Configuration);
+		    ViewContext.Htmx.SetConfiguration(Configuration);
+	    }
+
+	    var contextUserConfig = config with
         {
             Antiforgery = new HtmxConfig.AntiForgeryConfiguration
             {

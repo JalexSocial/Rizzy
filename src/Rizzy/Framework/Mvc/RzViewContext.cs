@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Rizzy.Components.Form.Models;
+using Rizzy.Configuration.Htmx;
 using Rizzy.Http;
 
 namespace Rizzy.Framework.Mvc;
