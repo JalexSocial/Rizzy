@@ -2,6 +2,10 @@
 
 namespace Rizzy.Http;
 
+/// <summary>
+/// Htmx request headers
+/// </summary>
+/// <param name="context"></param>
 public class HtmxRequest(HttpContext context)
 {
     /// <summary>
