@@ -5,6 +5,9 @@ using Rizzy.Components.Swap.Services;
 
 namespace Rizzy.Components.Swap;
 
+/// <summary>
+/// Razor component that fully renders any content from HtmxSwapService
+/// </summary>
 public class HtmxSwapContent : ComponentBase
 {
     [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;

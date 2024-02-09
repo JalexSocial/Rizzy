@@ -4,6 +4,7 @@ The MIT License (MIT)
 Copyright (c) 2024 Michael Tanczos
 Copyright (c) 2024 Egil Hansen
 Copyright (c) 2021 Khalid Abuhakmeh
+Copyright (c) 2024 .NET Foundation
 Copyright (c) 2017 Ryan Elian (Changes 2020 and after Copyright Phil Haack)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

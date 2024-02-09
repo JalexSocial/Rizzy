@@ -16,6 +16,7 @@ public class HtmxSwapService : IHtmxSwapService
         Swappable,
         RawHtml
     }
+
     private record struct ContentItem(RzContentType ContentType, string TargetId, SwapStyle SwapStyle, string Selector, RenderFragment Content);
 
     /// <summary>

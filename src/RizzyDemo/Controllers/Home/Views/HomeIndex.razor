@@ -1,6 +1,7 @@
 ﻿@using Rizzy.Framework.Mvc
 @using Rizzy.Framework.Services
 @using RizzyDemo.Components.Layout
+@using Rizzy.Components.Swap.Services
 
 <PageTitle>Home Page</PageTitle>
 
@@ -15,13 +16,16 @@
 Content Guid: @guid
 
 @code {
+    [Inject] IHtmxSwapService SwapService { get; set; }
 
     [CascadingParameter] 
     public RzViewContext? ViewContext { get; set; }
 
     protected override void OnInitialized()
     {
-        base.OnInitialized();
+        SwapService.AddRawContent("TEST TEST TEST TEST TEST");
+        SwapService.AddRawContent("TEST2 TEST2 TEST2 TEST2 TEST2");
+
     }
 
     protected override void OnParametersSet()
