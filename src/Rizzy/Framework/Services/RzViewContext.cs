@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Rizzy.Components.Form.Models;
-using Rizzy.Configuration.Htmx;
 using Rizzy.Http;
 
-namespace Rizzy.Framework.Mvc;
+namespace Rizzy.Framework.Services;
 
 /// <summary>
 /// Represents the context for a view within an application, providing access to HTTP contexts, URL helpers, and component configurations.

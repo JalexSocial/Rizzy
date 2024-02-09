@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Components.Content;
 using Rizzy.Extensions;
+using Rizzy.Framework.Services;
 using System.Text.Json;
 
 namespace Rizzy.Framework.Mvc;
@@ -14,74 +15,32 @@ namespace Rizzy.Framework.Mvc;
 /// <summary>
 /// Base controller for Rizzy that provides access to Razor Component views
 /// </summary>
-public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, IDisposable
+public class RzController : ControllerBase, IRizzyService, IActionFilter, IAsyncActionFilter, IDisposable
 {
-    private string? _currentActionUrl;
-    private RzViewContext? _viewContext = null;
+    private readonly IRizzyService? _serviceProxy = null;
+    private IRizzyService RizzyService => _serviceProxy ?? this.HttpContext.RequestServices.GetRequiredService<IRizzyService>();
 
-    public RzViewContext ViewContext
-    {
-        get
-        {
-            if (_viewContext != null)
-                return _viewContext;
+    /// <inheritdoc/>
+    public RzViewContext ViewContext => RizzyService.ViewContext;
 
-            _viewContext = HttpContext.RequestServices.GetRequiredService<RzViewContext>();
-            _viewContext.ConfigureActionContext(Url.ActionContext);
+    /// <inheritdoc/>
+    public string CurrentActionUrl => RizzyService.CurrentActionUrl;
 
-            return _viewContext;
-        }
-    }
+    /// <inheritdoc/>
+    public IResult View<TComponent>(object? data = null) where TComponent : IComponent
+        => RizzyService.View<TComponent>(data);
 
-    public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
-        View<TComponent>(data.ToDictionary());
-
+    /// <inheritdoc/>
     public IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
-    {
-        var parameters = new Dictionary<string, object?>();
+        => RizzyService.View<TComponent>(data);
 
-        ViewContext.ConfigureView(typeof(TComponent), data);
+    /// <inheritdoc/>
+    public IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent
+        => RizzyService.PartialView<TComponent>(data);
 
-        parameters.Add("ComponentType", ViewContext.ComponentType);
-        parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
-        parameters.Add("ViewContext", ViewContext);
-
-        return new RazorComponentResult<RzPage>(parameters)
-        {
-            PreventStreamingRendering = false
-        };
-    }
-
-    public IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent =>
-        PartialView<TComponent>(data.ToDictionary());
-
-    /// <summary>
-    /// Renders a Razor component without a layout
-    /// </summary>
-    /// <typeparam name="TComponent"></typeparam>
-    /// <param name="data"></param>
-    /// <returns></returns>
+    /// <inheritdoc/>
     public IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
-    {
-        var parameters = new Dictionary<string, object?>();
-
-        ViewContext.ConfigureView(typeof(TComponent), data);
-
-        parameters.Add("ComponentType", ViewContext.ComponentType);
-        parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
-        parameters.Add("ViewContext", ViewContext);
-
-        return new RazorComponentResult<RzPartial>(parameters)
-        {
-            PreventStreamingRendering = false
-        };
-    }
-
-    /// <summary>
-    /// Returns the current action method url as a possible Form callback url but may be overridden manually in any form handler method
-    /// This value can be used inside of form Razor Component views
-    /// </summary>
-    public string CurrentActionUrl => _currentActionUrl ??= Request.GetEncodedPathAndQuery();
+        => RizzyService.PartialView<TComponent>(data);
 
     /// <summary>
     /// Creates a <see cref="JsonResult"/> object that serializes the specified <paramref name="data"/> object
@@ -126,6 +85,7 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     [NonAction]
     public virtual void OnActionExecuting(ActionExecutingContext context)
     {
+        ViewContext.ConfigureActionContext(Url.ActionContext);
     }
 
     /// <summary>

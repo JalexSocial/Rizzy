@@ -10,6 +10,7 @@ using Rizzy.Components.Form.Helpers;
 using Rizzy.Components.Swap.Services;
 using Rizzy.Configuration.Htmx;
 using Rizzy.Framework.Mvc;
+using Rizzy.Framework.Services;
 
 namespace Rizzy.Configuration;
 
@@ -73,6 +74,7 @@ public class RizzyConfigBuilder
 
         // Add additional scoped services
         _builder.Services.AddScoped<RzViewContext>();
+        _builder.Services.AddScoped<IRizzyService, RizzyService>();
         _builder.Services.AddScoped<IHtmxSwapService, HtmxSwapService>();
     }
 

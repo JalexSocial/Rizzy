@@ -8,6 +8,7 @@ using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
 using System.Text.Json;
 using Rizzy.Framework.Mvc;
+using Rizzy.Framework.Services;
 
 namespace Rizzy.Components.Configuration;
 

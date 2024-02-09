@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Framework.Mvc;
+using Rizzy.Framework.Services;
 using Rizzy.Http;
 
 namespace Rizzy.Components.Layout;
