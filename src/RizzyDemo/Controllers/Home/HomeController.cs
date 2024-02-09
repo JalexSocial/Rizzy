@@ -4,19 +4,26 @@ using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;
 using System.Diagnostics;
+using Rizzy.Components.Swap.Services;
 
 namespace RizzyDemo.Controllers.Home;
 
 public class HomeController : RzController
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly IHtmxSwapService _swapService;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(ILogger<HomeController> logger, IHtmxSwapService swapService)
     {
         _logger = logger;
+        _swapService = swapService;
     }
 
-    public IResult Index() => View<HomeIndex>();
+    public IResult Index()
+    {
+        _swapService.AddRawContent("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        return View<HomeIndex>();
+    } 
 
     public IResult Privacy() => View<Privacy>();
 

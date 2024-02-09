@@ -35,4 +35,9 @@ public interface IHtmxSwapService
     /// </summary>
     /// <returns>A RenderFragment containing all the content managed by the service.</returns>
     RenderFragment RenderToFragment();
+
+    /// <summary>
+    /// Is there any content available to render?
+    /// </summary>
+    bool ContentAvailable { get; }
 }

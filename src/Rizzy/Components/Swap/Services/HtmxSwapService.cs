@@ -95,6 +95,10 @@ public class HtmxSwapService : IHtmxSwapService
                     builder.CloseComponent();
                 }
             }
+            _contentItems.Clear();
         };
     }
+
+    /// <inheritdoc/>
+    public bool ContentAvailable => _contentItems.Count > 0;
 }

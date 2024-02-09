@@ -9,6 +9,7 @@ using Rizzy.Components.Content;
 using Rizzy.Extensions;
 using Rizzy.Framework.Mvc;
 using System.Text.Json;
+using Rizzy.Framework.Endpoints;
 
 namespace Rizzy.Framework.Services;
 
@@ -62,7 +63,7 @@ public class RizzyService : IRizzyService
         parameters.Add("ViewContext", ViewContext);
 
         // Return a result that can render the component as a full page
-        return new RazorComponentResult<RzPage>(parameters)
+        return new RzRazorComponentResult<RzPage>(parameters)
         {
             PreventStreamingRendering = false
         };
