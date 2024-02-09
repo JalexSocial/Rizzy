@@ -6,9 +6,11 @@
 <PageTitle>Home Page</PageTitle>
 
 <div class="text-center">
-	<h1 class="display-4">Welcome</h1>
-	<p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<div id="message"></div>
 
 @{
 	var guid = Guid.NewGuid().ToString();
@@ -24,8 +26,6 @@ Content Guid: @guid
     protected override void OnInitialized()
     {
         SwapService.AddRawContent("TEST TEST TEST TEST TEST");
-        SwapService.AddRawContent("TEST2 TEST2 TEST2 TEST2 TEST2");
-
     }
 
     protected override void OnParametersSet()

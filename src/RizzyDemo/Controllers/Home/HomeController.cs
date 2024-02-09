@@ -21,7 +21,7 @@ public class HomeController : RzController
 
     public IResult Index()
     {
-        _swapService.AddRawContent("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+        _swapService.AddRawContent("<div id=\"message\" hx-swap-oob=\"true\">This content was swapped in from swap service</div>\r\n");
         return View<HomeIndex>();
     } 
 
