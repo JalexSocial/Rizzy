@@ -15,9 +15,10 @@ public class HtmxApp<T> : ComponentBase where T : LayoutComponentBase
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         builder.OpenComponent<HtmxLayout<T>>(0);
-        builder.AddAttribute(1, "Body", (RenderFragment)(builder2 =>
+        builder.AddAttribute(1, "IsRootComponent", true);
+        builder.AddAttribute(2, "Body", (RenderFragment)(builder2 =>
         {
-            builder2.AddContent(2, ChildContent);
+            builder2.AddContent(3, ChildContent);
         }));
         builder.CloseComponent();
     }

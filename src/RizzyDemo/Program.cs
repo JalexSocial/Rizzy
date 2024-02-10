@@ -1,6 +1,7 @@
 using Rizzy;
 using Rizzy.Components.Layout;
 using RizzyDemo.Components.Layout;
+using RizzyDemo.Components.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,8 @@ builder.AddRizzy(config =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorComponents();
+
+builder.Services.AddSingleton<HtmxCounter.HtmxCounterState>();
 
 var app = builder.Build();
 

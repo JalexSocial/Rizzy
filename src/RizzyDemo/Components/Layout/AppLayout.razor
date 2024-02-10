@@ -16,13 +16,14 @@
 
     <script defer src="_content/Rizzy/js/antiforgerySnippet.js"></script>
     <script defer src="https://unpkg.com/htmx.org@1.9.8"></script>
+    <script defer src="_content/Rizzy/js/blazor-streaming.js"></script>
 </head>
 <body>
 @Body
 <script src="_content/Rizzy/js/aspnet-validation.js"></script>
 <script type="text/javascript">
-        const v = new aspnetValidation.ValidationService();
-        v.bootstrap({ watch: true });
+	const v = new aspnetValidation.ValidationService();
+	v.bootstrap({ watch: true });
 </script>
 </body>
 </html>

@@ -8,7 +8,7 @@ namespace Rizzy.Components.Layout;
 
 public class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
 {
-    internal class BaseLayout : LayoutComponentBase
+    internal class EmptyLayout : LayoutComponentBase
     {
         protected override void BuildRenderTree(RenderTreeBuilder builder)
         {
@@ -16,16 +16,40 @@ public class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
         }
     }
 
-    [CascadingParameter]
+    internal class MinimalLayout : LayoutComponentBase
+    {
+	    protected override void BuildRenderTree(RenderTreeBuilder builder)
+	    {
+		    builder.OpenElement(0, "html");
+		    builder.OpenElement(1, "body");
+		    builder.AddContent(2, Body);
+		    builder.CloseElement();
+		    builder.CloseElement();
+		}
+    }
+
+
+	[CascadingParameter]
     public RzViewContext? ViewContext { get; set; }
+
+    [Parameter]
+    public bool IsRootComponent { get; set; } = false;
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (ViewContext?.Htmx.Request?.IsHtmx == true)
         {
             ViewContext?.HttpContext.Response.Headers.TryAdd("Vary", HtmxRequestHeaderNames.HtmxRequest);
-            builder.OpenComponent<BaseLayout>(0);
-        }
+
+            if (IsRootComponent)
+            {
+	            builder.OpenComponent<MinimalLayout>(0);
+			}
+			else
+            {
+	            builder.OpenComponent<EmptyLayout>(0);
+			}
+		}
         else
         {
             builder.OpenComponent<T>(0);

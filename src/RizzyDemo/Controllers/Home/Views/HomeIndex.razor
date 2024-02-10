@@ -10,22 +10,17 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
-<div id="message"></div>
-
 @{
 	var guid = Guid.NewGuid().ToString();
 }
 Content Guid: @guid
 
 @code {
-    [Inject] IHtmxSwapService SwapService { get; set; }
-
     [CascadingParameter] 
     public RzViewContext? ViewContext { get; set; }
 
     protected override void OnInitialized()
     {
-        SwapService.AddRawContent("TEST TEST TEST TEST TEST");
     }
 
     protected override void OnParametersSet()

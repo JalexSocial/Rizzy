@@ -121,9 +121,11 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
         {
             PreventStreamingRendering = false
         };
-
+        
+        
         // Start rendering the primary page
         await page.ExecuteAsync(httpContext);
+        await httpContext.Response.BodyWriter.FlushAsync(CancellationToken.None);
 
         if (swapService.ContentAvailable)
         {
@@ -138,6 +140,7 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
             });
 
             await httpContext.Response.WriteAsync(html);
-        }
-    }
+            await httpContext.Response.BodyWriter.FlushAsync(CancellationToken.None);
+		}
+	}
 }

@@ -5,6 +5,8 @@ using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;
 using System.Diagnostics;
 using Rizzy.Components.Swap.Services;
+using Rizzy.Configuration.Htmx.Enum;
+using RizzyDemo.Components.Layout;
 
 namespace RizzyDemo.Controllers.Home;
 
@@ -21,7 +23,10 @@ public class HomeController : RzController
 
     public IResult Index()
     {
-        _swapService.AddRawContent("<div id=\"message\" hx-swap-oob=\"true\">This content was swapped in from swap service</div>\r\n");
+	    _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+		_swapService.AddSwappableContent("alert", "<div class=\"alert alert-primary\" role=\"alert\">This content was swapped in from swap service!</div>", SwapStyle.InnerHTML);
+        _swapService.AddRawContent("<!--test comment-->");
+
         return View<HomeIndex>();
     } 
 
@@ -43,7 +48,31 @@ public class HomeController : RzController
         return View<Information>();
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IResult Counter()
+    {
+	    _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+
+		return View<Counter>(); 
+    }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public IResult Count([FromServices] HtmxCounter.HtmxCounterState state)
+    {
+	    state.Value++;
+
+	    return View<HtmxCounter>(new { State = state });
+    }
+
+    public IResult Weather()
+    {
+	    _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+
+	    return View<Weather>();
+    }
+
+    public IResult Time() => View<Time>();
+
+	[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IResult Error()
     {
         return View<Error>(new

@@ -1,0 +1,23 @@
+﻿@using RizzyDemo.Components.Shared
+@using Rizzy.Framework.Services
+@inject HtmxCounter.HtmxCounterState CounterState
+@inject RzViewContext ViewContext
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<div class="mb-4">
+	<HtmxCounter State="CounterState"/>
+</div>
+
+@code {
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+	protected override void OnInitialized()
+	{
+		// reset counter on page reloads
+		CounterState.Value = 0;
+	}
+}
