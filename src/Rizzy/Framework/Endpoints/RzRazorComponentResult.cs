@@ -112,35 +112,52 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
 
     private async Task RenderComponent(HttpContext httpContext)
     {
-        IServiceProvider serviceProvider = httpContext.RequestServices;
-        ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-        IHtmxSwapService swapService = serviceProvider.GetRequiredService<IHtmxSwapService>();
+	    IServiceProvider serviceProvider = httpContext.RequestServices;
 
-        // Render the page as a razor component result
-        var page = new RazorComponentResult(ComponentType, Parameters)
+		// Render the page as a razor component result
+		var page = new RazorComponentResult(ComponentType, Parameters)
         {
             PreventStreamingRendering = false
         };
-        
-        
+
         // Start rendering the primary page
-        await page.ExecuteAsync(httpContext);
-        await httpContext.Response.BodyWriter.FlushAsync(CancellationToken.None);
+        Task pageRenderer = page.ExecuteAsync(httpContext);
+        Task<string> swapRenderer = RenderSwapContent(serviceProvider);
 
-        if (swapService.ContentAvailable)
-        {
-            // Render any additional out of band swaps
-            await using var htmlRenderer = new HtmlRenderer(serviceProvider, loggerFactory);
+        await Task.WhenAny(pageRenderer, swapRenderer);
 
-            var html = await htmlRenderer.Dispatcher.InvokeAsync(async () =>
-            {
-                var output = await htmlRenderer.RenderComponentAsync<HtmxSwapContent>();
+        if (!pageRenderer.IsCompleted)
+	        await pageRenderer;
 
-                return output.ToHtmlString();
-            });
+		string swapContent = await swapRenderer;
 
-            await httpContext.Response.WriteAsync(html);
-            await httpContext.Response.BodyWriter.FlushAsync(CancellationToken.None);
-		}
+        if (!string.IsNullOrEmpty(swapContent))
+	        await httpContext.Response.WriteAsync(swapContent);
+
+		await httpContext.Response.BodyWriter.FlushAsync(CancellationToken.None);
 	}
+
+    private async Task<string> RenderSwapContent(IServiceProvider serviceProvider)
+    {
+	    var content = string.Empty;
+
+	    IHtmxSwapService swapService = serviceProvider.GetRequiredService<IHtmxSwapService>();
+
+		if (swapService.ContentAvailable)
+	    {
+		    ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+
+		    await using var renderer = new HtmlRenderer(serviceProvider, loggerFactory);
+
+		    // Render any additional out of band swaps
+		    content = await renderer.Dispatcher.InvokeAsync(async () =>
+		    {
+			    var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
+
+			    return output.ToHtmlString();
+		    });
+		}
+
+		return content;
+    }
 }
