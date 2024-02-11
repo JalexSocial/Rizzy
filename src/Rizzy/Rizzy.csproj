@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="AngleSharp" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
     <PackageReference Include="MinVer" Version="4.3.0" PrivateAssets="All" />
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">

@@ -23,34 +23,26 @@ public class RzPartial : ComponentBase
         }
     }
 
-    private static class ViewContextWrapper
-    {
-        public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
-        {
-            builder.OpenComponent<CascadingValue<TValue>>(0);
-            builder.AddComponentParameter(1, "Value", value);
-            builder.AddComponentParameter(2, "ChildContent", fragment);
-            builder.CloseComponent();
-        }
-    }
-
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        ViewContextWrapper.CreateCascadingValue(builder, ViewContext, (builder2) =>
-        {
-            builder2.OpenComponent<LayoutView>(4);
-            builder2.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
-            builder2.AddAttribute(6, "ChildContent", (RenderFragment)((builder3) =>
-            {
-                builder3.OpenComponent<DynamicComponent>(7);
-                builder3.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-                builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-                builder3.CloseComponent();
-            }));
-            builder2.CloseComponent();
-            builder2.OpenComponent<HtmxSwapContent>(15);
-            builder2.CloseComponent();
-        });
+	    ContextWrapper.CreateCascadingValue(builder, ViewContext.HttpContext, (builder2) =>
+	    {
+		    ContextWrapper.CreateCascadingValue(builder2, ViewContext, (builder3) =>
+		    {
+			    builder3.OpenComponent<LayoutView>(4);
+			    builder3.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
+			    builder3.AddAttribute(6, "ChildContent", (RenderFragment)((builder4) =>
+			    {
+				    builder4.OpenComponent<DynamicComponent>(7);
+				    builder4.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+				    builder4.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+				    builder4.CloseComponent();
+			    }));
+			    builder3.CloseComponent();
+			    builder3.OpenComponent<HtmxSwapContent>(15);
+			    builder3.CloseComponent();
+		    });
+		});
     }
 
     [Parameter, EditorRequired] public Type ComponentType { get; set; } = default!;
