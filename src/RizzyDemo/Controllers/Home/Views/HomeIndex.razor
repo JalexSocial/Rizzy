@@ -3,6 +3,7 @@
 @using RizzyDemo.Components.Layout
 @using Rizzy.Components.Swap.Services
 @using RizzyDemo.Controllers.Home.Models
+@attribute [StreamRendering]
 
 <PageTitle>Home Page</PageTitle>
 
@@ -16,8 +17,29 @@
                     <button class="btn btn-primary" type="button">Tweet</button>
                 </div>
             </div>
-            
-            @if (Posts != null)
+            @if (Posts == null)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <!-- Skeleton for Author and Post Info -->
+                        <div class="d-flex align-items-center mb-3">
+                            <!-- Skeleton Avatar -->
+                            <div class="rounded-circle bg-secondary" style="width: 50px; height: 50px;"></div>
+                            <div class="ms-2">
+                                <div class="bg-secondary rounded" style="width: 120px; height: 20px;"></div>
+                                <div class="bg-secondary rounded mt-1" style="width: 80px; height: 15px;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skeleton Media Image -->
+                        <div class="bg-secondary rounded mb-2" style="width: 100%; height: 200px;"></div>
+
+                        <!-- Skeleton Message -->
+                        <div class="bg-secondary rounded" style="width: 100%; height: 20px;"></div>
+                    </div>
+                </div>
+            }
+            else
             {
                 foreach (var post in Posts)
                 {
@@ -76,13 +98,8 @@ Content Guid: @guid
     {
     }
 
-    protected override Task OnParametersSetAsync()
+    protected override async Task OnParametersSetAsync()
     {
-        if (Posts.Count > 0)
-        {
-
-        }
-
-        return base.OnParametersSetAsync();
+        await Task.Delay(1000);
     }
 }
