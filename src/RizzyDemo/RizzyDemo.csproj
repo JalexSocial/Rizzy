@@ -15,6 +15,18 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Controllers\Home\Models\posts.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Controllers\Home\Models\posts.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Rizzy\Rizzy.csproj" />
   </ItemGroup>
 

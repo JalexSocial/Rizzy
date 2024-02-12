@@ -8,8 +8,12 @@ using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;
+using RizzyDemo.Helpers;
 using System.Diagnostics;
+using System.Resources;
 using System.Text;
+using System.Text.Json;
+using Humanizer;
 
 namespace RizzyDemo.Controllers.Home;
 
@@ -27,10 +31,11 @@ public class HomeController : RzController
     public IResult Index()
     {
         _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
-        _swapService.AddSwappableContent("alert", "<div class=\"alert alert-primary\" role=\"alert\">This content was swapped in from swap service!</div>", SwapStyle.InnerHTML);
         _swapService.AddRawContent("<!--test comment-->");
 
-        return View<HomeIndex>();
+        var posts = GetPosts();
+
+        return View<HomeIndex>(new { Posts = posts});
     }
 
     public IResult Privacy() => View<Privacy>();
@@ -73,7 +78,38 @@ public class HomeController : RzController
         return View<Weather>();
     }
 
-    public IResult Time() => View<Time>();
+    public IResult Time()
+    {
+        if (DateTime.Now.Second % 10 == 0)
+        {
+            string[] notifications = new string[]
+            {
+                "Quantum flux capacitor needs recalibration.",
+                "The hyperloop buffer overflowed again.",
+                "Time-space continuum bandwidth exceeded.",
+                "AI neural net became self-aware and is asking for coffee.",
+                "Cryptographic hamster wheel generated an unexpected quantum entanglement.",
+                "Infinite loop detected in the reality matrix.",
+                "Photon torpedo launcher is jammed with spam emails.",
+                "The server farm was invaded by digital cows.",
+                "Virtual reality headset detected in an alternate dimension.",
+                "Parallel universe data leak detected.",
+                "Galactic network sync failed due to a space-time anomaly.",
+                "Interdimensional web portal needs new SSL certificate.",
+                "Subspace signal processor encountered an existential error.",
+                "The cloud is literally raining data.",
+                "Zero-gravity database migration required immediately."
+            };
+
+            Random rand = new Random();
+            string message = notifications[rand.Next(notifications.Length)];
+
+            _swapService.AddSwappableContent("alert", $"<div class=\"alert alert-primary\" role=\"alert\">{message}</div>", SwapStyle.InnerHTML);
+        }
+
+
+        return View<Time>();
+    }
 
     public async Task<string> News()
     {
@@ -131,6 +167,23 @@ public class HomeController : RzController
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             }
         });
+    }
+
+    private List<Post> GetPosts()
+    {
+        var postContent = EmbeddedResourceReader.ReadResourceText("RizzyDemo.Controllers.Home.Models.posts.json");
+        var posts = JsonSerializer.Deserialize<List<Post>>(postContent);
+
+        Random rand = new Random(System.Environment.TickCount);
+        int minutes = 2;
+        foreach (var post in posts)
+        {
+            minutes += rand.Next(2, 120);
+            post.TimeOfPost = DateTime.Now.Subtract(new TimeSpan(0, 0, minutes, 0));
+            post.RelativeTimeOfPost = post.TimeOfPost.Humanize();
+        }
+
+        return posts;
     }
 
 }
