@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Rizzy.Components.Layout;
-using Rizzy.Configuration;
-using Rizzy.Framework.Mvc;
-using System.Reflection;
 using Rizzy.Components.Swap;
+using Rizzy.Configuration;
 using Rizzy.Framework.Services;
+using System.Reflection;
 
 namespace Rizzy.Components.Content;
 

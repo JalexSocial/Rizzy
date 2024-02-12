@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
-using Microsoft.AspNetCore.Components.Web;
 using Rizzy.Framework.Services;
 
 namespace Rizzy.Components.Head;

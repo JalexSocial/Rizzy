@@ -95,7 +95,7 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// <param name="useDataAnnotations">Determines whether to use data annotations for validation.</param>
     /// <returns>True if the form context was added successfully; otherwise, false.</returns>
     public RzFormContext AddFormContext(string id, string formName, string formAction, object model,
-	    bool useDataAnnotations = true)
+        bool useDataAnnotations = true)
     {
         var formContext = string.IsNullOrEmpty(id) ?
             new RzFormContext(formName, formAction, model) :

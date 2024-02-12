@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Rizzy.Framework.Mvc;
 using Rizzy.Framework.Services;
 using Rizzy.Http;
 
@@ -18,18 +17,18 @@ public class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
 
     internal class MinimalLayout : LayoutComponentBase
     {
-	    protected override void BuildRenderTree(RenderTreeBuilder builder)
-	    {
-		    builder.OpenElement(0, "html");
-		    builder.OpenElement(1, "body");
-		    builder.AddContent(2, Body);
-		    builder.CloseElement();
-		    builder.CloseElement();
-		}
+        protected override void BuildRenderTree(RenderTreeBuilder builder)
+        {
+            builder.OpenElement(0, "html");
+            builder.OpenElement(1, "body");
+            builder.AddContent(2, Body);
+            builder.CloseElement();
+            builder.CloseElement();
+        }
     }
 
 
-	[CascadingParameter]
+    [CascadingParameter]
     public RzViewContext? ViewContext { get; set; }
 
     [Parameter]
@@ -43,13 +42,13 @@ public class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
 
             if (IsRootComponent)
             {
-	            builder.OpenComponent<MinimalLayout>(0);
-			}
-			else
+                builder.OpenComponent<MinimalLayout>(0);
+            }
+            else
             {
-	            builder.OpenComponent<EmptyLayout>(0);
-			}
-		}
+                builder.OpenComponent<EmptyLayout>(0);
+            }
+        }
         else
         {
             builder.OpenComponent<T>(0);

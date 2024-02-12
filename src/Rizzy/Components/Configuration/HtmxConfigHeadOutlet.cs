@@ -6,9 +6,8 @@ using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
-using System.Text.Json;
-using Rizzy.Framework.Mvc;
 using Rizzy.Framework.Services;
+using System.Text.Json;
 
 namespace Rizzy.Components.Configuration;
 
@@ -42,15 +41,15 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-	    var config = ViewContext.Htmx.Configuration;
+        var config = ViewContext.Htmx.Configuration;
 
-	    if (!string.IsNullOrEmpty(Configuration))
-	    {
-		    config = Options.Get(Configuration);
-		    ViewContext.Htmx.SetConfiguration(Configuration);
-	    }
+        if (!string.IsNullOrEmpty(Configuration))
+        {
+            config = Options.Get(Configuration);
+            ViewContext.Htmx.SetConfiguration(Configuration);
+        }
 
-	    var contextUserConfig = config with
+        var contextUserConfig = config with
         {
             Antiforgery = new HtmxConfig.AntiForgeryConfiguration
             {

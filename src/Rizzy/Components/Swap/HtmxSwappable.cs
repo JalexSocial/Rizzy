@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Configuration.Htmx.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rizzy.Components.Swap;
 

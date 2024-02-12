@@ -2,13 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Components.Content;
 using Rizzy.Extensions;
-using Rizzy.Framework.Mvc;
-using System.Text.Json;
 using Rizzy.Framework.Endpoints;
 
 namespace Rizzy.Framework.Services;

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -10,7 +9,6 @@ using Rizzy.Antiforgery;
 using Rizzy.Components.Form.Helpers;
 using Rizzy.Components.Swap.Services;
 using Rizzy.Configuration.Htmx;
-using Rizzy.Framework.Mvc;
 using Rizzy.Framework.Services;
 
 namespace Rizzy.Configuration;

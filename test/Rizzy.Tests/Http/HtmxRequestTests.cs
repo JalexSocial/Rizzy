@@ -1,9 +1,4 @@
-﻿using Xunit;
-using Rizzy.Http;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using System;
-using global::Rizzy.Http.Mock;
+﻿using global::Rizzy.Http.Mock;
 
 namespace Rizzy.Http;
 

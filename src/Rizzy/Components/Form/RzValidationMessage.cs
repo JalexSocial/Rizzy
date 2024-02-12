@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Components.Form.Helpers;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Rizzy.Components.Form;
 
@@ -55,8 +55,8 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     /// <inheritdoc />
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-	    if (For is null)
-		    throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
+        if (For is null)
+            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
 
         var field = FieldIdentifier.Create(For);
 
@@ -66,11 +66,11 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
             base.BuildRenderTree(builder);
         else
         {
-	        builder.OpenElement(10, "div");
-	        builder.AddAttribute(11, "class", "validation-message");
-	        builder.AddMultipleAttributes(12, AdditionalAttributes);
-	        builder.AddContent(13, string.Empty);
-	        builder.CloseElement();
+            builder.OpenElement(10, "div");
+            builder.AddAttribute(11, "class", "validation-message");
+            builder.AddMultipleAttributes(12, AdditionalAttributes);
+            builder.AddContent(13, string.Empty);
+            builder.CloseElement();
         }
     }
 

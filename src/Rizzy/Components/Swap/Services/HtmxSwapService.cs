@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http;
 
@@ -13,9 +12,9 @@ namespace Rizzy.Components.Swap.Services;
 /// </summary>
 public class HtmxSwapService : IHtmxSwapService
 {
-	private readonly HttpContext _httpContext;
+    private readonly HttpContext _httpContext;
     private List<ContentItem> _contentItems = new List<ContentItem>();
-    
+
     private enum RzContentType
     {
         Swappable,
@@ -24,7 +23,7 @@ public class HtmxSwapService : IHtmxSwapService
 
     public HtmxSwapService(IHttpContextAccessor contextAccessor)
     {
-	    _httpContext = contextAccessor.HttpContext!;
+        _httpContext = contextAccessor.HttpContext!;
     }
 
     private record struct ContentItem(RzContentType ContentType, string TargetId, SwapStyle SwapStyle, string Selector, RenderFragment Content);
@@ -76,8 +75,8 @@ public class HtmxSwapService : IHtmxSwapService
     /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
     public void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null)
     {
-	    var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(1, content));
-        
+        var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(1, content));
+
         _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, contentFragment));
     }
 
@@ -99,7 +98,7 @@ public class HtmxSwapService : IHtmxSwapService
     {
         var isHtmx = new HtmxRequest(_httpContext).IsHtmx;
 
-	    return builder =>
+        return builder =>
         {
             foreach (var item in _contentItems)
             {
