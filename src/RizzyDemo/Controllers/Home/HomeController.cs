@@ -21,21 +21,21 @@ public class HomeController : RzController
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IHtmxSwapService _swapService;
+    private readonly PostRepo _repo;
 
-    public HomeController(ILogger<HomeController> logger, IHtmxSwapService swapService)
+    public HomeController(ILogger<HomeController> logger, IHtmxSwapService swapService, PostRepo repo)
     {
         _logger = logger;
         _swapService = swapService;
+        _repo = repo;
     }
 
-    public IResult Index()
+    public async Task<IResult> Index()
     {
         _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
         _swapService.AddRawContent("<!--test comment-->");
 
-        var posts = GetPosts();
-
-        return View<HomeIndex>(new { Posts = posts});
+        return View<HomeIndex>();
     }
 
     public IResult Privacy() => View<Privacy>();
@@ -168,22 +168,5 @@ public class HomeController : RzController
             }
         });
     }
-
-    private List<Post> GetPosts()
-    {
-        var postContent = EmbeddedResourceReader.ReadResourceText("RizzyDemo.Controllers.Home.Models.posts.json");
-        var posts = JsonSerializer.Deserialize<List<Post>>(postContent);
-
-        Random rand = new Random(System.Environment.TickCount);
-        int minutes = 2;
-        foreach (var post in posts)
-        {
-            minutes += rand.Next(2, 120);
-            post.TimeOfPost = DateTime.Now.Subtract(new TimeSpan(0, 0, minutes, 0));
-            post.RelativeTimeOfPost = post.TimeOfPost.Humanize();
-        }
-
-        return posts;
-    }
-
+    
 }

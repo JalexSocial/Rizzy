@@ -19,25 +19,28 @@
             </div>
             @if (Posts == null)
             {
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <!-- Skeleton for Author and Post Info -->
-                        <div class="d-flex align-items-center mb-3">
-                            <!-- Skeleton Avatar -->
-                            <div class="rounded-circle bg-secondary" style="width: 50px; height: 50px;"></div>
-                            <div class="ms-2">
-                                <div class="bg-secondary rounded" style="width: 120px; height: 20px;"></div>
-                                <div class="bg-secondary rounded mt-1" style="width: 80px; height: 15px;"></div>
-                            </div>
-                        </div>
+	            for (int i = 0; i < 5; i++)
+	            {
+		            <div class="card mb-3">
+			            <div class="card-body">
+				            <!-- Skeleton for Author and Post Info -->
+				            <div class="d-flex align-items-center mb-3">
+					            <!-- Skeleton Avatar -->
+					            <div class="rounded-circle bg-light" style="width: 50px; height: 50px;"></div>
+					            <div class="ms-2">
+						            <div class="bg-light rounded" style="width: 120px; height: 20px;"></div>
+						            <div class="bg-light rounded mt-1" style="width: 80px; height: 15px;"></div>
+					            </div>
+				            </div>
 
-                        <!-- Skeleton Media Image -->
-                        <div class="bg-secondary rounded mb-2" style="width: 100%; height: 200px;"></div>
+				            <!-- Skeleton Media Image -->
+				            <div class="bg-light rounded mb-2" style="width: 100%; height: 450px;"></div>
 
-                        <!-- Skeleton Message -->
-                        <div class="bg-secondary rounded" style="width: 100%; height: 20px;"></div>
-                    </div>
-                </div>
+				            <!-- Skeleton Message -->
+				            <div class="bg-light rounded" style="width: 100%; height: 20px;"></div>
+			            </div>
+		            </div>
+	            }
             }
             else
             {
@@ -89,13 +92,16 @@
 Content Guid: @guid
 
 @code {
+	private List<Post>? Posts { get; set; } = null;
+
     [CascadingParameter] 
     public RzViewContext? ViewContext { get; set; }
 
-    [Parameter] public List<Post>? Posts { get; set; } = null;
+    [Inject] public PostRepo Repo { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+	    Posts = await Repo.GetPosts();
     }
 
     protected override async Task OnParametersSetAsync()

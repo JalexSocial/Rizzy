@@ -1,5 +1,6 @@
 using Rizzy;
 using Rizzy.Components.Layout;
+using RizzyDemo;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
 
@@ -26,6 +27,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorComponents();
 
 builder.Services.AddSingleton<HtmxCounter.HtmxCounterState>();
+builder.Services.AddSingleton<PostRepo>();
 
 var app = builder.Build();
 
