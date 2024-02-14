@@ -73,7 +73,7 @@
 
                     // Create a container id for a temporary div container. All streamed html will be placed 
                     // inside the container so that htmx swap methods work correctly
-                    var cid = crypto.randomUUID();
+                    var cid = 'ctr' + crypto.randomUUID();
 
                     xhr.addEventListener("readystatechange", () => {
 
@@ -122,7 +122,7 @@
         });
 
     function blazorSwapSsr(start, end, docFrag) {
-        var newDiv = wrap(start, end, crypto.randomUUID());
+        var newDiv = wrap(start, end, 'ssr' + crypto.randomUUID());
 
         var container = document.createElement('div');
         container.appendChild(docFrag);
@@ -144,7 +144,7 @@
             currentNode = start.nextSibling;
         }
 
-        start.parentNode.insertBefore(newDiv, start);
+        start.parentNode.insertBefore(newDiv, end);
 
         return newDiv;
     }
@@ -162,6 +162,31 @@
         }
     }
 
+    function handleOutOfBandSwaps(elt, fragment, settleInfo) {
+        var oobSelects = api.getClosestAttributeValue(elt, "hx-select-oob");
+        if (oobSelects) {
+            var oobSelectValues = oobSelects.split(",");
+            for (var i = 0; i < oobSelectValues.length; i++) {
+                var oobSelectValue = oobSelectValues[i].split(":", 2);
+                var id = oobSelectValue[0].trim();
+                if (id.indexOf("#") === 0) {
+                    id = id.substring(1);
+                }
+                var oobValue = oobSelectValue[1] || "true";
+                var oobElement = fragment.querySelector("#" + id);
+                if (oobElement) {
+                    api.oobSwap(oobValue, oobElement, settleInfo);
+                }
+            }
+        }
+        forEach(findAll(fragment, '[hx-swap-oob], [data-hx-swap-oob]'), function (oobElement) {
+            var oobValue = getAttributeValue(oobElement, "hx-swap-oob");
+            if (oobValue != null) {
+                api.oobSwap(oobValue, oobElement, settleInfo);
+            }
+        });
+    }
+
     /**
      * @param {HTMLElement} elt
      * @param {string} content
@@ -175,6 +200,9 @@
         swapSpec ??= api.getSwapSpecification(elt);
         var target = api.getTarget(elt);
         var settleInfo = api.makeSettleInfo(elt);
+
+        // htmx 2.0
+        //api.swap(target, content, swapSpec);
 
         api.selectAndSwap(swapSpec.swapStyle, target, elt, content, settleInfo);
 

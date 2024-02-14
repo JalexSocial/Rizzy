@@ -120,10 +120,10 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
         Task pageRenderer = page.ExecuteAsync(httpContext);
         Task<string> swapRenderer = RenderSwapContent(serviceProvider);
 
-        await Task.WhenAny(pageRenderer, swapRenderer);
+        await Task.WhenAll(pageRenderer, swapRenderer);
 
-        if (!pageRenderer.IsCompleted)
-            await pageRenderer;
+        //if (!pageRenderer.IsCompleted)
+        //    await Task.WhenAll( pageRenderer );
 
         string swapContent = await swapRenderer;
 

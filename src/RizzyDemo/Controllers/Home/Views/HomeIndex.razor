@@ -92,7 +92,7 @@
 Content Guid: @guid
 
 @code {
-	private List<Post>? Posts { get; set; } = null;
+    private List<Post>? Posts { get; set; } = null;
 
     [CascadingParameter] 
     public RzViewContext? ViewContext { get; set; }
@@ -101,11 +101,11 @@ Content Guid: @guid
 
     protected override async Task OnInitializedAsync()
     {
-	    Posts = await Repo.GetPosts();
+        Posts = await Repo.GetPosts();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await Task.Delay(1000);
+	    //await Task.Delay(1000);
     }
 }
