@@ -27,17 +27,18 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       working-directory: src/Rizzy
-      
-    - name: Compile
-      run: dotnet build --no-restore
+
+    - name: Publish
+      run: dotnet publish --no-restore -c Release -o ./publish
       working-directory: src/Rizzy
-      
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
       working-directory: src/Rizzy
-      
-    - name: Publish
-      run: dotnet pack --no-build -c Release -o out
-      working-directory: src/Rizzy
-    - run: dotnet nuget push "src/Rizzy/out/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
-      working-directory: src/Rizzy
+
+    - name: Pack
+      run: dotnet pack src/Rizzy/Rizzy.csproj --no-build -c Release -o ./publish
+      working-directory: ./publish
+
+    - name: NuGet Push
+      run: dotnet nuget push "./publish/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
