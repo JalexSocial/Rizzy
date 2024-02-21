@@ -25,7 +25,7 @@
     <PackageProjectUrl>https://github.com/jalexsocial/Rizzy</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jalexsocial/Rizzy</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <MinVerTagPrefix>v</MinVerTagPrefix>
