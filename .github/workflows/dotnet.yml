@@ -38,7 +38,7 @@ jobs:
 
     - name: Pack
       run: dotnet pack src/Rizzy/Rizzy.csproj --no-build -c Release -o ./publish
-      working-directory: ./publish
+      working-directory: src/Rizzy
 
     - name: NuGet Push
-      run: dotnet nuget push "./publish/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push "src/Rizzy/.publish/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
