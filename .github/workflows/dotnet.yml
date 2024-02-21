@@ -37,7 +37,7 @@ jobs:
       working-directory: src/Rizzy
 
     - name: Pack
-      run: dotnet pack src/Rizzy/Rizzy.csproj --no-build -c Release -o ./publish
+      run: dotnet pack Rizzy.csproj --no-build -c Release -o ./publish
       working-directory: src/Rizzy
 
     - name: NuGet Push
