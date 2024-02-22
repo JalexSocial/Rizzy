@@ -12,7 +12,7 @@ public class PostRepo
 		await Task.Delay(500); 
 
 		var postContent = EmbeddedResourceReader.ReadResourceText("RizzyDemo.Controllers.Home.Models.posts.json");
-		var posts = JsonSerializer.Deserialize<List<Post>>(postContent);
+		var posts = JsonSerializer.Deserialize<List<Post>>(postContent) ?? new();
 
 		Random rand = new Random(System.Environment.TickCount);
 		int minutes = 2;
@@ -23,8 +23,7 @@ public class PostRepo
 			post.RelativeTimeOfPost = post.TimeOfPost.Humanize();
 		}
 
-		return posts;
-
+        return posts;
     }
 
 }

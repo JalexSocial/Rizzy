@@ -1,5 +1,6 @@
 ﻿@using Rizzy.Components.Head
 @using Rizzy.Framework.Services
+@using RizzyDemo.Components.Shared
 @attribute [StreamRendering]
 
 <RzPageTitle>Weather</RzPageTitle>
@@ -45,7 +46,7 @@
 </div>
 
 @code {
-    [Inject] RzViewContext ViewContext { get; set; }
+    [Inject] RzViewContext? ViewContext { get; set; }
     private List<WeatherForecast>? forecasts;
 
     [CascadingParameter]

@@ -30,7 +30,7 @@ public class HomeController : RzController
         _repo = repo;
     }
 
-    public async Task<IResult> Index()
+    public IResult Index()
     {
         _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
         _swapService.AddRawContent("<!--test comment-->");

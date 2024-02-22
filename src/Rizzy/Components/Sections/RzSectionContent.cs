@@ -6,9 +6,9 @@ namespace Rizzy.Components.Sections;
 
 
 /// <summary>
-// This class acts as a proxy to the original <see cref="SectionContent"/>, forwarding all parameters directly to it
-// and rendering its output with no additional markup.
-// </summary>
+/// This class acts as a proxy to the original <see cref="SectionContent"/>, forwarding all parameters directly to it
+/// and rendering its output with no additional markup.
+/// </summary>
 public class RzSectionContent : ComponentBase
 {
     /// <summary>

@@ -26,7 +26,7 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
     /// <summary>
     /// Constructs an instance of <see cref="RazorComponentResult"/>.
     /// </summary>
-    /// <param name="componentType">The type of the component to render. This must implement <see cref="IComponent"/>.</param>
+    /// <param name="componentType">The type of the component to render. This must implement <see cref="Microsoft.AspNetCore.Components.IComponent"/>.</param>
     public RzRazorComponentResult(Type componentType)
         : this(componentType, ReadOnlyDictionary<string, object?>.Empty)
     {
@@ -35,7 +35,7 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
     /// <summary>
     /// Constructs an instance of <see cref="RzRazorComponentResult"/>.
     /// </summary>
-    /// <param name="componentType">The type of the component to render. This must implement <see cref="IComponent"/>.</param>
+    /// <param name="componentType">The type of the component to render. This must implement <see cref="Microsoft.AspNetCore.Components.IComponent"/>.</param>
     /// <param name="parameters">Parameters for the component.</param>
     public RzRazorComponentResult(
         Type componentType,
@@ -47,7 +47,7 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
     /// <summary>
     /// Constructs an instance of <see cref="RzRazorComponentResult"/>.
     /// </summary>
-    /// <param name="componentType">The type of the component to render. This must implement <see cref="IComponent"/>.</param>
+    /// <param name="componentType">The type of the component to render. This must implement <see cref="Microsoft.AspNetCore.Components.IComponent"/>.</param>
     /// <param name="parameters">Parameters for the component.</param>
     public RzRazorComponentResult(
         Type componentType,
