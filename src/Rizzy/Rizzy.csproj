@@ -16,7 +16,7 @@
     <Authors>Michael Tanczos, Egil Hansen</Authors>
     <Title>Rizzy - MVC and htmx with a Razor component model</Title>
     <Description>
-      This package allows you to utilize Asp.net MVC with Razor Components and htmx
+      This package allows you to utilize Asp.net MVC with Razor Components and htmx.
     </Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>blazor, htmx, blazor-ssr, blazor-web-app</PackageTags>
