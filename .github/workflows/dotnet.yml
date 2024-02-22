@@ -3,7 +3,6 @@ name: .NET
 on:
   push:
     branches: [ main ]
-    tags: [ 'v*' ]  # Trigger on tags that start with 'v'
   pull_request:
     branches: [ main ]
 
@@ -37,9 +36,8 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       working-directory: src/Rizzy
 
-    - name: Pack
-      run: dotnet pack Rizzy.csproj --no-build -c Release -o ./publish
-      working-directory: src/Rizzy
-
-    - name: NuGet Push
-      run: dotnet nuget push "src/Rizzy/publish/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+    - name: Publish  
+      uses: brandedoutcast/publish-nuget@v2.5.2  
+      with:   
+       PROJECT_FILE_PATH: src/Rizzy/Rizzy.csproj  
+       NUGET_KEY: ${{secrets.NUGET_API_KEY}}        
