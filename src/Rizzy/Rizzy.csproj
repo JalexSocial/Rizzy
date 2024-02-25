@@ -28,7 +28,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -53,9 +53,4 @@
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\..\docs\media\rizzy.png" Pack="true" PackagePath="\" />
   </ItemGroup>
-
-    <ItemGroup>
-	    <Content Include="wwwroot\**" PackagePath="wwwroot\" />
-    </ItemGroup>
-
 </Project>

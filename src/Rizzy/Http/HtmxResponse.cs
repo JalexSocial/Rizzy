@@ -123,12 +123,13 @@ public class HtmxResponse(HttpContext context)
         return this;
     }
 
-    /// <summary>
-    ///     Allows you to specify how the response will be swapped.
-    /// </summary>
-    /// <param name="swapStyle"></param>
-    /// <returns></returns>
-    public HtmxResponse Reswap(SwapStyle swapStyle)
+	/// <summary>
+	///     Allows you to specify how the response will be swapped.
+	/// </summary>
+	/// <param name="swapStyle"></param>
+	/// <param name="modifier">The hx-swap attributes supports modifiers for changing the behavior of the swap.</param>
+	/// <returns></returns>
+	public HtmxResponse Reswap(SwapStyle swapStyle, string? modifier = null)
     {
         var style = swapStyle switch
         {
@@ -137,7 +138,9 @@ public class HtmxResponse(HttpContext context)
             _ => swapStyle.ToString().ToLowerInvariant()
         };
 
-        _headers[HtmxResponseHeaderNames.Reswap] = style;
+        var reswap = modifier != null ? $"{style} {modifier}" : style;
+
+        _headers[HtmxResponseHeaderNames.Reswap] = reswap;
 
         return this;
     }
@@ -164,6 +167,17 @@ public class HtmxResponse(HttpContext context)
         _headers[HtmxResponseHeaderNames.Reselect] = selector;
 
         return this;
+    }
+
+    /// <summary>
+    /// Sets response code to stop polling
+    /// </summary>
+    /// <returns></returns>
+    public HtmxResponse StopPolling()
+    {
+	    context.Response.StatusCode = HtmxStatusCodes.StopPolling;
+
+	    return this;
     }
 
     /// <summary>

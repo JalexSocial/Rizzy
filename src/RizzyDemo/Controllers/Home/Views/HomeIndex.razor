@@ -97,7 +97,7 @@ Content Guid: @guid
     [CascadingParameter] 
     public RzViewContext? ViewContext { get; set; }
 
-    [Inject] public PostRepo Repo { get; set; }
+    [Inject] public PostRepo Repo { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
