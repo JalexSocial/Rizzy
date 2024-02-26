@@ -14,6 +14,7 @@ using System.Resources;
 using System.Text;
 using System.Text.Json;
 using Humanizer;
+using Rizzy.Http.Attributes;
 
 namespace RizzyDemo.Controllers.Home;
 
@@ -43,7 +44,7 @@ public class HomeController : RzController
     public IResult Information()
     {
         ViewContext.AddFormContext("myForm", CurrentActionUrl, new Person());
-
+        
         return View<Information>();
     }
 
@@ -63,6 +64,7 @@ public class HomeController : RzController
         return View<Counter>();
     }
 
+    [HtmxRequest]
     [HttpPost, ValidateAntiForgeryToken]
     public IResult Count([FromServices] HtmxCounter.HtmxCounterState state)
     {
