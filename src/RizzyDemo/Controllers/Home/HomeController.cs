@@ -80,6 +80,7 @@ public class HomeController : RzController
         return View<Weather>();
     }
 
+    [HtmxRequest]
     public IResult Time()
     {
         if (DateTime.Now.Second % 10 == 0)
