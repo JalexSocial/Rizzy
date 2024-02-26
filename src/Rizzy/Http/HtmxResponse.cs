@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Rizzy.Configuration.Htmx.Builder;
 
 namespace Rizzy.Http;
 
@@ -143,6 +144,19 @@ public class HtmxResponse(HttpContext context)
         _headers[HtmxResponseHeaderNames.Reswap] = reswap;
 
         return this;
+    }
+
+    /// <summary>
+    ///     Allows you to specify how the response will be swapped.
+    /// </summary>
+    /// <param></param>
+    /// <param name="swapStyle"></param>
+    /// <returns></returns>
+    public HtmxResponse Reswap(SwapStyleBuilder swapStyle)
+    {
+        var (style, modifier) = swapStyle.Build();
+
+        return Reswap(style, modifier);
     }
 
     /// <summary>
