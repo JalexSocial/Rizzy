@@ -14,7 +14,7 @@ public class HtmxContext
 
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxContext"/> class.
-	/// </summary>
+    /// </summary>
     /// <param name="context"></param>
     public HtmxContext(HttpContext context)
     {

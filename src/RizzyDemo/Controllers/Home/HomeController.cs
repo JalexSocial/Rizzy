@@ -4,17 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using Rizzy.Components.Swap.Services;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Framework.Mvc;
+using Rizzy.Http.Attributes;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;
-using RizzyDemo.Helpers;
 using System.Diagnostics;
-using System.Resources;
 using System.Text;
-using System.Text.Json;
-using Humanizer;
-using Rizzy.Http.Attributes;
 
 namespace RizzyDemo.Controllers.Home;
 
@@ -44,7 +40,7 @@ public class HomeController : RzController
     public IResult Information()
     {
         ViewContext.AddFormContext("myForm", CurrentActionUrl, new Person());
-        
+
         return View<Information>();
     }
 
@@ -171,5 +167,5 @@ public class HomeController : RzController
             }
         });
     }
-    
+
 }

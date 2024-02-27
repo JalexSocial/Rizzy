@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
+using Rizzy.Configuration.Htmx.Builder;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http.Models;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
-using Rizzy.Configuration.Htmx.Builder;
 
 namespace Rizzy.Http;
 
@@ -124,13 +124,13 @@ public class HtmxResponse(HttpContext context)
         return this;
     }
 
-	/// <summary>
-	///     Allows you to specify how the response will be swapped.
-	/// </summary>
-	/// <param name="swapStyle"></param>
-	/// <param name="modifier">The hx-swap attributes supports modifiers for changing the behavior of the swap.</param>
-	/// <returns></returns>
-	public HtmxResponse Reswap(SwapStyle swapStyle, string? modifier = null)
+    /// <summary>
+    ///     Allows you to specify how the response will be swapped.
+    /// </summary>
+    /// <param name="swapStyle"></param>
+    /// <param name="modifier">The hx-swap attributes supports modifiers for changing the behavior of the swap.</param>
+    /// <returns></returns>
+    public HtmxResponse Reswap(SwapStyle swapStyle, string? modifier = null)
     {
         var style = swapStyle switch
         {
@@ -189,9 +189,9 @@ public class HtmxResponse(HttpContext context)
     /// <returns></returns>
     public HtmxResponse StopPolling()
     {
-	    context.Response.StatusCode = HtmxStatusCodes.StopPolling;
+        context.Response.StatusCode = HtmxStatusCodes.StopPolling;
 
-	    return this;
+        return this;
     }
 
     /// <summary>
