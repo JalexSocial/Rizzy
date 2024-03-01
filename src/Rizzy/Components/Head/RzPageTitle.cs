@@ -6,7 +6,8 @@ using Rizzy.Framework.Services;
 namespace Rizzy.Components.Head;
 
 /// <summary>
-/// Enables rendering an HTML <c>&lt;title&gt;</c> to a <see cref="RzHeadOutlet"/> component.
+/// Enables rendering an HTML <c>&lt;title&gt;</c> to a <see cref="RzHeadOutlet"/> component. This component currently is not operational in SSR mode
+/// due to existing Blazor issues.  See https://github.com/dotnet/aspnetcore/issues/50268
 /// </summary>
 public sealed class RzPageTitle : ComponentBase
 {
@@ -21,7 +22,7 @@ public sealed class RzPageTitle : ComponentBase
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (ViewContext.Htmx.Request is { IsHtmx: true, IsBoosted: false })
+        if (ViewContext.Htmx.Request is { IsHtmx: false })
         {
             builder.OpenComponent<SectionContent>(0);
             builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.TitleSectionId);

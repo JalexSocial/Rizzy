@@ -51,6 +51,11 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     }
 
     /// <summary>
+    /// Sets the current page title
+    /// </summary>
+    public string PageTitle { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets the Htmx context for the current request.
     /// </summary>
     public HtmxContext Htmx => new HtmxContext(HttpContext);

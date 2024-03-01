@@ -32,6 +32,8 @@ public class HomeController : RzController
         _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
         _swapService.AddRawContent("<!--test comment-->");
 
+        ViewContext.PageTitle = "Home Page";
+
         return View<HomeIndex>();
     }
 

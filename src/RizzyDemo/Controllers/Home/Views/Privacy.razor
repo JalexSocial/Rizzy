@@ -1,4 +1,6 @@
 ﻿@using RizzyDemo.Components.Layout
+@using Rizzy.Framework.Services
+@inject RzViewContext ViewContext
 
 @layout MainLayout
 
@@ -7,3 +9,11 @@
 <h1>Privacy</h1>
 
 <p>Use this page to detail your site's privacy policy.</p>
+
+@code
+{
+	protected override void OnInitialized()
+	{
+		ViewContext.PageTitle = "Privacy";
+	}
+}
