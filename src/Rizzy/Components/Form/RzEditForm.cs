@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Components.Form.Models;
 using Rizzy.Framework.Services;
 
-namespace Rizzy.Components.Form;
+namespace Rizzy.Components;
 
 public class RzEditForm : ComponentBase
 {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Configuration.Htmx.Enum;
 
-namespace Rizzy.Components.Swap;
+namespace Rizzy.Components;
 
 /// <summary>
 /// A Blazor component that enables swapping HTML content dynamically based on specified parameters through Htmx.

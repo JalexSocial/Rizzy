@@ -9,7 +9,7 @@ using Rizzy.Configuration.Htmx;
 using Rizzy.Framework.Services;
 using System.Text.Json;
 
-namespace Rizzy.Components.Configuration;
+namespace Rizzy.Components;
 
 /// <summary>
 /// This component will render a meta tag with the serialized <see cref="HtmxConfig"/> object,

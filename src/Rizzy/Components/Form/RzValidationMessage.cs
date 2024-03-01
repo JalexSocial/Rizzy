@@ -5,7 +5,7 @@ using Rizzy.Components.Form.Helpers;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
-namespace Rizzy.Components.Form;
+namespace Rizzy.Components;
 
 public class RzValidationMessage<TValue> : ValidationMessage<TValue>
 {

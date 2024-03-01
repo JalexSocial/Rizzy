@@ -1,6 +1,6 @@
 ﻿using Bunit;
 using Microsoft.Extensions.DependencyInjection;
-using Rizzy.Components.Configuration;
+using Rizzy.Components;
 using Rizzy.Configuration.Htmx;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.FluentAssertions;

@@ -1,5 +1,5 @@
 using Rizzy;
-using Rizzy.Components.Layout;
+using Rizzy.Components;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;

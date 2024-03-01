@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 
-namespace Rizzy.Components.Sections;
+namespace Rizzy.Components;
 
 /// <summary>
 /// Renders content provided by <see cref="RzSectionContent"/> components with matching <see cref="SectionId"/>s.

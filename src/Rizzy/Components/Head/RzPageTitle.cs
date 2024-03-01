@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 using Rizzy.Framework.Services;
 
-namespace Rizzy.Components.Head;
+namespace Rizzy.Components;
 
 /// <summary>
 /// Enables rendering an HTML <c>&lt;title&gt;</c> to a <see cref="RzHeadOutlet"/> component. This component currently is not operational in SSR mode
@@ -28,6 +28,10 @@ public sealed class RzPageTitle : ComponentBase
             builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.TitleSectionId);
             builder.AddComponentParameter(2, nameof(SectionContent.ChildContent), (RenderFragment)BuildTitleRenderTree);
             builder.CloseComponent();
+        }
+        else
+        {
+            BuildTitleRenderTree(builder);
         }
     }
 

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using Rizzy.Components.Form.Helpers;
 
-namespace Rizzy.Components.Form;
+namespace Rizzy.Components;
 
 /// <summary>
 /// An input component for editing date values.

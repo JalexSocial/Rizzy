@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Rizzy.Components;
 using Rizzy.Components.Content;
 using Rizzy.Extensions;
 using Rizzy.Framework.Endpoints;

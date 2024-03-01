@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace Rizzy.Components.Layout;
+namespace Rizzy.Components;
 
 internal class EmptyRootComponent : ComponentBase
 {

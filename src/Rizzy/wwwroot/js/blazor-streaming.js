@@ -121,6 +121,25 @@
             }
         });
 
+    function isCommentNodeInHead(commentNode) {
+        // Ensure that the provided node is indeed a comment node
+        if (commentNode && commentNode.nodeType === Node.COMMENT_NODE) {
+            let currentNode = commentNode.parentNode;
+            // Traverse up the DOM tree
+            while (currentNode !== null) {
+                if (currentNode === document.head) {
+                    // The comment node is within the <head>
+                    return true;
+                }
+                currentNode = currentNode.parentNode;
+            }
+        } else {
+            return false;
+        }
+        // The traversal reached the root without finding <head>, or <head> does not exist
+        return false;
+    }
+
     function blazorSwapSsr(start, end, docFrag) {
         var newDiv = wrap(start, end, 'ssr' + crypto.randomUUID());
 
@@ -248,6 +267,7 @@
         const markers = findStreamingMarkers(componentIdAsString)
         if (markers) {
             const { startMarker, endMarker } = markers
+            enableDomPreservation = !isCommentNodeInHead(startMarker);
             if (enableDomPreservation) {
                 blazorSwapSsr(startMarker, endMarker, docFrag);
             } else {

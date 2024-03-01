@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rizzy.Components.Swap;
+using Rizzy.Components;
 using Rizzy.Components.Swap.Services;
 using Rizzy.Extensions;
 using System.Collections.ObjectModel;

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 
-namespace Rizzy.Components.Head;
+namespace Rizzy.Components;
 
 /// <summary>
 /// Renders content provided by <see cref="RzHeadContent"/> components.
