@@ -5,10 +5,7 @@ using Rizzy.Components.Swap.Services;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Framework.Mvc;
 using Rizzy.Http.Attributes;
-using RizzyDemo.Components.Layout;
-using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;
-using RizzyDemo.Controllers.Home.Views;
 using System.Diagnostics;
 using System.Text;
 
