@@ -8,6 +8,9 @@ using Rizzy.Http.Attributes;
 using RizzyDemo.Controllers.Home.Models;
 using System.Diagnostics;
 using System.Text;
+using RizzyDemo.Components.Layout;
+using RizzyDemo.Components.Shared;
+using RizzyDemo.Controllers.Home.Views;
 
 namespace RizzyDemo.Controllers.Home;
 

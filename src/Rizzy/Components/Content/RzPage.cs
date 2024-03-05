@@ -9,6 +9,9 @@ using System.Reflection;
 
 namespace Rizzy.Components;
 
+/// <summary>
+/// Page component container that provides a ViewContext cascading value
+/// </summary>
 public class RzPage : ComponentBase
 {
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> _layoutAttributeCache = new();
