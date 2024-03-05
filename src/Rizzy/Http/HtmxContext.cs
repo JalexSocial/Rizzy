@@ -22,7 +22,7 @@ public class HtmxContext
         Response = new HtmxResponse(context);
 
         _configOptions = context.RequestServices.GetRequiredService<IOptionsSnapshot<HtmxConfig>>();
-
+        
         Configuration = _configOptions.Value;
     }
 
