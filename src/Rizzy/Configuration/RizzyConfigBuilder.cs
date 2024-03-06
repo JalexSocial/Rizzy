@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -65,6 +68,15 @@ public class RizzyConfigBuilder
         {
             var helperFactory = provider.GetRequiredService<IUrlHelperFactory>();
             var actionContextAccessor = provider.GetRequiredService<IActionContextAccessor>().ActionContext;
+
+            if (actionContextAccessor is null)
+            {
+                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
+                var httpContext = httpContextAccessor.HttpContext!;
+                var actionContext = new ActionContext(httpContext, httpContext.GetRouteData(), new ActionDescriptor());
+
+                return new UrlHelper(actionContext);
+            }
 
             return helperFactory.GetUrlHelper(actionContextAccessor!);
         });
