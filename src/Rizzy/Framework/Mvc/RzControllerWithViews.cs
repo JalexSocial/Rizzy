@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Framework.Services;
+using Rizzy.Http;
 
 namespace Rizzy.Framework.Mvc;
 
@@ -17,6 +18,11 @@ public class RzControllerWithViews : Controller, IRizzyService
 
     /// <inheritdoc/>
     public RzViewContext ViewContext => RizzyService.ViewContext;
+
+    /// <summary>
+    /// Gets the Htmx context for the current request.
+    /// </summary>
+    public HtmxContext Htmx => RizzyService.ViewContext.Htmx;
 
     /// <inheritdoc/>
     public string CurrentActionUrl => RizzyService.CurrentActionUrl;
