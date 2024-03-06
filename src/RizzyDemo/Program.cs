@@ -1,5 +1,8 @@
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Rizzy;
 using Rizzy.Components;
+using Rizzy.Framework.Services;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
@@ -47,6 +50,9 @@ app.UseRizzy();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapGet("/love-htmx",
+    ([FromServices] IRizzyService rizzy) => rizzy.PartialView<LoveHtmx>(new { Message = "I ❤️ ASP.NET Core" }));
 
 app.MapControllerRoute(
     name: "default",
