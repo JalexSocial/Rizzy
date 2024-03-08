@@ -31,7 +31,7 @@ public class RzEditForm : ComponentBase
         // If form id value set as an attribute then honor that
         if (AdditionalAttributes?.ContainsKey("id") == true)
             throw new InvalidOperationException("The form id value must be supplied only from the FormContext parameter");
-
+        
         base.OnParametersSet();
     }
 

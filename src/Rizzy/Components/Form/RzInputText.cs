@@ -20,7 +20,7 @@ public class RzInputText : InputText
             throw new InvalidOperationException($"{nameof(RzInputText)} must be enclosed within an {nameof(RzEditForm)}.");
 
         FieldMapping.TryAdd(FieldIdentifier, NameAttributeValue);
-
+        
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes);
     }
 }

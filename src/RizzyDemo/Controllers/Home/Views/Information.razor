@@ -15,7 +15,7 @@
 
 		<div class="form-group">
 			<label for="name">Name:</label>
-			<RzInputText id="name" class="form-control" @bind-Value="Person.Name"/>
+			<RzInputText class="form-control" @bind-Value="Person.Name"/>
 			<RzValidationMessage For="@(() => Person.Name)"/>
 		</div>
 

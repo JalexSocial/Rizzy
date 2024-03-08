@@ -84,6 +84,9 @@ public class DataAnnotationsProcessor
             throw new InvalidOperationException($"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
         }
 
+        if (!attributes.ContainsKey("id"))
+            attributes.TryAdd("id", fieldIdentifier.FieldName);
+
         var validationAttributes = propertyInfo.GetCustomAttributes(true).OfType<ValidationAttribute>().ToList();
 
         // Initialize client-side validation if any validation attributes are present.
