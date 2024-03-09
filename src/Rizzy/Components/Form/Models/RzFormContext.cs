@@ -43,7 +43,10 @@ public record RzFormContext
         Id = id;
         FormName = formName;
         FormUrl = formUrl;
-        EditContext = new EditContext(model);
+        EditContext = new EditContext(model)
+        {
+            ShouldUseFieldIdentifiers = true
+        };
     }
 
     /// <summary>
@@ -65,6 +68,7 @@ public record RzFormContext
         FormName = formName;
         FormUrl = formUrl;
         EditContext = context;
+        EditContext.ShouldUseFieldIdentifiers = true;
     }
 
     /// <summary>

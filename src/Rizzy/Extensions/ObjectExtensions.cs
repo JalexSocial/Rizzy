@@ -36,7 +36,9 @@ public static class ObjectExtensions
     /// Serializes .NET objects for use with Alpine.js x-data attribute
     /// Credit to Alexander Zeitler for developing this approach. It requires Newtonsoft because System.Text.Json doesn't allow non-standard quote characters.
     /// </summary>
-    /// <seealso cref="https://alexanderzeitler.com/articles/serializing-dotnet-csharp-object-for-use-with-alpine-x-data-attribute/">See Serializing .NET objects for use with Alpine.js x-data attribute</seealso>
+    /// <seealso>See Serializing .NET objects for use with Alpine.js x-data attribute
+    ///     <cref>https://alexanderzeitler.com/articles/serializing-dotnet-csharp-object-for-use-with-alpine-x-data-attribute/</cref>
+    /// </seealso>
     /// <param name="value"></param>
     /// <code>
     /// <Widget x-data="@myDataObject.SerializeAsAlpineData()"></Widget>

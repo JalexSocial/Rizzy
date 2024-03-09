@@ -16,6 +16,9 @@ public class RzInputDate<TValue> : InputDate<TValue>
     [CascadingParameter]
     private Dictionary<FieldIdentifier, string>? FieldMapping { get; set; }
 
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -25,6 +28,21 @@ public class RzInputDate<TValue> : InputDate<TValue>
 
         FieldMapping.TryAdd(FieldIdentifier, NameAttributeValue);
 
-        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes);
+        // Check if an id is already present for this input
+        if (AdditionalAttributes != null && AdditionalAttributes.TryGetValue("id", out object? value))
+        {
+	        if (value is string idValue)
+	        {
+		        Id = idValue;
+	        }
+        }
+
+        // If id doesn't exist then attempt to create one
+        if (string.IsNullOrEmpty(Id))
+        {
+	        Id = IdProvider.CreateSanitizedId(NameAttributeValue);
+        }
+
+        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id);
     }
 }

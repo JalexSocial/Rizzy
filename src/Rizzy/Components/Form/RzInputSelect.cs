@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Rizzy.Components.Form.Helpers;
+using System.Collections.ObjectModel;
 
 namespace Rizzy.Components;
 
@@ -16,6 +17,9 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
     [CascadingParameter]
     private Dictionary<FieldIdentifier, string>? FieldMapping { get; set; }
 
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -24,5 +28,16 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
             throw new InvalidOperationException($"{nameof(RzInputSelect<TValue>)} must be enclosed within an {nameof(RzEditForm)}.");
 
         // No validation
+
+        // If id doesn't exist then attempt to create one
+        if (string.IsNullOrEmpty(Id))
+        {
+	        Id = IdProvider.CreateSanitizedId(NameAttributeValue);
+        }
+
+        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+        attrib.TryAdd("id", Id);
+
+        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }
 }
