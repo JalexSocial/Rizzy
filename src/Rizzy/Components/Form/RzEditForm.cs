@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Components.Form.Models;
@@ -8,6 +9,12 @@ namespace Rizzy.Components;
 
 public class RzEditForm : ComponentBase
 {
+	public class FieldMap
+	{
+		public string Id { get; set; } = string.Empty;
+		public string FieldName { get; set; } = string.Empty;
+	}
+
     [Inject] public RzViewContext ViewContext { get; set; } = default!;
 
     [Parameter] public RzFormContext FormContext { get; set; } = default!;
@@ -18,7 +25,12 @@ public class RzEditForm : ComponentBase
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
-    private Dictionary<FieldIdentifier, string> _fieldMapping = new();
+    public Dictionary<FieldIdentifier, FieldMap> FieldMapping { get; internal set; } = new();
+
+    internal void AddFieldMapping(FieldIdentifier key, string fieldName, string id)
+    {
+	    FieldMapping.TryAdd(key, new FieldMap { FieldName = fieldName, Id = id});
+    }
 
     protected override void OnParametersSet()
     {
@@ -37,8 +49,8 @@ public class RzEditForm : ComponentBase
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenComponent<CascadingValue<Dictionary<FieldIdentifier, string>>>(0);
-        builder.AddAttribute(1, "Value", _fieldMapping);
+        builder.OpenComponent<CascadingValue<RzEditForm>>(0);
+        builder.AddAttribute(1, "Value", this);
         builder.AddAttribute(2, "IsFixed", true);
         builder.AddAttribute(3, "ChildContent", new RenderFragment((builder2) =>
         {
@@ -64,5 +76,25 @@ public class RzEditForm : ComponentBase
             builder2.CloseComponent();
         }));
         builder.CloseComponent();
+    }
+
+    internal string CreateSanitizedId(string fullname)
+    {
+	    if (string.IsNullOrEmpty(fullname))
+	    {
+		    return string.Empty;
+	    }
+
+	    // Remove leading and trailing spaces, replace spaces with hyphens, and remove invalid characters
+	    string sanitized = Regex.Replace(fullname.Trim(), "\\s+", "-");
+	    sanitized = Regex.Replace(sanitized, "[^a-zA-Z0-9\\-_:.]", "");
+
+	    // Ensure the ID starts with a letter or an underscore (for broader compatibility and CSS friendliness)
+	    if (!char.IsLetter(sanitized[0]) && sanitized[0] != '_')
+	    {
+		    sanitized = "rz" + sanitized;
+	    }
+
+	    return sanitized;
     }
 }

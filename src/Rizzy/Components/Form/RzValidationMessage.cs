@@ -15,13 +15,13 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     [CascadingParameter] EditContext EditContext { get; set; } = default!;
 
     [CascadingParameter]
-    private Dictionary<FieldIdentifier, string>? FieldMapping { get; set; }
+    private RzEditForm? EditForm { get; set; }
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
 
-        if (FieldMapping is null)
+        if (EditForm is null)
             throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} must be enclosed within an {nameof(RzEditForm)}.");
 
         // Initialize or clear the merged attributes dictionary
@@ -33,7 +33,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
             throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
 
         var field = FieldIdentifier.Create(For);
-        var fieldName = FieldMapping!.ContainsKey(field) ? FieldMapping[field] : NameAttributeValue;
+        var fieldName = EditForm.FieldMapping!.ContainsKey(field) ? EditForm.FieldMapping[field].FieldName : NameAttributeValue;
         //var otherFieldName = NameAttributeValue;
 
         // Merge or add the new attributes
