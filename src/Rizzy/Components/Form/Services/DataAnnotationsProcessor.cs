@@ -53,7 +53,7 @@ public class DataAnnotationsProcessor
             handler((TAttribute)attribute, attributes, propertyName);
     }
 
-    public IReadOnlyDictionary<string, object>? MergeAttributes<TValue>(string controlName, Expression<Func<TValue>>? valueExpression, IReadOnlyDictionary<string, object>? additionalAttributes)
+    public IReadOnlyDictionary<string, object>? MergeAttributes<TValue>(string controlName, Expression<Func<TValue>>? valueExpression, IReadOnlyDictionary<string, object>? additionalAttributes, string? id = null)
     {
         if (valueExpression == null)
         {
@@ -62,6 +62,10 @@ public class DataAnnotationsProcessor
 
         var attrib = additionalAttributes is null ?
                 new Dictionary<string, object>() : new Dictionary<string, object>(additionalAttributes);
+
+        if (id != null)
+	        attrib.TryAdd("id", id);
+
         var fieldIdentifier = FieldIdentifier.Create(valueExpression);
         ProcessAttributes(fieldIdentifier, attrib);
 
@@ -83,9 +87,6 @@ public class DataAnnotationsProcessor
         {
             throw new InvalidOperationException($"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
         }
-
-        if (!attributes.ContainsKey("id"))
-            attributes.TryAdd("id", fieldIdentifier.FieldName);
 
         var validationAttributes = propertyInfo.GetCustomAttributes(true).OfType<ValidationAttribute>().ToList();
 

@@ -17,6 +17,9 @@ public class RzInputNumber<TValue> : InputNumber<TValue>
     [CascadingParameter]
     private Dictionary<FieldIdentifier, string>? FieldMapping { get; set; }
 
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -26,6 +29,12 @@ public class RzInputNumber<TValue> : InputNumber<TValue>
 
         FieldMapping.TryAdd(FieldIdentifier, NameAttributeValue);
 
-        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes);
+        // If id doesn't exist then attempt to create one
+        if (string.IsNullOrEmpty(Id))
+        {
+	        Id = IdProvider.CreateSanitizedId(NameAttributeValue);
+        }
+
+        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id);
     }
 }
