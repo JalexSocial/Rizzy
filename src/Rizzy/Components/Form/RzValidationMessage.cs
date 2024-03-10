@@ -25,7 +25,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
             throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} must be enclosed within an {nameof(RzEditForm)}.");
 
         // Initialize or clear the merged attributes dictionary
-        _mergedAttributes = new Dictionary<string, object>();
+        _mergedAttributes = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         _shouldGenerateFieldNames = EditContext.ShouldUseFieldIdentifiers;
 
         // Check if the "For" attribute is provided and extract the field name
@@ -39,15 +39,6 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
         // Merge or add the new attributes
         _mergedAttributes["data-valmsg-for"] = fieldName;
         _mergedAttributes["data-valmsg-replace"] = "true";
-
-        // Merge with existing AdditionalAttributes if any
-        if (AdditionalAttributes != null)
-        {
-            foreach (var attribute in AdditionalAttributes)
-            {
-                _mergedAttributes[attribute.Key] = attribute.Value;
-            }
-        }
 
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(_mergedAttributes);
     }
