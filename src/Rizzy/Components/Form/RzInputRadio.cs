@@ -15,7 +15,7 @@ public class RzInputRadio<TValue> : InputRadio<TValue>
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
     [CascadingParameter]
-    private Dictionary<FieldIdentifier, string>? FieldMapping { get; set; }
+    private RzEditForm? EditForm { get; set; }
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -24,7 +24,7 @@ public class RzInputRadio<TValue> : InputRadio<TValue>
     {
         base.OnParametersSet();
 
-        if (FieldMapping is null)
+        if (EditForm is null)
             throw new InvalidOperationException($"{nameof(RzInputRadio<TValue>)} must be enclosed within an {nameof(RzEditForm)}.");
 
         // No validation
