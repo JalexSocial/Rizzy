@@ -29,7 +29,8 @@ public class RzEditForm : ComponentBase
 
     internal void AddFieldMapping(FieldIdentifier key, string fieldName, string id)
     {
-	    FieldMapping.TryAdd(key, new FieldMap { FieldName = fieldName, Id = id});
+	    if (FieldMapping.TryAdd(key, new FieldMap { FieldName = fieldName, Id = id}))
+	        StateHasChanged();
     }
 
     protected override void OnParametersSet()
