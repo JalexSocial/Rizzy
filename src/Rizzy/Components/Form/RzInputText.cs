@@ -10,7 +10,7 @@ public class RzInputText : InputText
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
     [CascadingParameter]
-    private Dictionary<FieldIdentifier, string>? FieldMapping { get; set; }
+    private RzEditForm? EditForm { get; set; }
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -19,16 +19,16 @@ public class RzInputText : InputText
     {
         base.OnParametersSet();
 
-        if (FieldMapping is null)
+        if (EditForm is null)
             throw new InvalidOperationException($"{nameof(RzInputText)} must be enclosed within an {nameof(RzEditForm)}.");
 
-        FieldMapping.TryAdd(FieldIdentifier, NameAttributeValue);
-
         // If id doesn't exist then attempt to create one
-        if (string.IsNullOrEmpty(Id))
+        if (string.IsNullOrEmpty(Id) && AdditionalAttributes != null)
         {
-	        Id = IdProvider.CreateSanitizedId(NameAttributeValue);
+	        Id = EditForm.CreateSanitizedId(NameAttributeValue);
         }
+
+        EditForm.AddFieldMapping(FieldIdentifier, NameAttributeValue, Id);
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
     }

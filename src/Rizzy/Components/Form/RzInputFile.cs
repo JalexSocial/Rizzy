@@ -11,7 +11,7 @@ namespace Rizzy.Components;
 public class RzInputFile : InputFile
 {
 	[CascadingParameter]
-	private Dictionary<FieldIdentifier, string>? FieldMapping { get; set; }
+	private RzEditForm? EditForm { get; set; }
 
     [Parameter]
 	public string Id { get; set; } = string.Empty;
@@ -20,7 +20,7 @@ public class RzInputFile : InputFile
 	{
 		base.OnParametersSet();
 
-		if (FieldMapping is null)
+		if (EditForm is null)
 			throw new InvalidOperationException($"{nameof(RzInputFile)} must be enclosed within an {nameof(RzEditForm)}.");
 
         // No validation
