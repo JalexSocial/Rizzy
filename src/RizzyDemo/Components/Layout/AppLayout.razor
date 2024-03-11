@@ -10,7 +10,7 @@
     <HtmxConfigHeadOutlet />
     <base href="/"/>
     <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/app.css"/>
+    <link rel="stylesheet" href="/css/site.css"/>
     <link rel="stylesheet" href="RizzyDemo.styles.css"/>
     <link rel="icon" type="image/png" href="favicon.png"/>
     <RzHeadOutlet/>
@@ -24,7 +24,8 @@
 </head>
 <body>
 @Body
-<script src="_content/Rizzy/js/aspnet-validation.js"></script>
+
+<HtmxAntiforgeryScript/>
 <script type="text/javascript">
 	const v = new aspnetValidation.ValidationService();
 	v.bootstrap({ watch: true });
