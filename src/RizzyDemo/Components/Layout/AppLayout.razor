@@ -14,8 +14,7 @@
     <link rel="stylesheet" href="RizzyDemo.styles.css"/>
     <link rel="icon" type="image/png" href="favicon.png"/>
     <RzHeadOutlet/>
-
-    <script defer src="_content/Rizzy/js/antiforgerySnippet.js"></script>
+    <HtmxAntiforgeryScript />
     <script defer src="https://unpkg.com/htmx.org@1.9.10"></script>
     <!--<script src="https://unpkg.com/htmx.org@2.0.0-alpha1/dist/htmx.min.js"></script>-->
 
@@ -25,7 +24,7 @@
 <body>
 @Body
 
-<HtmxAntiforgeryScript/>
+<script src="_content/Rizzy/js/aspnet-validation.js"></script>
 <script type="text/javascript">
 	const v = new aspnetValidation.ValidationService();
 	v.bootstrap({ watch: true });
