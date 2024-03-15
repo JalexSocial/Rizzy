@@ -45,4 +45,19 @@ public static class HtmxRequestHeaderNames
     /// The `id` of the triggered element if it exists.
     /// </summary>
     public const string Trigger = "HX-Trigger";
+
+    /// <summary>
+    /// Collection of all HTMX request headers
+    /// </summary>
+    public static readonly string[] All = new[]
+    {
+	    Boosted,
+	    CurrentURL,
+	    HistoryRestoreRequest,
+	    Prompt,
+	    HtmxRequest,
+	    Target,
+	    TriggerName,
+	    Trigger
+    };
 }

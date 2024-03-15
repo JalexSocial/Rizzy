@@ -1,0 +1,39 @@
+﻿@namespace Rizzy.Components
+
+<script type="text/javascript">
+	@((MarkupString)GetAntiforgeryJavaScript(Minified))
+</script>
+
+@code {
+
+	[Parameter]
+#if DEBUG
+	public bool Minified { get; set; } = false;
+#else
+	public bool Minified { get; set; } = true;
+#endif
+
+	protected override void OnInitialized()
+	{
+		base.OnInitialized();
+	}
+
+	public string AntiforgeryJavaScript => GetString(nameof(AntiforgeryJavaScript));
+
+	public string AntiforgeryJavaScriptMinified => GetString(nameof(AntiforgeryJavaScriptMinified));
+
+	public string GetAntiforgeryJavaScript(bool minified) => minified ? AntiforgeryJavaScriptMinified : AntiforgeryJavaScript;
+
+	private static string GetString(string name)
+	{
+		var assembly = typeof(HtmxAntiforgeryScript).Assembly;
+		using var resource = assembly.GetManifestResourceStream(name);
+
+		if (resource == null)
+			throw new ArgumentException($"Resource \"{name}\" was not found.", nameof(name));
+            
+		using var reader = new StreamReader(resource);
+		var response = reader.ReadToEnd();
+		return response;
+	}
+}

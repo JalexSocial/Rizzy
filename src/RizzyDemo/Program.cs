@@ -51,7 +51,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapGet("/love-htmx",
+app.MapPost("/love-htmx",
     ([FromServices] IRizzyService rizzy) => rizzy.PartialView<LoveHtmx>(new { Message = "I ❤️ ASP.NET Core" }));
 
 app.MapControllerRoute(
