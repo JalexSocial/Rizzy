@@ -60,4 +60,22 @@ public static class HtmxResponseHeaderNames
     /// Allows you to trigger client-side events after the swap step.
     /// </summary>
     public const string TriggerAfterSwap = "HX-Trigger-After-Swap";
+
+    /// <summary>
+    /// Collection of all HTMX response headers
+    /// </summary>
+    public static readonly string[] All = new[]
+    {
+	    Location,
+	    PushUrl,
+	    Redirect,
+	    Refresh,
+	    ReplaceUrl,
+	    Reswap,
+	    Retarget,
+	    Reselect,
+	    Trigger,
+	    TriggerAfterSettle,
+	    TriggerAfterSwap
+    };
 }
