@@ -18,13 +18,9 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// Configures the action context for the view context.
     /// </summary>
     /// <param name="actionContext">The action context to configure.</param>
-    /// <exception cref="InvalidOperationException">Thrown if the view context is already configured with an action context.</exception>
     /// <exception cref="ArgumentNullException">Thrown if the action context is null.</exception>
     internal void ConfigureActionContext(ActionContext actionContext)
     {
-        if (ActionContext != default(ActionContext))
-            throw new InvalidOperationException("RzViewContext has already been configured with an ActionContext");
-
         ArgumentNullException.ThrowIfNull(actionContext);
         ActionContext = actionContext;
     }
