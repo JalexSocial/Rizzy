@@ -27,7 +27,15 @@ public class RzEditForm : ComponentBase
 
     public Dictionary<FieldIdentifier, FieldMap> FieldMapping { get; internal set; } = new();
 
-    internal void AddFieldMapping(FieldIdentifier key, string fieldName, string id)
+    /// <summary>
+    /// Adds a mapping in FieldMapping to map a particular field identified by a FieldIdentifier to
+    /// a FieldMap object that contains the fields form name and id. This is public to allow for third-party
+    /// components to also map fields
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="fieldName"></param>
+    /// <param name="id"></param>
+    public void AddFieldMapping(FieldIdentifier key, string fieldName, string id)
     {
 	    if (FieldMapping.TryAdd(key, new FieldMap { FieldName = fieldName, Id = id}))
 	        StateHasChanged();
@@ -79,7 +87,7 @@ public class RzEditForm : ComponentBase
         builder.CloseComponent();
     }
 
-    internal string CreateSanitizedId(string fullname)
+    public string CreateSanitizedId(string fullname)
     {
 	    if (string.IsNullOrEmpty(fullname))
 	    {
