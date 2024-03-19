@@ -45,12 +45,5 @@ public class RzValidationSummary : ValidationSummary
                 builder.CloseElement();
             }
         }
-        else
-        {
-            builder.OpenElement(0, "ul");
-            builder.AddAttribute(1, "class", "validation-errors");
-            builder.AddMultipleAttributes(2, AdditionalAttributes);
-            builder.CloseElement();
-        }
     }
 }
