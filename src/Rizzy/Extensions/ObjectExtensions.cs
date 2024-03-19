@@ -40,11 +40,12 @@ public static class ObjectExtensions
     ///     <cref>https://alexanderzeitler.com/articles/serializing-dotnet-csharp-object-for-use-with-alpine-x-data-attribute/</cref>
     /// </seealso>
     /// <param name="value"></param>
+    /// <param name="ignoreNullValues"></param>
     /// <code>
     /// <Widget x-data="@myDataObject.SerializeAsAlpineData()"></Widget>
     /// </code>
     /// <returns></returns>
-    public static string SerializeAsAlpineData(this object? value)
+    public static string SerializeAsAlpineData(this object? value, bool ignoreNullValues = false)
     {
         if (value is null)
             return string.Empty;
@@ -58,7 +59,8 @@ public static class ObjectExtensions
 
         Newtonsoft.Json.JsonSerializer jsonSerializer = new ()
         {
-            ContractResolver = (IContractResolver)new CamelCasePropertyNamesContractResolver()
+            ContractResolver = (IContractResolver)new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = ignoreNullValues ? NullValueHandling.Ignore : NullValueHandling.Include
         };
 
         jsonSerializer.Serialize((JsonWriter)jsonTextWriter, value);
