@@ -11,6 +11,16 @@ public class HtmxSwapContent : ComponentBase
 {
     [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;
 
+    protected override void OnInitialized()
+    {
+	    base.OnInitialized();
+
+	    HtmxSwapService.ContentItemsUpdated += (sender, e) =>
+	    {
+            StateHasChanged();
+	    };
+    }
+
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         builder.AddContent(0, HtmxSwapService.RenderToFragment());

@@ -73,7 +73,7 @@ public class HomeController : RzController
 
     public IResult Weather()
     {
-        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+        // In this example we are adding the sidebar inside the Weather component
         
         return View<Weather>();
     }

@@ -106,8 +106,6 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
 
     private async Task RenderComponent(HttpContext httpContext)
     {
-        IServiceProvider serviceProvider = httpContext.RequestServices;
-
         // Render the page as a razor component result
         var page = new RazorComponentResult(ComponentType, Parameters)
         {
@@ -115,43 +113,6 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
         };
 
         // Start rendering the primary page
-        Task pageRenderer = page.ExecuteAsync(httpContext);
-        Task<string> swapRenderer = RenderSwapContent(serviceProvider);
-
-        await Task.WhenAll(pageRenderer, swapRenderer);
-
-        //if (!pageRenderer.IsCompleted)
-        //    await Task.WhenAll( pageRenderer );
-
-        string swapContent = await swapRenderer;
-
-        if (!string.IsNullOrEmpty(swapContent))
-            await httpContext.Response.WriteAsync(swapContent);
-
-        await httpContext.Response.BodyWriter.FlushAsync(CancellationToken.None);
-    }
-
-    private async Task<string> RenderSwapContent(IServiceProvider serviceProvider)
-    {
-        var content = string.Empty;
-
-        IHtmxSwapService swapService = serviceProvider.GetRequiredService<IHtmxSwapService>();
-
-        if (swapService.ContentAvailable)
-        {
-            ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
-
-            await using var renderer = new HtmlRenderer(serviceProvider, loggerFactory);
-
-            // Render any additional out of band swaps
-            content = await renderer.Dispatcher.InvokeAsync(async () =>
-            {
-                var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
-
-                return output.ToHtmlString();
-            });
-        }
-
-        return content;
+        await page.ExecuteAsync(httpContext);
     }
 }
