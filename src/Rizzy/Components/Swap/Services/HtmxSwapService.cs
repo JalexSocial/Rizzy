@@ -20,7 +20,7 @@ public class HtmxSwapService : IHtmxSwapService
     /// </summary>
     public event EventHandler? ContentItemsUpdated;
 
-	private enum RzContentType
+    private enum RzContentType
     {
         Swappable,
         RawHtml
@@ -32,24 +32,24 @@ public class HtmxSwapService : IHtmxSwapService
     }
 
     private record struct ContentItem(RzContentType ContentType, string TargetId, SwapStyle SwapStyle, string Selector, RenderFragment Content);
-    
+
     /// <summary>
     /// Notifies ContentItemsUpdated event handler of change to content items
     /// </summary>
     protected virtual void OnContentItemsUpdated()
     {
-	    ContentItemsUpdated?.Invoke(this, EventArgs.Empty);
+        ContentItemsUpdated?.Invoke(this, EventArgs.Empty);
     }
 
-	/// <summary>
-	/// Adds a swappable Razor component to the service for later rendering.
-	/// </summary>
-	/// <param name="targetId">The target DOM element ID where the component should be rendered.</param>
-	/// <param name="parameters">Optional parameters to pass to the component.</param>
-	/// <param name="swapStyle">The style of content swap to apply.</param>
-	/// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-	/// <typeparam name="TComponent">The type of the Razor component to add.</typeparam>
-	public void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null) where TComponent : IComponent
+    /// <summary>
+    /// Adds a swappable Razor component to the service for later rendering.
+    /// </summary>
+    /// <param name="targetId">The target DOM element ID where the component should be rendered.</param>
+    /// <param name="parameters">Optional parameters to pass to the component.</param>
+    /// <param name="swapStyle">The style of content swap to apply.</param>
+    /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
+    /// <typeparam name="TComponent">The type of the Razor component to add.</typeparam>
+    public void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null) where TComponent : IComponent
     {
         var component = new RenderFragment(builder =>
         {
@@ -67,7 +67,7 @@ public class HtmxSwapService : IHtmxSwapService
         _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, component));
 
         OnContentItemsUpdated();
-	}
+    }
 
     /// <summary>
     /// Adds a RenderFragment to the service for later rendering.
@@ -81,7 +81,7 @@ public class HtmxSwapService : IHtmxSwapService
         _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, renderFragment));
 
         OnContentItemsUpdated();
-	}
+    }
 
     /// <summary>
     /// Adds string content to the service for later rendering.
@@ -97,7 +97,7 @@ public class HtmxSwapService : IHtmxSwapService
         _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, contentFragment));
 
         OnContentItemsUpdated();
-	}
+    }
 
     /// <summary>
     /// Adds raw HTML content to the service for later rendering.
@@ -109,7 +109,7 @@ public class HtmxSwapService : IHtmxSwapService
         _contentItems.Add(new ContentItem(RzContentType.RawHtml, string.Empty, SwapStyle.None, string.Empty, contentFragment));
 
         OnContentItemsUpdated();
-	}
+    }
 
     /// <summary>
     /// Renders all added content (components, fragments, and raw HTML) to a single RenderFragment.

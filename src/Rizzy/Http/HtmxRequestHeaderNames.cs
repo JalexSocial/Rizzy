@@ -51,13 +51,13 @@ public static class HtmxRequestHeaderNames
     /// </summary>
     public static readonly string[] All = new[]
     {
-	    Boosted,
-	    CurrentURL,
-	    HistoryRestoreRequest,
-	    Prompt,
-	    HtmxRequest,
-	    Target,
-	    TriggerName,
-	    Trigger
+        Boosted,
+        CurrentURL,
+        HistoryRestoreRequest,
+        Prompt,
+        HtmxRequest,
+        Target,
+        TriggerName,
+        Trigger
     };
 }

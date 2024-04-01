@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System.ComponentModel;
-using System.Formats.Asn1;
-using System.Text.Json;
 using Newtonsoft.Json.Serialization;
-using static System.Net.WebRequestMethods;
+using System.ComponentModel;
 
 namespace Rizzy.Extensions;
 
@@ -57,7 +54,7 @@ public static class ObjectExtensions
             QuoteChar = '\''
         };
 
-        Newtonsoft.Json.JsonSerializer jsonSerializer = new ()
+        Newtonsoft.Json.JsonSerializer jsonSerializer = new()
         {
             ContractResolver = (IContractResolver)new CamelCasePropertyNamesContractResolver(),
             NullValueHandling = ignoreNullValues ? NullValueHandling.Ignore : NullValueHandling.Include

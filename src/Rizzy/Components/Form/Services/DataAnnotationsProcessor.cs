@@ -64,7 +64,7 @@ public class DataAnnotationsProcessor
                 new Dictionary<string, object>() : new Dictionary<string, object>(additionalAttributes);
 
         if (id != null)
-	        attrib.TryAdd("id", id);
+            attrib.TryAdd("id", id);
 
         var fieldIdentifier = FieldIdentifier.Create(valueExpression);
         ProcessAttributes(fieldIdentifier, attrib);

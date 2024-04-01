@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Rizzy.Components.Form.Helpers;
-using Rizzy.Components.Form.Models;
 
 namespace Rizzy.Components;
 
@@ -30,7 +29,7 @@ public class RzInputDate<TValue> : InputDate<TValue>
         // If id doesn't exist then attempt to create one
         if (string.IsNullOrEmpty(Id))
         {
-	        Id = EditForm.CreateSanitizedId(NameAttributeValue);
+            Id = EditForm.CreateSanitizedId(NameAttributeValue);
         }
 
         EditForm.AddFieldMapping(FieldIdentifier, NameAttributeValue, Id);

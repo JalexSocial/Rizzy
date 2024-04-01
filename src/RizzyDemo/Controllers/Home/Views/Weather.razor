@@ -48,7 +48,6 @@
 
 @code {
     [Inject] RzViewContext? ViewContext { get; set; }
-    [Inject] IHtmxSwapService SwapService { get; set; }
 
     private List<WeatherForecast>? forecasts;
 
@@ -70,8 +69,6 @@
             TemperatureC = Random.Shared.Next(-20, 55),
             Summary = summaries[Random.Shared.Next(summaries.Length)]
         }).ToList();
-
-        SwapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
     }
     
     private class WeatherForecast

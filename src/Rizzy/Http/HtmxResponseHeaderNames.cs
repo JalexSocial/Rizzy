@@ -66,16 +66,16 @@ public static class HtmxResponseHeaderNames
     /// </summary>
     public static readonly string[] All = new[]
     {
-	    Location,
-	    PushUrl,
-	    Redirect,
-	    Refresh,
-	    ReplaceUrl,
-	    Reswap,
-	    Retarget,
-	    Reselect,
-	    Trigger,
-	    TriggerAfterSettle,
-	    TriggerAfterSwap
+        Location,
+        PushUrl,
+        Redirect,
+        Refresh,
+        ReplaceUrl,
+        Reswap,
+        Retarget,
+        Reselect,
+        Trigger,
+        TriggerAfterSettle,
+        TriggerAfterSwap
     };
 }

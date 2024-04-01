@@ -5,12 +5,12 @@ using Rizzy.Components.Swap.Services;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Framework.Mvc;
 using Rizzy.Http.Attributes;
-using RizzyDemo.Controllers.Home.Models;
-using System.Diagnostics;
-using System.Text;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
+using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;
+using System.Diagnostics;
+using System.Text;
 
 namespace RizzyDemo.Controllers.Home;
 
@@ -73,8 +73,8 @@ public class HomeController : RzController
 
     public IResult Weather()
     {
-        // In this example we are adding the sidebar inside the Weather component
-        
+        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+
         return View<Weather>();
     }
 

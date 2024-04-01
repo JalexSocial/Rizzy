@@ -1,19 +1,19 @@
-﻿using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Components.Form.Models;
 using Rizzy.Framework.Services;
+using System.Text.RegularExpressions;
 
 namespace Rizzy.Components;
 
 public class RzEditForm : ComponentBase
 {
-	public class FieldMap
-	{
-		public string Id { get; set; } = string.Empty;
-		public string FieldName { get; set; } = string.Empty;
-	}
+    public class FieldMap
+    {
+        public string Id { get; set; } = string.Empty;
+        public string FieldName { get; set; } = string.Empty;
+    }
 
     [Inject] public RzViewContext ViewContext { get; set; } = default!;
 
@@ -37,8 +37,8 @@ public class RzEditForm : ComponentBase
     /// <param name="id"></param>
     public void AddFieldMapping(FieldIdentifier key, string fieldName, string id)
     {
-	    if (FieldMapping.TryAdd(key, new FieldMap { FieldName = fieldName, Id = id}))
-	        StateHasChanged();
+        if (FieldMapping.TryAdd(key, new FieldMap { FieldName = fieldName, Id = id }))
+            StateHasChanged();
     }
 
     protected override void OnParametersSet()
@@ -52,7 +52,7 @@ public class RzEditForm : ComponentBase
         // If form id value set as an attribute then honor that
         if (AdditionalAttributes?.ContainsKey("id") == true)
             throw new InvalidOperationException("The form id value must be supplied only from the FormContext parameter");
-        
+
         base.OnParametersSet();
     }
 
@@ -89,21 +89,21 @@ public class RzEditForm : ComponentBase
 
     public string CreateSanitizedId(string fullname)
     {
-	    if (string.IsNullOrEmpty(fullname))
-	    {
-		    return string.Empty;
-	    }
+        if (string.IsNullOrEmpty(fullname))
+        {
+            return string.Empty;
+        }
 
-	    // Remove leading and trailing spaces, replace spaces with hyphens, and remove invalid characters
-	    string sanitized = Regex.Replace(fullname.Trim(), "\\s+", "-");
-	    sanitized = Regex.Replace(sanitized, "[^a-zA-Z0-9\\-_:.]", "");
+        // Remove leading and trailing spaces, replace spaces with hyphens, and remove invalid characters
+        string sanitized = Regex.Replace(fullname.Trim(), "\\s+", "-");
+        sanitized = Regex.Replace(sanitized, "[^a-zA-Z0-9\\-_:.]", "");
 
-	    // Ensure the ID starts with a letter or an underscore (for broader compatibility and CSS friendliness)
-	    if (!char.IsLetter(sanitized[0]) && sanitized[0] != '_')
-	    {
-		    sanitized = "rz" + sanitized;
-	    }
+        // Ensure the ID starts with a letter or an underscore (for broader compatibility and CSS friendliness)
+        if (!char.IsLetter(sanitized[0]) && sanitized[0] != '_')
+        {
+            sanitized = "rz" + sanitized;
+        }
 
-	    return sanitized;
+        return sanitized;
     }
 }

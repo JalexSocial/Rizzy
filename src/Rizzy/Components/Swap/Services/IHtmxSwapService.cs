@@ -5,17 +5,17 @@ namespace Rizzy.Components.Swap.Services;
 
 public interface IHtmxSwapService
 {
-	event EventHandler? ContentItemsUpdated;
+    event EventHandler? ContentItemsUpdated;
 
-	/// <summary>
-	/// Adds a swappable Razor component to the service for later rendering.
-	/// </summary>
-	/// <param name="targetId">The target DOM element ID where the component should be rendered.</param>
-	/// <param name="parameters">Optional parameters to pass to the component.</param>
-	/// <param name="swapStyle">The style of content swap to apply.</param>
-	/// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-	/// <typeparam name="TComponent">The type of the Razor component to add.</typeparam>
-	void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null) where TComponent : IComponent;
+    /// <summary>
+    /// Adds a swappable Razor component to the service for later rendering.
+    /// </summary>
+    /// <param name="targetId">The target DOM element ID where the component should be rendered.</param>
+    /// <param name="parameters">Optional parameters to pass to the component.</param>
+    /// <param name="swapStyle">The style of content swap to apply.</param>
+    /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
+    /// <typeparam name="TComponent">The type of the Razor component to add.</typeparam>
+    void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null) where TComponent : IComponent;
 
     /// <summary>
     /// Adds a RenderFragment to the service for later rendering.

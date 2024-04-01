@@ -25,7 +25,7 @@ public class RzInputTextArea : InputTextArea
         // If id doesn't exist then attempt to create one
         if (string.IsNullOrEmpty(Id))
         {
-	        Id = EditForm.CreateSanitizedId(NameAttributeValue);
+            Id = EditForm.CreateSanitizedId(NameAttributeValue);
         }
 
         EditForm.AddFieldMapping(FieldIdentifier, NameAttributeValue, Id);
