@@ -176,6 +176,14 @@ public class HtmxSwapService : IHtmxSwapService
 	    return content;
     }
 
+    /// <summary>
+    /// Remove all content items from Swap Service
+    /// </summary>
+    public void Clear()
+    {
+        _contentItems.Clear();
+    }
+
     /// <inheritdoc/>
     public bool ContentAvailable => _contentItems.Count > 0;
 }

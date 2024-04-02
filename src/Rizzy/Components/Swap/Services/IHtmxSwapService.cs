@@ -54,6 +54,11 @@ public interface IHtmxSwapService
     Task<string> RenderToString();
 
     /// <summary>
+    /// Remove all content items from Swap Service
+    /// </summary>
+    void Clear();
+
+    /// <summary>
     /// Is there any content available to render?
     /// </summary>
     bool ContentAvailable { get; }

@@ -3,6 +3,8 @@
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.DependencyInjection;
+using Rizzy.Components.Swap.Services;
 using Rizzy.Extensions;
 using System.Collections.ObjectModel;
 
@@ -101,6 +103,8 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
 
     private async Task RenderComponent(HttpContext httpContext)
     {
+	    IServiceProvider serviceProvider = httpContext.RequestServices;
+
         // Render the page as a razor component result
         var page = new RazorComponentResult(ComponentType, Parameters)
         {
@@ -109,5 +113,18 @@ public class RzRazorComponentResult : IResult, IStatusCodeHttpResult, IContentTy
 
         // Start rendering the primary page
         await page.ExecuteAsync(httpContext);
+
+        IHtmxSwapService swapService = serviceProvider.GetRequiredService<IHtmxSwapService>();
+        
+        if (swapService.ContentAvailable)
+        {
+	        var swapContent = await swapService.RenderToString();
+
+	        if (!string.IsNullOrEmpty(swapContent))
+	        {
+		        await httpContext.Response.WriteAsync(swapContent);
+		        await httpContext.Response.BodyWriter.FlushAsync(CancellationToken.None);
+	        }
+        }
     }
 }
