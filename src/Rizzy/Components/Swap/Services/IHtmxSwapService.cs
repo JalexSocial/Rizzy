@@ -48,6 +48,12 @@ public interface IHtmxSwapService
     RenderFragment RenderToFragment();
 
     /// <summary>
+    /// Renders all added content (components, fragments, and raw HTML) to a string.
+    /// </summary>
+    /// <returns>A string containing all the rendered content managed by the service.</returns>
+    Task<string> RenderToString();
+
+    /// <summary>
     /// Is there any content available to render?
     /// </summary>
     bool ContentAvailable { get; }

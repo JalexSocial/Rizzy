@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http;
 
@@ -12,7 +15,9 @@ namespace Rizzy.Components.Swap.Services;
 /// </summary>
 public class HtmxSwapService : IHtmxSwapService
 {
+	private int _lastRenderedContentCount = 0;
     private readonly HttpContext _httpContext;
+    private readonly IServiceProvider _serviceProvider;
     private List<ContentItem> _contentItems = new List<ContentItem>();
 
     /// <summary>
@@ -26,9 +31,10 @@ public class HtmxSwapService : IHtmxSwapService
         RawHtml
     }
 
-    public HtmxSwapService(IHttpContextAccessor contextAccessor)
+    public HtmxSwapService(IHttpContextAccessor contextAccessor, IServiceProvider serviceProvider)
     {
         _httpContext = contextAccessor.HttpContext!;
+        _serviceProvider = serviceProvider;
     }
 
     private record struct ContentItem(RzContentType ContentType, string TargetId, SwapStyle SwapStyle, string Selector, RenderFragment Content);
@@ -142,6 +148,32 @@ public class HtmxSwapService : IHtmxSwapService
                 }
             }
         };
+    }
+
+    /// <summary>
+    /// Renders all added content (components, fragments, and raw HTML) to a string.
+    /// </summary>
+    /// <returns>A string containing all the rendered content managed by the service.</returns>
+    public async Task<string> RenderToString()
+    {
+	    var content = string.Empty;
+
+	    if (ContentAvailable)
+	    {
+		    ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+
+		    await using var renderer = new HtmlRenderer(_serviceProvider, loggerFactory);
+
+		    // Render any additional out of band swaps
+		    content = await renderer.Dispatcher.InvokeAsync(async () =>
+		    {
+			    var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
+
+			    return output.ToHtmlString();
+		    });
+	    }
+
+	    return content;
     }
 
     /// <inheritdoc/>
