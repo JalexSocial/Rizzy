@@ -229,6 +229,15 @@ public record class HtmxConfig
     [JsonPropertyName("scrollIntoViewOnBoost")]
     public bool? ScrollIntoViewOnBoost { get; set; }
 
+    /// <summary>
+    /// defaults to null, the cache to store evaluated trigger specifications into, improving parsing performance at the
+    /// cost of more memory usage. You may define a simple object to use a never-clearing cache, or implement your own
+    /// system using a proxy object
+    /// </summary>
+    [JsonPropertyName("triggerSpecsCache")]
+    public TriggerSpecificationCache? TriggerSpecsCache { get; set; }
+
+
     [JsonInclude, JsonPropertyName("antiforgery")]
     internal AntiForgeryConfiguration? Antiforgery { get; set; } = null;
 }
