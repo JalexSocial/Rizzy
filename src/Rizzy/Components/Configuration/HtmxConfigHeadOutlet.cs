@@ -8,6 +8,7 @@ using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
 using Rizzy.Framework.Services;
 using System.Text.Json;
+using Rizzy.Configuration.Serialization;
 
 namespace Rizzy.Components;
 
@@ -66,7 +67,7 @@ public class HtmxConfigHeadOutlet : ComponentBase
             contextUserConfig.Antiforgery.RequestToken = tokens.RequestToken!;
         }
 
-        _jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxConfig.JsonTypeInfo);
+        _jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxJsonSerializerContext.Default.HtmxConfig);
 
         return Task.CompletedTask;
     }

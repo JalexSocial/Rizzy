@@ -1,9 +1,18 @@
 ﻿using Bunit;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Components;
 using Rizzy.Configuration.Htmx;
 using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.FluentAssertions;
+using Rizzy.Framework.Services;
+using Microsoft.AspNetCore.Antiforgery;
+using Rizzy.Antiforgery;
 
 namespace Rizzy.Configuration;
 
@@ -12,40 +21,51 @@ public class HtmxConfigHeadOutletTest : TestContext
     [Fact]
     public void HtmxConfig_serializer()
     {
-        var config = new HtmxConfig
+        Services.AddScoped<RzViewContext>();
+        Services.AddHttpContextAccessor();
+        Services.AddScoped<IUrlHelper>(provider => null!);
+        Services.Configure<HtmxAntiforgeryOptions>(opt =>
         {
-            AddedClass = "added-class",
-            AllowEval = true,
-            AllowScriptTags = true,
-            AttributesToSettle = ["attr1", "attr2"],
-            DefaultFocusScroll = true,
-            DefaultSettleDelay = TimeSpan.FromHours(1),
-            DefaultSwapDelay = TimeSpan.FromMinutes(1),
-            DefaultSwapStyle = SwapStyle.BeforeBegin,
-            DisableSelector = "disable-selector",
-            GetCacheBusterParam = true,
-            GlobalViewTransitions = true,
-            HistoryCacheSize = 1234,
-            HistoryEnabled = true,
-            IgnoreTitle = true,
-            IncludeIndicatorStyles = true,
-            IndicatorClass = "indicator-class",
-            InlineScriptNonce = "inline-script-nonce",
-            MethodsThatUseUrlParams = ["GET", "POST", "DELETE"],
-            RefreshOnHistoryMiss = true,
-            RequestClass = "request-class",
-            ScrollBehavior = ScrollBehavior.Smooth,
-            ScrollIntoViewOnBoost = true,
-            SelfRequestsOnly = true,
-            SettlingClass = "settling-class",
-            SwappingClass = "swapping-class",
-            Timeout = TimeSpan.FromSeconds(30),
-            UseTemplateFragments = true,
-            WithCredentials = true,
-            WsBinaryType = "ws-binary-type",
-            WsReconnectDelay = "full-jitter",
-        };
-        Services.AddSingleton(config);
+            // Default to true, can be configured again after adding htmx if necessary
+            opt.FormFieldName = "abcd";
+            opt.HeaderName = "abcd";
+            opt.CookieName = "HX-XSRF-TOKEN";
+        });
+        Services.AddAntiforgery();
+
+        Services.Configure<HtmxConfig>(config =>
+        {
+            config.AddedClass = "added-class";
+            config.AllowEval = true;
+            config.AllowScriptTags = true;
+            config.AttributesToSettle = ["attr1", "attr2"];
+            config.DefaultFocusScroll = true;
+            config.DefaultSettleDelay = TimeSpan.FromHours(1);
+            config.DefaultSwapDelay = TimeSpan.FromMinutes(1);
+            config.DefaultSwapStyle = SwapStyle.beforebegin;
+            config.DisableSelector = "disable-selector";
+            config.GetCacheBusterParam = true;
+            config.GlobalViewTransitions = true;
+            config.HistoryCacheSize = 1234;
+            config.HistoryEnabled = true;
+            config.IgnoreTitle = true;
+            config.IncludeIndicatorStyles = true;
+            config.IndicatorClass = "indicator-class";
+            config.InlineScriptNonce = "inline-script-nonce";
+            config.MethodsThatUseUrlParams = ["GET", "POST", "DELETE"];
+            config.RefreshOnHistoryMiss = true;
+            config.RequestClass = "request-class";
+            config.ScrollBehavior = ScrollBehavior.smooth;
+            config.ScrollIntoViewOnBoost = true;
+            config.SelfRequestsOnly = true;
+            config.SettlingClass = "settling-class";
+            config.SwappingClass = "swapping-class";
+            config.Timeout = TimeSpan.FromSeconds(30);
+            config.UseTemplateFragments = true;
+            config.WithCredentials = true;
+            config.WsBinaryType = "ws-binary-type";
+            config.WsReconnectDelay = "full-jitter";
+        });
 
         var cut = RenderComponent<HtmxConfigHeadOutlet>();
 
@@ -61,7 +81,7 @@ public class HtmxConfigHeadOutletTest : TestContext
                     "attr2"
                 ],
                 "defaultFocusScroll": true,
-                "defaultSwapStyle": "beforeBegin",
+                "defaultSwapStyle": "beforebegin",
                 "defaultSwapDelay": 60000,
                 "defaultSettleDelay": 3600000,
                 "disableSelector": "disable-selector",

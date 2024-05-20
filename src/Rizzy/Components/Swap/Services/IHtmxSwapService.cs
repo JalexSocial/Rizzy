@@ -15,7 +15,7 @@ public interface IHtmxSwapService
     /// <param name="swapStyle">The style of content swap to apply.</param>
     /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
     /// <typeparam name="TComponent">The type of the Razor component to add.</typeparam>
-    void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null) where TComponent : IComponent;
+    void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null) where TComponent : IComponent;
 
     /// <summary>
     /// Adds a RenderFragment to the service for later rendering.
@@ -24,7 +24,7 @@ public interface IHtmxSwapService
     /// <param name="renderFragment">The RenderFragment to add.</param>
     /// <param name="swapStyle">The style of content swap to apply.</param>
     /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-    void AddSwappableFragment(string targetId, RenderFragment renderFragment, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null);
+    void AddSwappableFragment(string targetId, RenderFragment renderFragment, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null);
 
     /// <summary>
     /// Adds string content to the service for later rendering.
@@ -33,7 +33,7 @@ public interface IHtmxSwapService
     /// <param name="content">The RenderFragment to add.</param>
     /// <param name="swapStyle">The style of content swap to apply.</param>
     /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-    void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null);
+    void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null);
 
     /// <summary>
     /// Adds raw HTML content to the service for later rendering.

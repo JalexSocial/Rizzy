@@ -8,10 +8,10 @@ public enum ScrollBehavior
     /// <summary>
     /// Smooth will smooth-scroll to the top of the page.
     /// </summary>
-    Smooth,
+    smooth,
     /// <summary>
     /// Auto will behave like a vanilla link.
     /// </summary>
-    Auto,
+    auto,
 }
 

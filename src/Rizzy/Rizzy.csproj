@@ -59,4 +59,9 @@
 		<EmbeddedResource Include="wwwroot\js\antiforgerySnippet.min.js" LogicalName="AntiforgeryJavaScriptMinified" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
+		<Using Include="System.Diagnostics.CodeAnalysis" />
+	</ItemGroup>
+
 </Project>
