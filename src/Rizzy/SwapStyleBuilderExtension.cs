@@ -1,6 +1,4 @@
-using Rizzy.Configuration.Htmx.Enum;
-
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// Extension methods for the SwapStyle enum to facilitate building swap style commands.

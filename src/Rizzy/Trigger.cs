@@ -1,4 +1,4 @@
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// Creates builder objects to begin the fluent chain for constructing triggers 

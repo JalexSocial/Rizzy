@@ -1,5 +1,5 @@
 // ReSharper disable InconsistentNaming
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// Determines how events are queued if an event occurs while a request for another event is in flight.

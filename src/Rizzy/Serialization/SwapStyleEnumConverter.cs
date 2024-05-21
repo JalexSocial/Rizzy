@@ -1,15 +1,8 @@
-﻿using Rizzy.Configuration.Htmx.Enum;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Rizzy.Configuration.Htmx.Builder;
 using System.Text.Json.Serialization;
 
-namespace Rizzy.Configuration.Serialization;
+namespace Rizzy.Serialization;
 internal sealed class SwapStyleEnumConverter : JsonConverter<SwapStyle>
 {
     public override SwapStyle Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Rizzy.Configuration.Htmx.Enum;
 
 namespace Rizzy.Components.Swap.Services;
 

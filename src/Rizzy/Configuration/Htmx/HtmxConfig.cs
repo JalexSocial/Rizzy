@@ -1,5 +1,4 @@
-using Rizzy.Configuration.Htmx.Enum;
-using Rizzy.Configuration.Serialization;
+using Rizzy.Serialization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
@@ -167,7 +166,7 @@ public record class HtmxConfig
     public TimeSpan? Timeout { get; set; }
 
     /// <summary>
-    /// Defaults to <see cref="Htmx.Enum.ScrollBehavior.smooth" /> if this property is null.
+    /// Defaults to <see cref="Rizzy.ScrollBehavior.smooth" /> if this property is null.
     /// The behavior for a boosted link on page transitions. 
     /// Smooth will smooth scroll to the top of the page while auto will behave like a vanilla link.
     /// </summary>

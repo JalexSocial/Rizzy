@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rizzy;
 using Rizzy.Components;
+using Rizzy.Configuration.Htmx.Builder;
+using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Framework.Services;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;

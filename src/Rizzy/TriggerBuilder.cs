@@ -1,7 +1,6 @@
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// Provides methods to construct and manage htmx trigger definitions for htmx requests.

@@ -1,7 +1,7 @@
 using System.Diagnostics;
-using Rizzy.Configuration.Htmx.Enum;
+using Rizzy.Configuration.Htmx;
 
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// A builder class for constructing a swap style command string for HTMX responses.
@@ -321,11 +321,16 @@ public sealed class SwapStyleBuilder
 	/// <inheritdoc/>
 	public override string ToString() => Build();
 
-	/// <summary>
-	/// Builds the swap style command string with all specified modifiers.
-	/// </summary>
-	/// <returns>A tuple containing the <see cref="SwapStyle"/> and the constructed command string.</returns>
-	internal string Build()
+    public static implicit operator string(SwapStyleBuilder builder)
+    {
+        return builder.ToString();
+    }
+
+    /// <summary>
+    /// Builds the swap style command string with all specified modifiers.
+    /// </summary>
+    /// <returns>A tuple containing the <see cref="SwapStyle"/> and the constructed command string.</returns>
+    internal string Build()
 	{
 		string value = specification.SwapStyle.ToHtmxString();
 

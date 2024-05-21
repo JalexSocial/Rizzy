@@ -1,4 +1,4 @@
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// htmx configuration allows for the creation of a trigger specification cache in order to improve

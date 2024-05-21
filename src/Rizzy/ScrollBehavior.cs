@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Configuration.Htmx.Enum;
+﻿namespace Rizzy;
 
 /// <summary>
 /// The behavior for a boosted link on page transitions.

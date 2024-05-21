@@ -1,8 +1,7 @@
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// Provides methods to add modifiers to htmx trigger definitions within a <see cref="TriggerBuilder"/> context.

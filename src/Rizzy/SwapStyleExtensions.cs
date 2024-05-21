@@ -1,7 +1,6 @@
 using System.Runtime.CompilerServices;
-using Rizzy.Configuration.Htmx.Enum;
 
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 public static class SwapStyleExtensions
 {

@@ -1,6 +1,4 @@
-using Rizzy.Configuration.Htmx.Enum;
-
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy.Configuration.Htmx;
 
 /// <summary>
 /// Represents an htmx swap specification

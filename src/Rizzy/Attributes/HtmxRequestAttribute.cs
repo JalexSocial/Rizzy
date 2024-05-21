@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Rizzy.Http;
 
-namespace Rizzy.Http.Attributes;
+namespace Rizzy.Attributes;
 
 /// <summary>
 /// An action filter attribute that implements <see cref="IActionConstraint"/> to ensure

@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Rizzy.Configuration.Htmx.Builder;
-using Rizzy.Configuration.Htmx.Enum;
 using System.Text.Json;
 using System.Net;
 using Microsoft.AspNetCore.Http.Json;
@@ -8,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Http.Models;
 using System.Text.Json.Nodes;
 using Rizzy.Configuration.Serialization;
+using HtmxJsonSerializerContext = Rizzy.Serialization.HtmxJsonSerializerContext;
 
 namespace Rizzy.Http;
 

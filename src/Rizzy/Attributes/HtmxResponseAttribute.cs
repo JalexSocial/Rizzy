@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Rizzy.Configuration.Htmx.Enum;
+using Rizzy.Http;
 
-namespace Rizzy.Http.Attributes;
+namespace Rizzy.Attributes;
 
 /// <summary>
 /// An attribute to apply HTMX response headers to an action result. This enables server-side control

@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Rizzy.Configuration.Htmx.Builder;
-using Rizzy.Configuration.Htmx.Enum;
 
 namespace Rizzy.Components;
 

@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Configuration.Htmx.Enum;
+﻿namespace Rizzy;
 
 /// <summary>
 /// Direction values for scroll and show modifier methods

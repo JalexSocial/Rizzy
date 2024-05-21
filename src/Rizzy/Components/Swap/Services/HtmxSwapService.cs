@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http;
 
 namespace Rizzy.Components.Swap.Services;

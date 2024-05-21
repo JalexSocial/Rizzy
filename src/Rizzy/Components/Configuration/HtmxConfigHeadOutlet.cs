@@ -9,6 +9,7 @@ using Rizzy.Configuration.Htmx;
 using Rizzy.Framework.Services;
 using System.Text.Json;
 using Rizzy.Configuration.Serialization;
+using HtmxJsonSerializerContext = Rizzy.Serialization.HtmxJsonSerializerContext;
 
 namespace Rizzy.Components;
 
@@ -50,21 +51,26 @@ public class HtmxConfigHeadOutlet : ComponentBase
             ViewContext.Htmx.SetConfiguration(Configuration);
         }
 
-        var contextUserConfig = config with
+        var contextUserConfig = config;
+
+        if (RizzyConfig.Value.AntiforgeryStrategy != AntiforgeryStrategy.None)
         {
-            Antiforgery = new HtmxConfig.AntiForgeryConfiguration
+            contextUserConfig = contextUserConfig with
             {
-                CookieName = AntiforgeryConfig.Value.CookieName,
-                FormFieldName = AntiforgeryConfig.Value.FormFieldName,
-                HeaderName = AntiforgeryConfig.Value.HeaderName,
+                Antiforgery = new HtmxConfig.AntiForgeryConfiguration
+                {
+                    CookieName = AntiforgeryConfig.Value.CookieName,
+                    FormFieldName = AntiforgeryConfig.Value.FormFieldName,
+                    HeaderName = AntiforgeryConfig.Value.HeaderName,
+                }
+            };
+
+            if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
+            {
+                var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
+
+                contextUserConfig.Antiforgery.RequestToken = tokens.RequestToken!;
             }
-        };
-
-        if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
-        {
-            var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
-
-            contextUserConfig.Antiforgery.RequestToken = tokens.RequestToken!;
         }
 
         _jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxJsonSerializerContext.Default.HtmxConfig);

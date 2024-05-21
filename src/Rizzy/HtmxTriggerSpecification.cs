@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Rizzy.Configuration.Htmx.Builder;
+namespace Rizzy;
 
 /// <summary>
 /// Represents an htmx trigger definition

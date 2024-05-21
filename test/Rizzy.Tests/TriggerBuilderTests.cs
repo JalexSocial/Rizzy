@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rizzy.Configuration.Htmx.Builder;
+using Rizzy.Configuration.Htmx.Enum;
 
 namespace Rizzy.Tests;
 

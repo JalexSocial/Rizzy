@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Rizzy.Http;
 
-namespace Rizzy.Http;
+namespace Rizzy.Extensions;
 
 public static class HttpContextExtensions
 {

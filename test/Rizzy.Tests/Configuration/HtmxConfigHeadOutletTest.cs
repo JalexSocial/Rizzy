@@ -13,6 +13,8 @@ using Rizzy.FluentAssertions;
 using Rizzy.Framework.Services;
 using Microsoft.AspNetCore.Antiforgery;
 using Rizzy.Antiforgery;
+using Rizzy.Http;
+using FluentAssertions.Common;
 
 namespace Rizzy.Configuration;
 
@@ -22,7 +24,6 @@ public class HtmxConfigHeadOutletTest : TestContext
     public void HtmxConfig_serializer()
     {
         Services.AddScoped<RzViewContext>();
-        Services.AddHttpContextAccessor();
         Services.AddScoped<IUrlHelper>(provider => null!);
         Services.Configure<HtmxAntiforgeryOptions>(opt =>
         {
@@ -32,6 +33,10 @@ public class HtmxConfigHeadOutletTest : TestContext
             opt.CookieName = "HX-XSRF-TOKEN";
         });
         Services.AddAntiforgery();
+        Services.Configure<RizzyConfig>(config =>
+        {
+            config.AntiforgeryStrategy = AntiforgeryStrategy.None;
+        });
 
         Services.Configure<HtmxConfig>(config =>
         {
@@ -67,7 +72,10 @@ public class HtmxConfigHeadOutletTest : TestContext
             config.WsReconnectDelay = "full-jitter";
         });
 
-        var cut = RenderComponent<HtmxConfigHeadOutlet>();
+        var accessor = new MockHttpContextAccessor(Services);
+        Services.AddSingleton<IHttpContextAccessor>(accessor);
+
+        var cut = RenderComponent<HtmxConfigHeadOutlet>(p => p.AddCascadingValue(accessor.HttpContext!));
 
         var meta = cut.Find("meta");
         meta.GetAttribute("name").Should().Be("htmx-config");
