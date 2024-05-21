@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
-using Rizzy.Configuration.Htmx;
+﻿using Rizzy.Configuration.Htmx;
 using Rizzy.Http.Models;
+using System.Text.Json.Serialization;
 
 namespace Rizzy.Serialization;
 

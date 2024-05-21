@@ -1,20 +1,13 @@
 ﻿using Bunit;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Rizzy.Antiforgery;
 using Rizzy.Components;
 using Rizzy.Configuration.Htmx;
-using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.FluentAssertions;
 using Rizzy.Framework.Services;
-using Microsoft.AspNetCore.Antiforgery;
-using Rizzy.Antiforgery;
 using Rizzy.Http;
-using FluentAssertions.Common;
 
 namespace Rizzy.Configuration;
 

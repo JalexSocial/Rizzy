@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
-using Rizzy.Configuration.Htmx.Enum;
+using Rizzy.Extensions;
 using Rizzy.FluentAssertions;
 using Rizzy.Http.Models;
 using static Rizzy.Configuration.RizzyConfigBuilder;
@@ -17,13 +17,13 @@ public class HtmxResponseTests : TestContext
     {
         var services = new ServiceCollection();
         services.AddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();
-        services.Configure<RizzyConfig>(config => {});
+        services.Configure<RizzyConfig>(config => { });
 
         var result = new DefaultHttpContext()
         {
             RequestServices = services.BuildServiceProvider()
         };
-        
+
         result.Request.Headers[HtmxRequestHeaderNames.HtmxRequest] = "";
         result.GetHtmxContext();
         return result;

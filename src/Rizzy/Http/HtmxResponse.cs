@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.Text.Json;
-using System.Net;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Http.Models;
-using System.Text.Json.Nodes;
-using Rizzy.Configuration.Serialization;
+using System.Net;
+using System.Text.Json;
 using HtmxJsonSerializerContext = Rizzy.Serialization.HtmxJsonSerializerContext;
 
 namespace Rizzy.Http;

@@ -8,7 +8,6 @@ using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
 using Rizzy.Framework.Services;
 using System.Text.Json;
-using Rizzy.Configuration.Serialization;
 using HtmxJsonSerializerContext = Rizzy.Serialization.HtmxJsonSerializerContext;
 
 namespace Rizzy.Components;

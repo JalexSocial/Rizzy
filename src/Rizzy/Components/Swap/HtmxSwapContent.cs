@@ -9,20 +9,20 @@ namespace Rizzy.Components;
 /// </summary>
 public class HtmxSwapContent : ComponentBase
 {
-	private RenderFragment? _fragment;
+    private RenderFragment? _fragment;
 
     [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-	    _fragment = HtmxSwapService.RenderToFragment();
+        _fragment = HtmxSwapService.RenderToFragment();
         HtmxSwapService.Clear();
     }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (_fragment != null)
-	        builder.AddContent(0, _fragment);
+            builder.AddContent(0, _fragment);
     }
 }
 

@@ -67,7 +67,7 @@ public sealed class TriggerBuilder
     /// </example>
     public TriggerModifierBuilder Sse(string sseEventName)
     {
-        var spec = new HtmxTriggerSpecification { Trigger = Constants.Triggers.Sse, SseEvent = sseEventName};
+        var spec = new HtmxTriggerSpecification { Trigger = Constants.Triggers.Sse, SseEvent = sseEventName };
         return new TriggerModifierBuilder(spec, this);
     }
 
@@ -172,7 +172,7 @@ public sealed class TriggerBuilder
     public TriggerBuilder Custom(string triggerDefinition)
     {
         var spec = new HtmxTriggerSpecification { Trigger = triggerDefinition };
-		AddTrigger(spec);
+        AddTrigger(spec);
         return this;
     }
 
@@ -200,13 +200,13 @@ public sealed class TriggerBuilder
         return new KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>(ToString(), triggers);
     }
 
-	/// <summary>
-	/// Converts the builder to a key-value pair.
-	/// </summary>
-	[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "See Build() method.")]
-	public static implicit operator KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>(TriggerBuilder builders)
-	{
-		ArgumentNullException.ThrowIfNull(builders);
-		return builders.Build();
-	}
+    /// <summary>
+    /// Converts the builder to a key-value pair.
+    /// </summary>
+    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "See Build() method.")]
+    public static implicit operator KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>(TriggerBuilder builders)
+    {
+        ArgumentNullException.ThrowIfNull(builders);
+        return builders.Build();
+    }
 }

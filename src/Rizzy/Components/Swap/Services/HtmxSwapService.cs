@@ -154,24 +154,24 @@ public class HtmxSwapService : IHtmxSwapService
     /// <returns>A string containing all the rendered content managed by the service.</returns>
     public async Task<string> RenderToString()
     {
-	    var content = string.Empty;
+        var content = string.Empty;
 
-	    if (ContentAvailable)
-	    {
-		    ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+        if (ContentAvailable)
+        {
+            ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
 
-		    await using var renderer = new HtmlRenderer(_serviceProvider, loggerFactory);
+            await using var renderer = new HtmlRenderer(_serviceProvider, loggerFactory);
 
-		    // Render any additional out of band swaps
-		    content = await renderer.Dispatcher.InvokeAsync(async () =>
-		    {
-			    var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
+            // Render any additional out of band swaps
+            content = await renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
 
-			    return output.ToHtmlString();
-		    });
-	    }
+                return output.ToHtmlString();
+            });
+        }
 
-	    return content;
+        return content;
     }
 
     /// <summary>

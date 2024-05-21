@@ -230,25 +230,25 @@ public sealed class TriggerModifierBuilder
         return parentBuilder;
     }
 
-	/// <summary>
-	/// Converts the builder to a key-value pair.
-	/// </summary>
-	public KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>> Build() => parentBuilder.Build();
+    /// <summary>
+    /// Converts the builder to a key-value pair.
+    /// </summary>
+    public KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>> Build() => parentBuilder.Build();
 
-	/// <summary>
-	/// Returns a properly formatted trigger definition that can be used as an hx-trigger value
-	/// </summary>
-	/// <returns>trigger definition</returns>
-	public override string ToString() => parentBuilder.ToString();
+    /// <summary>
+    /// Returns a properly formatted trigger definition that can be used as an hx-trigger value
+    /// </summary>
+    /// <returns>trigger definition</returns>
+    public override string ToString() => parentBuilder.ToString();
 
-	/// <summary>
-	/// Converts the builder to a key-value pair.
-	/// </summary>
-	[SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "See Build() method.")]
-	public static implicit operator KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>(TriggerModifierBuilder builders)
-	{
-		ArgumentNullException.ThrowIfNull(builders);
-		return builders.Build();
-	}
+    /// <summary>
+    /// Converts the builder to a key-value pair.
+    /// </summary>
+    [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "See Build() method.")]
+    public static implicit operator KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>(TriggerModifierBuilder builders)
+    {
+        ArgumentNullException.ThrowIfNull(builders);
+        return builders.Build();
+    }
 }
 

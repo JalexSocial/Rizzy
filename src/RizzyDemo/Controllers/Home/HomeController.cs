@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
+using Rizzy;
+using Rizzy.Attributes;
 using Rizzy.Components.Swap.Services;
-using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Framework.Mvc;
-using Rizzy.Http.Attributes;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;

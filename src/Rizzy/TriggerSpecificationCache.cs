@@ -7,22 +7,22 @@ namespace Rizzy;
 /// </summary>
 public class TriggerSpecificationCache : Dictionary<string, IReadOnlyList<HtmxTriggerSpecification>>
 {
-	public TriggerSpecificationCache() : base(StringComparer.Ordinal)
-	{
-	}
+    public TriggerSpecificationCache() : base(StringComparer.Ordinal)
+    {
+    }
 
-	public TriggerSpecificationCache(IEnumerable<KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>> triggers)
-		: base(triggers, StringComparer.Ordinal)
-	{
-	}
+    public TriggerSpecificationCache(IEnumerable<KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>> triggers)
+        : base(triggers, StringComparer.Ordinal)
+    {
+    }
 
-	public TriggerSpecificationCache(params KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>[] triggers)
-		: base(triggers, StringComparer.Ordinal)
-	{
-	}
+    public TriggerSpecificationCache(params KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>>[] triggers)
+        : base(triggers, StringComparer.Ordinal)
+    {
+    }
 
-	public void Add(KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>> triggerAndValue)
-	{
-		Add(triggerAndValue.Key, triggerAndValue.Value);
-	}
+    public void Add(KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>> triggerAndValue)
+    {
+        Add(triggerAndValue.Key, triggerAndValue.Value);
+    }
 }

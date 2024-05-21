@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Rizzy.Framework.Endpoints;
 
