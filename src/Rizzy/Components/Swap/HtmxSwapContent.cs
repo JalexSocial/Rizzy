@@ -13,10 +13,7 @@ public class HtmxSwapContent : ComponentBase
 
     protected override void OnInitialized()
     {
-        HtmxSwapService.ContentItemsUpdated += (sender, args) =>
-        {
-            StateHasChanged();
-        };
+        HtmxSwapService.ContentItemsUpdated += (sender, args) => StateHasChanged();
     }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)

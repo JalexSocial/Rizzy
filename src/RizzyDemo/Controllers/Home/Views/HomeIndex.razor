@@ -1,5 +1,6 @@
 ﻿@using Rizzy.Framework.Services
 @using RizzyDemo.Controllers.Home.Models
+@using Rizzy.Components.Swap.Services
 @attribute [StreamRendering]
 
 <RzPageTitle>Rizzy Demo Home</RzPageTitle>
@@ -103,16 +104,15 @@ Content Guid: @guid
     public RzViewContext? ViewContext { get; set; }
 
     [Inject] public PostRepo Repo { get; set; } = default!;
+    [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
         Posts = await Repo.GetPosts();
     }
 
-    /*
-    protected override async Task OnParametersSetAsync()
+    protected override void OnParametersSet()
     {
-	    //await Task.Delay(1000);
+	    HtmxSwapService.AddRawContent("<h1>Testing</h1>");
     }
-    */
 }
