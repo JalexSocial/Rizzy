@@ -80,7 +80,7 @@ public class RzPage : ComponentBase
 
         if (_layout == null)
         {
-            var config = ViewContext?.HttpContext.RequestServices.GetRequiredService<IOptions<RizzyConfig>>();
+            var config = RizzyConfig;
 
             if (config?.Value.DefaultLayout != null)
                 _layout = config?.Value.DefaultLayout;
