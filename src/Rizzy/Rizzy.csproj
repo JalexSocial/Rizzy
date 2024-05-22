@@ -28,7 +28,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>1.2.4</Version>
+    <Version>2.0.0</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -57,6 +57,15 @@
 	<ItemGroup>
 		<EmbeddedResource Include="wwwroot\js\antiforgerySnippet.js" LogicalName="AntiforgeryJavaScript" />
 		<EmbeddedResource Include="wwwroot\js\antiforgerySnippet.min.js" LogicalName="AntiforgeryJavaScriptMinified" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
+		<Using Include="System.Diagnostics.CodeAnalysis" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Configuration\Serialization\" />
 	</ItemGroup>
 
 </Project>

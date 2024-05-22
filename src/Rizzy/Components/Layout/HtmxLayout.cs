@@ -5,29 +5,8 @@ using Rizzy.Http;
 
 namespace Rizzy.Components;
 
-public class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
+public sealed class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
 {
-    internal class EmptyLayout : LayoutComponentBase
-    {
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.AddContent(0, Body);
-        }
-    }
-
-    internal class MinimalLayout : LayoutComponentBase
-    {
-        protected override void BuildRenderTree(RenderTreeBuilder builder)
-        {
-            builder.OpenElement(0, "html");
-            builder.OpenElement(1, "body");
-            builder.AddContent(2, Body);
-            builder.CloseElement();
-            builder.CloseElement();
-        }
-    }
-
-
     [CascadingParameter]
     public RzViewContext? ViewContext { get; set; }
 
@@ -40,6 +19,7 @@ public class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
         {
             ViewContext?.HttpContext.Response.Headers.TryAdd("Vary", HtmxRequestHeaderNames.HtmxRequest);
 
+            // If streaming is in use then content needs to be wrapped in a minimal layout
             if (IsRootComponent)
             {
                 builder.OpenComponent<MinimalLayout>(0);

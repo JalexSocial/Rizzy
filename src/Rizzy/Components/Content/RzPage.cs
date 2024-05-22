@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using Rizzy.Framework.Services;
@@ -19,20 +18,17 @@ public class RzPage : ComponentBase
 
     [Inject] public IOptions<RizzyConfig> RizzyConfig { get; set; } = default!;
 
-    private static class ViewContextWrapper
+    public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
     {
-        public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
-        {
-            builder.OpenComponent<CascadingValue<TValue>>(0);
-            builder.AddComponentParameter(1, "Value", value);
-            builder.AddComponentParameter(2, "ChildContent", fragment);
-            builder.CloseComponent();
-        }
+        builder.OpenComponent<CascadingValue<TValue>>(0);
+        builder.AddComponentParameter(1, "Value", value);
+        builder.AddComponentParameter(2, "ChildContent", fragment);
+        builder.CloseComponent();
     }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        ViewContextWrapper.CreateCascadingValue(builder, ViewContext, (builder2) =>
+        CreateCascadingValue(builder, ViewContext, (builder2) =>
         {
             builder2.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
             builder2.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
@@ -58,8 +54,8 @@ public class RzPage : ComponentBase
                     builder3.CloseComponent();
                 }
             }));
-            builder2.CloseComponent();
             builder2.OpenComponent<HtmxSwapContent>(15);
+            builder2.CloseComponent();
             builder2.CloseComponent();
         });
     }
@@ -80,7 +76,7 @@ public class RzPage : ComponentBase
 
         if (_layout == null)
         {
-            var config = ViewContext?.HttpContext.RequestServices.GetRequiredService<IOptions<RizzyConfig>>();
+            var config = RizzyConfig;
 
             if (config?.Value.DefaultLayout != null)
                 _layout = config?.Value.DefaultLayout;

@@ -1,8 +1,4 @@
-using Rizzy.Configuration.Htmx.Enum;
-using Rizzy.Configuration.Serialization;
-using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Json.Serialization.Metadata;
 
 namespace Rizzy.Configuration.Htmx;
 
@@ -24,11 +20,6 @@ public record class HtmxConfig
     }
 
     /// <summary>
-    /// Default <see cref="JsonSerializerOptions"/> used with <see cref="HtmxConfig"/>.
-    /// </summary>
-    public readonly static JsonTypeInfo<HtmxConfig> JsonTypeInfo = HtmxConfigJsonSerializerContext.Default.HtmxConfig;
-
-    /// <summary>
     /// Defaults to <see langword="true" /> if this property is null. really only useful for testing
     /// </summary>
     [JsonPropertyName("historyEnabled")]
@@ -48,7 +39,7 @@ public record class HtmxConfig
     public bool? RefreshOnHistoryMiss { get; set; }
 
     /// <summary>
-    /// Defaults to <see cref="SwapStyle.InnerHTML"/> if this property is null.
+    /// Defaults to <see cref="SwapStyle.innerHTML"/> if this property is null.
     /// </summary>
     [JsonPropertyName("defaultSwapStyle")]
     public SwapStyle? DefaultSwapStyle { get; set; }
@@ -172,7 +163,7 @@ public record class HtmxConfig
     public TimeSpan? Timeout { get; set; }
 
     /// <summary>
-    /// Defaults to <see cref="ScrollBehavior.Smooth" /> if this property is null.
+    /// Defaults to <see cref="Rizzy.ScrollBehavior.smooth" /> if this property is null.
     /// The behavior for a boosted link on page transitions. 
     /// Smooth will smooth scroll to the top of the page while auto will behave like a vanilla link.
     /// </summary>
@@ -230,9 +221,9 @@ public record class HtmxConfig
     public bool? ScrollIntoViewOnBoost { get; set; }
 
     /// <summary>
-    /// defaults to null, the cache to store evaluated trigger specifications into, improving parsing performance at the
-    /// cost of more memory usage. You may define a simple object to use a never-clearing cache, or implement your own
-    /// system using a proxy object
+    /// defaults to <see langword="null" />, the cache to store evaluated trigger specifications into, improving parsing
+    /// performance at the cost of more memory usage. You may define a simple object to use a never-clearing cache, or
+    /// implement your own system using a proxy object
     /// </summary>
     [JsonPropertyName("triggerSpecsCache")]
     public TriggerSpecificationCache? TriggerSpecsCache { get; set; }

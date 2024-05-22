@@ -2,14 +2,13 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Runtime.Serialization;
 
 namespace Rizzy.Components.Form.Helpers;
 
-public static class ExpressionFormatter
+internal static class ExpressionFormatter
 {
     static ExpressionFormatter()
     {

@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents the options for Rizzy's antiforgery support.
 /// </summary>
-public class HtmxAntiforgeryOptions
+public sealed class HtmxAntiforgeryOptions
 {
     /// <summary>
     /// Gets the name of the form field used for antiforgery token.

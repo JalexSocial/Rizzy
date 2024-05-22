@@ -1,8 +1,6 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
-namespace Rizzy.Configuration.Htmx;
-
-public class TriggerSpecificationCache : Dictionary<string, HtmxTriggerSpecification[]> { }
+namespace Rizzy;
 
 /// <summary>
 /// Represents an htmx trigger definition

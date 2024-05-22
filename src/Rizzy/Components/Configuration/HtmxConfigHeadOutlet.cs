@@ -8,6 +8,7 @@ using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
 using Rizzy.Framework.Services;
 using System.Text.Json;
+using HtmxJsonSerializerContext = Rizzy.Serialization.HtmxJsonSerializerContext;
 
 namespace Rizzy.Components;
 
@@ -41,32 +42,27 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-        var config = ViewContext.Htmx.Configuration;
-
-        if (!string.IsNullOrEmpty(Configuration))
-        {
-            config = Options.Get(Configuration);
-            ViewContext.Htmx.SetConfiguration(Configuration);
-        }
-
-        var contextUserConfig = config with
-        {
-            Antiforgery = new HtmxConfig.AntiForgeryConfiguration
-            {
-                CookieName = AntiforgeryConfig.Value.CookieName,
-                FormFieldName = AntiforgeryConfig.Value.FormFieldName,
-                HeaderName = AntiforgeryConfig.Value.HeaderName,
-            }
-        };
+        var config = string.IsNullOrEmpty(Configuration) ? ViewContext.Htmx.Configuration :
+                Options.Get(Configuration);
 
         if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
         {
+            config = config with
+            {
+                Antiforgery = new HtmxConfig.AntiForgeryConfiguration
+                {
+                    CookieName = AntiforgeryConfig.Value.CookieName,
+                    FormFieldName = AntiforgeryConfig.Value.FormFieldName,
+                    HeaderName = AntiforgeryConfig.Value.HeaderName,
+                }
+            };
+
             var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
 
-            contextUserConfig.Antiforgery.RequestToken = tokens.RequestToken!;
+            config.Antiforgery.RequestToken = tokens.RequestToken!;
         }
 
-        _jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxConfig.JsonTypeInfo);
+        _jsonConfig = JsonSerializer.Serialize(config, HtmxJsonSerializerContext.Default.HtmxConfig);
 
         return Task.CompletedTask;
     }

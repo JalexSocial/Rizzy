@@ -54,7 +54,7 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// <summary>
     /// Gets the Htmx context for the current request.
     /// </summary>
-    public HtmxContext Htmx => new HtmxContext(HttpContext);
+    public HtmxContext Htmx => new(HttpContext);
 
     /// <summary>
     /// Gets or sets the <see cref="Microsoft.AspNetCore.Http.HttpContext"/> for the current request.
