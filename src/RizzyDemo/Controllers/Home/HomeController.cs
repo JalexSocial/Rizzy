@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Rizzy;
 using Rizzy.Attributes;
-using Rizzy.Components.Swap.Services;
+using Rizzy.Components;
 using Rizzy.Framework.Mvc;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;

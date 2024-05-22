@@ -3,8 +3,6 @@
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Extensions.DependencyInjection;
-using Rizzy.Components.Swap.Services;
 using Rizzy.Extensions;
 using System.Collections.ObjectModel;
 

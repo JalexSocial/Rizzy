@@ -8,7 +8,7 @@ using System.Runtime.Serialization;
 
 namespace Rizzy.Components.Form.Helpers;
 
-public static class ExpressionFormatter
+internal static class ExpressionFormatter
 {
     static ExpressionFormatter()
     {

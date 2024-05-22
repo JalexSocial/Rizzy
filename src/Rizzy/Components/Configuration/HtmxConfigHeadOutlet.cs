@@ -42,19 +42,12 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-        var config = ViewContext.Htmx.Configuration;
+        var config = string.IsNullOrEmpty(Configuration) ? ViewContext.Htmx.Configuration :
+                Options.Get(Configuration);
 
-        if (!string.IsNullOrEmpty(Configuration))
+        if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
         {
-            config = Options.Get(Configuration);
-            ViewContext.Htmx.SetConfiguration(Configuration);
-        }
-
-        var contextUserConfig = config;
-
-        if (RizzyConfig.Value.AntiforgeryStrategy != AntiforgeryStrategy.None)
-        {
-            contextUserConfig = contextUserConfig with
+            config = config with
             {
                 Antiforgery = new HtmxConfig.AntiForgeryConfiguration
                 {
@@ -64,15 +57,12 @@ public class HtmxConfigHeadOutlet : ComponentBase
                 }
             };
 
-            if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
-            {
-                var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
+            var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
 
-                contextUserConfig.Antiforgery.RequestToken = tokens.RequestToken!;
-            }
+            config.Antiforgery.RequestToken = tokens.RequestToken!;
         }
 
-        _jsonConfig = JsonSerializer.Serialize(contextUserConfig, HtmxJsonSerializerContext.Default.HtmxConfig);
+        _jsonConfig = JsonSerializer.Serialize(config, HtmxJsonSerializerContext.Default.HtmxConfig);
 
         return Task.CompletedTask;
     }

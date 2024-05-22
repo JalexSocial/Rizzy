@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Framework.Services;
 
-namespace Rizzy.Components.Content;
+namespace Rizzy.Components;
 
 public partial class RzPartial : ComponentBase
 {
@@ -19,10 +19,10 @@ public partial class RzPartial : ComponentBase
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        ViewContextWrapper.CreateCascadingValue(builder, ViewContext, (builder2) =>
+        CreateCascadingValue(builder, ViewContext, (builder2) =>
         {
             builder2.OpenComponent<LayoutView>(4);
-            builder2.AddComponentParameter(5, "Layout", typeof(Layout.RzPartial.EmptyLayout));
+            builder2.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
             builder2.AddAttribute(6, "ChildContent", (RenderFragment)((builder3) =>
             {
                 builder3.OpenComponent<DynamicComponent>(7);
