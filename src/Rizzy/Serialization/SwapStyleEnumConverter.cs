@@ -1,6 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Rizzy.Framework;
 
 namespace Rizzy.Serialization;
 internal sealed class SwapStyleEnumConverter : JsonConverter<SwapStyle>

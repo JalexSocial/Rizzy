@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
-using Rizzy.Framework.Services;
 using System.Reflection;
 
 namespace Rizzy.Components;

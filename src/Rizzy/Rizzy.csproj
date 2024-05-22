@@ -34,7 +34,17 @@
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
-  <ItemGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DefaultDocumentationFolder>../../docs</DefaultDocumentationFolder>
+		<DefaultDocumentationGeneratedAccessModifiers>Public</DefaultDocumentationGeneratedAccessModifiers>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="DefaultDocumentation" Version="0.8.0" PrivateAssets="all" />
+	</ItemGroup>
+	
+	<ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
@@ -66,6 +76,7 @@
 
 	<ItemGroup>
 	  <Folder Include="Configuration\Serialization\" />
+	  <Folder Include="Http\Models\" />
 	</ItemGroup>
 
 </Project>

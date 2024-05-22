@@ -6,7 +6,6 @@ using Rizzy.Antiforgery;
 using Rizzy.Components;
 using Rizzy.Configuration.Htmx;
 using Rizzy.FluentAssertions;
-using Rizzy.Framework.Services;
 using Rizzy.Http;
 
 namespace Rizzy.Configuration;

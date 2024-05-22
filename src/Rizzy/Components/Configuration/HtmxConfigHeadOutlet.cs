@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Configuration;
 using Rizzy.Configuration.Htmx;
-using Rizzy.Framework.Services;
 using System.Text.Json;
 using HtmxJsonSerializerContext = Rizzy.Serialization.HtmxJsonSerializerContext;
 
