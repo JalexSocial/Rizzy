@@ -58,8 +58,8 @@ public class RzPage : ComponentBase
                     builder3.CloseComponent();
                 }
             }));
-            builder2.CloseComponent();
             builder2.OpenComponent<HtmxSwapContent>(15);
+            builder2.CloseComponent();
             builder2.CloseComponent();
         });
     }

@@ -18,7 +18,8 @@ public class HtmxSwapContent : ComponentBase
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.AddContent(0, HtmxSwapService.RenderToFragment());
+        if (HtmxSwapService.ContentAvailable)
+            builder.AddContent(0, HtmxSwapService.RenderToFragment());
     }
 }
 

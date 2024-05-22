@@ -45,8 +45,8 @@ public class RzPartial : ComponentBase
                 builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
                 builder3.CloseComponent();
             }));
-            builder2.CloseComponent();
             builder2.OpenComponent<HtmxSwapContent>(15);
+            builder2.CloseComponent();
             builder2.CloseComponent();
         });
     }

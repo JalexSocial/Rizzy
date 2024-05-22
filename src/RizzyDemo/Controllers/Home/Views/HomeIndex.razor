@@ -109,10 +109,10 @@ Content Guid: @guid
     protected override async Task OnInitializedAsync()
     {
         Posts = await Repo.GetPosts();
+        HtmxSwapService.AddRawContent("<h1>Testing</h1>");
     }
 
     protected override void OnParametersSet()
     {
-	    HtmxSwapService.AddRawContent("<h1>Testing</h1>");
     }
 }
