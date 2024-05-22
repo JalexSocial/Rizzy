@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.AfterSettleDelay(TimeSpan) Method
 
@@ -19,10 +19,10 @@ The amount of time htmx should wait after receiving a
             response to swap the content.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
-[time](Rizzy.SwapStyleBuilder.AfterSettleDelay(System.TimeSpan).md#Rizzy.SwapStyleBuilder.AfterSettleDelay(System.TimeSpan).time 'Rizzy.SwapStyleBuilder.AfterSettleDelay(System.TimeSpan).time') will be converted to milliseconds if less than 1000, otherwise seconds,   
+[time](Rizzy.SwapStyleBuilder.AfterSettleDelay(System.TimeSpan)#Rizzy.SwapStyleBuilder.AfterSettleDelay(System.TimeSpan).time 'Rizzy.SwapStyleBuilder.AfterSettleDelay(System.TimeSpan).time') will be converted to milliseconds if less than 1000, otherwise seconds,   
             meaning the resulting modifier will be `settle:500ms` for a [System.TimeSpan](https://docs.microsoft.com/en-us/dotnet/api/System.TimeSpan 'System.TimeSpan') of 500 milliseconds   
             or `settle:2s` for a [System.TimeSpan](https://docs.microsoft.com/en-us/dotnet/api/System.TimeSpan 'System.TimeSpan') of 2 seconds..

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension.md 'Rizzy.SwapStyleBuilderExtension')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension 'Rizzy.SwapStyleBuilderExtension')
 
 ## SwapStyleBuilderExtension.PreserveFocus(this SwapStyle, bool) Method
 
@@ -13,7 +13,7 @@ public static Rizzy.SwapStyleBuilder PreserveFocus(this Rizzy.SwapStyle style, b
 
 <a name='Rizzy.SwapStyleBuilderExtension.PreserveFocus(thisRizzy.SwapStyle,bool).style'></a>
 
-`style` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`style` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The swap style.
 
@@ -24,8 +24,8 @@ The swap style.
 Whether to scroll to current focus or preserve focus
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-A [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+A [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 Adds a modifier of `focus-scroll:false`

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[RzViewContext](Rizzy.RzViewContext.md 'Rizzy.RzViewContext')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[RzViewContext](Rizzy.RzViewContext 'Rizzy.RzViewContext')
 
 ## RzViewContext.TryGetFormContext(string, RzFormContext) Method
 
@@ -18,7 +18,7 @@ The name of the form.
 
 <a name='Rizzy.RzViewContext.TryGetFormContext(string,Rizzy.Components.Form.RzFormContext).context'></a>
 
-`context` [RzFormContext](Rizzy.Components.Form.RzFormContext.md 'Rizzy.Components.Form.RzFormContext')
+`context` [RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')
 
 The form context, if found.
 

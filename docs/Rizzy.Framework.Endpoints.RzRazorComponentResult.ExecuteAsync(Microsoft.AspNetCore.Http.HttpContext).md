@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Endpoints](Rizzy.Framework.Endpoints.md 'Rizzy.Framework.Endpoints').[RzRazorComponentResult](Rizzy.Framework.Endpoints.RzRazorComponentResult.md 'Rizzy.Framework.Endpoints.RzRazorComponentResult')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Endpoints](Rizzy.Framework.Endpoints 'Rizzy.Framework.Endpoints').[RzRazorComponentResult](Rizzy.Framework.Endpoints.RzRazorComponentResult 'Rizzy.Framework.Endpoints.RzRazorComponentResult')
 
 ## RzRazorComponentResult.ExecuteAsync(HttpContext) Method
 
-Processes this result in the given [httpContext](Rizzy.Framework.Endpoints.RzRazorComponentResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext).md#Rizzy.Framework.Endpoints.RzRazorComponentResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext).httpContext 'Rizzy.Framework.Endpoints.RzRazorComponentResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext).httpContext').
+Processes this result in the given [httpContext](Rizzy.Framework.Endpoints.RzRazorComponentResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext)#Rizzy.Framework.Endpoints.RzRazorComponentResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext).httpContext 'Rizzy.Framework.Endpoints.RzRazorComponentResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext).httpContext').
 
 ```csharp
 public System.Threading.Tasks.Task ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext httpContext);

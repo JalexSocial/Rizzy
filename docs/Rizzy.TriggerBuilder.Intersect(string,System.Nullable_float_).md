@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[TriggerBuilder](Rizzy.TriggerBuilder.md 'Rizzy.TriggerBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[TriggerBuilder](Rizzy.TriggerBuilder 'Rizzy.TriggerBuilder')
 
 ## TriggerBuilder.Intersect(string, Nullable<float>) Method
 
@@ -23,8 +23,8 @@ public Rizzy.TriggerModifierBuilder Intersect(string? root=null, System.Nullable
 (optional) A floating point number between 0.0 and 1.0 indicating what amount of intersection to fire the event on.
 
 #### Returns
-[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder.md 'Rizzy.TriggerModifierBuilder')  
-A [TriggerModifierBuilder](Rizzy.TriggerModifierBuilder.md 'Rizzy.TriggerModifierBuilder') instance to allow further configuration of the trigger.
+[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder 'Rizzy.TriggerModifierBuilder')  
+A [TriggerModifierBuilder](Rizzy.TriggerModifierBuilder 'Rizzy.TriggerModifierBuilder') instance to allow further configuration of the trigger.
 
 ### Example
   

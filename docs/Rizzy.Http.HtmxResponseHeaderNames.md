@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http')
 
 ## HtmxResponseHeaderNames Class
 
@@ -14,15 +14,15 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Fields | |
 | :--- | :--- |
-| [All](Rizzy.Http.HtmxResponseHeaderNames.All.md 'Rizzy.Http.HtmxResponseHeaderNames.All') | Collection of all HTMX response headers |
-| [Location](Rizzy.Http.HtmxResponseHeaderNames.Location.md 'Rizzy.Http.HtmxResponseHeaderNames.Location') | Allows you to do a client-side redirect that does not do a full page reload. |
-| [PushUrl](Rizzy.Http.HtmxResponseHeaderNames.PushUrl.md 'Rizzy.Http.HtmxResponseHeaderNames.PushUrl') | Pushes a new url into the history stack. |
-| [Redirect](Rizzy.Http.HtmxResponseHeaderNames.Redirect.md 'Rizzy.Http.HtmxResponseHeaderNames.Redirect') | Can be used to do a client-side redirect to a new location. |
-| [Refresh](Rizzy.Http.HtmxResponseHeaderNames.Refresh.md 'Rizzy.Http.HtmxResponseHeaderNames.Refresh') | If set to [true](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/bool 'https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/bool') the client-side will do a full refresh of the page. |
-| [ReplaceUrl](Rizzy.Http.HtmxResponseHeaderNames.ReplaceUrl.md 'Rizzy.Http.HtmxResponseHeaderNames.ReplaceUrl') | Replaces the current URL in the location bar. |
-| [Reselect](Rizzy.Http.HtmxResponseHeaderNames.Reselect.md 'Rizzy.Http.HtmxResponseHeaderNames.Reselect') | A CSS selector that allows you to choose which part of the response is used to be swapped in. |
-| [Reswap](Rizzy.Http.HtmxResponseHeaderNames.Reswap.md 'Rizzy.Http.HtmxResponseHeaderNames.Reswap') | Allows you to specify how the response will be swapped. |
-| [Retarget](Rizzy.Http.HtmxResponseHeaderNames.Retarget.md 'Rizzy.Http.HtmxResponseHeaderNames.Retarget') | A CSS selector that updates the target of the content update to a different element on the page. |
-| [Trigger](Rizzy.Http.HtmxResponseHeaderNames.Trigger.md 'Rizzy.Http.HtmxResponseHeaderNames.Trigger') | Allows you to trigger client-side events. |
-| [TriggerAfterSettle](Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSettle.md 'Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSettle') | Allows you to trigger client-side events after the settle step. |
-| [TriggerAfterSwap](Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSwap.md 'Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSwap') | Allows you to trigger client-side events after the swap step. |
+| [All](Rizzy.Http.HtmxResponseHeaderNames.All 'Rizzy.Http.HtmxResponseHeaderNames.All') | Collection of all HTMX response headers |
+| [Location](Rizzy.Http.HtmxResponseHeaderNames.Location 'Rizzy.Http.HtmxResponseHeaderNames.Location') | Allows you to do a client-side redirect that does not do a full page reload. |
+| [PushUrl](Rizzy.Http.HtmxResponseHeaderNames.PushUrl 'Rizzy.Http.HtmxResponseHeaderNames.PushUrl') | Pushes a new url into the history stack. |
+| [Redirect](Rizzy.Http.HtmxResponseHeaderNames.Redirect 'Rizzy.Http.HtmxResponseHeaderNames.Redirect') | Can be used to do a client-side redirect to a new location. |
+| [Refresh](Rizzy.Http.HtmxResponseHeaderNames.Refresh 'Rizzy.Http.HtmxResponseHeaderNames.Refresh') | If set to [true](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/bool 'https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/bool') the client-side will do a full refresh of the page. |
+| [ReplaceUrl](Rizzy.Http.HtmxResponseHeaderNames.ReplaceUrl 'Rizzy.Http.HtmxResponseHeaderNames.ReplaceUrl') | Replaces the current URL in the location bar. |
+| [Reselect](Rizzy.Http.HtmxResponseHeaderNames.Reselect 'Rizzy.Http.HtmxResponseHeaderNames.Reselect') | A CSS selector that allows you to choose which part of the response is used to be swapped in. |
+| [Reswap](Rizzy.Http.HtmxResponseHeaderNames.Reswap 'Rizzy.Http.HtmxResponseHeaderNames.Reswap') | Allows you to specify how the response will be swapped. |
+| [Retarget](Rizzy.Http.HtmxResponseHeaderNames.Retarget 'Rizzy.Http.HtmxResponseHeaderNames.Retarget') | A CSS selector that updates the target of the content update to a different element on the page. |
+| [Trigger](Rizzy.Http.HtmxResponseHeaderNames.Trigger 'Rizzy.Http.HtmxResponseHeaderNames.Trigger') | Allows you to trigger client-side events. |
+| [TriggerAfterSettle](Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSettle 'Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSettle') | Allows you to trigger client-side events after the settle step. |
+| [TriggerAfterSwap](Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSwap 'Rizzy.Http.HtmxResponseHeaderNames.TriggerAfterSwap') | Allows you to trigger client-side events after the swap step. |

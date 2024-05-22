@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Antiforgery](Rizzy.Antiforgery.md 'Rizzy.Antiforgery').[HtmxAntiforgeryOptions](Rizzy.Antiforgery.HtmxAntiforgeryOptions.md 'Rizzy.Antiforgery.HtmxAntiforgeryOptions')
+#### [Rizzy](index 'index')
+### [Rizzy.Antiforgery](Rizzy.Antiforgery 'Rizzy.Antiforgery').[HtmxAntiforgeryOptions](Rizzy.Antiforgery.HtmxAntiforgeryOptions 'Rizzy.Antiforgery.HtmxAntiforgeryOptions')
 
 ## HtmxAntiforgeryOptions.FormFieldName Property
 

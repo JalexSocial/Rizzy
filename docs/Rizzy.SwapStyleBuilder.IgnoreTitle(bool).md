@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.IgnoreTitle(bool) Method
 
@@ -18,8 +18,8 @@ public Rizzy.SwapStyleBuilder IgnoreTitle(bool ignore=true);
 Whether to ignore the title.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 When set to true, the document title in the swap response will be ignored by adding the modifier  

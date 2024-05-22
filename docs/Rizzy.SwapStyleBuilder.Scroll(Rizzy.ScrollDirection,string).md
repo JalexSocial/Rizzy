@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.Scroll(ScrollDirection, string) Method
 
@@ -12,7 +12,7 @@ public Rizzy.SwapStyleBuilder Scroll(Rizzy.ScrollDirection direction, string? cs
 
 <a name='Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string).direction'></a>
 
-`direction` [ScrollDirection](Rizzy.ScrollDirection.md 'Rizzy.ScrollDirection')
+`direction` [ScrollDirection](Rizzy.ScrollDirection 'Rizzy.ScrollDirection')
 
 The scroll direction after the swap.
 
@@ -23,10 +23,10 @@ The scroll direction after the swap.
 Optional CSS cssSelector of the target element.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 Sets the swapped content scrollbar position after swapping immediately (without animation). For instance, using [Rizzy.ScrollDirection.top](https://docs.microsoft.com/en-us/dotnet/api/Rizzy.ScrollDirection.top 'Rizzy.ScrollDirection.top')  
 will add the modifier `scroll:top` which sets the scrollbar position to the top of swap content after the swap.  
-If css [cssSelector](Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string).md#Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string).cssSelector 'Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection, string).cssSelector') is present then the page is scrolled to the [direction](Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string).md#Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string).direction 'Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection, string).direction') of the content identified by the css cssSelector.
+If css [cssSelector](Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string)#Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string).cssSelector 'Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection, string).cssSelector') is present then the page is scrolled to the [direction](Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string)#Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection,string).direction 'Rizzy.SwapStyleBuilder.Scroll(Rizzy.ScrollDirection, string).direction') of the content identified by the css cssSelector.

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[HtmxSwapService](Rizzy.Components.HtmxSwapService.md 'Rizzy.Components.HtmxSwapService')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[HtmxSwapService](Rizzy.Components.HtmxSwapService 'Rizzy.Components.HtmxSwapService')
 
 ## HtmxSwapService.AddSwappableContent(string, string, SwapStyle, string) Method
 
@@ -24,7 +24,7 @@ The RenderFragment to add.
 
 <a name='Rizzy.Components.HtmxSwapService.AddSwappableContent(string,string,Rizzy.SwapStyle,string).swapStyle'></a>
 
-`swapStyle` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`swapStyle` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The style of content swap to apply.
 
@@ -34,4 +34,4 @@ The style of content swap to apply.
 
 A CSS selector to specify where to apply the swap.
 
-Implements [AddSwappableContent(string, string, SwapStyle, string)](Rizzy.Components.IHtmxSwapService.AddSwappableContent(string,string,Rizzy.SwapStyle,string).md 'Rizzy.Components.IHtmxSwapService.AddSwappableContent(string, string, Rizzy.SwapStyle, string)')
+Implements [AddSwappableContent(string, string, SwapStyle, string)](Rizzy.Components.IHtmxSwapService.AddSwappableContent(string,string,Rizzy.SwapStyle,string) 'Rizzy.Components.IHtmxSwapService.AddSwappableContent(string, string, Rizzy.SwapStyle, string)')

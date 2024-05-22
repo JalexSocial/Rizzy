@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy')
 
 ## SwapStyle Enum
 
@@ -38,8 +38,8 @@ Insert the response after the last child of the target element.
 
 `Default` 0
 
-Default style is what is specified in [DefaultSwapStyle](Rizzy.HtmxConfig.DefaultSwapStyle.md 'Rizzy.HtmxConfig.DefaultSwapStyle') for the application  
-or htmx's default, which is [innerHTML](Rizzy.SwapStyle.md#Rizzy.SwapStyle.innerHTML 'Rizzy.SwapStyle.innerHTML').
+Default style is what is specified in [DefaultSwapStyle](Rizzy.HtmxConfig.DefaultSwapStyle 'Rizzy.HtmxConfig.DefaultSwapStyle') for the application  
+or htmx's default, which is [innerHTML](Rizzy.SwapStyle#Rizzy.SwapStyle.innerHTML 'Rizzy.SwapStyle.innerHTML').
 
 ### Remarks
 This SwapStyle cannot be used directly in markup

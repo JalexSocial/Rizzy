@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components')
 
 ## RzSectionOutlet Class
 
-Renders content provided by [RzSectionContent](Rizzy.Components.RzSectionContent.md 'Rizzy.Components.RzSectionContent') components with matching [SectionId](Rizzy.Components.RzSectionOutlet.SectionId.md 'Rizzy.Components.RzSectionOutlet.SectionId')s.  
+Renders content provided by [RzSectionContent](Rizzy.Components.RzSectionContent 'Rizzy.Components.RzSectionContent') components with matching [SectionId](Rizzy.Components.RzSectionOutlet.SectionId 'Rizzy.Components.RzSectionOutlet.SectionId')s.  
 This class acts as a proxy to the original [Microsoft.AspNetCore.Components.Sections.SectionOutlet](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Components.Sections.SectionOutlet 'Microsoft.AspNetCore.Components.Sections.SectionOutlet'), forwarding all parameters directly to it  
 and rendering its output with no additional markup.
 
@@ -15,5 +15,5 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Properties | |
 | :--- | :--- |
-| [SectionId](Rizzy.Components.RzSectionOutlet.SectionId.md 'Rizzy.Components.RzSectionOutlet.SectionId') | Gets or sets the [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') ID that determines which [RzSectionContent](Rizzy.Components.RzSectionContent.md 'Rizzy.Components.RzSectionContent') instances will provide<br/>content to this instance. |
-| [SectionName](Rizzy.Components.RzSectionOutlet.SectionName.md 'Rizzy.Components.RzSectionOutlet.SectionName') | Gets or sets the [System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String') ID that determines which [RzSectionContent](Rizzy.Components.RzSectionContent.md 'Rizzy.Components.RzSectionContent') instances will provide<br/>content to this instance. |
+| [SectionId](Rizzy.Components.RzSectionOutlet.SectionId 'Rizzy.Components.RzSectionOutlet.SectionId') | Gets or sets the [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') ID that determines which [RzSectionContent](Rizzy.Components.RzSectionContent 'Rizzy.Components.RzSectionContent') instances will provide<br/>content to this instance. |
+| [SectionName](Rizzy.Components.RzSectionOutlet.SectionName 'Rizzy.Components.RzSectionOutlet.SectionName') | Gets or sets the [System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String') ID that determines which [RzSectionContent](Rizzy.Components.RzSectionContent 'Rizzy.Components.RzSectionContent') instances will provide<br/>content to this instance. |

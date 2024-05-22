@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components')
 
 ## RzEditForm Class
 
@@ -11,4 +11,4 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Methods | |
 | :--- | :--- |
-| [AddFieldMapping(FieldIdentifier, string, string)](Rizzy.Components.RzEditForm.AddFieldMapping(Microsoft.AspNetCore.Components.Forms.FieldIdentifier,string,string).md 'Rizzy.Components.RzEditForm.AddFieldMapping(Microsoft.AspNetCore.Components.Forms.FieldIdentifier, string, string)') | Adds a mapping in FieldMapping to map a particular field identified by a FieldIdentifier to<br/>a FieldMap object that contains the fields form name and id. This is public to allow for third-party<br/>components to also map fields |
+| [AddFieldMapping(FieldIdentifier, string, string)](Rizzy.Components.RzEditForm.AddFieldMapping(Microsoft.AspNetCore.Components.Forms.FieldIdentifier,string,string) 'Rizzy.Components.RzEditForm.AddFieldMapping(Microsoft.AspNetCore.Components.Forms.FieldIdentifier, string, string)') | Adds a mapping in FieldMapping to map a particular field identified by a FieldIdentifier to<br/>a FieldMap object that contains the fields form name and id. This is public to allow for third-party<br/>components to also map fields |

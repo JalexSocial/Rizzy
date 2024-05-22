@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[RzSectionContent](Rizzy.Components.RzSectionContent.md 'Rizzy.Components.RzSectionContent')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[RzSectionContent](Rizzy.Components.RzSectionContent 'Rizzy.Components.RzSectionContent')
 
 ## RzSectionContent.SectionName Property
 

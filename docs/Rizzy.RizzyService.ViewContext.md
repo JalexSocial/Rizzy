@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[RizzyService](Rizzy.RizzyService.md 'Rizzy.RizzyService')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[RizzyService](Rizzy.RizzyService 'Rizzy.RizzyService')
 
 ## RizzyService.ViewContext Property
 
@@ -9,7 +9,7 @@ Gets the view context associated with the service. The view context contains inf
 public Rizzy.RzViewContext ViewContext { get; }
 ```
 
-Implements [ViewContext](Rizzy.IRizzyService.ViewContext.md 'Rizzy.IRizzyService.ViewContext')
+Implements [ViewContext](Rizzy.IRizzyService.ViewContext 'Rizzy.IRizzyService.ViewContext')
 
 #### Property Value
-[RzViewContext](Rizzy.RzViewContext.md 'Rizzy.RzViewContext')
+[RzViewContext](Rizzy.RzViewContext 'Rizzy.RzViewContext')

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[RizzyService](Rizzy.RizzyService.md 'Rizzy.RizzyService')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[RizzyService](Rizzy.RizzyService 'Rizzy.RizzyService')
 
 ## RizzyService.CurrentActionUrl Property
 
@@ -11,7 +11,7 @@ useful for specifying form action targets within Razor Component views.
 public string CurrentActionUrl { get; }
 ```
 
-Implements [CurrentActionUrl](Rizzy.IRizzyService.CurrentActionUrl.md 'Rizzy.IRizzyService.CurrentActionUrl')
+Implements [CurrentActionUrl](Rizzy.IRizzyService.CurrentActionUrl 'Rizzy.IRizzyService.CurrentActionUrl')
 
 #### Property Value
 [System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String')

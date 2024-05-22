@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components')
 
 ## RzPageTitle Class
 
-Enables rendering an HTML `<title>` to a [RzHeadOutlet](Rizzy.Components.RzHeadOutlet.md 'Rizzy.Components.RzHeadOutlet') component. This component currently is not operational in SSR mode  
+Enables rendering an HTML `<title>` to a [RzHeadOutlet](Rizzy.Components.RzHeadOutlet 'Rizzy.Components.RzHeadOutlet') component. This component currently is not operational in SSR mode  
 due to existing Blazor issues.  See https://github.com/dotnet/aspnetcore/issues/50268
 
 ```csharp
@@ -14,4 +14,4 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Properties | |
 | :--- | :--- |
-| [ChildContent](Rizzy.Components.RzPageTitle.ChildContent.md 'Rizzy.Components.RzPageTitle.ChildContent') | Gets or sets the content to be rendered as the document title. |
+| [ChildContent](Rizzy.Components.RzPageTitle.ChildContent 'Rizzy.Components.RzPageTitle.ChildContent') | Gets or sets the content to be rendered as the document title. |

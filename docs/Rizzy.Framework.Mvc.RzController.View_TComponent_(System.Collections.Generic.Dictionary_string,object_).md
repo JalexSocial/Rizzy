@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc.md 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController.md 'Rizzy.Framework.Mvc.RzController')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController 'Rizzy.Framework.Mvc.RzController')
 
 ## RzController.View<TComponent>(Dictionary<string,object>) Method
 
@@ -24,7 +24,7 @@ The type of the Razor component to render.
 
 A dictionary containing the data to pass to the component.
 
-Implements [View&lt;TComponent&gt;(Dictionary&lt;string,object&gt;)](Rizzy.IRizzyService.View_TComponent_(System.Collections.Generic.Dictionary_string,object_).md 'Rizzy.IRizzyService.View<TComponent>(System.Collections.Generic.Dictionary<string,object>)')
+Implements [View&lt;TComponent&gt;(Dictionary&lt;string,object&gt;)](Rizzy.IRizzyService.View_TComponent_(System.Collections.Generic.Dictionary_string,object_) 'Rizzy.IRizzyService.View<TComponent>(System.Collections.Generic.Dictionary<string,object>)')
 
 #### Returns
 [Microsoft.AspNetCore.Http.IResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.IResult 'Microsoft.AspNetCore.Http.IResult')  

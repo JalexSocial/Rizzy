@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension.md 'Rizzy.SwapStyleBuilderExtension')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension 'Rizzy.SwapStyleBuilderExtension')
 
 ## SwapStyleBuilderExtension.IgnoreTransition(this SwapStyle) Method
 
@@ -12,13 +12,13 @@ public static Rizzy.SwapStyleBuilder IgnoreTransition(this Rizzy.SwapStyle style
 
 <a name='Rizzy.SwapStyleBuilderExtension.IgnoreTransition(thisRizzy.SwapStyle).style'></a>
 
-`style` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`style` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The swap style.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-A [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+A [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 This method disables transition effects by adding the modifier `transition:false` to the swap commands.

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Attributes](Rizzy.Attributes.md 'Rizzy.Attributes')
+#### [Rizzy](index 'index')
+### [Rizzy.Attributes](Rizzy.Attributes 'Rizzy.Attributes')
 
 ## HtmxRequestAttribute Class
 
@@ -18,12 +18,12 @@ Implements [Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint](https:
 
 ### Remarks
 HTMX requests are determined by the presence of specific HTTP headers. This attribute  
-uses the [HtmxRequest](Rizzy.Http.HtmxRequest.md 'Rizzy.Http.HtmxRequest') class to check these headers in the incoming request.
+uses the [HtmxRequest](Rizzy.Http.HtmxRequest 'Rizzy.Http.HtmxRequest') class to check these headers in the incoming request.
 
 | Properties | |
 | :--- | :--- |
-| [Target](Rizzy.Attributes.HtmxRequestAttribute.Target.md 'Rizzy.Attributes.HtmxRequestAttribute.Target') | Gets or sets the target element's identifier for which the action should be executed.<br/>If specified, only requests targeting this element will be accepted. |
+| [Target](Rizzy.Attributes.HtmxRequestAttribute.Target 'Rizzy.Attributes.HtmxRequestAttribute.Target') | Gets or sets the target element's identifier for which the action should be executed.<br/>If specified, only requests targeting this element will be accepted. |
 
 | Explicit Interface Implementations | |
 | :--- | :--- |
-| [Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(ActionConstraintContext)](Rizzy.Attributes.HtmxRequestAttribute.Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(Microsoft.AspNetCore.Mvc.ActionConstraints.ActionConstraintContext).md 'Rizzy.Attributes.HtmxRequestAttribute.Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(Microsoft.AspNetCore.Mvc.ActionConstraints.ActionConstraintContext)') | Determines whether the action method should be executed based on the characteristics of the incoming HTTP request. |
+| [Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(ActionConstraintContext)](Rizzy.Attributes.HtmxRequestAttribute.Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(Microsoft.AspNetCore.Mvc.ActionConstraints.ActionConstraintContext) 'Rizzy.Attributes.HtmxRequestAttribute.Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(Microsoft.AspNetCore.Mvc.ActionConstraints.ActionConstraintContext)') | Determines whether the action method should be executed based on the characteristics of the incoming HTTP request. |

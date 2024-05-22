@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')
 
 ## HtmxResponse.Location(LocationTarget) Method
 
@@ -12,8 +12,8 @@ public Rizzy.Http.HtmxResponse Location(Rizzy.Http.LocationTarget locationTarget
 
 <a name='Rizzy.Http.HtmxResponse.Location(Rizzy.Http.LocationTarget).locationTarget'></a>
 
-`locationTarget` [LocationTarget](Rizzy.Http.LocationTarget.md 'Rizzy.Http.LocationTarget')
+`locationTarget` [LocationTarget](Rizzy.Http.LocationTarget 'Rizzy.Http.LocationTarget')
 
 #### Returns
-[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')  
-This [HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse') object instance.
+[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')  
+This [HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse') object instance.

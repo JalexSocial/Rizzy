@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[IRizzyService](Rizzy.IRizzyService.md 'Rizzy.IRizzyService')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[IRizzyService](Rizzy.IRizzyService 'Rizzy.IRizzyService')
 
 ## IRizzyService.ViewContext Property
 
@@ -10,4 +10,4 @@ Rizzy.RzViewContext ViewContext { get; }
 ```
 
 #### Property Value
-[RzViewContext](Rizzy.RzViewContext.md 'Rizzy.RzViewContext')
+[RzViewContext](Rizzy.RzViewContext 'Rizzy.RzViewContext')

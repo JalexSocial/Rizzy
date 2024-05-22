@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder(SwapStyle) Constructor
 
@@ -12,6 +12,6 @@ public SwapStyleBuilder(Rizzy.SwapStyle style=Rizzy.SwapStyle.Default);
 
 <a name='Rizzy.SwapStyleBuilder.SwapStyleBuilder(Rizzy.SwapStyle).style'></a>
 
-`style` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`style` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The initial swap style to be applied.

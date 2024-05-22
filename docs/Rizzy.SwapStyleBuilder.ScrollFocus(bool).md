@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.ScrollFocus(bool) Method
 
@@ -20,9 +20,9 @@ public Rizzy.SwapStyleBuilder ScrollFocus(bool scroll=true);
 Whether to scroll to the focus element.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
-[scroll](Rizzy.SwapStyleBuilder.ScrollFocus(bool).md#Rizzy.SwapStyleBuilder.ScrollFocus(bool).scroll 'Rizzy.SwapStyleBuilder.ScrollFocus(bool).scroll') when true will be `focus-scroll:true`, otherwise when false  
+[scroll](Rizzy.SwapStyleBuilder.ScrollFocus(bool)#Rizzy.SwapStyleBuilder.ScrollFocus(bool).scroll 'Rizzy.SwapStyleBuilder.ScrollFocus(bool).scroll') when true will be `focus-scroll:true`, otherwise when false  
             will be `focus-scroll:false`

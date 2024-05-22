@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension.md 'Rizzy.SwapStyleBuilderExtension')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension 'Rizzy.SwapStyleBuilderExtension')
 
 ## SwapStyleBuilderExtension.ScrollBottom(this SwapStyle, string) Method
 
@@ -12,7 +12,7 @@ public static Rizzy.SwapStyleBuilder ScrollBottom(this Rizzy.SwapStyle style, st
 
 <a name='Rizzy.SwapStyleBuilderExtension.ScrollBottom(thisRizzy.SwapStyle,string).style'></a>
 
-`style` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`style` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The swap style.
 
@@ -23,10 +23,10 @@ The swap style.
 Optional css selector of the target element.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-A [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+A [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 This method adds the modifier `scroll:bottom` to the swap commands, instructing the page to scroll to  
-the bottom of the content after content is swapped immediately and without animation. If css [cssSelector](Rizzy.SwapStyleBuilderExtension.ScrollBottom(thisRizzy.SwapStyle,string).md#Rizzy.SwapStyleBuilderExtension.ScrollBottom(thisRizzy.SwapStyle,string).cssSelector 'Rizzy.SwapStyleBuilderExtension.ScrollBottom(this Rizzy.SwapStyle, string).cssSelector')  
+the bottom of the content after content is swapped immediately and without animation. If css [cssSelector](Rizzy.SwapStyleBuilderExtension.ScrollBottom(thisRizzy.SwapStyle,string)#Rizzy.SwapStyleBuilderExtension.ScrollBottom(thisRizzy.SwapStyle,string).cssSelector 'Rizzy.SwapStyleBuilderExtension.ScrollBottom(this Rizzy.SwapStyle, string).cssSelector')  
 is present then the page is scrolled to the bottom of the content identified by the css cssSelector.

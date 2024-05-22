@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.ScrollBottom(string) Method
 
@@ -17,10 +17,10 @@ public Rizzy.SwapStyleBuilder ScrollBottom(string? cssSelector=null);
 Optional CSS cssSelector of the target element.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 This method adds the modifier `scroll:bottom` to the swap commands, instructing the page to scroll to  
-the bottom of the content after content is swapped immediately and without animation. If css [cssSelector](Rizzy.SwapStyleBuilder.ScrollBottom(string).md#Rizzy.SwapStyleBuilder.ScrollBottom(string).cssSelector 'Rizzy.SwapStyleBuilder.ScrollBottom(string).cssSelector')  
+the bottom of the content after content is swapped immediately and without animation. If css [cssSelector](Rizzy.SwapStyleBuilder.ScrollBottom(string)#Rizzy.SwapStyleBuilder.ScrollBottom(string).cssSelector 'Rizzy.SwapStyleBuilder.ScrollBottom(string).cssSelector')  
 is present then the page is scrolled to the bottom of the content identified by the css cssSelector.

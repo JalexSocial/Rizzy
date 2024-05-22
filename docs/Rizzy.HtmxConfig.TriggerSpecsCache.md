@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[HtmxConfig](Rizzy.HtmxConfig 'Rizzy.HtmxConfig')
 
 ## HtmxConfig.TriggerSpecsCache Property
 
@@ -12,4 +12,4 @@ public Rizzy.TriggerSpecificationCache? TriggerSpecsCache { get; set; }
 ```
 
 #### Property Value
-[TriggerSpecificationCache](Rizzy.TriggerSpecificationCache.md 'Rizzy.TriggerSpecificationCache')
+[TriggerSpecificationCache](Rizzy.TriggerSpecificationCache 'Rizzy.TriggerSpecificationCache')

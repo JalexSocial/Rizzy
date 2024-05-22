@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.ShowOnTop(string) Method
 
@@ -17,9 +17,9 @@ public Rizzy.SwapStyleBuilder ShowOnTop(string? cssSelector=null);
 Optional CSS cssSelector of the target element.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 This method adds the modifier `show::top`, smoothly scrolling to the top of the element identified by  
-[cssSelector](Rizzy.SwapStyleBuilder.ShowOnTop(string).md#Rizzy.SwapStyleBuilder.ShowOnTop(string).cssSelector 'Rizzy.SwapStyleBuilder.ShowOnTop(string).cssSelector').
+[cssSelector](Rizzy.SwapStyleBuilder.ShowOnTop(string)#Rizzy.SwapStyleBuilder.ShowOnTop(string).cssSelector 'Rizzy.SwapStyleBuilder.ShowOnTop(string).cssSelector').

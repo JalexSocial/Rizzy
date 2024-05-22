@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension.md 'Rizzy.SwapStyleBuilderExtension')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension 'Rizzy.SwapStyleBuilderExtension')
 
 ## SwapStyleBuilderExtension.IncludeTransition(this SwapStyle) Method
 
@@ -12,13 +12,13 @@ public static Rizzy.SwapStyleBuilder IncludeTransition(this Rizzy.SwapStyle styl
 
 <a name='Rizzy.SwapStyleBuilderExtension.IncludeTransition(thisRizzy.SwapStyle).style'></a>
 
-`style` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`style` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The swap style.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-A [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+A [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 By calling this method, transition effects are enabled for the swap, adding the modifier `transition:true`.

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxRequest](Rizzy.Http.HtmxRequest.md 'Rizzy.Http.HtmxRequest')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxRequest](Rizzy.Http.HtmxRequest 'Rizzy.Http.HtmxRequest')
 
 ## HtmxRequest.IsBoosted Property
 

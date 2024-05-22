@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[HtmxConfigHeadOutlet](Rizzy.Components.HtmxConfigHeadOutlet.md 'Rizzy.Components.HtmxConfigHeadOutlet')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[HtmxConfigHeadOutlet](Rizzy.Components.HtmxConfigHeadOutlet 'Rizzy.Components.HtmxConfigHeadOutlet')
 
 ## HtmxConfigHeadOutlet.Configuration Property
 

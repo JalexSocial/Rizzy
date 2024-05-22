@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[RzEditForm](Rizzy.Components.RzEditForm.md 'Rizzy.Components.RzEditForm')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[RzEditForm](Rizzy.Components.RzEditForm 'Rizzy.Components.RzEditForm')
 
 ## RzEditForm.AddFieldMapping(FieldIdentifier, string, string) Method
 

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[IHtmxSwapService](Rizzy.Components.IHtmxSwapService.md 'Rizzy.Components.IHtmxSwapService')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[IHtmxSwapService](Rizzy.Components.IHtmxSwapService 'Rizzy.Components.IHtmxSwapService')
 
 ## IHtmxSwapService.AddSwappableFragment(string, RenderFragment, SwapStyle, string) Method
 
@@ -24,7 +24,7 @@ The RenderFragment to add.
 
 <a name='Rizzy.Components.IHtmxSwapService.AddSwappableFragment(string,Microsoft.AspNetCore.Components.RenderFragment,Rizzy.SwapStyle,string).swapStyle'></a>
 
-`swapStyle` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`swapStyle` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The style of content swap to apply.
 

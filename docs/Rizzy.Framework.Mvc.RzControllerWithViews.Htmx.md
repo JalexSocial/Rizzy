@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc.md 'Rizzy.Framework.Mvc').[RzControllerWithViews](Rizzy.Framework.Mvc.RzControllerWithViews.md 'Rizzy.Framework.Mvc.RzControllerWithViews')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc 'Rizzy.Framework.Mvc').[RzControllerWithViews](Rizzy.Framework.Mvc.RzControllerWithViews 'Rizzy.Framework.Mvc.RzControllerWithViews')
 
 ## RzControllerWithViews.Htmx Property
 
@@ -10,4 +10,4 @@ public Rizzy.Http.HtmxContext Htmx { get; }
 ```
 
 #### Property Value
-[HtmxContext](Rizzy.Http.HtmxContext.md 'Rizzy.Http.HtmxContext')
+[HtmxContext](Rizzy.Http.HtmxContext 'Rizzy.Http.HtmxContext')

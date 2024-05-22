@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components')
 
 ## HtmxConfigHeadOutlet Class
 
-This component will render a meta tag with the serialized [HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig') object,  
+This component will render a meta tag with the serialized [HtmxConfig](Rizzy.HtmxConfig 'Rizzy.HtmxConfig') object,  
 enabling customization of Htmx.
 
 ```csharp
@@ -14,4 +14,4 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Properties | |
 | :--- | :--- |
-| [Configuration](Rizzy.Components.HtmxConfigHeadOutlet.Configuration.md 'Rizzy.Components.HtmxConfigHeadOutlet.Configuration') | Specify a named configuration to use a non-default configuration |
+| [Configuration](Rizzy.Components.HtmxConfigHeadOutlet.Configuration 'Rizzy.Components.HtmxConfigHeadOutlet.Configuration') | Specify a named configuration to use a non-default configuration |

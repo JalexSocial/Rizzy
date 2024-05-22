@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Endpoints](Rizzy.Framework.Endpoints.md 'Rizzy.Framework.Endpoints').[RzRazorComponentResult](Rizzy.Framework.Endpoints.RzRazorComponentResult.md 'Rizzy.Framework.Endpoints.RzRazorComponentResult')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Endpoints](Rizzy.Framework.Endpoints 'Rizzy.Framework.Endpoints').[RzRazorComponentResult](Rizzy.Framework.Endpoints.RzRazorComponentResult 'Rizzy.Framework.Endpoints.RzRazorComponentResult')
 
 ## RzRazorComponentResult(Type, object) Constructor
 
-Constructs an instance of [RzRazorComponentResult](Rizzy.Framework.Endpoints.RzRazorComponentResult.md 'Rizzy.Framework.Endpoints.RzRazorComponentResult').
+Constructs an instance of [RzRazorComponentResult](Rizzy.Framework.Endpoints.RzRazorComponentResult 'Rizzy.Framework.Endpoints.RzRazorComponentResult').
 
 ```csharp
 public RzRazorComponentResult(System.Type componentType, object parameters);

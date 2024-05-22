@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[RizzyService](Rizzy.RizzyService.md 'Rizzy.RizzyService')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[RizzyService](Rizzy.RizzyService 'Rizzy.RizzyService')
 
 ## RizzyService.PartialView<TComponent>(object) Method
 
@@ -25,7 +25,7 @@ The type of the Razor component to render.
 
 Optional dynamic data to pass to the component. Defaults to null if not provided.
 
-Implements [PartialView&lt;TComponent&gt;(object)](Rizzy.IRizzyService.PartialView_TComponent_(object).md 'Rizzy.IRizzyService.PartialView<TComponent>(object)')
+Implements [PartialView&lt;TComponent&gt;(object)](Rizzy.IRizzyService.PartialView_TComponent_(object) 'Rizzy.IRizzyService.PartialView<TComponent>(object)')
 
 #### Returns
 [Microsoft.AspNetCore.Http.IResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.IResult 'Microsoft.AspNetCore.Http.IResult')  

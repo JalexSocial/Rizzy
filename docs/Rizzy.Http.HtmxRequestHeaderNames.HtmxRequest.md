@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxRequestHeaderNames](Rizzy.Http.HtmxRequestHeaderNames.md 'Rizzy.Http.HtmxRequestHeaderNames')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxRequestHeaderNames](Rizzy.Http.HtmxRequestHeaderNames 'Rizzy.Http.HtmxRequestHeaderNames')
 
 ## HtmxRequestHeaderNames.HtmxRequest Field
 

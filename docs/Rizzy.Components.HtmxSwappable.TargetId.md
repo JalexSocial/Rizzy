@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[HtmxSwappable](Rizzy.Components.HtmxSwappable.md 'Rizzy.Components.HtmxSwappable')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[HtmxSwappable](Rizzy.Components.HtmxSwappable 'Rizzy.Components.HtmxSwappable')
 
 ## HtmxSwappable.TargetId Property
 

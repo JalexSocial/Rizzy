@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components')
 
 ## RzInputRadio<TValue> Class
 
@@ -14,4 +14,4 @@ public class RzInputRadio<TValue> : Microsoft.AspNetCore.Components.Forms.InputR
 
 `TValue`
 
-Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [Microsoft.AspNetCore.Components.ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Components.ComponentBase 'Microsoft.AspNetCore.Components.ComponentBase') &#129106; [Microsoft.AspNetCore.Components.Forms.InputRadio&lt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Components.Forms.InputRadio-1 'Microsoft.AspNetCore.Components.Forms.InputRadio`1')[TValue](Rizzy.Components.RzInputRadio_TValue_.md#Rizzy.Components.RzInputRadio_TValue_.TValue 'Rizzy.Components.RzInputRadio<TValue>.TValue')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Components.Forms.InputRadio-1 'Microsoft.AspNetCore.Components.Forms.InputRadio`1') &#129106; RzInputRadio<TValue>
+Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; [Microsoft.AspNetCore.Components.ComponentBase](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Components.ComponentBase 'Microsoft.AspNetCore.Components.ComponentBase') &#129106; [Microsoft.AspNetCore.Components.Forms.InputRadio&lt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Components.Forms.InputRadio-1 'Microsoft.AspNetCore.Components.Forms.InputRadio`1')[TValue](Rizzy.Components.RzInputRadio_TValue_#Rizzy.Components.RzInputRadio_TValue_.TValue 'Rizzy.Components.RzInputRadio<TValue>.TValue')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Components.Forms.InputRadio-1 'Microsoft.AspNetCore.Components.Forms.InputRadio`1') &#129106; RzInputRadio<TValue>

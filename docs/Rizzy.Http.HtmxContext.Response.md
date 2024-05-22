@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxContext](Rizzy.Http.HtmxContext.md 'Rizzy.Http.HtmxContext')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxContext](Rizzy.Http.HtmxContext 'Rizzy.Http.HtmxContext')
 
 ## HtmxContext.Response Property
 
@@ -10,4 +10,4 @@ public Rizzy.Http.HtmxResponse Response { get; }
 ```
 
 #### Property Value
-[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')
+[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')

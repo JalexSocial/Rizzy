@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[RzPageTitle](Rizzy.Components.RzPageTitle.md 'Rizzy.Components.RzPageTitle')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[RzPageTitle](Rizzy.Components.RzPageTitle 'Rizzy.Components.RzPageTitle')
 
 ## RzPageTitle.ChildContent Property
 

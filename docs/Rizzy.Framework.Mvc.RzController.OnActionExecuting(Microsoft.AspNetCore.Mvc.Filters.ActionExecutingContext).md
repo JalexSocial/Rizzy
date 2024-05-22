@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc.md 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController.md 'Rizzy.Framework.Mvc.RzController')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController 'Rizzy.Framework.Mvc.RzController')
 
 ## RzController.OnActionExecuting(ActionExecutingContext) Method
 

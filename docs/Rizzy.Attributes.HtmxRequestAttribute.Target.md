@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Attributes](Rizzy.Attributes.md 'Rizzy.Attributes').[HtmxRequestAttribute](Rizzy.Attributes.HtmxRequestAttribute.md 'Rizzy.Attributes.HtmxRequestAttribute')
+#### [Rizzy](index 'index')
+### [Rizzy.Attributes](Rizzy.Attributes 'Rizzy.Attributes').[HtmxRequestAttribute](Rizzy.Attributes.HtmxRequestAttribute 'Rizzy.Attributes.HtmxRequestAttribute')
 
 ## HtmxRequestAttribute.Target Property
 

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[RzViewContext](Rizzy.RzViewContext.md 'Rizzy.RzViewContext')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[RzViewContext](Rizzy.RzViewContext 'Rizzy.RzViewContext')
 
 ## RzViewContext.AddFormContext(string, string, object, bool) Method
 
@@ -27,4 +27,4 @@ public Rizzy.Components.Form.RzFormContext AddFormContext(string formName, strin
 `useDataAnnotations` [System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
 
 #### Returns
-[RzFormContext](Rizzy.Components.Form.RzFormContext.md 'Rizzy.Components.Form.RzFormContext')
+[RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[LocationTarget](Rizzy.Http.LocationTarget.md 'Rizzy.Http.LocationTarget')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[LocationTarget](Rizzy.Http.LocationTarget 'Rizzy.Http.LocationTarget')
 
 ## LocationTarget.Path Property
 

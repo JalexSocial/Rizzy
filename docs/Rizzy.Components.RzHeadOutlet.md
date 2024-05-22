@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components')
 
 ## RzHeadOutlet Class
 
-Renders content provided by [RzHeadContent](Rizzy.Components.RzHeadContent.md 'Rizzy.Components.RzHeadContent') components.
+Renders content provided by [RzHeadContent](Rizzy.Components.RzHeadContent 'Rizzy.Components.RzHeadContent') components.
 
 ```csharp
 public sealed class RzHeadOutlet : Microsoft.AspNetCore.Components.ComponentBase

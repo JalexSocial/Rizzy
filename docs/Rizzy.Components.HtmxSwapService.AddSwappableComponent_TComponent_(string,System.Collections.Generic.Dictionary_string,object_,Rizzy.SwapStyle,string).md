@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[HtmxSwapService](Rizzy.Components.HtmxSwapService.md 'Rizzy.Components.HtmxSwapService')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[HtmxSwapService](Rizzy.Components.HtmxSwapService 'Rizzy.Components.HtmxSwapService')
 
 ## HtmxSwapService.AddSwappableComponent<TComponent>(string, Dictionary<string,object>, SwapStyle, string) Method
 
@@ -32,7 +32,7 @@ Optional parameters to pass to the component.
 
 <a name='Rizzy.Components.HtmxSwapService.AddSwappableComponent_TComponent_(string,System.Collections.Generic.Dictionary_string,object_,Rizzy.SwapStyle,string).swapStyle'></a>
 
-`swapStyle` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`swapStyle` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The style of content swap to apply.
 
@@ -42,4 +42,4 @@ The style of content swap to apply.
 
 A CSS selector to specify where to apply the swap.
 
-Implements [AddSwappableComponent&lt;TComponent&gt;(string, Dictionary&lt;string,object&gt;, SwapStyle, string)](Rizzy.Components.IHtmxSwapService.AddSwappableComponent_TComponent_(string,System.Collections.Generic.Dictionary_string,object_,Rizzy.SwapStyle,string).md 'Rizzy.Components.IHtmxSwapService.AddSwappableComponent<TComponent>(string, System.Collections.Generic.Dictionary<string,object>, Rizzy.SwapStyle, string)')
+Implements [AddSwappableComponent&lt;TComponent&gt;(string, Dictionary&lt;string,object&gt;, SwapStyle, string)](Rizzy.Components.IHtmxSwapService.AddSwappableComponent_TComponent_(string,System.Collections.Generic.Dictionary_string,object_,Rizzy.SwapStyle,string) 'Rizzy.Components.IHtmxSwapService.AddSwappableComponent<TComponent>(string, System.Collections.Generic.Dictionary<string,object>, Rizzy.SwapStyle, string)')

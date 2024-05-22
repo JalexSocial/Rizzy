@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Configuration](Rizzy.Configuration.md 'Rizzy.Configuration').[RizzyConfigBuilder](Rizzy.Configuration.RizzyConfigBuilder.md 'Rizzy.Configuration.RizzyConfigBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy.Configuration](Rizzy.Configuration 'Rizzy.Configuration').[RizzyConfigBuilder](Rizzy.Configuration.RizzyConfigBuilder 'Rizzy.Configuration.RizzyConfigBuilder')
 
 ## RizzyConfigBuilder.ConfigureHtmxSettings Class
 
@@ -13,4 +13,4 @@ Microsoft.Extensions.Options.IConfigureNamedOptions<Rizzy.HtmxConfig>
 
 Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object') &#129106; ConfigureHtmxSettings
 
-Implements [Microsoft.Extensions.Options.IConfigureOptions&lt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureOptions-1 'Microsoft.Extensions.Options.IConfigureOptions`1')[HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureOptions-1 'Microsoft.Extensions.Options.IConfigureOptions`1'), [Microsoft.Extensions.Options.IConfigureNamedOptions&lt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureNamedOptions-1 'Microsoft.Extensions.Options.IConfigureNamedOptions`1')[HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureNamedOptions-1 'Microsoft.Extensions.Options.IConfigureNamedOptions`1')
+Implements [Microsoft.Extensions.Options.IConfigureOptions&lt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureOptions-1 'Microsoft.Extensions.Options.IConfigureOptions`1')[HtmxConfig](Rizzy.HtmxConfig 'Rizzy.HtmxConfig')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureOptions-1 'Microsoft.Extensions.Options.IConfigureOptions`1'), [Microsoft.Extensions.Options.IConfigureNamedOptions&lt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureNamedOptions-1 'Microsoft.Extensions.Options.IConfigureNamedOptions`1')[HtmxConfig](Rizzy.HtmxConfig 'Rizzy.HtmxConfig')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Options.IConfigureNamedOptions-1 'Microsoft.Extensions.Options.IConfigureNamedOptions`1')

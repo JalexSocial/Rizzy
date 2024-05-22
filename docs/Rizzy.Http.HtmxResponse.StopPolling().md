@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')
 
 ## HtmxResponse.StopPolling() Method
 
@@ -10,4 +10,4 @@ public Rizzy.Http.HtmxResponse StopPolling();
 ```
 
 #### Returns
-[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')
+[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')

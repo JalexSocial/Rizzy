@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension.md 'Rizzy.SwapStyleBuilderExtension')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilderExtension](Rizzy.SwapStyleBuilderExtension 'Rizzy.SwapStyleBuilderExtension')
 
 ## SwapStyleBuilderExtension.AfterSettleDelay(this SwapStyle, TimeSpan) Method
 
@@ -13,7 +13,7 @@ public static Rizzy.SwapStyleBuilder AfterSettleDelay(this Rizzy.SwapStyle style
 
 <a name='Rizzy.SwapStyleBuilderExtension.AfterSettleDelay(thisRizzy.SwapStyle,System.TimeSpan).style'></a>
 
-`style` [SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+`style` [SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
 
 The swap style.
 
@@ -25,10 +25,10 @@ The amount of time htmx should wait after receiving a
             response to swap the content.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-A [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+A [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
-[time](Rizzy.SwapStyleBuilderExtension.AfterSettleDelay(thisRizzy.SwapStyle,System.TimeSpan).md#Rizzy.SwapStyleBuilderExtension.AfterSettleDelay(thisRizzy.SwapStyle,System.TimeSpan).time 'Rizzy.SwapStyleBuilderExtension.AfterSettleDelay(this Rizzy.SwapStyle, System.TimeSpan).time') will be converted to milliseconds if less than 1000, otherwise seconds,   
+[time](Rizzy.SwapStyleBuilderExtension.AfterSettleDelay(thisRizzy.SwapStyle,System.TimeSpan)#Rizzy.SwapStyleBuilderExtension.AfterSettleDelay(thisRizzy.SwapStyle,System.TimeSpan).time 'Rizzy.SwapStyleBuilderExtension.AfterSettleDelay(this Rizzy.SwapStyle, System.TimeSpan).time') will be converted to milliseconds if less than 1000, otherwise seconds,   
             meaning the resulting modifier will be `settle:500ms` for a [System.TimeSpan](https://docs.microsoft.com/en-us/dotnet/api/System.TimeSpan 'System.TimeSpan') of 500 milliseconds   
             or `settle:2s` for a [System.TimeSpan](https://docs.microsoft.com/en-us/dotnet/api/System.TimeSpan 'System.TimeSpan') of 2 seconds..

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[RizzyApplicationBuilderExtensions](Rizzy.RizzyApplicationBuilderExtensions.md 'Rizzy.RizzyApplicationBuilderExtensions')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[RizzyApplicationBuilderExtensions](Rizzy.RizzyApplicationBuilderExtensions 'Rizzy.RizzyApplicationBuilderExtensions')
 
 ## RizzyApplicationBuilderExtensions.AddRizzy(this IHostApplicationBuilder, Action<RizzyConfig>) Method
 
@@ -19,4 +19,4 @@ public static Rizzy.Configuration.RizzyConfigBuilder AddRizzy(this Microsoft.Ext
 `configBuilder` [System.Action&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-1 'System.Action`1')[Rizzy.Configuration.RizzyConfig](https://docs.microsoft.com/en-us/dotnet/api/Rizzy.Configuration.RizzyConfig 'Rizzy.Configuration.RizzyConfig')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-1 'System.Action`1')
 
 #### Returns
-[RizzyConfigBuilder](Rizzy.Configuration.RizzyConfigBuilder.md 'Rizzy.Configuration.RizzyConfigBuilder')
+[RizzyConfigBuilder](Rizzy.Configuration.RizzyConfigBuilder 'Rizzy.Configuration.RizzyConfigBuilder')

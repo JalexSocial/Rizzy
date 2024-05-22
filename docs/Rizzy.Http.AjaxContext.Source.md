@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[AjaxContext](Rizzy.Http.AjaxContext.md 'Rizzy.Http.AjaxContext')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[AjaxContext](Rizzy.Http.AjaxContext 'Rizzy.Http.AjaxContext')
 
 ## AjaxContext.Source Property
 

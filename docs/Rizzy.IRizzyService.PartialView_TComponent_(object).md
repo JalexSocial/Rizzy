@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[IRizzyService](Rizzy.IRizzyService.md 'Rizzy.IRizzyService')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[IRizzyService](Rizzy.IRizzyService 'Rizzy.IRizzyService')
 
 ## IRizzyService.PartialView<TComponent>(object) Method
 

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc.md 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController.md 'Rizzy.Framework.Mvc.RzController')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController 'Rizzy.Framework.Mvc.RzController')
 
 ## RzController.CurrentActionUrl Property
 
@@ -10,7 +10,7 @@ This value can be used inside of form Razor Component views
 public string CurrentActionUrl { get; }
 ```
 
-Implements [CurrentActionUrl](Rizzy.IRizzyService.CurrentActionUrl.md 'Rizzy.IRizzyService.CurrentActionUrl')
+Implements [CurrentActionUrl](Rizzy.IRizzyService.CurrentActionUrl 'Rizzy.IRizzyService.CurrentActionUrl')
 
 #### Property Value
 [System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String')

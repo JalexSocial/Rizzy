@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Configuration](Rizzy.Configuration.md 'Rizzy.Configuration')
+#### [Rizzy](index 'index')
+### [Rizzy.Configuration](Rizzy.Configuration 'Rizzy.Configuration')
 
 ## RizzyConfigBuilder Class
 
@@ -11,9 +11,9 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Constructors | |
 | :--- | :--- |
-| [RizzyConfigBuilder(IHostApplicationBuilder, Action&lt;RizzyConfig&gt;)](Rizzy.Configuration.RizzyConfigBuilder.RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Rizzy.Configuration.RizzyConfig_).md 'Rizzy.Configuration.RizzyConfigBuilder.RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder, System.Action<Rizzy.Configuration.RizzyConfig>)') | Sets up default services for Rizzy |
+| [RizzyConfigBuilder(IHostApplicationBuilder, Action&lt;RizzyConfig&gt;)](Rizzy.Configuration.RizzyConfigBuilder.RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Rizzy.Configuration.RizzyConfig_) 'Rizzy.Configuration.RizzyConfigBuilder.RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder, System.Action<Rizzy.Configuration.RizzyConfig>)') | Sets up default services for Rizzy |
 
 | Methods | |
 | :--- | :--- |
-| [WithHtmxConfiguration(string, Action&lt;HtmxConfig&gt;)](Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(string,System.Action_Rizzy.HtmxConfig_).md 'Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(string, System.Action<Rizzy.HtmxConfig>)') | Adds a named configuration for use inside an HtmxConfigHeadOutlet |
-| [WithHtmxConfiguration(Action&lt;HtmxConfig&gt;)](Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(System.Action_Rizzy.HtmxConfig_).md 'Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(System.Action<Rizzy.HtmxConfig>)') | Adds a default configuration for use inside an HtmxConfigHeadOutlet |
+| [WithHtmxConfiguration(string, Action&lt;HtmxConfig&gt;)](Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(string,System.Action_Rizzy.HtmxConfig_) 'Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(string, System.Action<Rizzy.HtmxConfig>)') | Adds a named configuration for use inside an HtmxConfigHeadOutlet |
+| [WithHtmxConfiguration(Action&lt;HtmxConfig&gt;)](Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(System.Action_Rizzy.HtmxConfig_) 'Rizzy.Configuration.RizzyConfigBuilder.WithHtmxConfiguration(System.Action<Rizzy.HtmxConfig>)') | Adds a default configuration for use inside an HtmxConfigHeadOutlet |

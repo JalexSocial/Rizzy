@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.ShowWindow(ScrollDirection) Method
 
@@ -12,13 +12,13 @@ public Rizzy.SwapStyleBuilder ShowWindow(Rizzy.ScrollDirection direction);
 
 <a name='Rizzy.SwapStyleBuilder.ShowWindow(Rizzy.ScrollDirection).direction'></a>
 
-`direction` [ScrollDirection](Rizzy.ScrollDirection.md 'Rizzy.ScrollDirection')
+`direction` [ScrollDirection](Rizzy.ScrollDirection 'Rizzy.ScrollDirection')
 
 The direction to scroll the window after the swap.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 This method adds the modifier `show:window:`, directing the swap to display the specified  

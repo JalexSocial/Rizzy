@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')
 
 ## HtmxResponse.PreventBrowserCurrentUrlUpdate() Method
 
@@ -11,5 +11,5 @@ public Rizzy.Http.HtmxResponse PreventBrowserCurrentUrlUpdate();
 ```
 
 #### Returns
-[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')  
-This [HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse') object instance.
+[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')  
+This [HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse') object instance.

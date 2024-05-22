@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxContext](Rizzy.Http.HtmxContext.md 'Rizzy.Http.HtmxContext')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxContext](Rizzy.Http.HtmxContext 'Rizzy.Http.HtmxContext')
 
 ## HtmxContext.Configuration Property
 
@@ -10,4 +10,4 @@ public Rizzy.HtmxConfig Configuration { get; set; }
 ```
 
 #### Property Value
-[HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig')
+[HtmxConfig](Rizzy.HtmxConfig 'Rizzy.HtmxConfig')

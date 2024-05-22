@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy')
 
 ## RizzyApplicationBuilderExtensions Class
 
@@ -14,4 +14,4 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Methods | |
 | :--- | :--- |
-| [AddRizzy(this IHostApplicationBuilder, Action&lt;RizzyConfig&gt;)](Rizzy.RizzyApplicationBuilderExtensions.AddRizzy(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Rizzy.Configuration.RizzyConfig_).md 'Rizzy.RizzyApplicationBuilderExtensions.AddRizzy(this Microsoft.Extensions.Hosting.IHostApplicationBuilder, System.Action<Rizzy.Configuration.RizzyConfig>)') | Add and configure Htmx. |
+| [AddRizzy(this IHostApplicationBuilder, Action&lt;RizzyConfig&gt;)](Rizzy.RizzyApplicationBuilderExtensions.AddRizzy(thisMicrosoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Rizzy.Configuration.RizzyConfig_) 'Rizzy.RizzyApplicationBuilderExtensions.AddRizzy(this Microsoft.Extensions.Hosting.IHostApplicationBuilder, System.Action<Rizzy.Configuration.RizzyConfig>)') | Add and configure Htmx. |

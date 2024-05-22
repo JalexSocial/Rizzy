@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[RzViewContext](Rizzy.RzViewContext.md 'Rizzy.RzViewContext')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[RzViewContext](Rizzy.RzViewContext 'Rizzy.RzViewContext')
 
 ## RzViewContext.AddFormContext(string, string, string, object, bool) Method
 
@@ -39,5 +39,5 @@ The model associated with the form.
 Determines whether to use data annotations for validation.
 
 #### Returns
-[RzFormContext](Rizzy.Components.Form.RzFormContext.md 'Rizzy.Components.Form.RzFormContext')  
+[RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')  
 True if the form context was added successfully; otherwise, false.

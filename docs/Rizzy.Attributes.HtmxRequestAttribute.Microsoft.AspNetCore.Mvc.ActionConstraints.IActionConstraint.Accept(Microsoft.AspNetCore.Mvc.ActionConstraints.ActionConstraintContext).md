@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Attributes](Rizzy.Attributes.md 'Rizzy.Attributes').[HtmxRequestAttribute](Rizzy.Attributes.HtmxRequestAttribute.md 'Rizzy.Attributes.HtmxRequestAttribute')
+#### [Rizzy](index 'index')
+### [Rizzy.Attributes](Rizzy.Attributes 'Rizzy.Attributes').[HtmxRequestAttribute](Rizzy.Attributes.HtmxRequestAttribute 'Rizzy.Attributes.HtmxRequestAttribute')
 
 ## HtmxRequestAttribute.Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(ActionConstraintContext) Method
 
@@ -19,5 +19,5 @@ The context in which the action constraint is evaluated.
 Implements [Accept(ActionConstraintContext)](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept#Microsoft_AspNetCore_Mvc_ActionConstraints_IActionConstraint_Accept_Microsoft_AspNetCore_Mvc_ActionConstraints_ActionConstraintContext_ 'Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint.Accept(Microsoft.AspNetCore.Mvc.ActionConstraints.ActionConstraintContext)')
 
 ### Remarks
-This method initializes an [HtmxRequest](Rizzy.Http.HtmxRequest.md 'Rizzy.Http.HtmxRequest') object using the current [Microsoft.AspNetCore.Http.HttpContext](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.HttpContext 'Microsoft.AspNetCore.Http.HttpContext')  
+This method initializes an [HtmxRequest](Rizzy.Http.HtmxRequest 'Rizzy.Http.HtmxRequest') object using the current [Microsoft.AspNetCore.Http.HttpContext](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.HttpContext 'Microsoft.AspNetCore.Http.HttpContext')  
 and then checks the `IsHtmx` property to determine if the request originates from HTMX.

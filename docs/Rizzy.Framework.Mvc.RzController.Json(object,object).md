@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc.md 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController.md 'Rizzy.Framework.Mvc.RzController')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController 'Rizzy.Framework.Mvc.RzController')
 
 ## RzController.Json(object, object) Method
 
-Creates a [Microsoft.AspNetCore.Mvc.JsonResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Mvc.JsonResult 'Microsoft.AspNetCore.Mvc.JsonResult') object that serializes the specified [data](Rizzy.Framework.Mvc.RzController.Json(object,object).md#Rizzy.Framework.Mvc.RzController.Json(object,object).data 'Rizzy.Framework.Mvc.RzController.Json(object, object).data') object  
+Creates a [Microsoft.AspNetCore.Mvc.JsonResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Mvc.JsonResult 'Microsoft.AspNetCore.Mvc.JsonResult') object that serializes the specified [data](Rizzy.Framework.Mvc.RzController.Json(object,object)#Rizzy.Framework.Mvc.RzController.Json(object,object).data 'Rizzy.Framework.Mvc.RzController.Json(object, object).data') object  
 to JSON.
 
 ```csharp
@@ -30,7 +30,7 @@ When using `Newtonsoft.Json`, this should be an instance of `JsonSerializerSetti
 
 #### Returns
 [Microsoft.AspNetCore.Mvc.JsonResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Mvc.JsonResult 'Microsoft.AspNetCore.Mvc.JsonResult')  
-The created [Microsoft.AspNetCore.Mvc.JsonResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Mvc.JsonResult 'Microsoft.AspNetCore.Mvc.JsonResult') that serializes the specified [data](Rizzy.Framework.Mvc.RzController.Json(object,object).md#Rizzy.Framework.Mvc.RzController.Json(object,object).data 'Rizzy.Framework.Mvc.RzController.Json(object, object).data')  
+The created [Microsoft.AspNetCore.Mvc.JsonResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Mvc.JsonResult 'Microsoft.AspNetCore.Mvc.JsonResult') that serializes the specified [data](Rizzy.Framework.Mvc.RzController.Json(object,object)#Rizzy.Framework.Mvc.RzController.Json(object,object).data 'Rizzy.Framework.Mvc.RzController.Json(object, object).data')  
             as JSON format for the response.
 
 ### Remarks

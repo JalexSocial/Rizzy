@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder.md 'Rizzy.TriggerModifierBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder 'Rizzy.TriggerModifierBuilder')
 
 ## TriggerModifierBuilder.Queue(TriggerQueueOption) Method
 
@@ -12,13 +12,13 @@ public Rizzy.TriggerModifierBuilder Queue(Rizzy.TriggerQueueOption option=Rizzy.
 
 <a name='Rizzy.TriggerModifierBuilder.Queue(Rizzy.TriggerQueueOption).option'></a>
 
-`option` [TriggerQueueOption](Rizzy.TriggerQueueOption.md 'Rizzy.TriggerQueueOption')
+`option` [TriggerQueueOption](Rizzy.TriggerQueueOption 'Rizzy.TriggerQueueOption')
 
-(optional) The queue option as a [TriggerQueueOption](Rizzy.TriggerQueueOption.md 'Rizzy.TriggerQueueOption').
+(optional) The queue option as a [TriggerQueueOption](Rizzy.TriggerQueueOption 'Rizzy.TriggerQueueOption').
 
 #### Returns
-[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder.md 'Rizzy.TriggerModifierBuilder')  
-This [TriggerModifierBuilder](Rizzy.TriggerModifierBuilder.md 'Rizzy.TriggerModifierBuilder') instance.
+[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder 'Rizzy.TriggerModifierBuilder')  
+This [TriggerModifierBuilder](Rizzy.TriggerModifierBuilder 'Rizzy.TriggerModifierBuilder') instance.
 
 ### Example
   

@@ -1,7 +1,7 @@
-#### [Rizzy](index.md 'index')
+#### [Rizzy](index 'index')
 
 ## Rizzy.Extensions Namespace
 
 | Classes | |
 | :--- | :--- |
-| [ObjectExtensions](Rizzy.Extensions.ObjectExtensions.md 'Rizzy.Extensions.ObjectExtensions') | |
+| [ObjectExtensions](Rizzy.Extensions.ObjectExtensions 'Rizzy.Extensions.ObjectExtensions') | |

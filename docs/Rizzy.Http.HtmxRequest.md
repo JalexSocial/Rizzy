@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http')
 
 ## HtmxRequest Class
 
@@ -13,17 +13,17 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Constructors | |
 | :--- | :--- |
-| [HtmxRequest(HttpContext)](Rizzy.Http.HtmxRequest.HtmxRequest(Microsoft.AspNetCore.Http.HttpContext).md 'Rizzy.Http.HtmxRequest.HtmxRequest(Microsoft.AspNetCore.Http.HttpContext)') | Creates a new instance of [HtmxRequest](Rizzy.Http.HtmxRequest.md 'Rizzy.Http.HtmxRequest'). |
+| [HtmxRequest(HttpContext)](Rizzy.Http.HtmxRequest.HtmxRequest(Microsoft.AspNetCore.Http.HttpContext) 'Rizzy.Http.HtmxRequest.HtmxRequest(Microsoft.AspNetCore.Http.HttpContext)') | Creates a new instance of [HtmxRequest](Rizzy.Http.HtmxRequest 'Rizzy.Http.HtmxRequest'). |
 
 | Properties | |
 | :--- | :--- |
-| [CurrentURL](Rizzy.Http.HtmxRequest.CurrentURL.md 'Rizzy.Http.HtmxRequest.CurrentURL') | Gets the current URL of the browser. |
-| [IsBoosted](Rizzy.Http.HtmxRequest.IsBoosted.md 'Rizzy.Http.HtmxRequest.IsBoosted') | Gets whether or not the current request is an request initiated via an element using hx-boost. |
-| [IsHistoryRestore](Rizzy.Http.HtmxRequest.IsHistoryRestore.md 'Rizzy.Http.HtmxRequest.IsHistoryRestore') | Gets whether or not the current request is an Htmx history restore request. |
-| [IsHtmx](Rizzy.Http.HtmxRequest.IsHtmx.md 'Rizzy.Http.HtmxRequest.IsHtmx') | Gets whether or not the current request is an Htmx triggered request. |
-| [Method](Rizzy.Http.HtmxRequest.Method.md 'Rizzy.Http.HtmxRequest.Method') | Gets the HTTP method of the current request. |
-| [Path](Rizzy.Http.HtmxRequest.Path.md 'Rizzy.Http.HtmxRequest.Path') | Gets the HTTP method of the current request. |
-| [Prompt](Rizzy.Http.HtmxRequest.Prompt.md 'Rizzy.Http.HtmxRequest.Prompt') | Gets the user response to an hx-prompt, if any. |
-| [Target](Rizzy.Http.HtmxRequest.Target.md 'Rizzy.Http.HtmxRequest.Target') | Gets the `id` of the target element if it exists. |
-| [Trigger](Rizzy.Http.HtmxRequest.Trigger.md 'Rizzy.Http.HtmxRequest.Trigger') | Gets the `id` of the triggered element if it exists. |
-| [TriggerName](Rizzy.Http.HtmxRequest.TriggerName.md 'Rizzy.Http.HtmxRequest.TriggerName') | Gets the `name` of the triggered element if it exists. |
+| [CurrentURL](Rizzy.Http.HtmxRequest.CurrentURL 'Rizzy.Http.HtmxRequest.CurrentURL') | Gets the current URL of the browser. |
+| [IsBoosted](Rizzy.Http.HtmxRequest.IsBoosted 'Rizzy.Http.HtmxRequest.IsBoosted') | Gets whether or not the current request is an request initiated via an element using hx-boost. |
+| [IsHistoryRestore](Rizzy.Http.HtmxRequest.IsHistoryRestore 'Rizzy.Http.HtmxRequest.IsHistoryRestore') | Gets whether or not the current request is an Htmx history restore request. |
+| [IsHtmx](Rizzy.Http.HtmxRequest.IsHtmx 'Rizzy.Http.HtmxRequest.IsHtmx') | Gets whether or not the current request is an Htmx triggered request. |
+| [Method](Rizzy.Http.HtmxRequest.Method 'Rizzy.Http.HtmxRequest.Method') | Gets the HTTP method of the current request. |
+| [Path](Rizzy.Http.HtmxRequest.Path 'Rizzy.Http.HtmxRequest.Path') | Gets the HTTP method of the current request. |
+| [Prompt](Rizzy.Http.HtmxRequest.Prompt 'Rizzy.Http.HtmxRequest.Prompt') | Gets the user response to an hx-prompt, if any. |
+| [Target](Rizzy.Http.HtmxRequest.Target 'Rizzy.Http.HtmxRequest.Target') | Gets the `id` of the target element if it exists. |
+| [Trigger](Rizzy.Http.HtmxRequest.Trigger 'Rizzy.Http.HtmxRequest.Trigger') | Gets the `id` of the triggered element if it exists. |
+| [TriggerName](Rizzy.Http.HtmxRequest.TriggerName 'Rizzy.Http.HtmxRequest.TriggerName') | Gets the `name` of the triggered element if it exists. |

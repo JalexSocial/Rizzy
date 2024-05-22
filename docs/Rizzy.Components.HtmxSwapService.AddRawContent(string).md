@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[HtmxSwapService](Rizzy.Components.HtmxSwapService.md 'Rizzy.Components.HtmxSwapService')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[HtmxSwapService](Rizzy.Components.HtmxSwapService 'Rizzy.Components.HtmxSwapService')
 
 ## HtmxSwapService.AddRawContent(string) Method
 
@@ -16,4 +16,4 @@ public void AddRawContent(string content);
 
 The raw HTML content to add.
 
-Implements [AddRawContent(string)](Rizzy.Components.IHtmxSwapService.AddRawContent(string).md 'Rizzy.Components.IHtmxSwapService.AddRawContent(string)')
+Implements [AddRawContent(string)](Rizzy.Components.IHtmxSwapService.AddRawContent(string) 'Rizzy.Components.IHtmxSwapService.AddRawContent(string)')

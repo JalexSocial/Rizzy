@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder.md 'Rizzy.TriggerModifierBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[TriggerModifierBuilder](Rizzy.TriggerModifierBuilder 'Rizzy.TriggerModifierBuilder')
 
 ## TriggerModifierBuilder.Or() Method
 
@@ -10,8 +10,8 @@ public Rizzy.TriggerBuilder Or();
 ```
 
 #### Returns
-[TriggerBuilder](Rizzy.TriggerBuilder.md 'Rizzy.TriggerBuilder')  
-The parent [TriggerBuilder](Rizzy.TriggerBuilder.md 'Rizzy.TriggerBuilder') instance for additional configuration.
+[TriggerBuilder](Rizzy.TriggerBuilder 'Rizzy.TriggerBuilder')  
+The parent [TriggerBuilder](Rizzy.TriggerBuilder 'Rizzy.TriggerBuilder') instance for additional configuration.
 
 ### Example
   

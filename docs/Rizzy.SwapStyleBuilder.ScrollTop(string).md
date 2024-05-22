@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.ScrollTop(string) Method
 
@@ -17,10 +17,10 @@ public Rizzy.SwapStyleBuilder ScrollTop(string? cssSelector=null);
 Optional CSS cssSelector of the target element.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
 This method adds the modifier `scroll:top` to the swap commands, instructing the page to scroll to  
-the top of the content after content is swapped immediately and without animation. If css [cssSelector](Rizzy.SwapStyleBuilder.ScrollTop(string).md#Rizzy.SwapStyleBuilder.ScrollTop(string).cssSelector 'Rizzy.SwapStyleBuilder.ScrollTop(string).cssSelector')  
+the top of the content after content is swapped immediately and without animation. If css [cssSelector](Rizzy.SwapStyleBuilder.ScrollTop(string)#Rizzy.SwapStyleBuilder.ScrollTop(string).cssSelector 'Rizzy.SwapStyleBuilder.ScrollTop(string).cssSelector')  
 is present then the page is scrolled to the top of the content identified by the css cssSelector.

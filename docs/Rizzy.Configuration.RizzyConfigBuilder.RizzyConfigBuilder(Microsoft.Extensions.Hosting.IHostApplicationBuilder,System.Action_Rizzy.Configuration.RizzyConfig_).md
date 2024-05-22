@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Configuration](Rizzy.Configuration.md 'Rizzy.Configuration').[RizzyConfigBuilder](Rizzy.Configuration.RizzyConfigBuilder.md 'Rizzy.Configuration.RizzyConfigBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy.Configuration](Rizzy.Configuration 'Rizzy.Configuration').[RizzyConfigBuilder](Rizzy.Configuration.RizzyConfigBuilder 'Rizzy.Configuration.RizzyConfigBuilder')
 
 ## RizzyConfigBuilder(IHostApplicationBuilder, Action<RizzyConfig>) Constructor
 

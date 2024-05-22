@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc.md 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController.md 'Rizzy.Framework.Mvc.RzController')
+#### [Rizzy](index 'index')
+### [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc 'Rizzy.Framework.Mvc').[RzController](Rizzy.Framework.Mvc.RzController 'Rizzy.Framework.Mvc.RzController')
 
 ## RzController.View<TComponent>(object) Method
 
@@ -24,7 +24,7 @@ The type of the Razor component to render.
 
 Optional dynamic data to pass to the component. Defaults to null if not provided.
 
-Implements [View&lt;TComponent&gt;(object)](Rizzy.IRizzyService.View_TComponent_(object).md 'Rizzy.IRizzyService.View<TComponent>(object)')
+Implements [View&lt;TComponent&gt;(object)](Rizzy.IRizzyService.View_TComponent_(object) 'Rizzy.IRizzyService.View<TComponent>(object)')
 
 #### Returns
 [Microsoft.AspNetCore.Http.IResult](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.IResult 'Microsoft.AspNetCore.Http.IResult')  

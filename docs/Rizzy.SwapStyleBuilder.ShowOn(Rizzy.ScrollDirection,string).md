@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')
 
 ## SwapStyleBuilder.ShowOn(ScrollDirection, string) Method
 
@@ -13,7 +13,7 @@ public Rizzy.SwapStyleBuilder ShowOn(Rizzy.ScrollDirection direction, string? cs
 
 <a name='Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string).direction'></a>
 
-`direction` [ScrollDirection](Rizzy.ScrollDirection.md 'Rizzy.ScrollDirection')
+`direction` [ScrollDirection](Rizzy.ScrollDirection 'Rizzy.ScrollDirection')
 
 The scroll direction after swap.
 
@@ -24,10 +24,10 @@ The scroll direction after swap.
 Optional CSS cssSelector of the target element.
 
 #### Returns
-[SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder')  
-This [SwapStyleBuilder](Rizzy.SwapStyleBuilder.md 'Rizzy.SwapStyleBuilder') object instance.
+[SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder')  
+This [SwapStyleBuilder](Rizzy.SwapStyleBuilder 'Rizzy.SwapStyleBuilder') object instance.
 
 ### Remarks
-Adds a show modifier with the specified CSS cssSelector and scroll direction. For example, if [cssSelector](Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string).md#Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string).cssSelector 'Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection, string).cssSelector')  
-is ".item" and [direction](Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string).md#Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string).direction 'Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection, string).direction') is [Rizzy.ScrollDirection.top](https://docs.microsoft.com/en-us/dotnet/api/Rizzy.ScrollDirection.top 'Rizzy.ScrollDirection.top'), the modifier `show:.item:top`  
+Adds a show modifier with the specified CSS cssSelector and scroll direction. For example, if [cssSelector](Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string)#Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string).cssSelector 'Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection, string).cssSelector')  
+is ".item" and [direction](Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string)#Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection,string).direction 'Rizzy.SwapStyleBuilder.ShowOn(Rizzy.ScrollDirection, string).direction') is [Rizzy.ScrollDirection.top](https://docs.microsoft.com/en-us/dotnet/api/Rizzy.ScrollDirection.top 'Rizzy.ScrollDirection.top'), the modifier `show:.item:top`  
 is added.

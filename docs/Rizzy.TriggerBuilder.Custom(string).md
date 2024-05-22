@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[TriggerBuilder](Rizzy.TriggerBuilder.md 'Rizzy.TriggerBuilder')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[TriggerBuilder](Rizzy.TriggerBuilder 'Rizzy.TriggerBuilder')
 
 ## TriggerBuilder.Custom(string) Method
 
@@ -17,8 +17,8 @@ public Rizzy.TriggerBuilder Custom(string triggerDefinition);
 The custom trigger definition string.
 
 #### Returns
-[TriggerBuilder](Rizzy.TriggerBuilder.md 'Rizzy.TriggerBuilder')  
-This [TriggerBuilder](Rizzy.TriggerBuilder.md 'Rizzy.TriggerBuilder') instance.
+[TriggerBuilder](Rizzy.TriggerBuilder 'Rizzy.TriggerBuilder')  
+This [TriggerBuilder](Rizzy.TriggerBuilder 'Rizzy.TriggerBuilder') instance.
 
 ### Example
   

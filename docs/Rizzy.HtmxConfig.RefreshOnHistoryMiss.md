@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy').[HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy').[HtmxConfig](Rizzy.HtmxConfig 'Rizzy.HtmxConfig')
 
 ## HtmxConfig.RefreshOnHistoryMiss Property
 

@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')
 
 ## HtmxResponse.Trigger(string, TriggerTiming) Method
 
@@ -18,10 +18,10 @@ The name of client side event to trigger.
 
 <a name='Rizzy.Http.HtmxResponse.Trigger(string,Rizzy.TriggerTiming).timing'></a>
 
-`timing` [TriggerTiming](Rizzy.TriggerTiming.md 'Rizzy.TriggerTiming')
+`timing` [TriggerTiming](Rizzy.TriggerTiming 'Rizzy.TriggerTiming')
 
 When the event should be triggered.
 
 #### Returns
-[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')  
-This [HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse') object instance.
+[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')  
+This [HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse') object instance.

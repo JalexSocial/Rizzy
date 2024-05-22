@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxRequest](Rizzy.Http.HtmxRequest.md 'Rizzy.Http.HtmxRequest')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxRequest](Rizzy.Http.HtmxRequest 'Rizzy.Http.HtmxRequest')
 
 ## HtmxRequest(HttpContext) Constructor
 
-Creates a new instance of [HtmxRequest](Rizzy.Http.HtmxRequest.md 'Rizzy.Http.HtmxRequest').
+Creates a new instance of [HtmxRequest](Rizzy.Http.HtmxRequest 'Rizzy.Http.HtmxRequest').
 
 ```csharp
 public HtmxRequest(Microsoft.AspNetCore.Http.HttpContext context);

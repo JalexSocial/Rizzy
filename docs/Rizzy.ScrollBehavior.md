@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy](Rizzy.md 'Rizzy')
+#### [Rizzy](index 'index')
+### [Rizzy](Rizzy 'Rizzy')
 
 ## ScrollBehavior Enum
 

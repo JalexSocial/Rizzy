@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Extensions](Rizzy.Extensions.md 'Rizzy.Extensions').[ObjectExtensions](Rizzy.Extensions.ObjectExtensions.md 'Rizzy.Extensions.ObjectExtensions')
+#### [Rizzy](index 'index')
+### [Rizzy.Extensions](Rizzy.Extensions 'Rizzy.Extensions').[ObjectExtensions](Rizzy.Extensions.ObjectExtensions 'Rizzy.Extensions.ObjectExtensions')
 
 ## ObjectExtensions.SerializeAsAlpineData(this object, bool) Method
 

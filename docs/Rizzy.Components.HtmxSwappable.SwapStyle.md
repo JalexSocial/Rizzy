@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components').[HtmxSwappable](Rizzy.Components.HtmxSwappable.md 'Rizzy.Components.HtmxSwappable')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[HtmxSwappable](Rizzy.Components.HtmxSwappable 'Rizzy.Components.HtmxSwappable')
 
 ## HtmxSwappable.SwapStyle Property
 
@@ -11,4 +11,4 @@ public Rizzy.SwapStyle SwapStyle { get; set; }
 ```
 
 #### Property Value
-[SwapStyle](Rizzy.SwapStyle.md 'Rizzy.SwapStyle')
+[SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')

@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Http](Rizzy.Http.md 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')
+#### [Rizzy](index 'index')
+### [Rizzy.Http](Rizzy.Http 'Rizzy.Http').[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')
 
 ## HtmxResponse.StatusCode(HttpStatusCode) Method
 
-Sets the response status code to [statusCode](Rizzy.Http.HtmxResponse.StatusCode(System.Net.HttpStatusCode).md#Rizzy.Http.HtmxResponse.StatusCode(System.Net.HttpStatusCode).statusCode 'Rizzy.Http.HtmxResponse.StatusCode(System.Net.HttpStatusCode).statusCode').
+Sets the response status code to [statusCode](Rizzy.Http.HtmxResponse.StatusCode(System.Net.HttpStatusCode)#Rizzy.Http.HtmxResponse.StatusCode(System.Net.HttpStatusCode).statusCode 'Rizzy.Http.HtmxResponse.StatusCode(System.Net.HttpStatusCode).statusCode').
 
 ```csharp
 public Rizzy.Http.HtmxResponse StatusCode(System.Net.HttpStatusCode statusCode);
@@ -15,5 +15,5 @@ public Rizzy.Http.HtmxResponse StatusCode(System.Net.HttpStatusCode statusCode);
 `statusCode` [System.Net.HttpStatusCode](https://docs.microsoft.com/en-us/dotnet/api/System.Net.HttpStatusCode 'System.Net.HttpStatusCode')
 
 #### Returns
-[HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse')  
-This [HtmxResponse](Rizzy.Http.HtmxResponse.md 'Rizzy.Http.HtmxResponse') object instance.
+[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')  
+This [HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse') object instance.

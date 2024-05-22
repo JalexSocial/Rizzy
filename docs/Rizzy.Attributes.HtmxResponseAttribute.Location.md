@@ -1,5 +1,5 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Attributes](Rizzy.Attributes.md 'Rizzy.Attributes').[HtmxResponseAttribute](Rizzy.Attributes.HtmxResponseAttribute.md 'Rizzy.Attributes.HtmxResponseAttribute')
+#### [Rizzy](index 'index')
+### [Rizzy.Attributes](Rizzy.Attributes 'Rizzy.Attributes').[HtmxResponseAttribute](Rizzy.Attributes.HtmxResponseAttribute 'Rizzy.Attributes.HtmxResponseAttribute')
 
 ## HtmxResponseAttribute.Location Property
 

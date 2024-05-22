@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components.Form](Rizzy.Components.Form.md 'Rizzy.Components.Form').[DataAnnotationsProcessor](Rizzy.Components.Form.DataAnnotationsProcessor.md 'Rizzy.Components.Form.DataAnnotationsProcessor')
+#### [Rizzy](index 'index')
+### [Rizzy.Components.Form](Rizzy.Components.Form 'Rizzy.Components.Form').[DataAnnotationsProcessor](Rizzy.Components.Form.DataAnnotationsProcessor 'Rizzy.Components.Form.DataAnnotationsProcessor')
 
 ## DataAnnotationsProcessor(IServiceProvider) Constructor
 
-Initializes a new instance of the [DataAnnotationsProcessor](Rizzy.Components.Form.DataAnnotationsProcessor.md 'Rizzy.Components.Form.DataAnnotationsProcessor') class.
+Initializes a new instance of the [DataAnnotationsProcessor](Rizzy.Components.Form.DataAnnotationsProcessor 'Rizzy.Components.Form.DataAnnotationsProcessor') class.
 
 ```csharp
 public DataAnnotationsProcessor(System.IServiceProvider provider);

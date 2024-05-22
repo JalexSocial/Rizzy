@@ -1,9 +1,9 @@
-#### [Rizzy](index.md 'index')
-### [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components')
+#### [Rizzy](index 'index')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components')
 
 ## RzHeadContent Class
 
-Provides content to [RzHeadOutlet](Rizzy.Components.RzHeadOutlet.md 'Rizzy.Components.RzHeadOutlet') components.
+Provides content to [RzHeadOutlet](Rizzy.Components.RzHeadOutlet 'Rizzy.Components.RzHeadOutlet') components.
 
 ```csharp
 public sealed class RzHeadContent : Microsoft.AspNetCore.Components.ComponentBase
@@ -13,4 +13,4 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Properties | |
 | :--- | :--- |
-| [ChildContent](Rizzy.Components.RzHeadContent.ChildContent.md 'Rizzy.Components.RzHeadContent.ChildContent') | Gets or sets the content to be rendered in [RzHeadOutlet](Rizzy.Components.RzHeadOutlet.md 'Rizzy.Components.RzHeadOutlet') instances. |
+| [ChildContent](Rizzy.Components.RzHeadContent.ChildContent 'Rizzy.Components.RzHeadContent.ChildContent') | Gets or sets the content to be rendered in [RzHeadOutlet](Rizzy.Components.RzHeadOutlet 'Rizzy.Components.RzHeadOutlet') instances. |
