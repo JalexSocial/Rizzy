@@ -38,7 +38,7 @@ Insert the response after the last child of the target element.
 
 `Default` 0
 
-Default style is what is specified in [DefaultSwapStyle](Rizzy.Configuration.Htmx.HtmxConfig.DefaultSwapStyle.md 'Rizzy.Configuration.Htmx.HtmxConfig.DefaultSwapStyle') for the application  
+Default style is what is specified in [DefaultSwapStyle](Rizzy.HtmxConfig.DefaultSwapStyle.md 'Rizzy.HtmxConfig.DefaultSwapStyle') for the application  
 or htmx's default, which is [innerHTML](Rizzy.SwapStyle.md#Rizzy.SwapStyle.innerHTML 'Rizzy.SwapStyle.innerHTML').
 
 ### Remarks

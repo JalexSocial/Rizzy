@@ -6,8 +6,8 @@
 Current configuration used with the page
 
 ```csharp
-public Rizzy.Configuration.Htmx.HtmxConfig Configuration { get; set; }
+public Rizzy.HtmxConfig Configuration { get; set; }
 ```
 
 #### Property Value
-[HtmxConfig](Rizzy.Configuration.Htmx.HtmxConfig.md 'Rizzy.Configuration.Htmx.HtmxConfig')
+[HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig')

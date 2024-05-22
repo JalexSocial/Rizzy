@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
-using Rizzy.Configuration.Htmx;
 using Rizzy.Extensions;
 using Rizzy.FluentAssertions;
 using static Rizzy.Configuration.RizzyConfigBuilder;

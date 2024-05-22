@@ -4,7 +4,7 @@
 
 | Classes | |
 | :--- | :--- |
-| [HtmxConfigHeadOutlet](Rizzy.Components.HtmxConfigHeadOutlet.md 'Rizzy.Components.HtmxConfigHeadOutlet') | This component will render a meta tag with the serialized [HtmxConfig](Rizzy.Configuration.Htmx.HtmxConfig.md 'Rizzy.Configuration.Htmx.HtmxConfig') object,<br/>enabling customization of Htmx. |
+| [HtmxConfigHeadOutlet](Rizzy.Components.HtmxConfigHeadOutlet.md 'Rizzy.Components.HtmxConfigHeadOutlet') | This component will render a meta tag with the serialized [HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig') object,<br/>enabling customization of Htmx. |
 | [HtmxSwapContent](Rizzy.Components.HtmxSwapContent.md 'Rizzy.Components.HtmxSwapContent') | Razor component that fully renders any content from HtmxSwapService |
 | [HtmxSwappable](Rizzy.Components.HtmxSwappable.md 'Rizzy.Components.HtmxSwappable') | A Blazor component that enables swapping HTML content dynamically based on specified parameters through Htmx. |
 | [HtmxSwapService](Rizzy.Components.HtmxSwapService.md 'Rizzy.Components.HtmxSwapService') | Service for managing dynamic content swaps in a Blazor application.<br/>Allows for adding Razor components, RenderFragments, and raw HTML content,<br/>and provides a mechanism to render them within a specified layout or context. |

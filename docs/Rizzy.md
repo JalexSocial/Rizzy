@@ -4,6 +4,7 @@
 
 | Classes | |
 | :--- | :--- |
+| [HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig') | Htmx configuration options. |
 | [HtmxTriggerSpecification](Rizzy.HtmxTriggerSpecification.md 'Rizzy.HtmxTriggerSpecification') | Represents an htmx trigger definition |
 | [RizzyApplicationBuilderExtensions](Rizzy.RizzyApplicationBuilderExtensions.md 'Rizzy.RizzyApplicationBuilderExtensions') | This class has extension methods for [Microsoft.Extensions.Hosting.IHostApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.Extensions.Hosting.IHostApplicationBuilder 'Microsoft.Extensions.Hosting.IHostApplicationBuilder') and [Microsoft.AspNetCore.Builder.IApplicationBuilder](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Builder.IApplicationBuilder 'Microsoft.AspNetCore.Builder.IApplicationBuilder') <br/>that enable configuration of Htmx in the application. |
 | [RizzyService](Rizzy.RizzyService.md 'Rizzy.RizzyService') | Represents a proxy base for Rizzy services that facilitate access to Razor Component views. This class provides<br/>mechanisms to render both full and partial Razor views dynamically based on specified component types and parameters. |

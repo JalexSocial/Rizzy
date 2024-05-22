@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Antiforgery;
 using Rizzy.Components;
-using Rizzy.Configuration.Htmx;
 using Rizzy.FluentAssertions;
 using Rizzy.Http;
 

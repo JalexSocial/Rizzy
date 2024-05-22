@@ -10,7 +10,6 @@
 | [Rizzy.Components](Rizzy.Components.md 'Rizzy.Components') | |
 | [Rizzy.Components.Form](Rizzy.Components.Form.md 'Rizzy.Components.Form') | |
 | [Rizzy.Configuration](Rizzy.Configuration.md 'Rizzy.Configuration') | |
-| [Rizzy.Configuration.Htmx](Rizzy.Configuration.Htmx.md 'Rizzy.Configuration.Htmx') | |
 | [Rizzy.Extensions](Rizzy.Extensions.md 'Rizzy.Extensions') | |
 | [Rizzy.Framework.Endpoints](Rizzy.Framework.Endpoints.md 'Rizzy.Framework.Endpoints') | |
 | [Rizzy.Framework.Mvc](Rizzy.Framework.Mvc.md 'Rizzy.Framework.Mvc') | |

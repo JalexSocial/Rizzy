@@ -3,7 +3,7 @@
 
 ## HtmxConfigHeadOutlet Class
 
-This component will render a meta tag with the serialized [HtmxConfig](Rizzy.Configuration.Htmx.HtmxConfig.md 'Rizzy.Configuration.Htmx.HtmxConfig') object,  
+This component will render a meta tag with the serialized [HtmxConfig](Rizzy.HtmxConfig.md 'Rizzy.HtmxConfig') object,  
 enabling customization of Htmx.
 
 ```csharp

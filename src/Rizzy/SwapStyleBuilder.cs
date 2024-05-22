@@ -1,4 +1,3 @@
-using Rizzy.Configuration.Htmx;
 using System.Diagnostics;
 
 namespace Rizzy;

@@ -193,7 +193,7 @@ public sealed class TriggerBuilder
     }
 
     /// <summary>
-    /// Builds a key value pair mapping the formatted trigger definition to the <see cref="HtmxTriggerSpecification"/>
+    /// Builds a key value pair mapping the formatted trigger definition to the <see cref="Rizzy.HtmxTriggerSpecification"/>
     /// </summary>
     /// <returns></returns>
     public KeyValuePair<string, IReadOnlyList<HtmxTriggerSpecification>> Build()

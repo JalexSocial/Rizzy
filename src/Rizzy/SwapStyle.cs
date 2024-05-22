@@ -1,6 +1,4 @@
-﻿using Rizzy.Configuration.Htmx;
-
-namespace Rizzy;
+﻿namespace Rizzy;
 
 /// <summary>
 /// How to swap the response into the target element.

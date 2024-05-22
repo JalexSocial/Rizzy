@@ -12,7 +12,6 @@ using Rizzy.Antiforgery;
 using Rizzy.Components;
 using Rizzy.Components.Form;
 using Rizzy.Components.Form.Helpers;
-using Rizzy.Configuration.Htmx;
 
 namespace Rizzy.Configuration;
 
