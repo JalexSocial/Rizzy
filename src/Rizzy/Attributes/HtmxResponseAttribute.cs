@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
-using Rizzy.Configuration.Htmx.Enum;
+using Rizzy.Http;
 
-namespace Rizzy.Http.Attributes;
+namespace Rizzy.Attributes;
 
 /// <summary>
 /// An attribute to apply HTMX response headers to an action result. This enables server-side control
 /// of client-side HTMX behaviors such as redirection, refreshing, and element updates.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
-public class HtmxResponseAttribute : Attribute, IResultFilter
+public sealed class HtmxResponseAttribute : Attribute, IResultFilter
 {
     /// <summary>
     /// Specifies a client-side redirect to a new location without a full page reload.

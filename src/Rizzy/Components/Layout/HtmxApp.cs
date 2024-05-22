@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace Rizzy.Components;
 
-public class HtmxApp<T> : ComponentBase where T : LayoutComponentBase
+public sealed class HtmxApp<T> : ComponentBase where T : LayoutComponentBase
 {
     [CascadingParameter]
     public HttpContext? Context { get; set; }

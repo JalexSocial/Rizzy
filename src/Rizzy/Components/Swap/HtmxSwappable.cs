@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Rizzy.Configuration.Htmx.Enum;
 
 namespace Rizzy.Components;
 
@@ -23,7 +22,7 @@ public class HtmxSwappable : ComponentBase
     /// The default swap style is OuterHTML.
     /// </summary>
     [Parameter]
-    public SwapStyle SwapStyle { get; set; } = SwapStyle.OuterHTML;
+    public SwapStyle SwapStyle { get; set; } = SwapStyle.outerHTML;
 
     /// <summary>
     /// Gets or sets the CSS selector for the content swap. This is optional.
@@ -44,12 +43,7 @@ public class HtmxSwappable : ComponentBase
     /// </summary>
     protected override void OnParametersSet()
     {
-        var style = SwapStyle switch
-        {
-            SwapStyle.InnerHTML => "innerHTML",
-            SwapStyle.OuterHTML => "outerHTML",
-            _ => SwapStyle.ToString().ToLowerInvariant()
-        };
+        var style = SwapStyle.ToHtmxString();
 
         if (!string.IsNullOrEmpty(Selector))
             _swapParam = $"{style}:{Selector}";

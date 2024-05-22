@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Rizzy.Http;
 
-namespace Rizzy.Http.Attributes;
+namespace Rizzy.Attributes;
 
 /// <summary>
 /// An action filter attribute that implements <see cref="IActionConstraint"/> to ensure
@@ -13,7 +14,7 @@ namespace Rizzy.Http.Attributes;
 /// uses the <see cref="HtmxRequest"/> class to check these headers in the incoming request.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Method)]
-public class HtmxRequestAttribute : ActionFilterAttribute, IActionConstraint
+public sealed class HtmxRequestAttribute : ActionFilterAttribute, IActionConstraint
 {
     /// <inheritdoc />
     int IActionConstraint.Order => 0;

@@ -5,7 +5,7 @@ namespace Rizzy.Components.Form.Models;
 /// <summary>
 /// Represents a form context with a strongly typed model. This record encapsulates form identification, naming, and state management through an EditContext.
 /// </summary>
-public record RzFormContext
+public sealed record RzFormContext
 {
     /// <summary>
     /// Initializes a new instance of the RzFormContext class with the specified form name and model, generating an identifier automatically.

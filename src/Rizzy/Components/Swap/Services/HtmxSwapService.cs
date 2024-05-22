@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rizzy.Configuration.Htmx.Enum;
 using Rizzy.Http;
 
-namespace Rizzy.Components.Swap.Services;
+namespace Rizzy.Components;
 
 /// <summary>
 /// Service for managing dynamic content swaps in a Blazor application.
@@ -15,7 +14,6 @@ namespace Rizzy.Components.Swap.Services;
 /// </summary>
 public class HtmxSwapService : IHtmxSwapService
 {
-	private int _lastRenderedContentCount = 0;
     private readonly HttpContext _httpContext;
     private readonly IServiceProvider _serviceProvider;
     private List<ContentItem> _contentItems = new List<ContentItem>();
@@ -55,7 +53,7 @@ public class HtmxSwapService : IHtmxSwapService
     /// <param name="swapStyle">The style of content swap to apply.</param>
     /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
     /// <typeparam name="TComponent">The type of the Razor component to add.</typeparam>
-    public void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null) where TComponent : IComponent
+    public void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object>? parameters = null, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null) where TComponent : IComponent
     {
         var component = new RenderFragment(builder =>
         {
@@ -82,7 +80,7 @@ public class HtmxSwapService : IHtmxSwapService
     /// <param name="renderFragment">The RenderFragment to add.</param>
     /// <param name="swapStyle">The style of content swap to apply.</param>
     /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-    public void AddSwappableFragment(string targetId, RenderFragment renderFragment, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null)
+    public void AddSwappableFragment(string targetId, RenderFragment renderFragment, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null)
     {
         _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, renderFragment));
 
@@ -96,7 +94,7 @@ public class HtmxSwapService : IHtmxSwapService
     /// <param name="content">The RenderFragment to add.</param>
     /// <param name="swapStyle">The style of content swap to apply.</param>
     /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-    public void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.OuterHTML, string? selector = null)
+    public void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null)
     {
         var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(1, content));
 
@@ -112,7 +110,7 @@ public class HtmxSwapService : IHtmxSwapService
     public void AddRawContent(string content)
     {
         var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(2, content));
-        _contentItems.Add(new ContentItem(RzContentType.RawHtml, string.Empty, SwapStyle.None, string.Empty, contentFragment));
+        _contentItems.Add(new ContentItem(RzContentType.RawHtml, string.Empty, SwapStyle.none, string.Empty, contentFragment));
 
         OnContentItemsUpdated();
     }
@@ -156,24 +154,24 @@ public class HtmxSwapService : IHtmxSwapService
     /// <returns>A string containing all the rendered content managed by the service.</returns>
     public async Task<string> RenderToString()
     {
-	    var content = string.Empty;
+        var content = string.Empty;
 
-	    if (ContentAvailable)
-	    {
-		    ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+        if (ContentAvailable)
+        {
+            ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
 
-		    await using var renderer = new HtmlRenderer(_serviceProvider, loggerFactory);
+            await using var renderer = new HtmlRenderer(_serviceProvider, loggerFactory);
 
-		    // Render any additional out of band swaps
-		    content = await renderer.Dispatcher.InvokeAsync(async () =>
-		    {
-			    var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
+            // Render any additional out of band swaps
+            content = await renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
 
-			    return output.ToHtmlString();
-		    });
-	    }
+                return output.ToHtmlString();
+            });
+        }
 
-	    return content;
+        return content;
     }
 
     /// <summary>

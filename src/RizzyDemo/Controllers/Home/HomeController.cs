@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
-using Rizzy.Components.Swap.Services;
-using Rizzy.Configuration.Htmx.Enum;
+using Rizzy;
+using Rizzy.Attributes;
+using Rizzy.Components;
 using Rizzy.Framework.Mvc;
-using Rizzy.Http.Attributes;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
 using RizzyDemo.Controllers.Home.Models;
@@ -29,7 +29,7 @@ public class HomeController : RzController
 
     public IResult Index()
     {
-        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.innerHTML);
         _swapService.AddRawContent("<!--test comment-->");
 
         ViewContext.PageTitle = "Home Page";
@@ -57,7 +57,7 @@ public class HomeController : RzController
 
     public IResult Counter()
     {
-        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.innerHTML);
 
         return View<Counter>();
     }
@@ -73,7 +73,7 @@ public class HomeController : RzController
 
     public IResult Weather()
     {
-        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.InnerHTML);
+        _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.innerHTML);
 
         return View<Weather>();
     }
@@ -105,7 +105,7 @@ public class HomeController : RzController
             Random rand = new Random();
             string message = notifications[rand.Next(notifications.Length)];
 
-            _swapService.AddSwappableContent("alert", $"<div class=\"alert alert-primary\" role=\"alert\">{message}</div>", SwapStyle.InnerHTML);
+            _swapService.AddSwappableContent("alert", $"<div class=\"alert alert-primary\" role=\"alert\">{message}</div>", SwapStyle.innerHTML);
         }
 
 

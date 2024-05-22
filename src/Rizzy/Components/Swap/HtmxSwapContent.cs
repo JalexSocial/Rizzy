@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Rizzy.Components.Swap.Services;
 
 namespace Rizzy.Components;
 
@@ -9,20 +8,17 @@ namespace Rizzy.Components;
 /// </summary>
 public class HtmxSwapContent : ComponentBase
 {
-	private RenderFragment? _fragment;
-
     [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;
 
     protected override void OnInitialized()
     {
-	    _fragment = HtmxSwapService.RenderToFragment();
-        HtmxSwapService.Clear();
+        HtmxSwapService.ContentItemsUpdated += (sender, args) => StateHasChanged();
     }
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (_fragment != null)
-	        builder.AddContent(0, _fragment);
+        if (HtmxSwapService.ContentAvailable)
+            builder.AddContent(0, HtmxSwapService.RenderToFragment());
     }
 }
 

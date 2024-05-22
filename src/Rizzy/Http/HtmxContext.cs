@@ -40,14 +40,4 @@ public class HtmxContext
     /// Current configuration used with the page
     /// </summary>
     public HtmxConfig Configuration { get; private set; }
-
-    /// <summary>
-    /// Sets the HTMX configuration settings for the current application.
-    /// </summary>
-    /// <param name="name">Optional. The name of the configuration settings to set. If not provided, the default configuration settings will be used.</param>
-    public void SetConfiguration(string? name = null)
-    {
-        Configuration = string.IsNullOrEmpty(name) ?
-            _configOptions.Value : _configOptions.Get(name);
-    }
 }
