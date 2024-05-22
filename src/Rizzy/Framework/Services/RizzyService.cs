@@ -6,6 +6,7 @@ using Rizzy.Components;
 using Rizzy.Components.Content;
 using Rizzy.Extensions;
 using Rizzy.Framework.Endpoints;
+using RzPartial = Rizzy.Components.Layout.RzPartial;
 
 namespace Rizzy.Framework.Services;
 

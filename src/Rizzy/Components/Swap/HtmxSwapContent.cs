@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
-using Rizzy.Components.Swap.Services;
 
 namespace Rizzy.Components;
 

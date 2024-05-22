@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rizzy.Http;
 
-namespace Rizzy.Components.Swap.Services;
+namespace Rizzy.Components;
 
 /// <summary>
 /// Service for managing dynamic content swaps in a Blazor application.

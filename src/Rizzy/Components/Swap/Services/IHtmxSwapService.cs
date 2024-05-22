@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 
-namespace Rizzy.Components.Swap.Services;
+namespace Rizzy.Components;
 
 public interface IHtmxSwapService
 {

@@ -14,7 +14,7 @@ namespace Rizzy.Attributes;
 /// uses the <see cref="HtmxRequest"/> class to check these headers in the incoming request.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Method)]
-public class HtmxRequestAttribute : ActionFilterAttribute, IActionConstraint
+public sealed class HtmxRequestAttribute : ActionFilterAttribute, IActionConstraint
 {
     /// <inheritdoc />
     int IActionConstraint.Order => 0;
