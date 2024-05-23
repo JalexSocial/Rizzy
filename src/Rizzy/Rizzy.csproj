@@ -36,8 +36,6 @@
 
 	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
-		<DefaultDocumentationFolder>../../docs</DefaultDocumentationFolder>
-		<DefaultDocumentationGeneratedAccessModifiers>Public</DefaultDocumentationGeneratedAccessModifiers>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -45,7 +43,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="DefaultDocumentation" Version="0.8.0" PrivateAssets="all" />
+		<PackageReference Include="DefaultDocumentation" Version="0.8.2" PrivateAssets="all" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -54,7 +52,7 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.5" />
     <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

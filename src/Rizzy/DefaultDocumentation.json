@@ -1,5 +1,7 @@
 ﻿{
   "Markdown.RemoveFileExtensionFromUrl": true,
   "Markdown.InvalidCharReplacement": "_",
-  "FileNameFactory": "FullName"
+  "FileNameFactory": "FullName",
+  "OutputDirectoryPath": "../../docs",
+  "GeneratedAccessModifiers":"Public"
 }
