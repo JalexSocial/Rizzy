@@ -1,4 +1,5 @@
 ﻿{
   "Markdown.RemoveFileExtensionFromUrl": true,
-  "Markdown.InvalidCharReplacement": "_"
+  "Markdown.InvalidCharReplacement": "_",
+  "FileNameFactory": "FullName"
 }
