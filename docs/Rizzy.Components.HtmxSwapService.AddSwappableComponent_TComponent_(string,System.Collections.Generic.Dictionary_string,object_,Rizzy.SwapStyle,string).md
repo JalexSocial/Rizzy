@@ -6,7 +6,7 @@
 Adds a swappable Razor component to the service for later rendering.
 
 ```csharp
-public void AddSwappableComponent<TComponent>(string targetId, System.Collections.Generic.Dictionary<string,object>? parameters=null, Rizzy.SwapStyle swapStyle=Rizzy.SwapStyle.outerHTML, string? selector=null)
+public void AddSwappableComponent<TComponent>(string targetId, System.Collections.Generic.Dictionary<string,object?>? parameters=null, Rizzy.SwapStyle swapStyle=Rizzy.SwapStyle.outerHTML, string? selector=null)
     where TComponent : Microsoft.AspNetCore.Components.IComponent;
 ```
 #### Type parameters
