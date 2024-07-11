@@ -42,4 +42,12 @@ public class RzInputCheckbox : InputCheckbox
 
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }
+
+    protected override void Dispose(bool disposing)
+    {
+	    EditForm?.RemoveFieldMapping(FieldIdentifier);
+
+	    base.Dispose(disposing);
+    }
+
 }

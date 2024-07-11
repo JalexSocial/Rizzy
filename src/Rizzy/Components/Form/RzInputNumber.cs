@@ -38,4 +38,12 @@ public class RzInputNumber<TValue> : InputNumber<TValue>
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id);
     }
+
+    protected override void Dispose(bool disposing)
+    {
+	    EditForm?.RemoveFieldMapping(FieldIdentifier);
+
+	    base.Dispose(disposing);
+    }
+
 }

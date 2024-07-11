@@ -6,8 +6,10 @@ using System.Text.RegularExpressions;
 
 namespace Rizzy.Components;
 
-public class RzEditForm : ComponentBase
+public class RzEditForm : ComponentBase, IDisposable
 {
+	private bool _disposed = false;
+
     public class FieldMap
     {
         public string Id { get; set; } = string.Empty;
@@ -16,7 +18,7 @@ public class RzEditForm : ComponentBase
 
     [Inject] public RzViewContext ViewContext { get; set; } = default!;
 
-    [Parameter] public RzFormContext FormContext { get; set; } = default!;
+    [Parameter] public required RzFormContext FormContext { get; set; }
 
     [Parameter] public RenderFragment<EditContext>? ChildContent { get; set; }
 
@@ -38,6 +40,18 @@ public class RzEditForm : ComponentBase
     {
         if (FieldMapping.TryAdd(key, new FieldMap { FieldName = fieldName, Id = id }))
             StateHasChanged();
+    }
+
+    /// <summary>
+    /// Adds a mapping in FieldMapping to map a particular field identified by a FieldIdentifier to
+    /// a FieldMap object that contains the fields form name and id. This is public to allow for third-party
+    /// components to also map fields
+    /// </summary>
+    /// <param name="key"></param>
+    public void RemoveFieldMapping(FieldIdentifier key)
+    {
+	    if (FieldMapping.ContainsKey(key))
+		    FieldMapping.Remove(key);
     }
 
     protected override void OnParametersSet()
@@ -104,5 +118,30 @@ public class RzEditForm : ComponentBase
         }
 
         return sanitized;
+    }
+
+    public void Dispose()
+    {
+	    Dispose(true);
+	    
+	    GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+	    if (_disposed)
+		    return;
+
+	    if (disposing)
+	    {
+		    FieldMapping.Clear();
+	    }
+
+	    _disposed = true;
+    }
+
+    ~RzEditForm()
+    {
+        Dispose(false);
     }
 }

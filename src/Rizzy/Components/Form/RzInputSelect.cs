@@ -43,4 +43,12 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
 
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }
+
+    protected override void Dispose(bool disposing)
+    {
+	    EditForm?.RemoveFieldMapping(FieldIdentifier);
+
+	    base.Dispose(disposing);
+    }
+
 }

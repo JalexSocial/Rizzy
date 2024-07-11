@@ -37,4 +37,12 @@ public class RzInputDate<TValue> : InputDate<TValue>
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id);
     }
+
+    protected override void Dispose(bool disposing)
+    {
+	    EditForm?.RemoveFieldMapping(FieldIdentifier);
+
+	    base.Dispose(disposing);
+    }
+
 }

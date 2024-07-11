@@ -33,4 +33,11 @@ public class RzInputText : InputText
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
     }
+
+    protected override void Dispose(bool disposing)
+    {
+        EditForm?.RemoveFieldMapping(FieldIdentifier);
+
+	    base.Dispose(disposing);
+    }
 }

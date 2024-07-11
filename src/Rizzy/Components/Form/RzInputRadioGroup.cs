@@ -43,4 +43,12 @@ public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
 
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }
+
+    protected override void Dispose(bool disposing)
+    {
+	    EditForm?.RemoveFieldMapping(FieldIdentifier);
+
+	    base.Dispose(disposing);
+    }
+
 }
