@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Rizzy.Components;
 using Rizzy.Extensions;
-using Rizzy.Framework.Endpoints;
 
 namespace Rizzy;
 
@@ -62,7 +61,7 @@ public sealed class RizzyService : IRizzyService
         parameters.Add("ViewContext", ViewContext);
 
         // Return a result that can render the component as a full page
-        return new RzRazorComponentResult<RzPage>(parameters)
+        return new RazorComponentResult<RzPage>(parameters)
         {
             PreventStreamingRendering = false
         };

@@ -28,7 +28,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>2.0.6</Version>
+    <Version>2.0.7</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -52,8 +52,8 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.5" />
-    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.1.1">
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.4">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
