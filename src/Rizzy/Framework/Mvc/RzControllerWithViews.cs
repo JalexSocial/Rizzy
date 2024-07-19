@@ -27,19 +27,19 @@ public class RzControllerWithViews : Controller, IRizzyService
     public string CurrentActionUrl => RizzyService.CurrentActionUrl;
 
     /// <inheritdoc/>
-    public IResult View<TComponent>(object? data = null) where TComponent : IComponent
+    public virtual IResult View<TComponent>(object? data = null) where TComponent : IComponent
         => RizzyService.View<TComponent>(data);
 
     /// <inheritdoc/>
-    public IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
+    public virtual IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
         => RizzyService.View<TComponent>(data);
 
     /// <inheritdoc/>
-    public IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent
+    public virtual IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent
         => RizzyService.PartialView<TComponent>(data);
 
     /// <inheritdoc/>
-    public IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
+    public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
         => RizzyService.PartialView<TComponent>(data);
 
     /// <summary>
