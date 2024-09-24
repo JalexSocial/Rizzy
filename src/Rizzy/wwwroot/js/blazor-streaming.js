@@ -221,9 +221,9 @@
         var settleInfo = api.makeSettleInfo(elt);
 
         // htmx 2.0
-        //api.swap(target, content, swapSpec);
+        api.swap(target, content, swapSpec);
 
-        api.selectAndSwap(swapSpec.swapStyle, target, elt, content, settleInfo);
+        //api.selectAndSwap(swapSpec.swapStyle, target, elt, content, settleInfo);
 
         settleInfo.elts.forEach(function (elt) {
             if (elt.classList) {
