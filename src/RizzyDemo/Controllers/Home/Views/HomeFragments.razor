@@ -1,0 +1,6 @@
+﻿@code {
+
+	public static RenderFragment<DateTime> RenderServerTime => currentTime =>
+		@<strong>Live Server Time: @currentTime.ToString("HH:mm:ss")</strong>;
+
+}
