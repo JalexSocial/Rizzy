@@ -48,4 +48,12 @@ public interface IRizzyService
     /// <param name="data"></param>
     /// <returns></returns>
     IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent;
+
+    /// <summary>
+    /// Renders a Razor component without a layout from a RenderFragment
+    /// </summary>
+    /// <typeparam name="TComponent"></typeparam>
+    /// <param name="fragment"></param>
+    /// <returns></returns>
+    IResult PartialView(RenderFragment fragment);
 }

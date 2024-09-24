@@ -7,7 +7,7 @@ Renders a partial view using the specified Razor component, optionally accepting
 This method is intended for rendering components without a layout, suitable for inclusion in other views.
 
 ```csharp
-public Microsoft.AspNetCore.Http.IResult PartialView<TComponent>(object? data=null)
+public virtual Microsoft.AspNetCore.Http.IResult PartialView<TComponent>(object? data=null)
     where TComponent : Microsoft.AspNetCore.Components.IComponent;
 ```
 #### Type parameters

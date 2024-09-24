@@ -6,7 +6,7 @@
 Renders a view using the specified Razor component, optionally accepting dynamic data to pass to the component.
 
 ```csharp
-public Microsoft.AspNetCore.Http.IResult View<TComponent>(object? data=null)
+public virtual Microsoft.AspNetCore.Http.IResult View<TComponent>(object? data=null)
     where TComponent : Microsoft.AspNetCore.Components.IComponent;
 ```
 #### Type parameters

@@ -6,7 +6,7 @@
 Renders a view using the specified Razor component with explicitly provided data in the form of a dictionary.
 
 ```csharp
-public Microsoft.AspNetCore.Http.IResult View<TComponent>(System.Collections.Generic.Dictionary<string,object?> data)
+public virtual Microsoft.AspNetCore.Http.IResult View<TComponent>(System.Collections.Generic.Dictionary<string,object?> data)
     where TComponent : Microsoft.AspNetCore.Components.IComponent;
 ```
 #### Type parameters

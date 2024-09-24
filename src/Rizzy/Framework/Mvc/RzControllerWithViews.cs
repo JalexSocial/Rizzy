@@ -42,6 +42,10 @@ public class RzControllerWithViews : Controller, IRizzyService
     public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
         => RizzyService.PartialView<TComponent>(data);
 
+    /// <inheritdoc/>
+    public IResult PartialView(RenderFragment fragment)
+	    => RizzyService.PartialView(fragment);
+
     /// <summary>
     /// Called before the action method is invoked.
     /// </summary>

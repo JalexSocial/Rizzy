@@ -6,8 +6,6 @@ namespace Rizzy.Components;
 
 public partial class RzPartial : ComponentBase
 {
-    private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> _layoutAttributeCache = new();
-
     public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
     {
         builder.OpenComponent<CascadingValue<TValue>>(0);
@@ -35,9 +33,9 @@ public partial class RzPartial : ComponentBase
         });
     }
 
-    [Parameter, EditorRequired] public Type ComponentType { get; set; } = default!;
+    [Parameter, EditorRequired] public required Type ComponentType { get; set; } = default!;
 
-    [Parameter, EditorRequired] public Dictionary<string, object?> ComponentParameters { get; set; } = default!;
+    [Parameter, EditorRequired] public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
 
-    [Parameter, EditorRequired] public RzViewContext ViewContext { get; set; } = default!;
+    [Parameter, EditorRequired] public required RzViewContext ViewContext { get; set; } = default!;
 }

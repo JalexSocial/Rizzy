@@ -19,6 +19,7 @@ Derived
 
 | Methods | |
 | :--- | :--- |
+| [PartialView(RenderFragment)](Rizzy.IRizzyService.PartialView(Microsoft.AspNetCore.Components.RenderFragment) 'Rizzy.IRizzyService.PartialView(Microsoft.AspNetCore.Components.RenderFragment)') | Renders a Razor component without a layout from a RenderFragment |
 | [PartialView&lt;TComponent&gt;(object)](Rizzy.IRizzyService.PartialView_TComponent_(object) 'Rizzy.IRizzyService.PartialView<TComponent>(object)') | Renders a partial view using the specified Razor component, optionally accepting dynamic data to pass to the component.<br/>This method is intended for rendering components without a layout, suitable for inclusion in other views. |
 | [PartialView&lt;TComponent&gt;(Dictionary&lt;string,object&gt;)](Rizzy.IRizzyService.PartialView_TComponent_(System.Collections.Generic.Dictionary_string,object_) 'Rizzy.IRizzyService.PartialView<TComponent>(System.Collections.Generic.Dictionary<string,object>)') | Renders a Razor component without a layout |
 | [View&lt;TComponent&gt;(object)](Rizzy.IRizzyService.View_TComponent_(object) 'Rizzy.IRizzyService.View<TComponent>(object)') | Renders a view using the specified Razor component, optionally accepting dynamic data to pass to the component. |

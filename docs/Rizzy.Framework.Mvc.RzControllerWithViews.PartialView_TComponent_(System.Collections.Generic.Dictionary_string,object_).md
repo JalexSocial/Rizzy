@@ -6,7 +6,7 @@
 Renders a Razor component without a layout
 
 ```csharp
-public Microsoft.AspNetCore.Http.IResult PartialView<TComponent>(System.Collections.Generic.Dictionary<string,object?> data)
+public virtual Microsoft.AspNetCore.Http.IResult PartialView<TComponent>(System.Collections.Generic.Dictionary<string,object?> data)
     where TComponent : Microsoft.AspNetCore.Components.IComponent;
 ```
 #### Type parameters

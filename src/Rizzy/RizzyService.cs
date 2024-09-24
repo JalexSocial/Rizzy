@@ -108,6 +108,16 @@ public sealed class RizzyService : IRizzyService
     }
 
     /// <summary>
+    /// Renders a Razor component without a layout from a RenderFragment
+    /// </summary>
+    /// <param name="fragment"></param>
+    /// <returns></returns>
+    public IResult PartialView(RenderFragment fragment)
+    {
+        return new RazorComponentResult<FragmentComponent>(new { Fragment = fragment });
+    }
+
+    /// <summary>
     /// Gets the current action method URL, which can be used as a callback URL in forms. This URL is automatically
     /// derived from the current HTTP request but can be manually overridden in form handler methods. It is particularly
     /// useful for specifying form action targets within Razor Component views.

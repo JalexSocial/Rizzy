@@ -43,6 +43,10 @@ public class RzController : ControllerBase, IRizzyService, IActionFilter, IAsync
     public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
         => RizzyService.PartialView<TComponent>(data);
 
+    /// <inheritdoc/>
+    public IResult PartialView(RenderFragment fragment) 
+	    => RizzyService.PartialView(fragment);
+	
     /// <summary>
     /// Creates a <see cref="JsonResult"/> object that serializes the specified <paramref name="data"/> object
     /// to JSON.

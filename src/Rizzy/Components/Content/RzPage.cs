@@ -59,11 +59,11 @@ public class RzPage : ComponentBase
         });
     }
 
-    [Parameter, EditorRequired] public Type ComponentType { get; set; } = default!;
+    [Parameter, EditorRequired] public required Type ComponentType { get; set; } = default!;
 
-    [Parameter, EditorRequired] public Dictionary<string, object?> ComponentParameters { get; set; } = default!;
+    [Parameter, EditorRequired] public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
 
-    [Parameter, EditorRequired] public RzViewContext ViewContext { get; set; } = default!;
+    [Parameter, EditorRequired] public required RzViewContext ViewContext { get; set; } = default!;
 
     protected override void OnParametersSet()
     {
