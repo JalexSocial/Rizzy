@@ -111,6 +111,14 @@ public class HomeController : RzController
         return PartialView(HomeFragments.RenderServerTime(DateTime.Now));
     }
 
+    public IResult Blog() => View<BlogArticle>();
+
+    [Microsoft.AspNetCore.Mvc.Route("/home/blog/banner")]
+    public IResult BlogBanner()
+    {
+        return PartialView(BlogArticle.RenderBanner($"This banner was changed on the server - {Guid.NewGuid().ToString()}"));
+    }
+
     public async Task<string> News()
     {
         IServiceProvider serviceProvider = HttpContext.RequestServices;

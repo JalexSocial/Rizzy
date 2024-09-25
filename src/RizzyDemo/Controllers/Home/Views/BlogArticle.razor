@@ -1,0 +1,88 @@
+﻿@using Author = RizzyDemo.Controllers.Home.Models.Author
+@using Rizzy
+@* Render the article page using the reusable RenderFragment *@
+
+<div class="py-4 container">
+    @(RenderArticle((IsAuthenticated: true, PenguinArticle, null)))
+</div>
+
+@code {
+    // Define a sample article about penguins
+    public static readonly Models.Article PenguinArticle = new(
+        Title: "The Fascinating World of Penguins",
+        Body: @"
+            Penguins are a unique family of aquatic, flightless birds. They live almost exclusively in the Southern Hemisphere, with only one species, the Galápagos penguin, found north of the equator.
+
+            Penguins are known for their distinctive black and white plumage, which helps them camouflage while swimming. Their diet primarily consists of fish, squid, and other sea life caught while swimming underwater. Penguins can drink seawater because their supraorbital gland filters excess salt from the bloodstream.
+
+            The social behavior of penguins is also fascinating. Many species form large colonies during the breeding season, which can range from hundreds to millions of individuals. Their dedication to family life is admirable; most penguin species share the responsibility of incubating eggs and feeding chicks.
+
+            Penguins are also known for their impressive speed underwater. They use their wings as flippers to propel themselves through the water at speeds of up to 15 miles per hour. On land, however, they waddle awkwardly or slide on their bellies.
+
+            Despite being highly adapted to life in the water, penguins are very vulnerable to changes in their environment. Climate change and human activities pose significant threats to their habitat and food sources.
+            ",
+        Description: "A brief overview of penguins, including their habitat, diet, social behavior, and unique adaptations.",
+        UpdatedAt: DateTime.Now.AddHours(-2),
+    Author: new Author("Jane Doe", "/images/profile/profile1.jpg")
+    );
+
+    public static readonly RenderFragment<string> RenderBanner = message =>
+        @<div id="banner" class="alert alert-info my-3" hx-get="/home/blog/banner" hx-trigger=@Trigger.OnEvent("click") hx-target="#banner" hx-swap=@SwapStyle.outerHTML role="alert">
+            @message
+        </div>;
+
+    // Render fragment for displaying the article
+    public static readonly RenderFragment<(bool IsAuthenticated, Models.Article Article, Author? User)> RenderArticle = context =>
+    @<div class="article-page" id="articlepage">
+        <div class="banner" style="background-image: url('/images/penguin.jpg'); background-size: cover; background-position: center;">
+            <div class="py-5 text-white container">
+                <h1 class="display-4">@context.Article.Title</h1>
+                <div class="article-meta d-flex align-items-center">
+                    <a href="/profile/?author=@context.Article.Author.Username">
+                        <img src="@context.Article.Author.Image" class="rounded-circle me-2" style="width: 40px; height: 40px;"/>
+                    </a>
+                    <div class="info">
+                        <a href="/profile/?author=@context.Article.Author.Username"
+                           class="author text-white text-decoration-none">
+                            @context.Article.Author.Username
+                        </a>
+                        <span class="date text-white">@context.Article.UpdatedAt.ToString("MMMM d, yyyy h:mm tt")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        @RenderBanner("I'm rendered as a simple RenderFragment but I can also be directly routed through the HomeController - Click me")
+
+        <div class="page mt-4 container">
+            <div class="row article-content">
+                <div class="col-md-12">
+                    <p>@context.Article.Description</p>
+                    <hr/>
+                    <div class="article-body">
+                        @((MarkupString) GetHtml(context.Article.Body))
+                    </div>
+                </div>
+            </div>
+
+            <hr/>
+            @if (context.IsAuthenticated)
+            {
+                <div class="col-xs-12 col-md-8 offset-md-2">
+                    <div class="card comment-form my-4">
+                        <div class="card-block p-3">
+                            <textarea class="form-control" placeholder="Write a comment..." rows="3"></textarea>
+                        </div>
+                        <div class="card-footer d-flex align-items-center">
+                            <img src="@context.User?.Image" class="comment-author-img rounded-circle me-2" style="width: 40px; height: 40px;"/>
+                            <button class="btn btn-sm btn-primary">Post Comment</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>;
+
+    // Helper function to format article body
+    private static string GetHtml(string body) => body.Replace("\n", "<br/>");
+}
