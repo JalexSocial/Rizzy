@@ -108,7 +108,7 @@ public class HomeController : RzController
             _swapService.AddSwappableContent("alert", $"<div class=\"alert alert-primary\" role=\"alert\">{message}</div>", SwapStyle.innerHTML);
         }
 
-        return PartialView(HomeFragments.RenderServerTime(DateTime.Now));
+        return PartialView(HomeFragments.RenderServerTime);
     }
 
     public IResult Blog() => View<BlogArticle>();
