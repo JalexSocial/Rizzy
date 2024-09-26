@@ -52,7 +52,6 @@ public interface IRizzyService
     /// <summary>
     /// Renders a Razor component without a layout from a RenderFragment
     /// </summary>
-    /// <typeparam name="TComponent"></typeparam>
     /// <param name="fragment"></param>
     /// <returns></returns>
     IResult PartialView(RenderFragment fragment);

@@ -1,6 +1,4 @@
-﻿@using RizzyDemo.Components.Layout
-
-@inherits LayoutComponentBase
+﻿@inherits LayoutComponentBase
 
 <div class="page">
     <div id="sidebar" class="sidebar">
@@ -13,7 +11,7 @@
 		    <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
 	    </div>
 
-		<div id="alert" class="container my-2">
+		<div id="alert" class="my-2 container">
 	    </div>
 
 	    <article class="content px-4">
@@ -22,14 +20,4 @@
     </main>
 </div>
 
-<div id="blazor-error-ui">
-	An unhandled error has occurred.
-	<a href="" class="reload">Reload</a>
-	<a class="dismiss">🗙</a>
-</div>
 
-@code
-{
-    [Parameter]
-    public RenderFragment? ChildContent { get; set; }
-}

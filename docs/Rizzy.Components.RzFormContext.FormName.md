@@ -1,5 +1,5 @@
 #### [Rizzy](index 'index')
-### [Rizzy.Components.Form](Rizzy.Components.Form 'Rizzy.Components.Form').[RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[RzFormContext](Rizzy.Components.RzFormContext 'Rizzy.Components.RzFormContext')
 
 ## RzFormContext.FormName Property
 

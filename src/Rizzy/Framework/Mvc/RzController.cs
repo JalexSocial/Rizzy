@@ -44,7 +44,7 @@ public class RzController : ControllerBase, IRizzyService, IActionFilter, IAsync
         => RizzyService.PartialView<TComponent>(data);
 
     /// <inheritdoc/>
-    public IResult PartialView(RenderFragment fragment) 
+    public virtual IResult PartialView(RenderFragment fragment) 
 	    => RizzyService.PartialView(fragment);
 	
     /// <summary>

@@ -6,7 +6,7 @@
 Attempts to add a form context with the specified name and model.
 
 ```csharp
-public Rizzy.Components.Form.RzFormContext AddFormContext(string id, string formName, string formAction, object model, bool useDataAnnotations=true);
+public Rizzy.Components.RzFormContext AddFormContext(string id, string formName, string formAction, object model, bool useDataAnnotations=true);
 ```
 #### Parameters
 
@@ -39,5 +39,5 @@ The model associated with the form.
 Determines whether to use data annotations for validation.
 
 #### Returns
-[RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')  
+[RzFormContext](Rizzy.Components.RzFormContext 'Rizzy.Components.RzFormContext')  
 True if the form context was added successfully; otherwise, false.

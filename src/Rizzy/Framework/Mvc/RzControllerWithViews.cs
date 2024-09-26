@@ -43,7 +43,7 @@ public class RzControllerWithViews : Controller, IRizzyService
         => RizzyService.PartialView<TComponent>(data);
 
     /// <inheritdoc/>
-    public IResult PartialView(RenderFragment fragment)
+    public virtual IResult PartialView(RenderFragment fragment)
 	    => RizzyService.PartialView(fragment);
 
     /// <summary>

@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Components.Rendering;
 
 namespace Rizzy.Components;
 
-
+/// <summary>
+/// Component that encapsulates a RenderFragment for use as a partial or child component.
+/// </summary>
 public class FragmentComponent : ComponentBase
 {
 	[Parameter]

@@ -6,19 +6,19 @@
 Attempts to get a form context by name.
 
 ```csharp
-public bool TryGetFormContext(string formName, out Rizzy.Components.Form.RzFormContext context);
+public bool TryGetFormContext(string formName, out Rizzy.Components.RzFormContext context);
 ```
 #### Parameters
 
-<a name='Rizzy.RzViewContext.TryGetFormContext(string,Rizzy.Components.Form.RzFormContext).formName'></a>
+<a name='Rizzy.RzViewContext.TryGetFormContext(string,Rizzy.Components.RzFormContext).formName'></a>
 
 `formName` [System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String')
 
 The name of the form.
 
-<a name='Rizzy.RzViewContext.TryGetFormContext(string,Rizzy.Components.Form.RzFormContext).context'></a>
+<a name='Rizzy.RzViewContext.TryGetFormContext(string,Rizzy.Components.RzFormContext).context'></a>
 
-`context` [RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')
+`context` [RzFormContext](Rizzy.Components.RzFormContext 'Rizzy.Components.RzFormContext')
 
 The form context, if found.
 

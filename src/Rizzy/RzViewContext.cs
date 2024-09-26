@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using Rizzy.Components.Form;
+using Rizzy.Components;
 using Rizzy.Http;
 
 namespace Rizzy;

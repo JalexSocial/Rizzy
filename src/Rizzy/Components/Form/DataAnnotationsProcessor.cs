@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace Rizzy.Components.Form;
+namespace Rizzy.Components;
 
 /// <summary>
 /// Processes Data Annotations on model properties and converts them to HTML5 data attributes.

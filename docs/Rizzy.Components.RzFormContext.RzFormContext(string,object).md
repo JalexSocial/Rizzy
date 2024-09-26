@@ -1,5 +1,5 @@
 #### [Rizzy](index 'index')
-### [Rizzy.Components.Form](Rizzy.Components.Form 'Rizzy.Components.Form').[RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[RzFormContext](Rizzy.Components.RzFormContext 'Rizzy.Components.RzFormContext')
 
 ## RzFormContext(string, object) Constructor
 
@@ -10,13 +10,13 @@ public RzFormContext(string formName, object model);
 ```
 #### Parameters
 
-<a name='Rizzy.Components.Form.RzFormContext.RzFormContext(string,object).formName'></a>
+<a name='Rizzy.Components.RzFormContext.RzFormContext(string,object).formName'></a>
 
 `formName` [System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String')
 
 The name of the form.
 
-<a name='Rizzy.Components.Form.RzFormContext.RzFormContext(string,object).model'></a>
+<a name='Rizzy.Components.RzFormContext.RzFormContext(string,object).model'></a>
 
 `model` [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object')
 

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-namespace Rizzy.Components.Form;
+namespace Rizzy.Components;
 
 /// <summary>
 /// Represents a form context with a strongly typed model. This record encapsulates form identification, naming, and state management through an EditContext.

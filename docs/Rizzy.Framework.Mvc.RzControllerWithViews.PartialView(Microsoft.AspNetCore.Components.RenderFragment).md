@@ -6,7 +6,7 @@
 Renders a Razor component without a layout from a RenderFragment
 
 ```csharp
-public Microsoft.AspNetCore.Http.IResult PartialView(Microsoft.AspNetCore.Components.RenderFragment fragment);
+public virtual Microsoft.AspNetCore.Http.IResult PartialView(Microsoft.AspNetCore.Components.RenderFragment fragment);
 ```
 #### Parameters
 

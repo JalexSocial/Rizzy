@@ -1,5 +1,5 @@
 #### [Rizzy](index 'index')
-### [Rizzy.Components.Form](Rizzy.Components.Form 'Rizzy.Components.Form').[RzFormContext](Rizzy.Components.Form.RzFormContext 'Rizzy.Components.Form.RzFormContext')
+### [Rizzy.Components](Rizzy.Components 'Rizzy.Components').[RzFormContext](Rizzy.Components.RzFormContext 'Rizzy.Components.RzFormContext')
 
 ## RzFormContext.Model<TModel>() Method
 
@@ -12,12 +12,12 @@ public TModel Model<TModel>();
 ```
 #### Type parameters
 
-<a name='Rizzy.Components.Form.RzFormContext.Model_TModel_().TModel'></a>
+<a name='Rizzy.Components.RzFormContext.Model_TModel_().TModel'></a>
 
 `TModel`
 
 #### Returns
-[TModel](Rizzy.Components.Form.RzFormContext.Model_TModel_()#Rizzy.Components.Form.RzFormContext.Model_TModel_().TModel 'Rizzy.Components.Form.RzFormContext.Model<TModel>().TModel')
+[TModel](Rizzy.Components.RzFormContext.Model_TModel_()#Rizzy.Components.RzFormContext.Model_TModel_().TModel 'Rizzy.Components.RzFormContext.Model<TModel>().TModel')
 
 #### Exceptions
 
