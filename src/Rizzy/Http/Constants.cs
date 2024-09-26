@@ -1,4 +1,4 @@
-﻿namespace Rizzy;
+﻿namespace Rizzy.Http;
 
 /// <summary>
 /// Useful string constants in Htmxor components.

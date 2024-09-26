@@ -66,7 +66,7 @@ public class RizzyConfigBuilder
         _builder.Services.AddScoped<IUrlHelper>(provider =>
         {
             var helperFactory = provider.GetRequiredService<IUrlHelperFactory>();
-            var actionContextAccessor = provider.GetRequiredService<IActionContextAccessor>().ActionContext;
+            var actionContextAccessor = provider.GetRequiredService<IActionContextAccessor>()?.ActionContext;
 
             if (actionContextAccessor is null)
             {

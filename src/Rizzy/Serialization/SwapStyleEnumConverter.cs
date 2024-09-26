@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Rizzy.Framework;
+using Rizzy.Http;
 
 namespace Rizzy.Serialization;
 internal sealed class SwapStyleEnumConverter : JsonConverter<SwapStyle>

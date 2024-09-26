@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Rizzy.Framework;
+using Rizzy.Http;
 
 namespace Rizzy;
 

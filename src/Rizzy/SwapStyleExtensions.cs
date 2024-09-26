@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using Rizzy.Framework;
+using Rizzy.Http;
 
 namespace Rizzy;
 
