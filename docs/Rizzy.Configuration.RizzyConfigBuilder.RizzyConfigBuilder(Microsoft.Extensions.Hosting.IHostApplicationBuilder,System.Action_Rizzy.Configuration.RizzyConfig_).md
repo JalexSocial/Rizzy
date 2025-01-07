@@ -16,4 +16,4 @@ public RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder b
 
 <a name='Rizzy.Configuration.RizzyConfigBuilder.RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder,System.Action_Rizzy.Configuration.RizzyConfig_).configBuilder'></a>
 
-`configBuilder` [System.Action&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-1 'System.Action`1')[Rizzy.Configuration.RizzyConfig](https://docs.microsoft.com/en-us/dotnet/api/Rizzy.Configuration.RizzyConfig 'Rizzy.Configuration.RizzyConfig')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-1 'System.Action`1')
+`configBuilder` [System.Action&lt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-1 'System.Action`1')[RizzyConfig](Rizzy.Configuration.RizzyConfig 'Rizzy.Configuration.RizzyConfig')[&gt;](https://docs.microsoft.com/en-us/dotnet/api/System.Action-1 'System.Action`1')

@@ -11,6 +11,9 @@ public class RizzyConfig
 
     public AntiforgeryStrategy AntiforgeryStrategy { get; set; } = AntiforgeryStrategy.GenerateTokensPerPage;
 
+    /// <summary>
+    /// Layout that is applied to all pages without a layout attribute 
+    /// </summary>
     public Type? DefaultLayout
     {
         get => _defaultLayout;
@@ -23,6 +26,9 @@ public class RizzyConfig
         }
     }
 
+    /// <summary>
+    /// Core application layout that contains full html page layout
+    /// </summary>
     public Type? RootComponent
     {
         get => _rootComponent;
@@ -35,4 +41,16 @@ public class RizzyConfig
         }
     }
 
+    /// <summary>
+    /// Gets or sets the Nonce HMAC Key as a base-64 encoded string. This key is used to sign generated nonce values
+    /// such that they may be revalidated when
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    public string NonceHMACKey { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets the decoded Nonce HMAC Key as a byte array.
+    /// </summary>
+    // ReSharper disable once InconsistentNaming
+    public byte[] NonceHMACKeyBytes => Convert.FromBase64String(NonceHMACKey);
 }

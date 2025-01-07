@@ -3,8 +3,7 @@
 
 ## ObjectExtensions.SerializeAsAlpineData(this object, bool) Method
 
-Serializes .NET objects for use with Alpine.js x-data attribute  
-Credit to Alexander Zeitler for developing this approach. It requires Newtonsoft because System.Text.Json doesn't allow non-standard quote characters.
+Serializes .NET objects for use with Alpine.js x-data attribute
 
 ```csharp
 public static string SerializeAsAlpineData(this object? value, bool ignoreNullValues=false);
@@ -21,5 +20,3 @@ public static string SerializeAsAlpineData(this object? value, bool ignoreNullVa
 
 #### Returns
 [System.String](https://docs.microsoft.com/en-us/dotnet/api/System.String 'System.String')
-
-### See Also

@@ -22,7 +22,6 @@ Implements [IRizzyService](Rizzy.IRizzyService 'Rizzy.IRizzyService')
 
 | Methods | |
 | :--- | :--- |
-| [OnActionExecuting(ActionExecutingContext)](Rizzy.Framework.Mvc.RzControllerWithViews.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext) 'Rizzy.Framework.Mvc.RzControllerWithViews.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext)') | Called before the action method is invoked. |
 | [PartialView(RenderFragment)](Rizzy.Framework.Mvc.RzControllerWithViews.PartialView(Microsoft.AspNetCore.Components.RenderFragment) 'Rizzy.Framework.Mvc.RzControllerWithViews.PartialView(Microsoft.AspNetCore.Components.RenderFragment)') | Renders a Razor component without a layout from a RenderFragment |
 | [PartialView&lt;TComponent&gt;(object)](Rizzy.Framework.Mvc.RzControllerWithViews.PartialView_TComponent_(object) 'Rizzy.Framework.Mvc.RzControllerWithViews.PartialView<TComponent>(object)') | Renders a partial view using the specified Razor component, optionally accepting dynamic data to pass to the component.<br/>This method is intended for rendering components without a layout, suitable for inclusion in other views. |
 | [PartialView&lt;TComponent&gt;(Dictionary&lt;string,object&gt;)](Rizzy.Framework.Mvc.RzControllerWithViews.PartialView_TComponent_(System.Collections.Generic.Dictionary_string,object_) 'Rizzy.Framework.Mvc.RzControllerWithViews.PartialView<TComponent>(System.Collections.Generic.Dictionary<string,object>)') | Renders a Razor component without a layout |

@@ -90,7 +90,6 @@ public class RzController : ControllerBase, IRizzyService, IActionFilter, IAsync
     [NonAction]
     public virtual void OnActionExecuting(ActionExecutingContext context)
     {
-        ViewContext.ConfigureActionContext(Url.ActionContext);
     }
 
     /// <summary>

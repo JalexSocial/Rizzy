@@ -6,12 +6,14 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Components;
 using Rizzy.Components.Form;
 using Rizzy.Components.Form.Helpers;
+using Rizzy.Nonce;
 
 namespace Rizzy.Configuration;
 
@@ -51,7 +53,12 @@ public class RizzyConfigBuilder
 
         AddHtmxAntiForgery();
 
-        _builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+        // Add nonce generation services
+        _builder.Services.AddSingleton<RizzyNonceGenerator>();
+
+        // Register the default RizzyNonceProvider only if IRizzyNonceProvider hasn't been registered
+        _builder.Services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
+
         _builder.Services.AddHttpContextAccessor();
         _builder.Services.Configure<RizzyConfig>(configBuilder);
 
@@ -61,24 +68,6 @@ public class RizzyConfigBuilder
 
         // Configure a default htmx configuration
         _builder.Services.Configure<HtmxConfig>(config => { });
-
-        // Add url helper
-        _builder.Services.AddScoped<IUrlHelper>(provider =>
-        {
-            var helperFactory = provider.GetRequiredService<IUrlHelperFactory>();
-            var actionContextAccessor = provider.GetRequiredService<IActionContextAccessor>()?.ActionContext;
-
-            if (actionContextAccessor is null)
-            {
-                var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-                var httpContext = httpContextAccessor.HttpContext!;
-                var actionContext = new ActionContext(httpContext, httpContext.GetRouteData(), new ActionDescriptor());
-
-                return new UrlHelper(actionContext);
-            }
-
-            return helperFactory.GetUrlHelper(actionContextAccessor!);
-        });
 
         _builder.Services.AddSingleton<DataAnnotationsProcessor>();
 

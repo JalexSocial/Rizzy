@@ -45,16 +45,4 @@ public class RzControllerWithViews : Controller, IRizzyService
     /// <inheritdoc/>
     public virtual IResult PartialView(RenderFragment fragment)
 	    => RizzyService.PartialView(fragment);
-
-    /// <summary>
-    /// Called before the action method is invoked.
-    /// </summary>
-    /// <param name="context">The action executing context.</param>
-    [NonAction]
-    public override void OnActionExecuting(ActionExecutingContext context)
-    {
-        ViewContext.ConfigureActionContext(Url.ActionContext);
-
-        base.OnActionExecuting(context);
-    }
 }

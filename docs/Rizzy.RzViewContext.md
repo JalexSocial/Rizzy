@@ -13,16 +13,14 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Constructors | |
 | :--- | :--- |
-| [RzViewContext(IHttpContextAccessor, IUrlHelper)](Rizzy.RzViewContext.RzViewContext(Microsoft.AspNetCore.Http.IHttpContextAccessor,Microsoft.AspNetCore.Mvc.IUrlHelper) 'Rizzy.RzViewContext.RzViewContext(Microsoft.AspNetCore.Http.IHttpContextAccessor, Microsoft.AspNetCore.Mvc.IUrlHelper)') | Represents the context for a view within an application, providing access to HTTP contexts, URL helpers, and component configurations. |
+| [RzViewContext(IHttpContextAccessor)](Rizzy.RzViewContext.RzViewContext(Microsoft.AspNetCore.Http.IHttpContextAccessor) 'Rizzy.RzViewContext.RzViewContext(Microsoft.AspNetCore.Http.IHttpContextAccessor)') | Represents the context for a view within an application, providing access to HTTP contexts, URL helpers, and component configurations. |
 
 | Properties | |
 | :--- | :--- |
 | [ComponentParameters](Rizzy.RzViewContext.ComponentParameters 'Rizzy.RzViewContext.ComponentParameters') | This is a full list of all the parameters that are set on the component view |
 | [Htmx](Rizzy.RzViewContext.Htmx 'Rizzy.RzViewContext.Htmx') | Gets the Htmx context for the current request. |
 | [HttpContext](Rizzy.RzViewContext.HttpContext 'Rizzy.RzViewContext.HttpContext') | Gets or sets the [Microsoft.AspNetCore.Http.HttpContext](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.HttpContext 'Microsoft.AspNetCore.Http.HttpContext') for the current request. |
-| [PageTitle](Rizzy.RzViewContext.PageTitle 'Rizzy.RzViewContext.PageTitle') | Sets the current page title |
 | [RouteData](Rizzy.RzViewContext.RouteData 'Rizzy.RzViewContext.RouteData') | Gets or sets the AspNetCore.Routing.RouteData for the current request. |
-| [Url](Rizzy.RzViewContext.Url 'Rizzy.RzViewContext.Url') | Provides access to the MVC UrlHelper which contains methods to build URLs for ASP.NET MVC within an application. |
 
 | Methods | |
 | :--- | :--- |

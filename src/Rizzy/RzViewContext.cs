@@ -10,20 +10,9 @@ namespace Rizzy;
 /// <summary>
 /// Represents the context for a view within an application, providing access to HTTP contexts, URL helpers, and component configurations.
 /// </summary>
-public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper urlHelper)
+public class RzViewContext(IHttpContextAccessor httpContextAccessor)
 {
     private readonly Dictionary<string, RzFormContext> _formContexts = [];
-
-    /// <summary>
-    /// Configures the action context for the view context.
-    /// </summary>
-    /// <param name="actionContext">The action context to configure.</param>
-    /// <exception cref="ArgumentNullException">Thrown if the action context is null.</exception>
-    internal void ConfigureActionContext(ActionContext actionContext)
-    {
-        ArgumentNullException.ThrowIfNull(actionContext);
-        ActionContext = actionContext;
-    }
 
     /// <summary>
     /// Configures the view component type and parameters.
@@ -47,11 +36,6 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     }
 
     /// <summary>
-    /// Sets the current page title
-    /// </summary>
-    public string PageTitle { get; set; } = string.Empty;
-
-    /// <summary>
     /// Gets the Htmx context for the current request.
     /// </summary>
     public HtmxContext Htmx => new(HttpContext);
@@ -63,11 +47,6 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// The property setter is provided for unit test purposes only.
     /// </remarks>
     public HttpContext HttpContext => httpContextAccessor.HttpContext!;
-
-    /// <summary>
-    /// Provides access to the MVC UrlHelper which contains methods to build URLs for ASP.NET MVC within an application.
-    /// </summary>
-    public IUrlHelper Url => urlHelper;
 
     /// <summary>
     /// Gets or sets the AspNetCore.Routing.RouteData for the current request.
@@ -83,8 +62,6 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor, IUrlHelper 
     /// This is a full list of all the parameters that are set on the component view
     /// </summary>
     public Dictionary<string, object?> ComponentParameters { get; private set; } = new();
-
-    public ActionContext ActionContext { get; private set; } = default!;
 
     /// <summary>
     /// Attempts to add a form context with the specified name and model.

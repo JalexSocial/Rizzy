@@ -1,6 +1,7 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Rizzy.Serialization;
 
 namespace Rizzy.Extensions;
 
@@ -31,11 +32,7 @@ public static class ObjectExtensions
 
     /// <summary>
     /// Serializes .NET objects for use with Alpine.js x-data attribute
-    /// Credit to Alexander Zeitler for developing this approach. It requires Newtonsoft because System.Text.Json doesn't allow non-standard quote characters.
     /// </summary>
-    /// <seealso>See Serializing .NET objects for use with Alpine.js x-data attribute
-    ///     <cref>https://alexanderzeitler.com/articles/serializing-dotnet-csharp-object-for-use-with-alpine-x-data-attribute/</cref>
-    /// </seealso>
     /// <param name="value"></param>
     /// <param name="ignoreNullValues"></param>
     /// <code>
@@ -47,21 +44,12 @@ public static class ObjectExtensions
         if (value is null)
             return string.Empty;
 
-        using StringWriter stringWriter = new StringWriter();
-        using JsonTextWriter jsonTextWriter = new JsonTextWriter((TextWriter)stringWriter)
+        var options = new JsonSerializerOptions
         {
-            QuoteName = false,
-            QuoteChar = '\''
+			Converters = { new SingleQuoteStringConverter() },
+            DefaultIgnoreCondition = ignoreNullValues ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
         };
 
-        Newtonsoft.Json.JsonSerializer jsonSerializer = new()
-        {
-            ContractResolver = (IContractResolver)new CamelCasePropertyNamesContractResolver(),
-            NullValueHandling = ignoreNullValues ? NullValueHandling.Ignore : NullValueHandling.Include
-        };
-
-        jsonSerializer.Serialize((JsonWriter)jsonTextWriter, value);
-
-        return stringWriter.ToString();
+        return JsonSerializer.Serialize(value, options);
     }
 }
