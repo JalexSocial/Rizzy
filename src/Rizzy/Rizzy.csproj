@@ -13,14 +13,14 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <PackageId>Rizzy</PackageId>
     <Company>Michael Tanczos</Company>
-    <Authors>Michael Tanczos, Egil Hansen</Authors>
+    <Authors>Michael Tanczos</Authors>
     <Title>Rizzy - MVC and htmx with a Razor component model</Title>
     <Description>
       This package allows you to utilize Asp.net MVC with Razor Components and htmx.
     </Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>blazor, htmx, blazor-ssr, blazor-web-app</PackageTags>
-    <Copyright>Michael Tanczos, Egil Hansen</Copyright>
+    <Copyright>Michael Tanczos</Copyright>
     <PackageIcon>rizzy.png</PackageIcon>
     <PackageProjectUrl>https://github.com/jalexsocial/Rizzy</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jalexsocial/Rizzy</RepositoryUrl>
@@ -28,7 +28,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>2.0.12</Version>
+    <Version>2.0.13</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>

@@ -11,11 +11,25 @@ public class FragmentComponent : ComponentBase
 	[Parameter]
 	public RenderFragment? Fragment { get; set; }
 
+    [Parameter]
+	public IEnumerable<RenderFragment?>? Fragments { get; set; }
+
 	protected override void BuildRenderTree(RenderTreeBuilder builder)
 	{
-		if (Fragment != null)
+        if (Fragment != null)
+        {
+            builder.AddContent(0, Fragment);
+        }
+
+		if (Fragments != null)
 		{
-			builder.AddContent(0, Fragment);
+			foreach (var fragment in Fragments)
+			{
+				if (fragment != null)
+				{
+					builder.AddContent(1, fragment);
+				}
+			}
 		}
 	}
 }
