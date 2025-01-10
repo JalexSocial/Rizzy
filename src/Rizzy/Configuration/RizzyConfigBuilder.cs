@@ -54,7 +54,7 @@ public class RizzyConfigBuilder
         AddHtmxAntiForgery();
 
         // Add nonce generation services
-        _builder.Services.AddSingleton<RizzyNonceGenerator>();
+        _builder.Services.TryAddSingleton<RizzyNonceGenerator>();
 
         // Register the default RizzyNonceProvider only if IRizzyNonceProvider hasn't been registered
         _builder.Services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
