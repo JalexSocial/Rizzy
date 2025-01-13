@@ -14,15 +14,15 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     private bool _shouldGenerateFieldNames;
     [CascadingParameter] EditContext EditContext { get; set; } = default!;
 
-    [CascadingParameter]
-    private RzEditForm? EditForm { get; set; }
+    [Inject]
+    public RzViewContext ViewContext { get; set; } = default!;
 
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
 
-        if (EditForm is null)
-            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} must be enclosed within an {nameof(RzEditForm)}.");
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} must be enclosed within an {nameof(EditForm)}.");
 
         // Initialize or clear the merged attributes dictionary
         _mergedAttributes = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
@@ -33,8 +33,19 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
             throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
 
         var field = FieldIdentifier.Create(For);
-        var fieldName = EditForm.FieldMapping!.ContainsKey(field) ? EditForm.FieldMapping[field].FieldName : NameAttributeValue;
-        //var otherFieldName = NameAttributeValue;
+
+        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
+
+        string fieldName;
+        if (fieldMapping.TryGetValue(field, out var mapping))
+        {
+            fieldName = mapping.FieldName;
+        }
+        else
+        {
+            // Fallback
+            fieldName = NameAttributeValue;
+        }
 
         // Merge or add the new attributes
         _mergedAttributes["data-valmsg-for"] = fieldName;

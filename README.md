@@ -10,6 +10,10 @@ For detailed documentation and examples, please visit the [Rizzy Documentation S
 
 ## Latest Updates
 
+### Version 3.0.1
+- Removed RzEditForm and RzFormContext
+- Added more native approach that allows for embedding Rz* components inside a standard EditForm
+
 ### Version 3.0.0
 - Removed MVC-specific elements like Url and ActionContext from RzViewContext
 - Removed Newtonsoft dependency and switched to System.Text.Json single quote encoding for AlpineJs

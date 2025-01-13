@@ -15,8 +15,11 @@ public class RzInputRadio<TValue> : InputRadio<TValue>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
-    [CascadingParameter]
-    private RzEditForm? EditForm { get; set; }
+    [Inject]
+    public RzViewContext ViewContext { get; set; } = default!;
+
+    [CascadingParameter] 
+    EditContext EditContext { get; set; } = default!;
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -25,8 +28,8 @@ public class RzInputRadio<TValue> : InputRadio<TValue>
     {
         base.OnParametersSet();
 
-        if (EditForm is null)
-            throw new InvalidOperationException($"{nameof(RzInputRadio<TValue>)} must be enclosed within an {nameof(RzEditForm)}.");
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputRadio<TValue>)} must be enclosed within an {nameof(EditForm)}.");
 
         // No validation
 

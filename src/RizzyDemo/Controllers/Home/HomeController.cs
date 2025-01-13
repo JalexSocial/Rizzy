@@ -39,17 +39,12 @@ public class HomeController : RzController
 
     public IResult Information()
     {
-        ViewContext.AddFormContext("myForm", CurrentActionUrl, new Person());
-
         return View<Information>();
     }
 
     [HttpPost, ValidateAntiForgeryToken]
     public IResult Information([FromForm] Person person)
     {
-        var ctx = ViewContext.AddFormContext("myForm", CurrentActionUrl, person);
-        ctx.EditContext.Validate();
-
         return View<Information>();
     }
 

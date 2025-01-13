@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Rizzy.Components;
 using Rizzy.Http;
+using System.Collections.Concurrent;
 
 namespace Rizzy;
 
@@ -12,7 +13,7 @@ namespace Rizzy;
 /// </summary>
 public class RzViewContext(IHttpContextAccessor httpContextAccessor)
 {
-    private readonly Dictionary<string, RzFormContext> _formContexts = [];
+    private readonly ConcurrentDictionary<EditContext, Dictionary<FieldIdentifier, RzFormFieldMap>> _formFieldMappings = new();
 
     /// <summary>
     /// Configures the view component type and parameters.
@@ -64,70 +65,20 @@ public class RzViewContext(IHttpContextAccessor httpContextAccessor)
     public Dictionary<string, object?> ComponentParameters { get; private set; } = new();
 
     /// <summary>
-    /// Attempts to add a form context with the specified name and model.
+    /// Gets (or creates if missing) the field mapping for the given EditContext.
     /// </summary>
-    /// <param name="id">html id for the form</param>
-    /// <param name="formName">The name of the form.</param>
-    /// <param name="formAction"></param>
-    /// <param name="model">The model associated with the form.</param>
-    /// <param name="useDataAnnotations">Determines whether to use data annotations for validation.</param>
-    /// <returns>True if the form context was added successfully; otherwise, false.</returns>
-    public RzFormContext AddFormContext(string id, string formName, string formAction, object model,
-        bool useDataAnnotations = true)
+    public Dictionary<FieldIdentifier, RzFormFieldMap> GetOrAddFieldMapping(EditContext editContext)
     {
-        var formContext = string.IsNullOrEmpty(id) ?
-            new RzFormContext(formName, formAction, model) :
-            new RzFormContext(id, formName, formAction, model);
+        editContext.ShouldUseFieldIdentifiers = true;
 
-        // By default use data annotations as the validator
-        if (useDataAnnotations)
-        {
-            formContext.EditContext.EnableDataAnnotationsValidation(this.HttpContext.RequestServices);
-            //formContext.EditContext.Validate();
-        }
-
-        _formContexts[formName] = formContext;
-
-        return formContext;
+        return _formFieldMappings.GetOrAdd(editContext, _ => new Dictionary<FieldIdentifier, RzFormFieldMap>());
     }
 
     /// <summary>
-    /// Attempts to add a form context with the specified name and model.
+    /// Removes the field mapping entry for a given EditContext if no longer needed.
     /// </summary>
-    /// <param name="formName"></param>
-    /// <param name="model"></param>
-    /// <param name="useDataAnnotations"></param>
-    /// <returns></returns>
-    public RzFormContext AddFormContext(string formName, object model, bool useDataAnnotations = true) =>
-        AddFormContext(string.Empty, formName, string.Empty, model, useDataAnnotations);
-
-    /// <summary>
-    /// Attempts to add a form context with the specified name and model.
-    /// </summary>
-    /// <param name="formName"></param>
-    /// <param name="formAction"></param>
-    /// <param name="model"></param>
-    /// <param name="useDataAnnotations"></param>
-    /// <returns></returns>
-    public RzFormContext AddFormContext(string formName, string formAction, object model, bool useDataAnnotations = true) =>
-        AddFormContext(string.Empty, formName, formAction, model, useDataAnnotations);
-
-    /// <summary>
-    /// Attempts to get a form context by name.
-    /// </summary>
-    /// <param name="formName">The name of the form.</param>
-    /// <param name="context">The form context, if found.</param>
-    /// <returns>True if the form context was found; otherwise, false.</returns>
-    public bool TryGetFormContext(string formName, out RzFormContext context)
+    public void RemoveFieldMapping(EditContext editContext)
     {
-        if (!_formContexts.ContainsKey(formName))
-        {
-            context = null!;
-            return false;
-        }
-
-        context = _formContexts[formName];
-
-        return true;
+        _formFieldMappings.TryRemove(editContext, out _);
     }
 }

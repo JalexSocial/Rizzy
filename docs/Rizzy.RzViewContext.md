@@ -24,7 +24,5 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Methods | |
 | :--- | :--- |
-| [AddFormContext(string, object, bool)](Rizzy.RzViewContext.AddFormContext(string,object,bool) 'Rizzy.RzViewContext.AddFormContext(string, object, bool)') | Attempts to add a form context with the specified name and model. |
-| [AddFormContext(string, string, object, bool)](Rizzy.RzViewContext.AddFormContext(string,string,object,bool) 'Rizzy.RzViewContext.AddFormContext(string, string, object, bool)') | Attempts to add a form context with the specified name and model. |
-| [AddFormContext(string, string, string, object, bool)](Rizzy.RzViewContext.AddFormContext(string,string,string,object,bool) 'Rizzy.RzViewContext.AddFormContext(string, string, string, object, bool)') | Attempts to add a form context with the specified name and model. |
-| [TryGetFormContext(string, RzFormContext)](Rizzy.RzViewContext.TryGetFormContext(string,Rizzy.Components.RzFormContext) 'Rizzy.RzViewContext.TryGetFormContext(string, Rizzy.Components.RzFormContext)') | Attempts to get a form context by name. |
+| [GetOrAddFieldMapping(EditContext)](Rizzy.RzViewContext.GetOrAddFieldMapping(Microsoft.AspNetCore.Components.Forms.EditContext) 'Rizzy.RzViewContext.GetOrAddFieldMapping(Microsoft.AspNetCore.Components.Forms.EditContext)') | Gets (or creates if missing) the field mapping for the given EditContext. |
+| [RemoveFieldMapping(EditContext)](Rizzy.RzViewContext.RemoveFieldMapping(Microsoft.AspNetCore.Components.Forms.EditContext) 'Rizzy.RzViewContext.RemoveFieldMapping(Microsoft.AspNetCore.Components.Forms.EditContext)') | Removes the field mapping entry for a given EditContext if no longer needed. |

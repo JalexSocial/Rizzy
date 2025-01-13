@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using Rizzy.Components.Form;
 using Rizzy.Components.Form.Helpers;
+using Rizzy.Utility;
 
 namespace Rizzy.Components;
 
@@ -10,8 +11,8 @@ public class RzInputTextArea : InputTextArea
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
-    [CascadingParameter]
-    private RzEditForm? EditForm { get; set; }
+    [Inject]
+    public RzViewContext ViewContext { get; set; } = default!;
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -20,25 +21,34 @@ public class RzInputTextArea : InputTextArea
     {
         base.OnParametersSet();
 
-        if (EditForm is null)
-            throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(RzEditForm)}.");
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(EditForm)}.");
 
         // If id doesn't exist then attempt to create one
         if (string.IsNullOrEmpty(Id))
         {
-            Id = EditForm.CreateSanitizedId(NameAttributeValue);
+            Id = IdGenerator.UniqueId(NameAttributeValue);
         }
 
-        EditForm.AddFieldMapping(FieldIdentifier, NameAttributeValue, Id);
+        // Get the field mapping dictionary for the given EditContext.
+        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
+
+        // Add mapping for this field (use FieldIdentifier from the base class).
+        if (!fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
     }
 
     protected override void Dispose(bool disposing)
     {
-	    EditForm?.RemoveFieldMapping(FieldIdentifier);
+        // When disposing, remove the field mapping.
+        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
+        fieldMapping.Remove(FieldIdentifier);
 
-	    base.Dispose(disposing);
+        base.Dispose(disposing);
     }
 
 }

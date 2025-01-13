@@ -10,8 +10,6 @@
 | [HtmxSwapContent](Rizzy.Components.HtmxSwapContent 'Rizzy.Components.HtmxSwapContent') | Razor component that fully renders any content from HtmxSwapService |
 | [HtmxSwappable](Rizzy.Components.HtmxSwappable 'Rizzy.Components.HtmxSwappable') | A Blazor component that enables swapping HTML content dynamically based on specified parameters through Htmx. |
 | [HtmxSwapService](Rizzy.Components.HtmxSwapService 'Rizzy.Components.HtmxSwapService') | Service for managing dynamic content swaps in a Blazor application.<br/>Allows for adding Razor components, RenderFragments, and raw HTML content,<br/>and provides a mechanism to render them within a specified layout or context. |
-| [RzEditForm](Rizzy.Components.RzEditForm 'Rizzy.Components.RzEditForm') | |
-| [RzFormContext](Rizzy.Components.RzFormContext 'Rizzy.Components.RzFormContext') | Represents a form context with a strongly typed model. This record encapsulates form identification, naming, and state management through an EditContext. |
 | [RzHeadContent](Rizzy.Components.RzHeadContent 'Rizzy.Components.RzHeadContent') | Provides content to [RzHeadOutlet](Rizzy.Components.RzHeadOutlet 'Rizzy.Components.RzHeadOutlet') components. |
 | [RzHeadOutlet](Rizzy.Components.RzHeadOutlet 'Rizzy.Components.RzHeadOutlet') | Renders content provided by [RzHeadContent](Rizzy.Components.RzHeadContent 'Rizzy.Components.RzHeadContent') components. |
 | [RzInputCheckbox](Rizzy.Components.RzInputCheckbox 'Rizzy.Components.RzInputCheckbox') | An input component for editing Boolean values. |
