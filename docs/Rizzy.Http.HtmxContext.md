@@ -17,6 +17,5 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Properties | |
 | :--- | :--- |
-| [Configuration](Rizzy.Http.HtmxContext.Configuration 'Rizzy.Http.HtmxContext.Configuration') | Current configuration used with the page |
 | [Request](Rizzy.Http.HtmxContext.Request 'Rizzy.Http.HtmxContext.Request') | Gets the HTMX request headers associated with the current request. |
 | [Response](Rizzy.Http.HtmxContext.Response 'Rizzy.Http.HtmxContext.Response') | Allow manipulation of Response headers for the current response |
