@@ -1,10 +1,14 @@
-﻿@namespace Rizzy.Components
+﻿@using Rizzy.Nonce
+@namespace Rizzy.Components
 
-<script type="text/javascript">
+<script type="text/javascript" nonce="@NonceProvider.InlineScriptNonce">
 	@((MarkupString)GetAntiforgeryJavaScript(Minified))
 </script>
 
 @code {
+
+    [Inject] 
+    public IRizzyNonceProvider NonceProvider { get; set; } = default!;
 
 	[Parameter]
 #if DEBUG

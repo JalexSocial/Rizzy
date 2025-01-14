@@ -47,6 +47,7 @@ public class HtmxConfigHeadOutletTest : TestContext
             config.IncludeIndicatorStyles = true;
             config.IndicatorClass = "indicator-class";
             config.InlineScriptNonce = "inline-script-nonce";
+            config.InlineStyleNonce = "inline-style-nonce";
             config.MethodsThatUseUrlParams = ["GET", "POST", "DELETE"];
             config.RefreshOnHistoryMiss = true;
             config.RequestClass = "request-class";
@@ -91,6 +92,7 @@ public class HtmxConfigHeadOutletTest : TestContext
                 "includeIndicatorStyles": true,
                 "indicatorClass": "indicator-class",
                 "inlineScriptNonce": "inline-script-nonce",
+                "inlineStyleNonce": "inline-style-nonce",
                 "methodsThatUseUrlParams": [
                     "GET",
                     "POST",

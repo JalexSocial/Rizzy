@@ -9,8 +9,6 @@ namespace Rizzy.Http;
 /// </summary>
 public class HtmxContext
 {
-    private readonly IOptionsSnapshot<HtmxConfig> _configOptions;
-
     /// <summary>
     /// Initializes a new instance of the <see cref="HtmxContext"/> class.
     /// </summary>
@@ -19,10 +17,6 @@ public class HtmxContext
     {
         Request = new HtmxRequest(context);
         Response = new HtmxResponse(context);
-
-        _configOptions = context.RequestServices.GetRequiredService<IOptionsSnapshot<HtmxConfig>>();
-
-        Configuration = _configOptions.Value;
     }
 
     /// <summary>
@@ -34,9 +28,4 @@ public class HtmxContext
     /// Allow manipulation of Response headers for the current response
     /// </summary>
     public HtmxResponse Response { get; }
-
-    /// <summary>
-    /// Current configuration used with the page
-    /// </summary>
-    public HtmxConfig Configuration { get; private set; }
 }

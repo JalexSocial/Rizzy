@@ -115,6 +115,13 @@ public record class HtmxConfig
     public string? InlineScriptNonce { get; set; }
 
     /// <summary>
+    /// Defaults to <c>''</c> (empty string) if this property is null,
+    /// meaning that no nonce will be added to inline styles
+    /// </summary>
+    [JsonPropertyName("inlineStyleNonce")]
+    public string? InlineStyleNonce { get; set; }
+
+    /// <summary>
     /// Defaults to <c>["class", "style", "width", "height"]</c> if this property is null.
     /// The attributes to settle during the settling phase
     /// </summary>
@@ -231,4 +238,17 @@ public record class HtmxConfig
 
     [JsonInclude, JsonPropertyName("antiforgery")]
     internal AntiForgeryConfiguration? Antiforgery { get; set; } = null;
+
+    /// <summary>
+    /// If set to true, will utilize an IRizzyNonceProvider instance to generate script nonces
+    /// </summary>
+    [JsonIgnore] 
+    public bool GenerateScriptNonce { get; set; } = false;
+
+    /// <summary>
+    /// If set to true, will utilize an IRizzyNonceProvider instance to generate script nonces
+    /// </summary>
+    [JsonIgnore]
+    public bool GenerateStyleNonce { get; set; } = false;
+
 }
