@@ -47,7 +47,7 @@ public class RizzyConfigBuilder
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="configBuilder"></param>
-    public RizzyConfigBuilder(IHostApplicationBuilder builder, Action<RizzyConfig> configBuilder)
+    public RizzyConfigBuilder(IHostApplicationBuilder builder, Action<RizzyConfig>? configBuilder)
     {
         _builder = builder;
 
@@ -60,7 +60,19 @@ public class RizzyConfigBuilder
         _builder.Services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
 
         _builder.Services.AddHttpContextAccessor();
-        _builder.Services.Configure<RizzyConfig>(configBuilder);
+
+        if (configBuilder != null)
+        {
+            _builder.Services.Configure<RizzyConfig>(configBuilder);
+        }
+        else
+        {
+            _builder.Services.Configure<RizzyConfig>(cfg =>
+            {
+                cfg.RootComponent = typeof(EmptyRootComponent);
+                cfg.DefaultLayout = null;
+            });
+        }
 
         // Make sure all HtmxConfig instances get properly configured
         _builder.Services.AddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();

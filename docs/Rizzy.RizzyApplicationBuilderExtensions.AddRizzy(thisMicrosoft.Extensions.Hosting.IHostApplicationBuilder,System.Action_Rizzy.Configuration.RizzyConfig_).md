@@ -6,7 +6,7 @@
 Add and configure Htmx.
 
 ```csharp
-public static Rizzy.Configuration.RizzyConfigBuilder AddRizzy(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, System.Action<Rizzy.Configuration.RizzyConfig> configBuilder);
+public static Rizzy.Configuration.RizzyConfigBuilder AddRizzy(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, System.Action<Rizzy.Configuration.RizzyConfig>? configBuilder=null);
 ```
 #### Parameters
 

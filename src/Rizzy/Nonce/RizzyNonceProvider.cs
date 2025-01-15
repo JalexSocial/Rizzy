@@ -65,6 +65,7 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
         var context = _httpContextAccessor.HttpContext
                       ?? throw new InvalidOperationException("No HttpContext available.");
 
+        // If it's cached already return the existing nonce value object
         if (context.Items[NonceKey] is RizzyNonceValues cachedNonceValues)
         {
             return cachedNonceValues;
@@ -77,28 +78,27 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
         var scriptNonce = scriptNonceValues.FirstOrDefault();
         var styleNonce = styleNonceValues.FirstOrDefault();
 
-        // Validate and reuse nonce values if both are present and valid
-        if (!string.IsNullOrEmpty(scriptNonce) && _generator.ValidateNonce(scriptNonce) &&
-            !string.IsNullOrEmpty(styleNonce) && _generator.ValidateNonce(styleNonce))
+        // If nonce values aren't present or we can't validate them then
+        // generate new nonce values
+        if (string.IsNullOrEmpty(scriptNonce) || !_generator.ValidateNonce(scriptNonce))
         {
-            // Reuse nonce values from headers
-            var nonceValues = new RizzyNonceValues
-            {
-                InlineScriptNonce = scriptNonce,
-                InlineStyleNonce = styleNonce
-            };
-            context.Items[NonceKey] = nonceValues;
-            return nonceValues;
+            scriptNonce = _generator.CreateNonce();
         }
 
-        // Generate new nonce values if validation fails or headers are missing
-        var newNonceValues = new RizzyNonceValues
+        if (string.IsNullOrEmpty(styleNonce) || !_generator.ValidateNonce(styleNonce))
         {
-            InlineScriptNonce = _generator.CreateNonce(),
-            InlineStyleNonce = _generator.CreateNonce()
+            styleNonce = _generator.CreateNonce();
+        }
+
+        // Build updated nonce values
+        var nonceValues = new RizzyNonceValues
+        {
+            InlineScriptNonce = scriptNonce,
+            InlineStyleNonce = styleNonce
         };
-        context.Items[NonceKey] = newNonceValues;
-        return newNonceValues;
+        context.Items[NonceKey] = nonceValues;
+
+        return nonceValues;
     }
 
     /// <summary>

@@ -15,6 +15,6 @@ public static class RizzyApplicationBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <param name="configBuilder"></param>
-    public static RizzyConfigBuilder AddRizzy(this IHostApplicationBuilder builder, Action<RizzyConfig> configBuilder) =>
-        new RizzyConfigBuilder(builder, configBuilder);
+    public static RizzyConfigBuilder AddRizzy(this IHostApplicationBuilder builder, Action<RizzyConfig>? configBuilder = null) =>
+        new (builder, configBuilder);
 }

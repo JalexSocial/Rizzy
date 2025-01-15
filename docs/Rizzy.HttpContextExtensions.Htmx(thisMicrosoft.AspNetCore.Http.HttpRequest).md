@@ -3,10 +3,10 @@
 
 ## HttpContextExtensions.Htmx(this HttpRequest) Method
 
-Extension method for HttpRequest that creates (or returns a cached) HtmxResponse.
+Extension method for HttpRequest that creates (or returns a cached) HtmxRequest.
 
 ```csharp
-public static Rizzy.Http.HtmxResponse Htmx(this Microsoft.AspNetCore.Http.HttpRequest request);
+public static Rizzy.Http.HtmxRequest Htmx(this Microsoft.AspNetCore.Http.HttpRequest request);
 ```
 #### Parameters
 
@@ -17,5 +17,5 @@ public static Rizzy.Http.HtmxResponse Htmx(this Microsoft.AspNetCore.Http.HttpRe
 The current HttpRequest.
 
 #### Returns
-[HtmxResponse](Rizzy.Http.HtmxResponse 'Rizzy.Http.HtmxResponse')  
+[HtmxRequest](Rizzy.Http.HtmxRequest 'Rizzy.Http.HtmxRequest')  
 An instance of HtmxResponse.

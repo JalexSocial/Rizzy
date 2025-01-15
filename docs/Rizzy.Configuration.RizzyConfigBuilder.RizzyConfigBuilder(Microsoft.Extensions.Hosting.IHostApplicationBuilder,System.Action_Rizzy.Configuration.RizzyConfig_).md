@@ -6,7 +6,7 @@
 Sets up default services for Rizzy
 
 ```csharp
-public RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, System.Action<Rizzy.Configuration.RizzyConfig> configBuilder);
+public RizzyConfigBuilder(Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, System.Action<Rizzy.Configuration.RizzyConfig>? configBuilder);
 ```
 #### Parameters
 
