@@ -28,8 +28,6 @@
 
 @* ReSharper disable once CSharpWarnings::CS8618 *@
 @code {
-    [Inject] public RzViewContext ViewContext { get; set; } = default!;
-
     [SupplyParameterFromForm]
 	public Person Person { get; set; } = new();
 }

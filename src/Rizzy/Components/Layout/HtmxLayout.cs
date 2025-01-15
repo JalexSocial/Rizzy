@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Http;
 using Rizzy.Http;
 
 namespace Rizzy.Components;
@@ -7,16 +8,16 @@ namespace Rizzy.Components;
 public sealed class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
 {
     [CascadingParameter]
-    public RzViewContext? ViewContext { get; set; }
+    public HttpContext? HttpContext { get; set; }
 
     [Parameter]
     public bool IsRootComponent { get; set; } = false;
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (ViewContext?.Htmx.Request?.IsHtmx == true)
+        if (HttpContext?.Request.IsHtmx() == true)
         {
-            ViewContext?.HttpContext.Response.Headers.TryAdd("Vary", HtmxRequestHeaderNames.HtmxRequest);
+            HttpContext?.Response.Headers.TryAdd("Vary", HtmxRequestHeaderNames.HtmxRequest);
 
             // If streaming is in use then content needs to be wrapped in a minimal layout
             if (IsRootComponent)

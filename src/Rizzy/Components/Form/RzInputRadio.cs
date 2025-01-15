@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
 using Rizzy.Components.Form;
 using Rizzy.Components.Form.Helpers;
 using System.Collections.ObjectModel;
@@ -14,9 +15,6 @@ public class RzInputRadio<TValue> : InputRadio<TValue>
 {
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
-
-    [Inject]
-    public RzViewContext ViewContext { get; set; } = default!;
 
     [CascadingParameter] 
     EditContext EditContext { get; set; } = default!;

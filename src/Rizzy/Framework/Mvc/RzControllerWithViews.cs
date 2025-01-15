@@ -21,6 +21,7 @@ public class RzControllerWithViews : Controller, IRizzyService
     /// <summary>
     /// Gets the Htmx context for the current request.
     /// </summary>
+    [Obsolete("Utilize HttpContext extension methods instead")]
     public HtmxContext Htmx => RizzyService.ViewContext.Htmx;
 
     /// <inheritdoc/>

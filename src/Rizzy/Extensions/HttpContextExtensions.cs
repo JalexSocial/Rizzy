@@ -10,6 +10,16 @@ public static class HttpContextExtensions
 	private const string FormFieldMappingsKey = "Rizzy.Http:AllFieldMappings";
 
     /// <summary>
+    /// Extension method to check if a request is an Htmx request
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    public static bool IsHtmx(this HttpRequest request)
+    {
+        return request.Headers.ContainsKey(HtmxRequestHeaderNames.HtmxRequest);
+    }
+
+    /// <summary>
     /// Extension method for HttpRequest that creates (or returns a cached) HtmxRequest.
     /// </summary>
     /// <param name="request">The current HttpRequest.</param>

@@ -4,6 +4,7 @@ using Rizzy.Components.Form;
 using Rizzy.Components.Form.Helpers;
 using System.Collections.ObjectModel;
 using Rizzy.Utility;
+using Microsoft.AspNetCore.Http;
 
 namespace Rizzy.Components;
 
@@ -15,8 +16,8 @@ public class RzInputCheckbox : InputCheckbox
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
-    [Inject]
-    public RzViewContext ViewContext { get; set; } = default!;
+    [CascadingParameter] 
+    public HttpContext? HttpContext { get; set; }
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -25,7 +26,7 @@ public class RzInputCheckbox : InputCheckbox
     {
         base.OnInitialized();
 
-        ViewContext.GetOrAddFieldMapping(EditContext);
+        HttpContext?.GetOrAddFieldMapping(EditContext);
     }
 
     protected override void OnParametersSet()
@@ -44,10 +45,10 @@ public class RzInputCheckbox : InputCheckbox
         }
 
         // Get the field mapping dictionary for the given EditContext.
-        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
         // Add mapping for this field (use FieldIdentifier from the base class).
-        if (!fieldMapping.ContainsKey(FieldIdentifier))
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
         {
             fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
@@ -61,8 +62,8 @@ public class RzInputCheckbox : InputCheckbox
     protected override void Dispose(bool disposing)
     {
         // When disposing, remove the field mapping.
-        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
-        fieldMapping.Remove(FieldIdentifier);
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
 
         base.Dispose(disposing);
     }

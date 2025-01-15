@@ -11,6 +11,7 @@ namespace Rizzy;
 /// <summary>
 /// Represents the context for a view within an application, providing access to HTTP contexts, URL helpers, and component configurations.
 /// </summary>
+[Obsolete("RzViewContext is no longer needed as all functionality has been moved to HttpContext extension methods")]
 public class RzViewContext(IHttpContextAccessor httpContextAccessor)
 {
     private readonly ConcurrentDictionary<EditContext, Dictionary<FieldIdentifier, RzFormFieldMap>> _formFieldMappings = new();

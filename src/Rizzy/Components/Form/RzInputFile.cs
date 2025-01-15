@@ -9,9 +9,6 @@ namespace Rizzy.Components;
 /// </summary>
 public class RzInputFile : InputFile
 {
-    [Inject]
-    public RzViewContext ViewContext { get; set; } = default!;
-
     [Parameter]
     public string Id { get; set; } = string.Empty;
 

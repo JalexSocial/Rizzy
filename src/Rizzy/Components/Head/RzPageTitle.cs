@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Rizzy.Components;
 
@@ -10,7 +12,8 @@ namespace Rizzy.Components;
 /// </summary>
 public sealed class RzPageTitle : ComponentBase
 {
-    [Inject] public RzViewContext ViewContext { get; set; } = default!;
+    [CascadingParameter] 
+    public HttpContext? HttpContext { get; set; }
 
     /// <summary>
     /// Gets or sets the content to be rendered as the document title.
@@ -21,7 +24,7 @@ public sealed class RzPageTitle : ComponentBase
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (ViewContext.Htmx.Request is { IsHtmx: false })
+        if (HttpContext?.Request.IsHtmx() == true)
         {
             builder.OpenComponent<SectionContent>(0);
             builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.TitleSectionId);

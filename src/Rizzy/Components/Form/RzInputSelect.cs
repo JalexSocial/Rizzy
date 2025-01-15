@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
 using Rizzy.Components.Form;
 using Rizzy.Components.Form.Helpers;
 using Rizzy.Utility;
@@ -16,8 +17,8 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
-    [Inject]
-    public RzViewContext ViewContext { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
 
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -38,10 +39,10 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
         }
 
         // Get the field mapping dictionary for the given EditContext.
-        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
         // Add mapping for this field (use FieldIdentifier from the base class).
-        if (!fieldMapping.ContainsKey(FieldIdentifier))
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
         {
             fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
@@ -55,8 +56,8 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
     protected override void Dispose(bool disposing)
     {
         // When disposing, remove the field mapping.
-        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
-        fieldMapping.Remove(FieldIdentifier);
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
 
         base.Dispose(disposing);
     }

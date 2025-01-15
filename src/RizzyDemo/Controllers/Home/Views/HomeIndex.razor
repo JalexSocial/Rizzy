@@ -99,9 +99,6 @@ Content Guid: @guid
 @code {
     private List<Post>? Posts { get; set; } = null;
 
-    [CascadingParameter] 
-    public RzViewContext? ViewContext { get; set; }
-
     [Inject] public PostRepo Repo { get; set; } = default!;
     [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;
 

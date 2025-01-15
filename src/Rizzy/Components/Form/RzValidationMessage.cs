@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Http;
 using Rizzy.Components.Form.Helpers;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -14,8 +15,8 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     private bool _shouldGenerateFieldNames;
     [CascadingParameter] EditContext EditContext { get; set; } = default!;
 
-    [Inject]
-    public RzViewContext ViewContext { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
 
     protected override void OnParametersSet()
     {
@@ -34,10 +35,10 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
 
         var field = FieldIdentifier.Create(For);
 
-        var fieldMapping = ViewContext.GetOrAddFieldMapping(EditContext);
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
         string fieldName;
-        if (fieldMapping.TryGetValue(field, out var mapping))
+        if (fieldMapping != null && fieldMapping.TryGetValue(field, out var mapping))
         {
             fieldName = mapping.FieldName;
         }

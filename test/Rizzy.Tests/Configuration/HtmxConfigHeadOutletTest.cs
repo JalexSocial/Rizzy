@@ -14,7 +14,6 @@ public class HtmxConfigHeadOutletTest : TestContext
     [Fact]
     public void HtmxConfig_serializer()
     {
-        Services.AddScoped<RzViewContext>();
         Services.Configure<HtmxAntiforgeryOptions>(opt =>
         {
             // Default to true, can be configured again after adding htmx if necessary
