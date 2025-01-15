@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Rizzy.Components;
-using Rizzy.Extensions;
+using Rizzy;
 
 namespace Rizzy;
 

@@ -58,11 +58,6 @@ public class HtmxRequest
     public string? Prompt { get; }
 
     /// <summary>
-    /// The `id` of the event handler to trigger on request.
-    /// </summary>
-    internal string? EventHandlerId { get; }
-
-    /// <summary>
     /// Creates a new instance of <see cref="HtmxRequest"/>.
     /// </summary>
     public HtmxRequest(HttpContext context)

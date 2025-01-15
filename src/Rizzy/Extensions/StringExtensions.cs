@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Extensions;
+﻿namespace Rizzy;
 internal static class StringExtensions
 {
     public static string CapitalizeFirstLetter(this string input)

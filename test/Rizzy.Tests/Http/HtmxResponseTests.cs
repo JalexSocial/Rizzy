@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
-using Rizzy.Extensions;
+using Rizzy;
 using Rizzy.FluentAssertions;
 using static Rizzy.Configuration.RizzyConfigBuilder;
 
@@ -23,7 +23,7 @@ public class HtmxResponseTests : TestContext
         };
 
         result.Request.Headers[HtmxRequestHeaderNames.HtmxRequest] = "";
-        result.GetHtmxContext();
+
         return result;
     }
 
@@ -32,7 +32,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Location("/new-location");
@@ -48,7 +48,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
         var locationTarget = new LocationTarget
         {
             Path = "/new-location",
@@ -74,7 +74,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.PushUrl("/new-url");
@@ -88,7 +88,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Redirect("/new-redirect");
@@ -102,7 +102,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Refresh();
@@ -116,7 +116,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.ReplaceUrl("/new-replace-url");
@@ -130,7 +130,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.PreventBrowserHistoryUpdate();
@@ -144,7 +144,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.PreventBrowserCurrentUrlUpdate();
@@ -158,7 +158,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Reswap(SwapStyle.innerHTML);
@@ -172,7 +172,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Retarget(".new-target");
@@ -186,7 +186,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Reselect(".new-selection");
@@ -203,7 +203,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Trigger("event1", timing: triggerTiming);
@@ -225,7 +225,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Trigger("event1", timing: triggerTiming);
@@ -248,7 +248,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Trigger("event1", timing: triggerTiming);
@@ -271,7 +271,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
         var triggerObject = new { level = "info", message = "Here Is A Message" };
 
         // Act
@@ -296,7 +296,7 @@ public class HtmxResponseTests : TestContext
     {
         // Arrange
         var context = CreateHttpContext();
-        var response = context.GetHtmxContext().Response;
+        var response = context.Response.Htmx();
 
         // Act
         response.Trigger("event1", triggerTiming);

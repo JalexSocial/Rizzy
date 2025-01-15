@@ -1,5 +1,5 @@
 #### [Rizzy](index 'index')
-### [Rizzy.Extensions](Rizzy.Extensions 'Rizzy.Extensions').[ObjectExtensions](Rizzy.Extensions.ObjectExtensions 'Rizzy.Extensions.ObjectExtensions')
+### [Rizzy](Rizzy 'Rizzy').[ObjectExtensions](Rizzy.ObjectExtensions 'Rizzy.ObjectExtensions')
 
 ## ObjectExtensions.ToDictionary(this object) Method
 
@@ -10,7 +10,7 @@ public static System.Collections.Generic.Dictionary<string,object?> ToDictionary
 ```
 #### Parameters
 
-<a name='Rizzy.Extensions.ObjectExtensions.ToDictionary(thisobject).values'></a>
+<a name='Rizzy.ObjectExtensions.ToDictionary(thisobject).values'></a>
 
 `values` [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object')
 

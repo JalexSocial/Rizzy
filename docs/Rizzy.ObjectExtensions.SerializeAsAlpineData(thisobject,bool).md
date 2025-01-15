@@ -1,5 +1,5 @@
 #### [Rizzy](index 'index')
-### [Rizzy.Extensions](Rizzy.Extensions 'Rizzy.Extensions').[ObjectExtensions](Rizzy.Extensions.ObjectExtensions 'Rizzy.Extensions.ObjectExtensions')
+### [Rizzy](Rizzy 'Rizzy').[ObjectExtensions](Rizzy.ObjectExtensions 'Rizzy.ObjectExtensions')
 
 ## ObjectExtensions.SerializeAsAlpineData(this object, bool) Method
 
@@ -10,11 +10,11 @@ public static string SerializeAsAlpineData(this object? value, bool ignoreNullVa
 ```
 #### Parameters
 
-<a name='Rizzy.Extensions.ObjectExtensions.SerializeAsAlpineData(thisobject,bool).value'></a>
+<a name='Rizzy.ObjectExtensions.SerializeAsAlpineData(thisobject,bool).value'></a>
 
 `value` [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.Object 'System.Object')
 
-<a name='Rizzy.Extensions.ObjectExtensions.SerializeAsAlpineData(thisobject,bool).ignoreNullValues'></a>
+<a name='Rizzy.ObjectExtensions.SerializeAsAlpineData(thisobject,bool).ignoreNullValues'></a>
 
 `ignoreNullValues` [System.Boolean](https://docs.microsoft.com/en-us/dotnet/api/System.Boolean 'System.Boolean')
 

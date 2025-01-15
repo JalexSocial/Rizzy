@@ -3,7 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Rizzy.Serialization;
 
-namespace Rizzy.Extensions;
+namespace Rizzy;
 
 public static class ObjectExtensions
 {
