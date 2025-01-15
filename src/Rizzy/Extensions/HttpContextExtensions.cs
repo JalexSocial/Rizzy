@@ -5,28 +5,28 @@ namespace Rizzy;
 
 public static class HttpContextExtensions
 {
-	private const string HtmxResponseKey = "Rizzy.Http:HtmxResponse";
+	private const string HtmxRequestKey = "Rizzy.Http:HtmxRequest";
 
     /// <summary>
-    /// Extension method for HttpRequest that creates (or returns a cached) HtmxResponse.
+    /// Extension method for HttpRequest that creates (or returns a cached) HtmxRequest.
     /// </summary>
     /// <param name="request">The current HttpRequest.</param>
     /// <returns>An instance of HtmxResponse.</returns>
-    public static HtmxResponse Htmx(this HttpRequest request)
+    public static HtmxRequest Htmx(this HttpRequest request)
     {
 	    ArgumentNullException.ThrowIfNull(request);
 
-	    // Check if the HtmxResponse is already created and stored in HttpContext.Items.
-	    if (request.HttpContext.Items.TryGetValue(HtmxResponseKey, out var existing) && existing is HtmxResponse htmxResponse)
+	    // Check if the HtmxRequest is already created and stored in HttpContext.Items.
+	    if (request.HttpContext.Items.TryGetValue(HtmxRequestKey, out var existing) && existing is HtmxRequest htmxRequest)
 	    {
-		    return htmxResponse;
+		    return htmxRequest;
 	    }
 
 	    // Create new HtmxResponse and store it in HttpContext.Items.
-	    htmxResponse = new HtmxResponse(request.HttpContext);
-	    request.HttpContext.Items[HtmxResponseKey] = htmxResponse;
+	    htmxRequest = new HtmxRequest(request.HttpContext);
+	    request.HttpContext.Items[HtmxRequestKey] = htmxRequest;
 
-	    return htmxResponse;
+	    return htmxRequest;
     }
 
     /// <summary>
