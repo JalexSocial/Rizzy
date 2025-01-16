@@ -71,23 +71,26 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
             return cachedNonceValues;
         }
 
-        // Attempt to retrieve nonce values from headers
-        context.Request.Headers.TryGetValue(ScriptNonceHeader, out var scriptNonceValues);
-        context.Request.Headers.TryGetValue(StyleNonceHeader, out var styleNonceValues);
-
-        var scriptNonce = scriptNonceValues.FirstOrDefault();
-        var styleNonce = styleNonceValues.FirstOrDefault();
-
-        // If nonce values aren't present or we can't validate them then
-        // generate new nonce values
-        if (string.IsNullOrEmpty(scriptNonce) || !_generator.ValidateNonce(scriptNonce))
+        if (context.Request.IsHtmx())
         {
-            scriptNonce = _generator.CreateNonce();
-        }
+            // Attempt to retrieve nonce values from headers
+            context.Request.Headers.TryGetValue(ScriptNonceHeader, out var scriptNonceValues);
+            context.Request.Headers.TryGetValue(StyleNonceHeader, out var styleNonceValues);
 
-        if (string.IsNullOrEmpty(styleNonce) || !_generator.ValidateNonce(styleNonce))
-        {
-            styleNonce = _generator.CreateNonce();
+            var scriptNonce = scriptNonceValues.FirstOrDefault();
+            var styleNonce = styleNonceValues.FirstOrDefault();
+
+            // If nonce values aren't present or we can't validate them then
+            // generate new nonce values
+            if (string.IsNullOrEmpty(scriptNonce) || !_generator.ValidateNonce(scriptNonce))
+            {
+                scriptNonce = _generator.CreateNonce();
+            }
+
+            if (string.IsNullOrEmpty(styleNonce) || !_generator.ValidateNonce(styleNonce))
+            {
+                styleNonce = _generator.CreateNonce();
+            }
         }
 
         // Build updated nonce values
