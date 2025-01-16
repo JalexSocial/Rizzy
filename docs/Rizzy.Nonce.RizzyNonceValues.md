@@ -3,7 +3,7 @@
 
 ## RizzyNonceValues Class
 
-Holds the script and style nonce values to be used in the application.
+Holds nonce values mapped to the given nonce types.
 
 ```csharp
 public sealed class RizzyNonceValues
@@ -13,6 +13,10 @@ Inheritance [System.Object](https://docs.microsoft.com/en-us/dotnet/api/System.O
 
 | Properties | |
 | :--- | :--- |
-| [DefaultValue](Rizzy.Nonce.RizzyNonceValues.DefaultValue 'Rizzy.Nonce.RizzyNonceValues.DefaultValue') | Default empty nonce |
-| [InlineScriptNonce](Rizzy.Nonce.RizzyNonceValues.InlineScriptNonce 'Rizzy.Nonce.RizzyNonceValues.InlineScriptNonce') | The nonce to add to any inlined scripts |
-| [InlineStyleNonce](Rizzy.Nonce.RizzyNonceValues.InlineStyleNonce 'Rizzy.Nonce.RizzyNonceValues.InlineStyleNonce') | The nonce to add to any inlined styles |
+| [DefaultValue](Rizzy.Nonce.RizzyNonceValues.DefaultValue 'Rizzy.Nonce.RizzyNonceValues.DefaultValue') | A default empty nonce mapping. |
+| [Nonces](Rizzy.Nonce.RizzyNonceValues.Nonces 'Rizzy.Nonce.RizzyNonceValues.Nonces') | Gets the mapping of nonce type to nonce value. |
+
+| Methods | |
+| :--- | :--- |
+| [GetNonce(NonceType)](Rizzy.Nonce.RizzyNonceValues.GetNonce(Rizzy.Nonce.NonceType) 'Rizzy.Nonce.RizzyNonceValues.GetNonce(Rizzy.Nonce.NonceType)') | Gets the nonce value for the specified nonce type.<br/>Returns an empty string if the nonce is not found. |
+| [SetNonce(NonceType, string)](Rizzy.Nonce.RizzyNonceValues.SetNonce(Rizzy.Nonce.NonceType,string) 'Rizzy.Nonce.RizzyNonceValues.SetNonce(Rizzy.Nonce.NonceType, string)') | Sets a nonce value for the specified nonce type. |

@@ -6,22 +6,16 @@
 public interface IRizzyNonceProvider
 {
     /// <summary>
-    /// Retrieves the nonce values for inline scripts and styles. If the nonce values
-    /// have already been generated for the current HTTP request, they are returned
-    /// from the cache; otherwise, new nonce values are generated, cached, and returned.
+    /// Retrieves the nonce values for inline scripts, styles, and other types.
+    /// If nonce values have already been generated for the current HTTP request, they are retrieved from the cache; otherwise, new values are generated, cached, and returned.
     /// </summary>
-    /// <returns>
-    /// An instance of <see cref="RizzyNonceValues"/> containing the generated nonce values.
-    /// </returns>
-    public RizzyNonceValues GetNonceValues();
+    /// <returns>An instance of <see cref="RizzyNonceValues"/> containing nonce values for various types.</returns>
+    RizzyNonceValues GetNonceValues();
 
     /// <summary>
-    /// The nonce to add to any inlined scripts
+    /// Retrieves (or generates) the nonce value for a given nonce type.
     /// </summary>
-    public string InlineScriptNonce { get; }
-
-    /// <summary>
-    /// The nonce to add to any inlined styles
-    /// </summary>
-    public string InlineStyleNonce { get; }
+    /// <param name="nonceType">The type of nonce required.</param>
+    /// <returns>A string representing the nonce for the requested type.</returns>
+    string GetNonceFor(NonceType nonceType);
 }

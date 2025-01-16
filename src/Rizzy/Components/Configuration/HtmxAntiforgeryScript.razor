@@ -1,7 +1,7 @@
 ﻿@using Rizzy.Nonce
 @namespace Rizzy.Components
 
-<script type="text/javascript" nonce="@NonceProvider.InlineScriptNonce">
+<script type="text/javascript" nonce="@NonceProvider.GetNonceFor(NonceType.Script)">
 	@((MarkupString)GetAntiforgeryJavaScript(Minified))
 </script>
 

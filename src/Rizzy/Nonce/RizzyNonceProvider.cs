@@ -3,46 +3,33 @@
 namespace Rizzy.Nonce;
 
 /// <summary>
-/// Provides nonce values for inline scripts and styles to enhance security by preventing
-/// the execution of unauthorized scripts and styles in web applications.
+/// Provides nonce values for various types (script, style, etc.) for use in Content Security Policies.
 /// </summary>
 public sealed class RizzyNonceProvider : IRizzyNonceProvider
 {
-    /// <summary>
-    /// The key used to store nonce values in the <see cref="HttpContext.Items"/> collection.
-    /// </summary>
+    // Key to store nonce values in HttpContext.Items.
     private static readonly string NonceKey = "RizzyNonceValues";
 
-    /// <summary>
-    /// Defines the custom header name for the inline script nonce.
-    /// </summary>
-    private static readonly string ScriptNonceHeader = "Rizzy-Script-Nonce";
+    // Map known nonce types to their respective header names.
+    private static readonly Dictionary<NonceType, string> HeaderNames = new Dictionary<NonceType, string>
+        {
+            { NonceType.Script, "Rizzy-Script-Nonce" },
+            { NonceType.Style, "Rizzy-Style-Nonce" },
+            { NonceType.Font, "Rizzy-Font-Nonce" },
+            { NonceType.Image, "Rizzy-Image-Nonce" },
+            { NonceType.Connect, "Rizzy-Connect-Nonce" }
+        };
 
-    /// <summary>
-    /// Defines the custom header name for the inline style nonce.
-    /// </summary>
-    private static readonly string StyleNonceHeader = "Rizzy-Style-Nonce";
-
-    /// <summary>
-    /// Generates secure nonce values
-    /// </summary>
+    // Nonce generator used to create and validate nonce values.
     private readonly RizzyNonceGenerator _generator;
-
-    /// <summary>
-    /// The HTTP context accessor used to retrieve the current <see cref="HttpContext"/>.
-    /// </summary>
+    // HTTP context accessor to retrieve the current HTTP request context.
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RizzyNonceProvider"/> class.
     /// </summary>
-    /// <param name="httpContextAccessor">
-    /// The <see cref="IHttpContextAccessor"/> used to access the current <see cref="HttpContext"/>.
-    /// </param>
-    /// <param name="generator"></param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="httpContextAccessor"/> is <c>null</c>.
-    /// </exception>
+    /// <param name="httpContextAccessor">The <see cref="IHttpContextAccessor"/> to access the current HTTP context.</param>
+    /// <param name="generator">An instance of <see cref="RizzyNonceGenerator"/> to generate nonce values.</param>
     public RizzyNonceProvider(IHttpContextAccessor httpContextAccessor, RizzyNonceGenerator generator)
     {
         _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
@@ -50,68 +37,68 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
     }
 
     /// <summary>
-    /// Retrieves the nonce values for inline scripts and styles. If the nonce values
-    /// have already been generated for the current HTTP request or provided via headers,
-    /// they are returned from the cache; otherwise, new nonce values are generated, cached, and returned.
+    /// Retrieves the nonce values for the current HTTP request. 
+    /// New nonce values are generated and cached if not already present.
     /// </summary>
-    /// <returns>
-    /// An instance of <see cref="RizzyNonceValues"/> containing the generated or reused nonce values.
-    /// </returns>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if there is no current <see cref="HttpContext"/>.
-    /// </exception>
+    /// <returns>An instance of <see cref="RizzyNonceValues"/> containing nonce mappings for various nonce types.</returns>
     public RizzyNonceValues GetNonceValues()
     {
         var context = _httpContextAccessor.HttpContext
-                      ?? throw new InvalidOperationException("No HttpContext available.");
+            ?? throw new InvalidOperationException("No HttpContext available.");
 
-        // If it's cached already return the existing nonce value object
+        // If nonce values have already been generated for this request, return them.
         if (context.Items[NonceKey] is RizzyNonceValues cachedNonceValues)
         {
             return cachedNonceValues;
         }
 
-        if (context.Request.IsHtmx())
+        // Create a new nonce values container.
+        var nonceValues = new RizzyNonceValues();
+
+        // For each nonce type that has a header mapping, attempt to retrieve its value from the request.
+        foreach (var kvp in HeaderNames)
         {
-            // Attempt to retrieve nonce values from headers
-            context.Request.Headers.TryGetValue(ScriptNonceHeader, out var scriptNonceValues);
-            context.Request.Headers.TryGetValue(StyleNonceHeader, out var styleNonceValues);
+            var nonceType = kvp.Key;
+            var headerName = kvp.Value;
 
-            var scriptNonce = scriptNonceValues.FirstOrDefault();
-            var styleNonce = styleNonceValues.FirstOrDefault();
+            context.Request.Headers.TryGetValue(headerName, out var headerValues);
+            var nonce = headerValues.FirstOrDefault();
 
-            // If nonce values aren't present or we can't validate them then
-            // generate new nonce values
-            if (string.IsNullOrEmpty(scriptNonce) || !_generator.ValidateNonce(scriptNonce))
+            // Validate the provided nonce; if invalid or missing, generate a new one.
+            if (string.IsNullOrEmpty(nonce) || !_generator.ValidateNonce(nonce))
             {
-                scriptNonce = _generator.CreateNonce();
+                nonce = _generator.CreateNonce();
             }
 
-            if (string.IsNullOrEmpty(styleNonce) || !_generator.ValidateNonce(styleNonce))
-            {
-                styleNonce = _generator.CreateNonce();
-            }
+            nonceValues.SetNonce(nonceType, nonce);
         }
 
-        // Build updated nonce values
-        var nonceValues = new RizzyNonceValues
-        {
-            InlineScriptNonce = scriptNonce,
-            InlineStyleNonce = styleNonce
-        };
+        // Cache the nonce values for the current request.
         context.Items[NonceKey] = nonceValues;
-
         return nonceValues;
     }
 
     /// <summary>
-    /// Gets the nonce value to be used for inline scripts in the current HTTP request.
+    /// Retrieves (or generates if necessary) the nonce value for the specified nonce type.
     /// </summary>
-    public string InlineScriptNonce => GetNonceValues().InlineScriptNonce;
+    /// <param name="nonceType">The type of nonce required (for example, Script or Style).</param>
+    /// <returns>The nonce string for the specified type.</returns>
+    public string GetNonceFor(NonceType nonceType)
+    {
+        var nonceValues = GetNonceValues();
 
-    /// <summary>
-    /// Gets the nonce value to be used for inline styles in the current HTTP request.
-    /// </summary>
-    public string InlineStyleNonce => GetNonceValues().InlineStyleNonce;
+        // If a nonce already exists for the given type, return it.
+        var currentNonce = nonceValues.GetNonce(nonceType);
+        if (!string.IsNullOrEmpty(currentNonce))
+        {
+            return currentNonce;
+        }
+
+        // Otherwise, generate a new nonce, store it, and return the new value.
+        var newNonce = _generator.CreateNonce();
+        nonceValues.SetNonce(nonceType, newNonce);
+        return newNonce;
+    }
 }
+
 

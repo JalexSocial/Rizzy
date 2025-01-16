@@ -3,8 +3,7 @@
 
 ## RizzyNonceProvider Class
 
-Provides nonce values for inline scripts and styles to enhance security by preventing  
-the execution of unauthorized scripts and styles in web applications.
+Provides nonce values for various types (script, style, etc.) for use in Content Security Policies.
 
 ```csharp
 public sealed class RizzyNonceProvider :
@@ -19,11 +18,7 @@ Implements [IRizzyNonceProvider](Rizzy.Nonce.IRizzyNonceProvider 'Rizzy.Nonce.IR
 | :--- | :--- |
 | [RizzyNonceProvider(IHttpContextAccessor, RizzyNonceGenerator)](Rizzy.Nonce.RizzyNonceProvider.RizzyNonceProvider(Microsoft.AspNetCore.Http.IHttpContextAccessor,Rizzy.Nonce.RizzyNonceGenerator) 'Rizzy.Nonce.RizzyNonceProvider.RizzyNonceProvider(Microsoft.AspNetCore.Http.IHttpContextAccessor, Rizzy.Nonce.RizzyNonceGenerator)') | Initializes a new instance of the [RizzyNonceProvider](Rizzy.Nonce.RizzyNonceProvider 'Rizzy.Nonce.RizzyNonceProvider') class. |
 
-| Properties | |
-| :--- | :--- |
-| [InlineScriptNonce](Rizzy.Nonce.RizzyNonceProvider.InlineScriptNonce 'Rizzy.Nonce.RizzyNonceProvider.InlineScriptNonce') | Gets the nonce value to be used for inline scripts in the current HTTP request. |
-| [InlineStyleNonce](Rizzy.Nonce.RizzyNonceProvider.InlineStyleNonce 'Rizzy.Nonce.RizzyNonceProvider.InlineStyleNonce') | Gets the nonce value to be used for inline styles in the current HTTP request. |
-
 | Methods | |
 | :--- | :--- |
-| [GetNonceValues()](Rizzy.Nonce.RizzyNonceProvider.GetNonceValues() 'Rizzy.Nonce.RizzyNonceProvider.GetNonceValues()') | Retrieves the nonce values for inline scripts and styles. If the nonce values<br/>have already been generated for the current HTTP request or provided via headers,<br/>they are returned from the cache; otherwise, new nonce values are generated, cached, and returned. |
+| [GetNonceFor(NonceType)](Rizzy.Nonce.RizzyNonceProvider.GetNonceFor(Rizzy.Nonce.NonceType) 'Rizzy.Nonce.RizzyNonceProvider.GetNonceFor(Rizzy.Nonce.NonceType)') | Retrieves (or generates if necessary) the nonce value for the specified nonce type. |
+| [GetNonceValues()](Rizzy.Nonce.RizzyNonceProvider.GetNonceValues() 'Rizzy.Nonce.RizzyNonceProvider.GetNonceValues()') | Retrieves the nonce values for the current HTTP request. <br/>New nonce values are generated and cached if not already present. |

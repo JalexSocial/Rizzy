@@ -14,13 +14,10 @@ public RizzyNonceProvider(Microsoft.AspNetCore.Http.IHttpContextAccessor httpCon
 
 `httpContextAccessor` [Microsoft.AspNetCore.Http.IHttpContextAccessor](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.IHttpContextAccessor 'Microsoft.AspNetCore.Http.IHttpContextAccessor')
 
-The [Microsoft.AspNetCore.Http.IHttpContextAccessor](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.IHttpContextAccessor 'Microsoft.AspNetCore.Http.IHttpContextAccessor') used to access the current [Microsoft.AspNetCore.Http.HttpContext](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.HttpContext 'Microsoft.AspNetCore.Http.HttpContext').
+The [Microsoft.AspNetCore.Http.IHttpContextAccessor](https://docs.microsoft.com/en-us/dotnet/api/Microsoft.AspNetCore.Http.IHttpContextAccessor 'Microsoft.AspNetCore.Http.IHttpContextAccessor') to access the current HTTP context.
 
 <a name='Rizzy.Nonce.RizzyNonceProvider.RizzyNonceProvider(Microsoft.AspNetCore.Http.IHttpContextAccessor,Rizzy.Nonce.RizzyNonceGenerator).generator'></a>
 
 `generator` [RizzyNonceGenerator](Rizzy.Nonce.RizzyNonceGenerator 'Rizzy.Nonce.RizzyNonceGenerator')
 
-#### Exceptions
-
-[System.ArgumentNullException](https://docs.microsoft.com/en-us/dotnet/api/System.ArgumentNullException 'System.ArgumentNullException')  
-Thrown if [httpContextAccessor](Rizzy.Nonce.RizzyNonceProvider.RizzyNonceProvider(Microsoft.AspNetCore.Http.IHttpContextAccessor,Rizzy.Nonce.RizzyNonceGenerator)#Rizzy.Nonce.RizzyNonceProvider.RizzyNonceProvider(Microsoft.AspNetCore.Http.IHttpContextAccessor,Rizzy.Nonce.RizzyNonceGenerator).httpContextAccessor 'Rizzy.Nonce.RizzyNonceProvider.RizzyNonceProvider(Microsoft.AspNetCore.Http.IHttpContextAccessor, Rizzy.Nonce.RizzyNonceGenerator).httpContextAccessor') is `null`.
+An instance of [RizzyNonceGenerator](Rizzy.Nonce.RizzyNonceGenerator 'Rizzy.Nonce.RizzyNonceGenerator') to generate nonce values.

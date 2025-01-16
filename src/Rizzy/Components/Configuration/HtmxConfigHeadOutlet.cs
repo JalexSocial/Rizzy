@@ -61,10 +61,10 @@ public class HtmxConfigHeadOutlet : ComponentBase
         }
 
         if (config.GenerateScriptNonce)
-            config.InlineScriptNonce = NonceProvider.InlineScriptNonce;
+            config.InlineScriptNonce = NonceProvider.GetNonceFor(NonceType.Script);
 
         if (config.GenerateStyleNonce)
-            config.InlineStyleNonce = NonceProvider.InlineStyleNonce;
+            config.InlineStyleNonce = NonceProvider.GetNonceFor(NonceType.Style);
 
         _jsonConfig = JsonSerializer.Serialize(config, HtmxJsonSerializerContext.Default.HtmxConfig);
 

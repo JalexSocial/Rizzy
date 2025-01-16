@@ -3,7 +3,7 @@
 
 ## RizzyNonceValues.DefaultValue Property
 
-Default empty nonce
+A default empty nonce mapping.
 
 ```csharp
 public static Rizzy.Nonce.RizzyNonceValues DefaultValue { get; }
