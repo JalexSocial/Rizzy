@@ -74,6 +74,14 @@ public class RizzyConfigBuilder
             });
         }
 
+        _builder.Services.Configure<NonceOptions>(options =>
+        {
+	        var configuration = _builder.Configuration;
+	        
+	        var rizzyConfig = _builder.Services.BuildServiceProvider().GetRequiredService<IOptions<RizzyConfig>>().Value;
+	        options.HMACKey = rizzyConfig.NonceHMACKey;
+        });
+
         // Make sure all HtmxConfig instances get properly configured
         _builder.Services.AddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();
         _builder.Services.AddSingleton<IConfigureNamedOptions<HtmxConfig>, ConfigureHtmxSettings>();

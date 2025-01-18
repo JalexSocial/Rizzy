@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Rizzy.Nonce;
+﻿namespace Rizzy.Nonce;
 
 /// <summary>
 /// Defines the different types of nonces used in Content Security Policies.

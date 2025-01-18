@@ -9,35 +9,58 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
         dotnet-version: ['8.0.x']
-    
+
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: ${{ matrix.dotnet-version }}
-        
-    - name: Restore dependencies
-      run: dotnet restore
-      working-directory: src/Rizzy
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Publish
-      run: dotnet publish --no-restore -c Release -o ./publish
-      working-directory: src/Rizzy
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-      working-directory: src/Rizzy
+      - name: Restore dependencies for Rizzy and Rizzy.Nonce
+        run: |
+          dotnet restore src/Rizzy
+          dotnet restore src/Rizzy.Nonce
 
-    - name: Publish  
-      uses: brandedoutcast/publish-nuget@v2.5.2  
-      with:   
-       PROJECT_FILE_PATH: src/Rizzy/Rizzy.csproj  
-       NUGET_KEY: ${{secrets.NUGET_API_KEY}}        
+      - name: Build Rizzy
+        run: dotnet build --no-restore -c Release
+        working-directory: src/Rizzy
+
+      - name: Build Rizzy.Nonce
+        run: dotnet build --no-restore -c Release
+        working-directory: src/Rizzy.Nonce
+
+      - name: Publish Rizzy
+        run: dotnet publish --no-restore -c Release -o ./publish
+        working-directory: src/Rizzy
+
+      - name: Publish Rizzy.Nonce
+        run: dotnet publish --no-restore -c Release -o ./publish
+        working-directory: src/Rizzy.Nonce
+
+      - name: Test Rizzy
+        run: dotnet test --no-build --verbosity normal
+        working-directory: src/Rizzy
+
+      - name: Test Rizzy.Nonce
+        run: dotnet test --no-build --verbosity normal
+        working-directory: src/Rizzy.Nonce
+
+      - name: Publish Rizzy package to NuGet
+        uses: brandedoutcast/publish-nuget@v2.5.2  
+        with:   
+          PROJECT_FILE_PATH: src/Rizzy/Rizzy.csproj  
+          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Publish Rizzy.Nonce package to NuGet
+        uses: brandedoutcast/publish-nuget@v2.5.2  
+        with:   
+          PROJECT_FILE_PATH: src/Rizzy.Nonce/Rizzy.Nonce.csproj  
+          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}

@@ -6,7 +6,6 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Deterministic>true</Deterministic>
-    <LangVersion>preview</LangVersion>
     <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
     <DebugType>embedded</DebugType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -14,7 +13,7 @@
     <PackageId>Rizzy</PackageId>
     <Company>Michael Tanczos</Company>
     <Authors>Michael Tanczos</Authors>
-    <Title>Rizzy - MVC and htmx with a Razor component model</Title>
+    <Title>Rizzy - Asp.net and Htmx with static Blazor components</Title>
     <Description>
       This package allows you to utilize Asp.net MVC with Razor Components and htmx.
     </Description>
@@ -28,7 +27,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>3.0.3</Version>
+    <Version>3.0.2</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -57,7 +56,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Sqids" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +72,7 @@
 
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
+		<ProjectReference Include="..\Rizzy.Nonce\Rizzy.Nonce.csproj" />
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 

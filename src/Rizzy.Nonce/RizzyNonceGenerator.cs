@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using Microsoft.Extensions.Options;
-using Rizzy.Configuration;
 
 namespace Rizzy.Nonce;
 
@@ -17,15 +16,15 @@ public sealed class RizzyNonceGenerator
     /// <remarks>HMAC key must be base-64 encoded and at least 256 bits (32 bytes)</remarks>
     /// <param name="options">Configuration options for RizzyUI</param>
     /// <exception cref="ArgumentException"></exception>
-	public RizzyNonceGenerator(IOptions<RizzyConfig> options)
+	public RizzyNonceGenerator(IOptions<NonceOptions> options)
     {
-        if (string.IsNullOrEmpty(options.Value.NonceHMACKey))
+        if (string.IsNullOrEmpty(options.Value.HMACKey))
             _hmacKey = GenerateSecureHmacKey();
         else
         {
             try
             {
-                _hmacKey = options.Value.NonceHMACKeyBytes;
+                _hmacKey = options.Value.HMACKeyBytes;
 
                 if (_hmacKey.Length < 32)
                 {
