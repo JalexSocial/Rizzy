@@ -42,28 +42,6 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds a named Rizzy.Htmx configuration to the service collection.
-    /// This allows multiple named instances of HtmxConfig.
-    /// </summary>
-    /// <param name="services">The service collection to add services to.</param>
-    /// <param name="name">The name identifier for the HtmxConfig instance.</param>
-    /// <param name="configure">An action to configure the named HtmxConfig.</param>
-    /// <returns>The updated service collection.</returns>
-    public static IServiceCollection AddNamedHtmxConfiguration(this IServiceCollection services, string name, Action<HtmxConfig> configure)
-    {
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException("Configuration name must be a non-empty string.", nameof(name));
-
-        if (configure == null)
-            throw new ArgumentNullException(nameof(configure));
-
-        // Configure the named HtmxConfig.
-        services.Configure<HtmxConfig>(name, configure);
-
-        return services;
-    }
-
-    /// <summary>
     /// Adds and configures Htmx anti-forgery options by reading from the registered <see cref="AntiforgeryOptions"/>.
     /// </summary>
     private static void AddHtmxAntiForgery(IServiceCollection services)

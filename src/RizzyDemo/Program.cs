@@ -21,7 +21,8 @@ builder.Services.AddHtmx(config =>
 	config.SelfRequestsOnly = true;
 });
 
-builder.Services.AddNamedHtmxConfiguration("articles", config =>
+// Add an alternate named configuration
+builder.Services.Configure<HtmxConfig>("articles", config =>
 {
 	config.SelfRequestsOnly = true;
 	config.GlobalViewTransitions = true;
