@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rizzy;
-using Rizzy.Http;
+using Rizzy.Htmx;
 
 namespace Rizzy.Components;
 

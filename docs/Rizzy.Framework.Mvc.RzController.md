@@ -21,8 +21,6 @@ Implements [IRizzyService](Rizzy.IRizzyService 'Rizzy.IRizzyService'), [Microsof
 | Properties | |
 | :--- | :--- |
 | [CurrentActionUrl](Rizzy.Framework.Mvc.RzController.CurrentActionUrl 'Rizzy.Framework.Mvc.RzController.CurrentActionUrl') | Returns the current action method url as a possible Form callback url but may be overridden manually in any form handler method<br/>This value can be used inside of form Razor Component views |
-| [Htmx](Rizzy.Framework.Mvc.RzController.Htmx 'Rizzy.Framework.Mvc.RzController.Htmx') | Gets the Htmx context for the current request. |
-| [ViewContext](Rizzy.Framework.Mvc.RzController.ViewContext 'Rizzy.Framework.Mvc.RzController.ViewContext') | Gets the view context associated with the service. The view context contains information required for configuring and rendering views. |
 
 | Methods | |
 | :--- | :--- |

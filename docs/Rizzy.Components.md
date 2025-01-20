@@ -6,7 +6,7 @@
 | :--- | :--- |
 | [DataAnnotationsProcessor](Rizzy.Components.DataAnnotationsProcessor 'Rizzy.Components.DataAnnotationsProcessor') | Processes Data Annotations on model properties and converts them to HTML5 data attributes.<br/>Registration Scope: Singleton |
 | [FragmentComponent](Rizzy.Components.FragmentComponent 'Rizzy.Components.FragmentComponent') | Component that encapsulates a RenderFragment for use as a partial or child component. |
-| [HtmxConfigHeadOutlet](Rizzy.Components.HtmxConfigHeadOutlet 'Rizzy.Components.HtmxConfigHeadOutlet') | This component will render a meta tag with the serialized [HtmxConfig](Rizzy.HtmxConfig 'Rizzy.HtmxConfig') object,<br/>enabling customization of Htmx. |
+| [HtmxConfigHeadOutlet](Rizzy.Components.HtmxConfigHeadOutlet 'Rizzy.Components.HtmxConfigHeadOutlet') | This component will render a meta tag with the serialized [Rizzy.Htmx.HtmxConfig](https://docs.microsoft.com/en-us/dotnet/api/Rizzy.Htmx.HtmxConfig 'Rizzy.Htmx.HtmxConfig') object,<br/>enabling customization of Htmx. |
 | [HtmxSwapContent](Rizzy.Components.HtmxSwapContent 'Rizzy.Components.HtmxSwapContent') | Razor component that fully renders any content from HtmxSwapService |
 | [HtmxSwappable](Rizzy.Components.HtmxSwappable 'Rizzy.Components.HtmxSwappable') | A Blazor component that enables swapping HTML content dynamically based on specified parameters through Htmx. |
 | [HtmxSwapService](Rizzy.Components.HtmxSwapService 'Rizzy.Components.HtmxSwapService') | Service for managing dynamic content swaps in a Blazor application.<br/>Allows for adding Razor components, RenderFragments, and raw HTML content,<br/>and provides a mechanism to render them within a specified layout or context. |

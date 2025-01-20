@@ -17,12 +17,11 @@ Implements [IRizzyService](Rizzy.IRizzyService 'Rizzy.IRizzyService')
 
 | Constructors | |
 | :--- | :--- |
-| [RizzyService(RzViewContext)](Rizzy.RizzyService.RizzyService(Rizzy.RzViewContext) 'Rizzy.RizzyService.RizzyService(Rizzy.RzViewContext)') | Initializes a new instance of the RizzyService with a specified view context. |
+| [RizzyService(IHttpContextAccessor)](Rizzy.RizzyService.RizzyService(Microsoft.AspNetCore.Http.IHttpContextAccessor) 'Rizzy.RizzyService.RizzyService(Microsoft.AspNetCore.Http.IHttpContextAccessor)') | Initializes a new instance of the RizzyService |
 
 | Properties | |
 | :--- | :--- |
 | [CurrentActionUrl](Rizzy.RizzyService.CurrentActionUrl 'Rizzy.RizzyService.CurrentActionUrl') | Gets the current action method URL, which can be used as a callback URL in forms. This URL is automatically<br/>derived from the current HTTP request but can be manually overridden in form handler methods. It is particularly<br/>useful for specifying form action targets within Razor Component views. |
-| [ViewContext](Rizzy.RizzyService.ViewContext 'Rizzy.RizzyService.ViewContext') | Gets the view context associated with the service. The view context contains information required for configuring and rendering views. |
 
 | Methods | |
 | :--- | :--- |

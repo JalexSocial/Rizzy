@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
-using Rizzy.Antiforgery;
 using Rizzy.Configuration;
 using System.Text.Json;
+using Rizzy.Htmx;
 using Rizzy.Nonce;
-using HtmxJsonSerializerContext = Rizzy.Serialization.HtmxJsonSerializerContext;
 
 namespace Rizzy.Components;
 
@@ -66,7 +65,7 @@ public class HtmxConfigHeadOutlet : ComponentBase
         if (config.GenerateStyleNonce)
             config.InlineStyleNonce = NonceProvider.GetNonceFor(NonceType.Style);
 
-        _jsonConfig = JsonSerializer.Serialize(config, HtmxJsonSerializerContext.Default.HtmxConfig);
+        _jsonConfig = config.Serialize();
 
         return Task.CompletedTask;
     }

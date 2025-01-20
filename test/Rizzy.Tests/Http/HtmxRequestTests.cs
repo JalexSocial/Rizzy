@@ -1,4 +1,5 @@
 ﻿using global::Rizzy.Http.Mock;
+using Rizzy.Htmx;
 
 namespace Rizzy.Http;
 

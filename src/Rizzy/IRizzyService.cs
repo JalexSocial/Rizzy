@@ -6,11 +6,6 @@ namespace Rizzy;
 public interface IRizzyService
 {
     /// <summary>
-    /// Gets the view context associated with the service. The view context contains information required for configuring and rendering views.
-    /// </summary>
-    RzViewContext ViewContext { get; }
-
-    /// <summary>
     /// Returns the current action method url as a possible Form callback url but may be overridden manually in any form handler method
     /// This value can be used inside of form Razor Component views
     /// </summary>

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using Rizzy;
 using Rizzy.FluentAssertions;
+using Rizzy.Htmx;
 using static Rizzy.Configuration.RizzyConfigBuilder;
 
 namespace Rizzy.Http;
@@ -14,7 +15,7 @@ public class HtmxResponseTests : TestContext
     private static HttpContext CreateHttpContext()
     {
         var services = new ServiceCollection();
-        services.AddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();
+        services.AddSingleton<IConfigureOptions<HtmxConfig>, ServiceCollectionExtensions.ConfigureHtmxSettings>();
         services.Configure<RizzyConfig>(config => { });
 
         var result = new DefaultHttpContext()

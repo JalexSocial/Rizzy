@@ -27,43 +27,40 @@ public class RzPage : ComponentBase
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        CreateCascadingValue(builder, ViewContext, (builder2) =>
+
+        builder.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
+        builder.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
         {
-            builder2.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
-            builder2.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
+            if (_layout != null)
             {
-                if (_layout != null)
+                builder3.OpenComponent<LayoutView>(6);
+                builder3.AddComponentParameter(7, "Layout", RuntimeHelpers.TypeCheck<System.Type>(_layout));
+                builder3.AddAttribute(8, "ChildContent", (RenderFragment)((builder4) =>
                 {
-                    builder3.OpenComponent<LayoutView>(6);
-                    builder3.AddComponentParameter(7, "Layout", RuntimeHelpers.TypeCheck<System.Type>(_layout));
-                    builder3.AddAttribute(8, "ChildContent", (RenderFragment)((builder4) =>
-                    {
-                        builder4.OpenComponent<DynamicComponent>(9);
-                        builder4.AddComponentParameter(10, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-                        builder4.AddComponentParameter(11, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-                        builder4.CloseComponent();
-                    }));
-                    builder3.CloseComponent();
-                }
-                else
-                {
-                    builder3.OpenComponent<DynamicComponent>(12);
-                    builder3.AddComponentParameter(13, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-                    builder3.AddComponentParameter(14, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-                    builder3.CloseComponent();
-                }
-            }));
-            builder2.OpenComponent<HtmxSwapContent>(15);
-            builder2.CloseComponent();
-            builder2.CloseComponent();
-        });
+                    builder4.OpenComponent<DynamicComponent>(9);
+                    builder4.AddComponentParameter(10, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+                    builder4.AddComponentParameter(11, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+                    builder4.CloseComponent();
+                }));
+                builder3.CloseComponent();
+            }
+            else
+            {
+                builder3.OpenComponent<DynamicComponent>(12);
+                builder3.AddComponentParameter(13, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+                builder3.AddComponentParameter(14, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+                builder3.CloseComponent();
+            }
+        }));
+        builder.OpenComponent<HtmxSwapContent>(15);
+        builder.CloseComponent();
+        builder.CloseComponent();
+
     }
 
     [Parameter, EditorRequired] public required Type ComponentType { get; set; } = default!;
 
     [Parameter, EditorRequired] public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
-
-    [Parameter, EditorRequired] public required RzViewContext ViewContext { get; set; } = default!;
 
     protected override void OnParametersSet()
     {

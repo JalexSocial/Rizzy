@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Rizzy;
-using Rizzy.Attributes;
 using Rizzy.Components;
 using Rizzy.Framework.Mvc;
 using RizzyDemo.Components.Layout;
@@ -11,6 +10,7 @@ using RizzyDemo.Controllers.Home.Models;
 using RizzyDemo.Controllers.Home.Views;
 using System.Diagnostics;
 using System.Text;
+using Rizzy.Htmx;
 
 namespace RizzyDemo.Controllers.Home;
 

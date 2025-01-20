@@ -32,6 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\..\src\Rizzy.Htmx\Rizzy.Htmx.csproj" />
 		<ProjectReference Include="..\..\src\Rizzy\Rizzy.csproj" />
 	</ItemGroup>
 

@@ -1,3 +1,5 @@
+using Rizzy.Htmx;
+
 namespace Rizzy.Tests;
 
 public class SwapStyleBuilderTests

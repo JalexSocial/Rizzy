@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using Rizzy.Http;
 using System.Text.Json;
+using Rizzy.Htmx;
 
 namespace Rizzy.Framework.Mvc;
 
@@ -15,16 +15,6 @@ public class RzController : ControllerBase, IRizzyService, IActionFilter, IAsync
 {
     private readonly IRizzyService? _serviceProxy = null;
     private IRizzyService RizzyService => _serviceProxy ?? this.HttpContext.RequestServices.GetRequiredService<IRizzyService>();
-
-    /// <inheritdoc/>
-    [Obsolete("ViewContext will be removed in a future version - Utilize HttpContext extension methods instead")]
-    public RzViewContext ViewContext => RizzyService.ViewContext;
-
-    /// <summary>
-    /// Gets the Htmx context for the current request.
-    /// </summary>
-    [Obsolete("Utilize HttpContext extension methods instead")]
-    public HtmxContext Htmx => RizzyService.ViewContext.Htmx;
 
     /// <inheritdoc/>
     public string CurrentActionUrl => RizzyService.CurrentActionUrl;

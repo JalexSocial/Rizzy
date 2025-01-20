@@ -28,6 +28,7 @@ jobs:
         run: |
           dotnet restore src/Rizzy
           dotnet restore src/Rizzy.Nonce
+          dotnet restore src/Rizzy.Htmx
 
       - name: Build Rizzy
         run: dotnet build --no-restore -c Release
@@ -37,6 +38,10 @@ jobs:
         run: dotnet build --no-restore -c Release
         working-directory: src/Rizzy.Nonce
 
+      - name: Build Rizzy.Htmx
+        run: dotnet build --no-restore -c Release
+        working-directory: src/Rizzy.Htmx
+
       - name: Publish Rizzy
         run: dotnet publish --no-restore -c Release -o ./publish
         working-directory: src/Rizzy
@@ -44,6 +49,10 @@ jobs:
       - name: Publish Rizzy.Nonce
         run: dotnet publish --no-restore -c Release -o ./publish
         working-directory: src/Rizzy.Nonce
+
+      - name: Publish Rizzy.Htmx
+        run: dotnet publish --no-restore -c Release -o ./publish
+        working-directory: src/Rizzy.Htmx
 
       - name: Test Rizzy
         run: dotnet test --no-build --verbosity normal
@@ -63,4 +72,10 @@ jobs:
         uses: brandedoutcast/publish-nuget@v2.5.2  
         with:   
           PROJECT_FILE_PATH: src/Rizzy.Nonce/Rizzy.Nonce.csproj  
+          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Publish Rizzy.Htmx package to NuGet
+        uses: brandedoutcast/publish-nuget@v2.5.2  
+        with:   
+          PROJECT_FILE_PATH: src/Rizzy.Htmx/Rizzy.Htmx.csproj  
           NUGET_KEY: ${{ secrets.NUGET_API_KEY }}

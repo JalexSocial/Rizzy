@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using Rizzy.Antiforgery;
 using Rizzy.Components;
 using Rizzy.FluentAssertions;
+using Rizzy.Htmx;
 using Rizzy.Http;
 
 namespace Rizzy.Configuration;

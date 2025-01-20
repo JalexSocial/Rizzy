@@ -15,7 +15,6 @@ Derived
 | Properties | |
 | :--- | :--- |
 | [CurrentActionUrl](Rizzy.IRizzyService.CurrentActionUrl 'Rizzy.IRizzyService.CurrentActionUrl') | Returns the current action method url as a possible Form callback url but may be overridden manually in any form handler method<br/>This value can be used inside of form Razor Component views |
-| [ViewContext](Rizzy.IRizzyService.ViewContext 'Rizzy.IRizzyService.ViewContext') | Gets the view context associated with the service. The view context contains information required for configuring and rendering views. |
 
 | Methods | |
 | :--- | :--- |

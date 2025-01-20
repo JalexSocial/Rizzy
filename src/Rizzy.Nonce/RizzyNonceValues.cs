@@ -18,7 +18,7 @@ public sealed class RizzyNonceValues
     /// <returns>The nonce value, or an empty string if not found.</returns>
     public string GetNonce(NonceType nonceType)
     {
-        return Nonces.TryGetValue(nonceType, out string value) ? value : string.Empty;
+        return Nonces.TryGetValue(nonceType, out var value) ? (value ?? string.Empty) : string.Empty;
     }
 
     /// <summary>

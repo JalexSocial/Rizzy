@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rizzy;
 using Rizzy.Components;
+using Rizzy.Htmx;
+using Rizzy.Nonce;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
@@ -8,20 +10,22 @@ using RizzyDemo.Components.Shared;
 var builder = WebApplication.CreateBuilder(args);
 
 // This must be added after AddControllers
-builder.AddRizzy(config =>
-    {
-        config.RootComponent = typeof(HtmxApp<AppLayout>);
-        config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
-    })
-    .WithHtmxConfiguration(config =>
-    {
-        config.SelfRequestsOnly = true;
-    })
-    .WithHtmxConfiguration("articles", config =>
-    {
-        config.SelfRequestsOnly = true;
-        config.GlobalViewTransitions = true;
-    });
+builder.Services.AddRizzy(config =>
+{
+	config.RootComponent = typeof(HtmxApp<AppLayout>);
+	config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
+});
+
+builder.Services.AddHtmx(config =>
+{
+	config.SelfRequestsOnly = true;
+});
+
+builder.Services.AddNamedHtmxConfiguration("articles", config =>
+{
+	config.SelfRequestsOnly = true;
+	config.GlobalViewTransitions = true;
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

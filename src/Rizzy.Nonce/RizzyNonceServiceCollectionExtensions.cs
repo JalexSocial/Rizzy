@@ -29,6 +29,10 @@ public static class RizzyNonceServiceCollectionExtensions
 			services.Configure<NonceOptions>(options => { });
         }
 
+		// Register HttpContextAccessor.
+		services.AddHttpContextAccessor();
+
+        services.TryAddSingleton<RizzyNonceGenerator>();
         services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
 
 		return services;

@@ -16,26 +16,21 @@ public partial class RzPartial : ComponentBase
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        CreateCascadingValue(builder, ViewContext, (builder2) =>
+	    builder.OpenComponent<LayoutView>(4);
+        builder.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
+        builder.AddAttribute(6, "ChildContent", (RenderFragment)((builder2) =>
         {
-            builder2.OpenComponent<LayoutView>(4);
-            builder2.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
-            builder2.AddAttribute(6, "ChildContent", (RenderFragment)((builder3) =>
-            {
-                builder3.OpenComponent<DynamicComponent>(7);
-                builder3.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-                builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-                builder3.CloseComponent();
-            }));
+            builder2.OpenComponent<DynamicComponent>(7);
+            builder2.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+            builder2.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
             builder2.CloseComponent();
-            builder2.OpenComponent<HtmxSwapContent>(15);
-            builder2.CloseComponent();
-        });
+        }));
+        builder.CloseComponent();
+        builder.OpenComponent<HtmxSwapContent>(15);
+        builder.CloseComponent();
     }
 
     [Parameter, EditorRequired] public required Type ComponentType { get; set; } = default!;
 
     [Parameter, EditorRequired] public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
-
-    [Parameter, EditorRequired] public required RzViewContext ViewContext { get; set; } = default!;
 }

@@ -13,7 +13,7 @@ public static class ServiceCollectionExtensionss
     /// <summary>
     /// Add and configure Htmx.
     /// </summary>
-    /// <param name="builder"></param>
+    /// <param name="services"></param>
     /// <param name="configBuilder"></param>
     public static RizzyConfigBuilder AddRizzy(this IServiceCollection services, Action<RizzyConfig>? configBuilder = null) =>
         new (services, configBuilder);

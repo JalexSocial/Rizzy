@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Rizzy.Components;
-using Rizzy;
+using Rizzy.Htmx;
 
 namespace Rizzy;
 
@@ -13,21 +13,17 @@ namespace Rizzy;
 /// </summary>
 public sealed class RizzyService : IRizzyService
 {
+	private readonly IHttpContextAccessor _httpContextAccessor;
     private string? _currentActionUrl;
 
     /// <summary>
-    /// Initializes a new instance of the RizzyService with a specified view context.
+    /// Initializes a new instance of the RizzyService
     /// </summary>
-    /// <param name="viewContext">The view context that provides necessary metadata for rendering Razor components.</param>
-    public RizzyService(RzViewContext viewContext)
+    /// <param name="httpContextAccessor">The HttpContextAccessor to access the scoped HttpContext.</param>
+    public RizzyService(IHttpContextAccessor httpContextAccessor)
     {
-        ViewContext = viewContext;
+	    _httpContextAccessor = httpContextAccessor;
     }
-
-    /// <summary>
-    /// Gets the view context associated with the service. The view context contains information required for configuring and rendering views.
-    /// </summary>
-    public RzViewContext ViewContext { get; }
 
     /// <summary>
     /// Renders a view using the specified Razor component, optionally accepting dynamic data to pass to the component.
@@ -36,7 +32,7 @@ public sealed class RizzyService : IRizzyService
     /// <param name="data">Optional dynamic data to pass to the component. Defaults to null if not provided.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a view.</returns>
     public IResult View<TComponent>(object? data = null) where TComponent : IComponent =>
-        ViewContext.Htmx.Response.EmptyResponseBodyRequested ? Results.NoContent() :
+	    _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
         View<TComponent>(data.ToDictionary());
 
     /// <summary>
@@ -47,18 +43,15 @@ public sealed class RizzyService : IRizzyService
     /// <returns>An <see cref="IResult"/> that can render the specified component as a view.</returns>
     public IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
     {
-        if (ViewContext.Htmx.Response.EmptyResponseBodyRequested)
+        if (_httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true)
             return Results.NoContent();
 
-        var parameters = new Dictionary<string, object?>();
-
-        // Configure the view context based on the component type and provided data
-        ViewContext.ConfigureView(typeof(TComponent), data);
-
-        // Add necessary parameters for rendering the component
-        parameters.Add("ComponentType", ViewContext.ComponentType);
-        parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
-        parameters.Add("ViewContext", ViewContext);
+        var parameters = new Dictionary<string, object?>
+        {
+            // Add necessary parameters for rendering the component
+            { "ComponentType", typeof(TComponent) },
+            { "ComponentParameters", data }
+        };
 
         // Return a result that can render the component as a full page
         return new RazorComponentResult<RzPage>(parameters)
@@ -75,7 +68,7 @@ public sealed class RizzyService : IRizzyService
     /// <param name="data">Optional dynamic data to pass to the component. Defaults to null if not provided.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a partial view.</returns>
     public IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent =>
-        ViewContext.Htmx.Response.EmptyResponseBodyRequested ? Results.NoContent() :
+	    _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
         PartialView<TComponent>(data.ToDictionary());
 
     /// <summary>
@@ -87,18 +80,14 @@ public sealed class RizzyService : IRizzyService
     /// <returns>An <see cref="IResult"/> that can render the specified component as a partial view.</returns>
     public IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
     {
-        if (ViewContext.Htmx.Response.EmptyResponseBodyRequested)
+        if (_httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true)
             return Results.NoContent();
 
         var parameters = new Dictionary<string, object?>();
 
-        // Configure the view context based on the component type and provided data
-        ViewContext.ConfigureView(typeof(TComponent), data);
-
         // Add necessary parameters for rendering the component as a partial view
-        parameters.Add("ComponentType", ViewContext.ComponentType);
-        parameters.Add("ComponentParameters", ViewContext.ComponentParameters);
-        parameters.Add("ViewContext", ViewContext);
+        parameters.Add("ComponentType", typeof(TComponent));
+        parameters.Add("ComponentParameters", data);
 
         // Return a result that can render the component as a partial view
         return new RazorComponentResult<RzPartial>(parameters)
@@ -132,5 +121,5 @@ public sealed class RizzyService : IRizzyService
     /// derived from the current HTTP request but can be manually overridden in form handler methods. It is particularly
     /// useful for specifying form action targets within Razor Component views.
     /// </summary>
-    public string CurrentActionUrl => _currentActionUrl ??= ViewContext.HttpContext.Request.GetEncodedPathAndQuery();
+    public string CurrentActionUrl => _currentActionUrl ??= _httpContextAccessor?.HttpContext?.Request.GetEncodedPathAndQuery() ?? string.Empty;
 }

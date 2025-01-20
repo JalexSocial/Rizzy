@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Rizzy.Htmx;
 
 namespace Rizzy.Components;
 

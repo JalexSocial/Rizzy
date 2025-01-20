@@ -7,8 +7,8 @@ Gets or sets the swap style to be applied when the content is swapped.
 The default swap style is OuterHTML.
 
 ```csharp
-public Rizzy.SwapStyle SwapStyle { get; set; }
+public Rizzy.Htmx.SwapStyle SwapStyle { get; set; }
 ```
 
 #### Property Value
-[SwapStyle](Rizzy.SwapStyle 'Rizzy.SwapStyle')
+[Rizzy.Htmx.SwapStyle](https://docs.microsoft.com/en-us/dotnet/api/Rizzy.Htmx.SwapStyle 'Rizzy.Htmx.SwapStyle')
