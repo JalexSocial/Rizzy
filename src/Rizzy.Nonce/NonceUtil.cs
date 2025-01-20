@@ -5,7 +5,7 @@ namespace Rizzy.Nonce;
 /// <summary>
 /// Utility class to generate tamper-resistant nonce values that can be passed back to the
 /// server for reuse
-/// </summary>
+/// </summary> 
 public sealed class NonceUtil
 {
     /// <summary>

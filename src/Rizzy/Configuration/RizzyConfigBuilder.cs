@@ -1,138 +1,169 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Rizzy.Antiforgery;
 using Rizzy.Components;
-using Rizzy.Components.Form;
-using Rizzy.Components.Form.Helpers;
 using Rizzy.Nonce;
+using Rizzy.Serialization;
+using Rizzy.Utility;
+using System;
 
 namespace Rizzy.Configuration;
 
+/// <summary>
+/// Builds and registers the necessary Rizzy services and options.
+/// </summary>
 public class RizzyConfigBuilder
 {
+    // A default name for the anti-forgery cookie.
     private readonly string _defaultCookieName = "HX-XSRF-TOKEN";
-    private readonly IHostApplicationBuilder _builder;
+    private readonly IServiceCollection _services;
+    private readonly IConfiguration? _configuration;
 
     /// <summary>
-    /// Configures HtmxConfig options to include the antiforgery configuration
+    /// Initializes a new instance of the <see cref="RizzyConfigBuilder"/> class.
     /// </summary>
-    public class ConfigureHtmxSettings : IConfigureOptions<HtmxConfig>, IConfigureNamedOptions<HtmxConfig>
+    /// <param name="services">The service collection to add services to.</param>
+    /// <param name="configBuilder">
+    /// An optional action to configure the <see cref="RizzyConfig"/>.
+    /// If not provided, defaults will be applied.
+    /// </param>
+    /// <param name="configuration">
+    /// Optionally, an <see cref="IConfiguration"/> instance to allow reading configuration values.
+    /// </param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="services"/> is <c>null</c>.</exception>
+    public RizzyConfigBuilder(
+        IServiceCollection services,
+        Action<RizzyConfig>? configBuilder = null,
+        IConfiguration? configuration = null)
     {
-        private HtmxAntiforgeryOptions _antiforgeryOptions = default!;
+        _services = services ?? throw new ArgumentNullException(nameof(services));
+        _configuration = configuration;
 
-        public ConfigureHtmxSettings(IOptions<HtmxAntiforgeryOptions> antiforgeryOptions)
-        {
-            _antiforgeryOptions = antiforgeryOptions.Value;
-        }
-
-        public void Configure(string? name, HtmxConfig options)
-        {
-            // Do nothing for now
-        }
-
-        public void Configure(HtmxConfig options) => Configure(Options.DefaultName, options);
-    }
-
-    /// <summary>
-    /// Sets up default services for Rizzy
-    /// </summary>
-    /// <param name="builder"></param>
-    /// <param name="configBuilder"></param>
-    public RizzyConfigBuilder(IHostApplicationBuilder builder, Action<RizzyConfig>? configBuilder)
-    {
-        _builder = builder;
-
+        // Add Htmx anti-forgery support.
         AddHtmxAntiForgery();
 
-        // Add nonce generation services
-        _builder.Services.TryAddSingleton<RizzyNonceGenerator>();
+        // Register the nonce-related services.
+        _services.TryAddSingleton<RizzyNonceGenerator>();
+        _services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
 
-        // Register the default RizzyNonceProvider only if IRizzyNonceProvider hasn't been registered
-        _builder.Services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
+        // Register HttpContextAccessor.
+        _services.AddHttpContextAccessor();
 
-        _builder.Services.AddHttpContextAccessor();
-
+        // Configure the RizzyConfig.
         if (configBuilder != null)
         {
-            _builder.Services.Configure<RizzyConfig>(configBuilder);
+            _services.Configure(configBuilder);
         }
         else
         {
-            _builder.Services.Configure<RizzyConfig>(cfg =>
+            _services.Configure<RizzyConfig>(cfg =>
             {
                 cfg.RootComponent = typeof(EmptyRootComponent);
                 cfg.DefaultLayout = null;
             });
         }
 
-        _builder.Services.Configure<NonceOptions>(options =>
+        _services.Configure<NonceOptions>(options =>
         {
-	        var configuration = _builder.Configuration;
-	        
-	        var rizzyConfig = _builder.Services.BuildServiceProvider().GetRequiredService<IOptions<RizzyConfig>>().Value;
-	        options.HMACKey = rizzyConfig.NonceHMACKey;
+            var sp = _services.BuildServiceProvider();
+            var rizzyConfig = sp.GetRequiredService<IOptions<RizzyConfig>>().Value;
+            options.HMACKey = rizzyConfig.NonceHMACKey;
         });
 
-        // Make sure all HtmxConfig instances get properly configured
-        _builder.Services.AddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();
-        _builder.Services.AddSingleton<IConfigureNamedOptions<HtmxConfig>, ConfigureHtmxSettings>();
+        // Register configuration for Htmx.
+        _services.TryAddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();
+        _services.TryAddSingleton<IConfigureNamedOptions<HtmxConfig>, ConfigureHtmxSettings>();
 
-        // Configure a default htmx configuration
-        _builder.Services.Configure<HtmxConfig>(config => { });
+        // Configure HtmxConfig (an empty configuration delegate here, can be customized later).
+        _services.Configure<HtmxConfig>(config =>
+        {
+            // No-op by default; users can override by calling WithHtmxConfiguration.
+        });
 
-        _builder.Services.AddSingleton<DataAnnotationsProcessor>();
-
-        // Add additional scoped services
-        _builder.Services.AddScoped<RzViewContext>();
-        _builder.Services.AddScoped<IRizzyService, RizzyService>();
-        _builder.Services.AddScoped<IHtmxSwapService, HtmxSwapService>();
+        // Add other necessary services.
+        _services.AddSingleton<DataAnnotationsProcessor>();
+        _services.AddScoped<RzViewContext>();
+        _services.AddScoped<IRizzyService, RizzyService>();
+        _services.AddScoped<IHtmxSwapService, Rizzy.Components.HtmxSwapService>();
     }
 
     /// <summary>
-    /// Adds a default configuration for use inside an HtmxConfigHeadOutlet
+    /// Configures the <see cref="HtmxConfig"/> options.
     /// </summary>
-    /// <param name="configBuilder"></param>
-    /// <returns></returns>
+    /// <param name="configBuilder">An action to configure the <see cref="HtmxConfig"/> options.</param>
+    /// <returns>The current <see cref="RizzyConfigBuilder"/> instance.</returns>
     public RizzyConfigBuilder WithHtmxConfiguration(Action<HtmxConfig> configBuilder)
     {
-        _builder.Services.Configure<HtmxConfig>(configBuilder);
-
+        _services.Configure(configBuilder);
         return this;
     }
 
     /// <summary>
-    /// Adds a named configuration for use inside an HtmxConfigHeadOutlet
+    /// Configures a named instance of <see cref="HtmxConfig"/> options.
     /// </summary>
-    /// <param name="name"></param>
-    /// <param name="configBuilder"></param>
-    /// <returns></returns>
+    /// <param name="name">The name for the options instance.</param>
+    /// <param name="configBuilder">An action to configure the <see cref="HtmxConfig"/> options.</param>
+    /// <returns>The current <see cref="RizzyConfigBuilder"/> instance.</returns>
     public RizzyConfigBuilder WithHtmxConfiguration(string name, Action<HtmxConfig> configBuilder)
     {
-        _builder.Services.Configure<HtmxConfig>(name, configBuilder);
-
+        _services.Configure(name, configBuilder);
         return this;
     }
 
+    /// <summary>
+    /// Adds and configures Htmx anti-forgery options by reading from the registered <see cref="AntiforgeryOptions"/>.
+    /// </summary>
     private void AddHtmxAntiForgery()
     {
-        var provider = _builder.Services.BuildServiceProvider();
-        var antiforgeryOptions = provider.GetRequiredService<IOptions<AntiforgeryOptions>>();
-
-        _builder.Services.Configure<HtmxAntiforgeryOptions>(opt =>
+        // Resolve the current AntiforgeryOptions instance.
+        // Note: We build a temporary ServiceProvider for resolving the options.
+        using (var sp = _services.BuildServiceProvider())
         {
-            // Default to true, can be configured again after adding htmx if necessary
-            opt.FormFieldName = antiforgeryOptions.Value.FormFieldName;
-            opt.HeaderName = antiforgeryOptions.Value.HeaderName;
-            opt.CookieName = _defaultCookieName;
-        });
+            var antiforgeryOptions = sp.GetRequiredService<IOptions<AntiforgeryOptions>>();
+            _services.Configure<HtmxAntiforgeryOptions>(opt =>
+            {
+                opt.FormFieldName = antiforgeryOptions.Value.FormFieldName;
+                opt.HeaderName = antiforgeryOptions.Value.HeaderName;
+                opt.CookieName = _defaultCookieName;
+            });
+        }
+    }
+
+    /// <summary>
+    /// Class responsible for configuring <see cref="HtmxConfig"/> options.
+    /// </summary>
+    public class ConfigureHtmxSettings : IConfigureOptions<HtmxConfig>, IConfigureNamedOptions<HtmxConfig>
+    {
+        private readonly HtmxAntiforgeryOptions _antiforgeryOptions;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ConfigureHtmxSettings"/> class.
+        /// </summary>
+        /// <param name="antiforgeryOptions">The antiforgery options.</param>
+        public ConfigureHtmxSettings(IOptions<HtmxAntiforgeryOptions> antiforgeryOptions)
+        {
+            _antiforgeryOptions = antiforgeryOptions.Value;
+        }
+
+        /// <summary>
+        /// Configures a named instance of <see cref="HtmxConfig"/> options.
+        /// </summary>
+        /// <param name="name">The name of the options instance.</param>
+        /// <param name="options">The <see cref="HtmxConfig"/> options to configure.</param>
+        public void Configure(string? name, HtmxConfig options)
+        {
+            Configure(options);
+        }
+
+        /// <summary>
+        /// Configures the default <see cref="HtmxConfig"/> options.
+        /// </summary>
+        /// <param name="options">The <see cref="HtmxConfig"/> options to configure.</param>
+        public void Configure(HtmxConfig options)
+        {
+        }
     }
 }
