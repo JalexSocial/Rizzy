@@ -9,7 +9,6 @@
         <Deterministic>true</Deterministic>
         <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
         <DebugType>embedded</DebugType>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);CS1591</NoWarn>
         <PackageId>Rizzy.Htmx</PackageId>
         <Company>Michael Tanczos</Company>

@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.AspNetCore.Components.Forms;
 
 namespace Rizzy.Components;
@@ -14,6 +16,19 @@ public class DataAnnotationsProcessor
     private IServiceProvider _provider;
 
     private readonly Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>> _attributeHandlers;
+    private static readonly ConcurrentDictionary<Type, PropertyCacheEntry> _propertyCache = new();
+
+    private class PropertyCacheEntry
+    {
+        public PropertyInfo PropertyInfo { get; }
+        public ValidationAttribute[] ValidationAttributes { get; }
+
+        public PropertyCacheEntry(PropertyInfo propInfo)
+        {
+            PropertyInfo = propInfo;
+            ValidationAttributes = propInfo.GetCustomAttributes<ValidationAttribute>(true).ToArray();
+        }
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DataAnnotationsProcessor"/> class.
@@ -82,27 +97,36 @@ public class DataAnnotationsProcessor
     /// <param name="attributes">The collection where HTML5 data attributes should be added.</param>
     private void ProcessAttributes(FieldIdentifier fieldIdentifier, IDictionary<string, object> attributes)
     {
-        var propertyInfo = fieldIdentifier.Model.GetType().GetProperty(fieldIdentifier.FieldName);
-        if (propertyInfo == null)
-        {
-            throw new InvalidOperationException($"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
-        }
-
-        var validationAttributes = propertyInfo.GetCustomAttributes(true).OfType<ValidationAttribute>().ToList();
-
+        var props = GetCachedProperty(fieldIdentifier);
+        
         // Initialize client-side validation if any validation attributes are present.
-        if (validationAttributes.Any())
+        if (props.ValidationAttributes.Any())
         {
             attributes.TryAdd("data-val", "true");
         }
 
-        foreach (var attribute in validationAttributes)
+        foreach (var attribute in props.ValidationAttributes)
         {
             if (_attributeHandlers.TryGetValue(attribute.GetType(), out var handler))
             {
-                handler(attribute, attributes, propertyInfo.Name);
+                handler(attribute, attributes, props.PropertyInfo.Name);
             }
         }
+    }
+
+    private PropertyCacheEntry GetCachedProperty(FieldIdentifier fieldIdentifier)
+    {
+        return _propertyCache.GetOrAdd(fieldIdentifier.Model.GetType(), type =>
+        {
+            var propInfo = type.GetProperty(fieldIdentifier.FieldName);
+
+            if (propInfo == null)
+            {
+                throw new InvalidOperationException($"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
+            }
+
+            return new PropertyCacheEntry(propInfo);
+        });
     }
 
     private void HandleRequiredAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
