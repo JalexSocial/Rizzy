@@ -8,7 +8,7 @@ namespace Rizzy;
 /// <summary>
 /// This class has extension methods for <see cref="IServiceCollection"/> that enable configuration of Htmx in the application.
 /// </summary>
-public static class ServiceCollectionExtensionss
+public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Add and configure Htmx.

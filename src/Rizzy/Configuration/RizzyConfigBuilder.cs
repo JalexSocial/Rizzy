@@ -41,14 +41,18 @@ public class RizzyConfigBuilder
         _services = services ?? throw new ArgumentNullException(nameof(services));
         _configuration = configuration;
 
+        // Initialize RizzyConfig
+        RizzyConfig rizzyConfig = new RizzyConfig();
+
+        // Apply the configuration action if provided
+        configBuilder?.Invoke(rizzyConfig);
+
         // Register HttpContextAccessor.
         _services.AddHttpContextAccessor();
 
         // Register the nonce-related services.
         _services.AddRizzyNonceProvider(options =>
         {
-	        var sp = _services.BuildServiceProvider();
-	        var rizzyConfig = sp.GetRequiredService<IOptions<RizzyConfig>>().Value;
 	        options.HMACKey = rizzyConfig.NonceHMACKey;
         });
 
