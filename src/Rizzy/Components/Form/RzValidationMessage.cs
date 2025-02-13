@@ -67,7 +67,16 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
         var messages = EditContext.GetValidationMessages(field);
 
         if (messages.Any())
-            base.BuildRenderTree(builder);
+        {
+            foreach (var message in EditContext.GetValidationMessages(field))
+            {
+                builder.OpenElement(0, "div");
+                builder.AddAttribute(1, "class", "validation-message field-validation-error");
+                builder.AddMultipleAttributes(2, AdditionalAttributes);
+                builder.AddContent(3, message);
+                builder.CloseElement();
+            }
+        }
         else
         {
             builder.OpenElement(10, "div");
