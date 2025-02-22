@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -57,6 +58,26 @@ public static class ServiceCollectionExtensions
             opt.HeaderName = antiforgeryOptions.Value.HeaderName;
             opt.CookieName = _defaultCookieName;
         });
+
+        services.AddAntiforgeryValidation();
+    }
+
+    /// <summary>
+    /// Add antiforgery validation services (uses reflection)
+    /// </summary>
+    /// <param name="services"></param>
+    /// <returns></returns>
+    private static IServiceCollection AddAntiforgeryValidation(
+	    this IServiceCollection services)
+    {
+	    var types = Assembly.Load("Microsoft.AspNetCore.Mvc.ViewFeatures")
+		    .GetTypes();
+	    var autoType = types.First(t => t.Name == "AutoValidateAntiforgeryTokenAuthorizationFilter"); // necessary for the AutoValidateAntiforgeryTokenAttribute
+	    var defaultType = types.First(t => t.Name == "ValidateAntiforgeryTokenAuthorizationFilter"); // necessary for the ValidateAntiforgeryTokenAttribute
+	    services.TryAddSingleton(autoType);
+	    services.TryAddSingleton(defaultType);
+		
+	    return services;
     }
 
     /// <summary>

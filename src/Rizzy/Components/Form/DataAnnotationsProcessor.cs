@@ -1,9 +1,20 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
 
 namespace Rizzy.Components;
 
@@ -13,8 +24,12 @@ namespace Rizzy.Components;
 /// </summary>
 public class DataAnnotationsProcessor
 {
-    private IServiceProvider _provider;
+    private readonly IServiceProvider _provider;
+    private readonly IValidationAttributeAdapterProvider _adapterProvider;
+    private readonly IStringLocalizerFactory? _localizerFactory;
+    private readonly IModelMetadataProvider _metadataProvider;
 
+    // Handlers take a ValidationAttribute, the attributes dictionary, and a localized error message.
     private readonly Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>> _attributeHandlers;
     private static readonly ConcurrentDictionary<Type, PropertyCacheEntry> _propertyCache = new();
 
@@ -33,11 +48,15 @@ public class DataAnnotationsProcessor
     /// <summary>
     /// Initializes a new instance of the <see cref="DataAnnotationsProcessor"/> class.
     /// </summary>
+    /// <param name="provider">The application's service provider.</param>
     public DataAnnotationsProcessor(IServiceProvider provider)
     {
-        _provider = provider;
+        _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        _adapterProvider = provider.GetRequiredService<IValidationAttributeAdapterProvider>();
+        // Attempt to resolve the localizer factory; if not present, _localizerFactory will be null.
+        _localizerFactory = provider.GetService<IStringLocalizerFactory>();
+        _metadataProvider = provider.GetRequiredService<IModelMetadataProvider>();
 
-        // Default handlers for built-in types
         _attributeHandlers = new Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>>
         {
             { typeof(RequiredAttribute), HandleRequiredAttribute },
@@ -63,53 +82,83 @@ public class DataAnnotationsProcessor
     {
         if (handler == null) throw new ArgumentNullException(nameof(handler));
 
-        // Use a wrapper to match the expected delegate signature.
-        _attributeHandlers[typeof(TAttribute)] = (attribute, attributes, propertyName) =>
-            handler((TAttribute)attribute, attributes, propertyName);
+        _attributeHandlers[typeof(TAttribute)] = (attribute, attributes, message) =>
+            handler((TAttribute)attribute, attributes, message);
     }
 
-    public IReadOnlyDictionary<string, object>? MergeAttributes<TValue>(string controlName, Expression<Func<TValue>>? valueExpression, IReadOnlyDictionary<string, object>? additionalAttributes, string? id = null)
+    /// <summary>
+    /// Merges the data annotations from a model property into the provided attributes collection.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the bound value.</typeparam>
+    /// <param name="controlName">The name of the control being rendered.</param>
+    /// <param name="valueExpression">The expression identifying the model property.</param>
+    /// <param name="additionalAttributes">Any additional attributes.</param>
+    /// <param name="id">Optional element id.</param>
+    /// <returns>A read-only dictionary of HTML attributes (or null if none).</returns>
+    public IReadOnlyDictionary<string, object>? MergeAttributes<TValue>(
+        string controlName,
+        Expression<Func<TValue>>? valueExpression,
+        IReadOnlyDictionary<string, object>? additionalAttributes,
+        string? id = null)
     {
         if (valueExpression == null)
         {
             throw new InvalidOperationException($"{controlName} requires a ValueExpression parameter.");
         }
 
-        var attrib = additionalAttributes is null ?
-                new Dictionary<string, object>() : new Dictionary<string, object>(additionalAttributes);
+        var attrib = additionalAttributes is null
+            ? new Dictionary<string, object>()
+            : new Dictionary<string, object>(additionalAttributes);
 
         if (id != null)
+        {
             attrib.TryAdd("id", id);
+        }
 
         var fieldIdentifier = FieldIdentifier.Create(valueExpression);
         ProcessAttributes(fieldIdentifier, attrib);
 
-        if (attrib.Keys.Count == 0)
-            return null;
-
-        return new ReadOnlyDictionary<string, object>(attrib);
+        return attrib.Count == 0 ? null : new ReadOnlyDictionary<string, object>(attrib);
     }
 
     /// <summary>
     /// Processes the attributes of a specified field and converts them to HTML5 data attributes.
     /// </summary>
     /// <param name="fieldIdentifier">The identifier of the field to process.</param>
-    /// <param name="attributes">The collection where HTML5 data attributes should be added.</param>
+    /// <param name="attributes">The dictionary where HTML5 data attributes should be added.</param>
     private void ProcessAttributes(FieldIdentifier fieldIdentifier, IDictionary<string, object> attributes)
     {
-        var props = GetCachedProperty(fieldIdentifier);
-        
-        // Initialize client-side validation if any validation attributes are present.
-        if (props.ValidationAttributes.Any())
+        var propertyEntry = GetCachedProperty(fieldIdentifier);
+
+        var modelType = fieldIdentifier.Model.GetType();
+        var metadata = _metadataProvider.GetMetadataForProperty(modelType, fieldIdentifier.FieldName);
+
+        // If a localizer factory is available, create a localizer; otherwise, localizer remains null.
+        IStringLocalizer? localizer = _localizerFactory != null ? _localizerFactory.Create(modelType) : null;
+
+        // Construct a minimal ActionContext.
+        var actionContext = new ActionContext(
+            new DefaultHttpContext(),
+            new RouteData(),
+            new ActionDescriptor());
+
+        // Correctly construct ModelValidationContextBase.
+        var validationContext = new DefaultModelValidationContext(actionContext, metadata, _metadataProvider);
+
+        if (propertyEntry.ValidationAttributes.Any())
         {
             attributes.TryAdd("data-val", "true");
         }
 
-        foreach (var attribute in props.ValidationAttributes)
+        foreach (var attribute in propertyEntry.ValidationAttributes)
         {
+            // Attempt to obtain a localized error message; if unavailable, fall back to FormatErrorMessage.
+            string localizedMessage = GetLocalizedErrorMessage(attribute, metadata, validationContext, localizer)
+                ?? attribute.FormatErrorMessage(metadata.GetDisplayName());
+
             if (_attributeHandlers.TryGetValue(attribute.GetType(), out var handler))
             {
-                handler(attribute, attributes, props.PropertyInfo.Name);
+                handler(attribute, attributes, localizedMessage);
             }
         }
     }
@@ -119,26 +168,42 @@ public class DataAnnotationsProcessor
         return _propertyCache.GetOrAdd(fieldIdentifier.Model.GetType(), type =>
         {
             var propInfo = type.GetProperty(fieldIdentifier.FieldName);
-
             if (propInfo == null)
             {
-                throw new InvalidOperationException($"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
+                throw new InvalidOperationException(
+                    $"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
             }
-
             return new PropertyCacheEntry(propInfo);
         });
     }
 
-    private void HandleRequiredAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private string? GetLocalizedErrorMessage(
+        ValidationAttribute attribute,
+        ModelMetadata metadata,
+        ModelValidationContextBase validationContext,
+        IStringLocalizer? localizer)
     {
-        var requiredAttribute = (RequiredAttribute)attribute;
-        attributes["data-val-required"] = requiredAttribute.ErrorMessage ?? $"{propertyName} is required.";
+        if (localizer == null)
+        {
+            // IStringLocalizerFactory is unavailable; fallback to default error messages.
+            return null;
+        }
+
+        var adapter = _adapterProvider.GetAttributeAdapter(attribute, localizer);
+        return adapter?.GetErrorMessage(validationContext);
     }
 
-    private void HandleStringLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    // Default handler implementations that use the provided localized message.
+
+    private static void HandleRequiredAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        attributes["data-val-required"] = message;
+    }
+
+    private static void HandleStringLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
         var stringLengthAttribute = (StringLengthAttribute)attribute;
-        attributes["data-val-length"] = stringLengthAttribute.ErrorMessage ?? $"The field {propertyName} must be a string with a maximum length of {stringLengthAttribute.MaximumLength}.";
+        attributes["data-val-length"] = message;
         attributes["data-val-length-max"] = stringLengthAttribute.MaximumLength;
         if (stringLengthAttribute.MinimumLength > 0)
         {
@@ -146,55 +211,63 @@ public class DataAnnotationsProcessor
         }
     }
 
-    private void HandleRangeAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandleRangeAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
         var rangeAttribute = (RangeAttribute)attribute;
-        attributes["data-val-range"] = rangeAttribute.ErrorMessage ?? $"The field {propertyName} must be between {rangeAttribute.Minimum} and {rangeAttribute.Maximum}.";
+        attributes["data-val-range"] = message;
         attributes["data-val-range-min"] = rangeAttribute.Minimum;
         attributes["data-val-range-max"] = rangeAttribute.Maximum;
     }
 
-    private void HandleRegularExpressionAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandleRegularExpressionAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
         var regexAttribute = (RegularExpressionAttribute)attribute;
-        attributes["data-val-regex"] = regexAttribute.ErrorMessage ?? $"The field {propertyName} must match the regular expression '{regexAttribute.Pattern}'.";
+        attributes["data-val-regex"] = message;
         attributes["data-val-regex-pattern"] = regexAttribute.Pattern;
     }
 
-    private void HandleCompareAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandleCompareAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
         var compareAttribute = (CompareAttribute)attribute;
-        attributes["data-val-equalto"] = compareAttribute.ErrorMessage ?? $"The field {propertyName} must be equal to {compareAttribute.OtherProperty}.";
+        attributes["data-val-equalto"] = message;
         attributes["data-val-equalto-other"] = $"*.{compareAttribute.OtherProperty}";
     }
 
-    private void HandleEmailAddressAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandleEmailAddressAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
-        attributes["data-val-email"] = attribute.ErrorMessage ?? $"The field {propertyName} must be a valid email address.";
+        attributes["data-val-email"] = message;
     }
 
-    private void HandlePhoneAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandlePhoneAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
-        attributes["data-val-phone"] = attribute.ErrorMessage ?? $"The field {propertyName} must be a valid phone number.";
+        attributes["data-val-phone"] = message;
     }
 
-    private void HandleUrlAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandleUrlAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
-        attributes["data-val-url"] = attribute.ErrorMessage ?? $"The field {propertyName} must be a valid URL.";
+        attributes["data-val-url"] = message;
     }
 
-    private void HandleMinLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandleMinLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
         var minLengthAttribute = (MinLengthAttribute)attribute;
-        attributes["data-val-minlength"] = minLengthAttribute.ErrorMessage ?? $"The field {propertyName} must be at least {minLengthAttribute.Length} characters.";
+        attributes["data-val-minlength"] = message;
         attributes["data-val-minlength-min"] = minLengthAttribute.Length;
     }
 
-    private void HandleMaxLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string propertyName)
+    private static void HandleMaxLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
     {
         var maxLengthAttribute = (MaxLengthAttribute)attribute;
-        attributes["data-val-maxlength"] = maxLengthAttribute.ErrorMessage ?? $"The field {propertyName} cannot exceed {maxLengthAttribute.Length} characters.";
+        attributes["data-val-maxlength"] = message;
         attributes["data-val-maxlength-max"] = maxLengthAttribute.Length;
     }
-}
 
+    /// <summary>
+    /// A minimal implementation of ModelValidationContextBase using the correct constructor.
+    /// </summary>
+    private class DefaultModelValidationContext(
+	    ActionContext actionContext,
+	    ModelMetadata modelMetadata,
+	    IModelMetadataProvider metadataProvider)
+	    : ModelValidationContextBase(actionContext, modelMetadata, metadataProvider);
+}

@@ -6,6 +6,7 @@ using Rizzy.Nonce;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
+using RizzyDemo.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,9 @@ builder.Services.Configure<HtmxConfig>("articles", config =>
 });
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddMvcCore().AddAuthorization().AddDataAnnotations();
+//builder.Services.AddMvc();
+
 builder.Services.AddRazorComponents();
 
 builder.Services.AddSingleton<HtmxCounter.HtmxCounterState>();
