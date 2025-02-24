@@ -30,8 +30,7 @@ builder.Services.Configure<HtmxConfig>("articles", config =>
 });
 
 // Add services to the container.
-builder.Services.AddMvcCore().AddAuthorization().AddDataAnnotations();
-//builder.Services.AddMvc();
+builder.Services.AddControllers();
 
 builder.Services.AddRazorComponents();
 
