@@ -15,7 +15,7 @@ public class HtmxResponseTests : TestContext
     private static HttpContext CreateHttpContext()
     {
         var services = new ServiceCollection();
-        services.AddSingleton<IConfigureOptions<HtmxConfig>, ServiceCollectionExtensions.ConfigureHtmxSettings>();
+        services.AddSingleton<IConfigureOptions<HtmxConfig>, Rizzy.Htmx.ServiceCollectionExtensions.ConfigureHtmxSettings>();
         services.Configure<RizzyConfig>(config => { });
 
         var result = new DefaultHttpContext()

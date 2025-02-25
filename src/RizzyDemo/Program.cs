@@ -2,7 +2,6 @@
 using Rizzy;
 using Rizzy.Components;
 using Rizzy.Htmx;
-using Rizzy.Nonce;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;

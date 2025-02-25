@@ -34,8 +34,15 @@ public class RizzyConfig
         get => _rootComponent;
         set
         {
-            if (value != null && !typeof(IComponent).IsAssignableFrom(value))
-                throw new Exception($"{nameof(value)} is not a Razor component");
+            if (value != null)
+            {
+                // Check if value is of type HtmxApp<T> where T is a subclass of LayoutComponentBase
+                if (!value.IsGenericType || value.GetGenericTypeDefinition() != typeof(HtmxApp<>) ||
+                    !typeof(LayoutComponentBase).IsAssignableFrom(value.GetGenericArguments()[0]))
+                {
+                    throw new Exception($"{nameof(value)} must be of type HtmxApp<T> where T is a subclass of LayoutComponentBase");
+                }
+            }
 
             _rootComponent = value;
         }
