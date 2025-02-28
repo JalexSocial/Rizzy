@@ -1,29 +1,55 @@
 ﻿@using Rizzy.Components
+@using Rizzy.Nonce
 
 @inherits LayoutComponentBase
+
+@code {
+    [Inject] private IRizzyNonceProvider NonceProvider { get; set; } = null!;
+}
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <HtmxConfigHeadOutlet />
+    <link nonce="@NonceProvider.GetNonceFor(NonceType.Style)" rel="stylesheet" href="/css/app.css" />
+    <link nonce="@NonceProvider.GetNonceFor(NonceType.Style)" rel="stylesheet" href="/RizzyUI.Docs.styles.css" />
     <RzHeadOutlet />
+    <RizzyThemeProvider/>
+
+    <script defer nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="https://cdn.jsdelivr.net/npm/@@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+    <script defer nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="https://cdn.jsdelivr.net/npm/@@alpinejs/intersect@3.x.x/dist/cdn.min.js"></script>
+    <script defer nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="https://cdn.jsdelivr.net/npm/@@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
+
+    <script defer nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="https://unpkg.com/htmx.org@2.0.4" integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+" crossorigin="anonymous"></script>
+
+    <script nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="/_content/RizzyUI/js/vendor/aspnet-validation/aspnet-validation.js"></script>
+    <script nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="/_content/RizzyUI/dist/rizzyui.js"></script>
+    <script nonce="@NonceProvider.GetNonceFor(NonceType.Script)" src="/js/site.js"></script>
+
+    <link rel="preconnect" nonce="@NonceProvider.GetNonceFor(NonceType.Script)" href="https://fonts.gstatic.com" crossorigin>
+    <link nonce="@NonceProvider.GetNonceFor(NonceType.Script)" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+	
 
     <base href="/"/>
 
     <link rel="icon" type="image/png" href="favicon.png"/>
-    <script defer src="https://unpkg.com/htmx.org@2.0.2/dist/htmx.min.js"></script>
+    
+    
+
 </head>
 <body>
 @Body
 
 <HtmxAntiforgeryScript />
 <HtmxSwapContent/>
-<script src="_content/Rizzy/js/aspnet-validation.js"></script>
+
 <script type="text/javascript">
     const v = new aspnetValidation.ValidationService();
     v.bootstrap({ watch: true });
 </script>
+
 </body>
 </html>
