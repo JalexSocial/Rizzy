@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rizzy.Components;
+#pragma warning disable BL0006
 
 namespace Rizzy.Utility;
 
@@ -31,7 +32,7 @@ public static class RazorRenderer
         for (int i = 0; i < frames.Count; i++)
         {
             var frame = frames.Array[i];
-            if (frame.FrameType == RenderTreeFrameType.Markup && !frame.MarkupContent != null)
+            if (frame is { FrameType: RenderTreeFrameType.Markup, MarkupContent: not null })
             {
                 markupContentList.Add(frame.MarkupContent);
             }
