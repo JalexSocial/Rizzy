@@ -1,0 +1,141 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/typography";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --default-font-family: 'Inter', 'Figtree', 'open sans';
+    --color-surface: var(--color-white);
+    --color-on-surface: var(--color-slate-700);
+    --color-on-surface-strong: var(--color-black);
+    --color-on-surface-muted: var(--color-neutral-500);
+    --color-surface-alt: var(--color-slate-100);
+    --color-primary: var(--color-blue-700);
+    --color-on-primary: var(--color-slate-100);
+    --color-secondary: var(--color-indigo-700);
+    --color-on-secondary: var(--color-slate-100);
+    --color-outline: var(--color-slate-300);
+    --color-outline-strong: var(--color-slate-800);
+    --color-surface-dark: var(--color-slate-900);
+    --color-on-surface-dark: var(--color-slate-300);
+    --color-on-surface-dark-strong: var(--color-white);
+    --color-on-surface-dark-muted: var(--color-neutral-500);
+    --color-surface-dark-alt: var(--color-slate-800);
+    --color-primary-dark: var(--color-blue-600);
+    --color-on-primary-dark: var(--color-slate-100);
+    --color-secondary-dark: var(--color-indigo-600);
+    --color-on-secondary-dark: var(--color-slate-100);
+    --color-outline-dark: var(--color-slate-700);
+    --color-outline-dark-strong: var(--color-slate-300);
+    --color-danger: var(--color-red-600);
+    --color-on-danger: var(--color-white);
+    --color-info: var(--color-sky-600);
+    --color-onInfo: var(--color-white);
+    --color-warning: var(--color-amber-500);
+    --color-on-warning: var(--color-white);
+    --color-success: var(--color-green-600);
+    --color-on-success: var(--color-white);
+    --borderWidth: 1px;
+    --borderRadius: 6px;
+    --radius-theme: var(--borderRadius);
+    --border-theme: var(--borderWidth);
+}
+
+svg[blazicon] {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+}
+
+.rounded {
+    border-radius: var(--borderRadius);
+}
+
+.border {
+    border-width: var(--borderWidth);
+}
+
+/* Custom Scrollbar Styles */
+.scrollbar-hover::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.scrollbar-hover::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.scrollbar-hover::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0);
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+
+.scrollbar-hover:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(107, 114, 128, 0.7);
+}
+
+.scrollbar-hover {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+}
+
+    .scrollbar-hover:hover {
+        scrollbar-color: #6b7280 transparent;
+    }
+
+/* Grid Pattern */
+.grid-pattern {
+    background: repeating-linear-gradient( 90deg, var(--color-surface-alt) 0, var(--color-surface-alt) 5%, transparent 0, transparent 50% ), repeating-linear-gradient( 180deg, var(--color-surface-alt) 0, var(--color-surface-alt) 5%, transparent 0, transparent 50% );
+    background-size: 1.5em 1.5em;
+    background-color: var(--color-surface);
+    opacity: 1;
+
+    @variant dark {
+        background: repeating-linear-gradient( 90deg, var(--color-surface-dark-alt) 0, var(--color-surface-dark-alt) 5%, transparent 0, transparent 50% ), repeating-linear-gradient( 180deg, var(--color-surface-dark-alt) 0, var(--color-surface-dark-alt) 5%, transparent 0, transparent 50% );
+        background-color: var(--color-surface-dark);
+    }
+}
+
+/* Form Children Spacing */
+.form-children-spacing > *:not(input[type="hidden"]) + *:not(input[type="hidden"]) {
+    margin-top: 1.5rem; /* Equivalent to theme('spacing.6') */
+}
+
+.validation-errors {
+    color: var(--color-danger);
+    font-style: italic;
+}
+
+/* Field Validation Error */
+.field-validation-error {
+    color: var(--color-danger);
+    font-style: italic;
+}
+
+/* Input Validation Error */
+.input-validation-error {
+    border-color: var(--color-danger);
+    outline-color: var(--color-danger);
+}
+
+/* Input Validation Valid */
+.input-validation-valid {
+    border-color: var(--color-success);
+    outline-color: var(--color-success);
+}
+
+/* Validation Summary Errors */
+.validation-summary-errors {
+    color: var(--color-danger);
+    font-style: italic;
+}
+
+/* Validation Summary Valid */
+.validation-summary-valid span {
+    display: none;
+}
+
+/* Flatpickr styling */
+@import "./vendor/flatpickr.css";

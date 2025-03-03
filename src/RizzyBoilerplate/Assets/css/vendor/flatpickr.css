@@ -1,0 +1,379 @@
+﻿.flatpickr-calendar {
+  @apply hidden invisible opacity-0 bg-surface text-on-surface text-sm leading-6 
+    rounded-md absolute p-0 m-0 box-border [touch-action:manipulation] animate-none 
+    w-[307.875px];
+  direction: ltr; /* Non-Tailwind property */
+  font-weight: 400; /* Optional */
+  /* Box-shadow approximation */
+  box-shadow: 1px 0 0 #eee, -1px 0 0 #eee, 0 1px 0 #eee, 0 -1px 0 #eee, 0 3px 13px rgba(0,0,0,0.08);
+
+  /* Dark mode override (parent .dark) */
+  .dark & {
+    @apply bg-surface-dark text-on-surface-dark;
+    box-shadow: 1px 0 0 #20222c, -1px 0 0 #20222c, 0 1px 0 #20222c, 0 -1px 0 #20222c, 0 3px 13px rgba(0,0,0,0.08);
+  }
+
+  /* Open / inline states */
+  &.open,
+  &.inline {
+    @apply opacity-100 visible max-h-[640px];
+  }
+
+  &.open {
+    @apply inline-block z-[99999];
+  }
+
+  &.animate.open {
+    animation: fpFadeInDown 300ms cubic-bezier(0.23,1,0.32,1);
+  }
+
+  &.inline {
+    @apply block relative top-[2px];
+  }
+
+  &.static {
+    @apply absolute [top:calc(100%_+_2px)];
+
+    &.open {
+      @apply z-[999] block;
+    }
+  }
+
+  /* Arrow pseudo-elements */
+  &::before,
+  &::after {
+    @apply absolute block pointer-events-none border-transparent;
+    border-style: solid;
+    content: '';
+    height: 0;
+    width: 0;
+    left: 22px; /* exact positioning */
+  }
+
+  &.arrowTop {
+    &::before,
+    &::after {
+      bottom: 100%;
+    }
+
+    &::before {
+      border-width: 5px;
+      border-bottom-color: #eee;
+    }
+    &::after {
+      border-width: 4px;
+      border-bottom-color: var(--color-surface);
+    }
+
+    .dark &::before {
+      border-bottom-color: #20222c;
+    }
+    .dark &::after {
+      border-bottom-color: var(--color-surface-dark);
+    }
+  }
+
+  &.arrowBottom {
+    &::before,
+    &::after {
+      top: 100%;
+    }
+
+    &::before {
+      border-width: 5px;
+      border-top-color: #eee;
+    }
+    &::after {
+      border-width: 4px;
+      border-top-color: var(--color-surface);
+    }
+
+    .dark &::before {
+      border-top-color: #20222c;
+    }
+    .dark &::after {
+      border-top-color: var(--color-surface-dark);
+    }
+  }
+
+  &.arrowCenter {
+    &::before,
+    &::after {
+      left: 50%;
+      right: 50%;
+    }
+  }
+
+  &.rightMost,
+  &.arrowRight {
+    &::before,
+    &::after {
+      left: auto;
+      right: 22px;
+    }
+  }
+}
+
+/* Month navigation wrapper */
+.flatpickr-wrapper {
+  @apply relative inline-block;
+}
+
+/* The months container */
+.flatpickr-months {
+  @apply flex;
+
+  .flatpickr-month {
+    @apply flex-1 bg-surface text-on-surface fill-current h-8 leading-none 
+      text-center relative select-none overflow-hidden;
+
+    .dark & {
+      @apply bg-surface-dark text-on-surface-dark;
+    }
+  }
+
+  /* Prev/next month arrows */
+  .flatpickr-prev-month,
+  .flatpickr-next-month {
+    @apply select-none no-underline cursor-pointer h-[34px] z-[3] 
+      text-on-surface dark:text-on-surface-dark fill-on-surface dark:fill-on-surface-dark 
+      p-2.5 top-0;
+
+    .dark & {
+      @apply text-on-surface-dark fill-current;
+    }
+
+    svg {
+        @apply w-3.5 h-3.5;
+    }
+
+    svg path {
+        @apply transition-[fill] duration-[0.1s] fill-inherit;
+    }
+
+    &:hover {
+      @apply text-red-400; /* Example color (was #f64747) */
+    }
+  }
+}
+
+.flatpickr-current-month {
+  @apply text-base font-light text-inherit pt-[7.48px] 
+    leading-none h-8 inline-block text-center transform-none;
+
+  span.cur-month {
+    @apply font-bold text-inherit inline-block ml-[0.5ch] p-0;
+
+    &:hover {
+      @apply bg-gray-100 dark:bg-gray-600; /* Example hover overlay */
+    }
+  }
+
+  .numInputWrapper {
+    @apply inline-block w-[6ch] relative;
+  }
+
+  input.cur-year {
+    @apply bg-transparent box-border text-inherit cursor-text p-0 m-0 inline-block 
+      text-base font-light leading-none h-auto border-0 rounded-none focus:outline-none;
+
+      width: 6ch;
+
+    &[disabled] {
+      @apply text-gray-400 bg-transparent pointer-events-none;
+    }
+  }
+
+  .flatpickr-monthDropdown-months {
+    @apply appearance-none bg-surface dark:bg-surface-dark border-0 rounded-none 
+      text-inherit cursor-pointer text-base font-light leading-none outline-none py-0 pl-1 pr-2 ml-1 relative;
+
+    padding-right: 3rem;
+
+    &:hover {
+      @apply bg-gray-100 dark:bg-gray-600;
+    }
+  }
+}
+
+/* Weekdays header */
+.flatpickr-weekdays {
+  @apply bg-transparent text-center overflow-hidden w-full flex items-center h-7;
+
+  .flatpickr-weekdaycontainer {
+    @apply flex flex-1;
+  }
+}
+
+.flatpickr-weekday {
+  @apply cursor-default text-xs bg-transparent text-gray-600 dark:text-gray-300 
+    font-bold leading-none m-0 text-center flex-1;
+}
+
+/* Days container */
+.flatpickr-days {
+  @apply relative overflow-hidden flex items-start w-[307.875px];
+
+  .dayContainer {
+    @apply p-0 outline-none text-left w-[307.875px] min-w-[307.875px] max-w-[307.875px] 
+      inline-block flex flex-wrap justify-around box-border transform-none opacity-100;
+
+    & + .dayContainer {
+      box-shadow: -1px 0 0 #eee;
+      .dark & {
+        box-shadow: -1px 0 0 #20222c;
+      }
+    }
+  }
+}
+
+/* Each day cell */
+.flatpickr-day {
+  @apply bg-transparent border border-transparent rounded-full box-border text-on-surface 
+    cursor-pointer font-normal inline-block relative flex-none text-center w-[14.2857143%] 
+     h-[39px] leading-[39px];
+
+  .dark & {
+    @apply text-on-surface-dark;
+  }
+
+  &:hover,
+  &:focus,
+  &.inRange,
+  &.today.inRange {
+    @apply cursor-pointer outline-none bg-gray-200 border-gray-200 
+      dark:bg-gray-700 dark:border-gray-700;
+  }
+
+  &.today {
+    @apply border-red-400;
+
+    &:hover,
+    &:focus {
+      @apply bg-red-400 text-white border-red-400;
+    }
+  }
+
+  &.selected,
+  &.startRange,
+  &.endRange {
+    @apply bg-blue-500 border-blue-500 text-white shadow-none;
+  }
+
+  &.flatpickr-disabled,
+  &.prevMonthDay,
+  &.nextMonthDay,
+  &.notAllowed {
+    @apply cursor-not-allowed text-gray-300 bg-transparent border-transparent;
+
+    .dark & {
+      @apply text-gray-600;
+    }
+  }
+}
+
+/* Example range corners:
+  .flatpickr-day.selected.startRange { @apply rounded-l-full; }
+  .flatpickr-day.selected.endRange   { @apply rounded-r-full; }
+*/
+
+/* Weeks number column (if enabled) */
+.flatpickr-weekwrapper {
+  @apply float-left;
+
+  .flatpickr-weeks {
+    @apply p-0 px-3 shadow-none;
+    box-shadow: 1px 0 0 #eee;
+
+    .dark & {
+      box-shadow: 1px 0 0 #20222c;
+    }
+  }
+
+  .flatpickr-weekday {
+    @apply w-full leading-7;
+  }
+
+  span.flatpickr-day {
+    @apply w-full max-w-none text-gray-300 bg-transparent cursor-default border-0;
+  }
+}
+
+/* Inner container layout */
+.flatpickr-innerContainer {
+  @apply block flex box-border overflow-hidden;
+}
+
+.flatpickr-rContainer {
+  @apply inline-block p-0 box-border;
+}
+
+/* Time picker container */
+.flatpickr-time {
+  @apply block h-0 max-h-10 leading-10 text-center outline-none overflow-hidden flex;
+
+  .numInputWrapper {
+    @apply flex-1 float-left w-[40%] h-10 relative;
+
+    &.hasSeconds {
+      @apply w-[26%];
+    }
+
+    .time24hr & {
+      @apply w-[49%];
+    }
+  }
+
+  input {
+    @apply bg-transparent shadow-none border-0 rounded-none text-center 
+      m-0 p-0 h-full leading-10 text-on-surface text-sm focus:outline-none;
+
+    .dark & {
+      @apply text-on-surface-dark;
+    }
+
+    &.flatpickr-hour {
+      @apply font-bold;
+    }
+
+    &.flatpickr-minute,
+    &.flatpickr-second {
+      @apply font-normal;
+    }
+
+    &:hover,
+    &:focus {
+      @apply bg-gray-100 dark:bg-gray-700;
+    }
+  }
+
+  .flatpickr-time-separator,
+  .flatpickr-am-pm {
+    @apply float-left h-full leading-10 font-bold w-[2%] select-none self-center text-on-surface;
+
+    .dark & {
+      @apply text-on-surface-dark;
+    }
+  }
+
+  .flatpickr-am-pm {
+    @apply outline-none w-[18%] text-center font-normal cursor-pointer;
+
+    &:hover,
+    &:focus {
+      @apply bg-gray-100 dark:bg-gray-700;
+    }
+  }
+}
+
+/* Keyframes for fade-down animation (optional) */
+@keyframes fpFadeInDown {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
