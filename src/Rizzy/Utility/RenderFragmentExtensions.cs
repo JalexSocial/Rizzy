@@ -9,7 +9,10 @@ using Rizzy.Components;
 
 namespace Rizzy.Utility;
 
-public static class RazorRenderer
+/// <summary>
+/// Helper extensions to work with RenderFragment
+/// </summary>
+public static class RenderFragmentExtensions
 {
     /// <summary>
     /// Extracts all MarkupContent from the given RenderFragment as a concatenated markdown string.
