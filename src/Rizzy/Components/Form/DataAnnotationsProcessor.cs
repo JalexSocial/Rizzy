@@ -52,10 +52,12 @@ public class DataAnnotationsProcessor
     public DataAnnotationsProcessor(IServiceProvider provider)
     {
         _provider = provider ?? throw new ArgumentNullException(nameof(provider));
-        _adapterProvider = provider.GetRequiredService<IValidationAttributeAdapterProvider>();
+        _adapterProvider = provider.GetService<IValidationAttributeAdapterProvider>() ??
+                           new ValidationAttributeAdapterProvider();
         // Attempt to resolve the localizer factory; if not present, _localizerFactory will be null.
         _localizerFactory = provider.GetService<IStringLocalizerFactory>();
-        _metadataProvider = provider.GetRequiredService<IModelMetadataProvider>();
+        _metadataProvider = provider.GetService<IModelMetadataProvider>() ?? 
+                            new EmptyModelMetadataProvider();
 
         _attributeHandlers = new Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>>
         {
@@ -134,7 +136,7 @@ public class DataAnnotationsProcessor
         var metadata = _metadataProvider.GetMetadataForProperty(modelType, fieldIdentifier.FieldName);
 
         // If a localizer factory is available, create a localizer; otherwise, localizer remains null.
-        IStringLocalizer? localizer = _localizerFactory != null ? _localizerFactory.Create(modelType) : null;
+        IStringLocalizer? localizer = _localizerFactory?.Create(modelType);
 
         // Construct a minimal ActionContext.
         var actionContext = new ActionContext(
@@ -183,12 +185,6 @@ public class DataAnnotationsProcessor
         ModelValidationContextBase validationContext,
         IStringLocalizer? localizer)
     {
-        if (localizer == null)
-        {
-            // IStringLocalizerFactory is unavailable; fallback to default error messages.
-            return null;
-        }
-
         var adapter = _adapterProvider.GetAttributeAdapter(attribute, localizer);
         return adapter?.GetErrorMessage(validationContext);
     }
