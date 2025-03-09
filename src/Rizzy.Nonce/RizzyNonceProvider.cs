@@ -7,17 +7,11 @@ namespace Rizzy.Nonce;
 /// </summary>
 public sealed class RizzyNonceProvider : IRizzyNonceProvider
 {
-    // Key to store nonce values in HttpContext.Items.
-    private static readonly string NonceKey = "RizzyNonceValues";
-
     // Map known nonce types to their respective header names.
-    private static readonly Dictionary<NonceType, string> HeaderNames = new Dictionary<NonceType, string>
+    private static readonly Dictionary<NonceType, string> HeaderNames = new ()
         {
-            { NonceType.Script, "Rizzy-Script-Nonce" },
-            { NonceType.Style, "Rizzy-Style-Nonce" },
-            { NonceType.Font, "Rizzy-Font-Nonce" },
-            { NonceType.Image, "Rizzy-Image-Nonce" },
-            { NonceType.Connect, "Rizzy-Connect-Nonce" }
+            { NonceType.Script, Constants.Headers.ScriptNonce },
+            { NonceType.Style, Constants.Headers.StyleNonce }
         };
 
     // Nonce generator used to create and validate nonce values.
@@ -47,7 +41,7 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
             ?? throw new InvalidOperationException("No HttpContext available.");
 
         // If nonce values have already been generated for this request, return them.
-        if (context.Items[NonceKey] is RizzyNonceValues cachedNonceValues)
+        if (context.Items[Constants.NonceKey] is RizzyNonceValues cachedNonceValues)
         {
             return cachedNonceValues;
         }
@@ -74,7 +68,7 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
         }
 
         // Cache the nonce values for the current request.
-        context.Items[NonceKey] = nonceValues;
+        context.Items[Constants.NonceKey] = nonceValues;
         return nonceValues;
     }
 
