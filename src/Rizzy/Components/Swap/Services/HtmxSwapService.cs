@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Rizzy;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// Service for managing dynamic content swaps in a Blazor application.

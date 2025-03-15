@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 public interface IHtmxSwapService
 {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.ObjectModel;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// A component that wraps the HTML file input element and supplies a Stream for each file's contents.

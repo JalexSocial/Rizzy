@@ -5,7 +5,7 @@ using Rizzy.Components.Form;
 using Rizzy.Components.Form.Helpers;
 using System.Collections.ObjectModel;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// An input component used for selecting a value from a group of choices.

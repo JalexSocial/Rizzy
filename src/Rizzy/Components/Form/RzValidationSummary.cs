@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// Inherits ValidationSummary - Included for consistency

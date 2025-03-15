@@ -55,6 +55,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Sqids" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,7 +73,6 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
 		<ProjectReference Include="..\Rizzy.Htmx\Rizzy.Htmx.csproj" />
-		<ProjectReference Include="..\Rizzy.Nonce\Rizzy.Nonce.csproj" />
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 

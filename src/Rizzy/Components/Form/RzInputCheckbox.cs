@@ -7,7 +7,7 @@ using Rizzy.Utility;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// An input component for editing Boolean values.

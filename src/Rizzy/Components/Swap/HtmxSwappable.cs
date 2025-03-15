@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// A Blazor component that enables swapping HTML content dynamically based on specified parameters through Htmx.

@@ -7,7 +7,7 @@ namespace Rizzy.Htmx;
 /// </summary>
 public record class HtmxConfig
 {
-    public class AntiForgeryConfiguration
+    internal class AntiForgeryConfiguration
     {
         [JsonPropertyName("formFieldName")]
         public string? FormFieldName { get; set; }
@@ -237,7 +237,7 @@ public record class HtmxConfig
 
 
     [JsonInclude, JsonPropertyName("antiforgery")]
-    public AntiForgeryConfiguration? Antiforgery { get; set; } = null;
+    internal AntiForgeryConfiguration? Antiforgery { get; set; } = null;
 
     /// <summary>
     /// If set to true, will utilize an IRizzyNonceProvider instance to generate script nonces

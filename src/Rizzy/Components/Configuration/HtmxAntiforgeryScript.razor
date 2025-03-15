@@ -1,43 +1,61 @@
-﻿@using Rizzy.Nonce
-@namespace Rizzy.Components
+﻿@using Microsoft.AspNetCore.Http
 
-<script type="text/javascript" nonce="@NonceProvider.GetNonceFor(NonceType.Script)">
+@namespace Rizzy
+
+<script type="text/javascript" nonce="@HttpContext?.GetNonce()">
 	@((MarkupString)GetAntiforgeryJavaScript(Minified))
 </script>
 
 @code {
 
-    [Inject] 
-    public IRizzyNonceProvider NonceProvider { get; set; } = default!;
+    /// <summary>
+    /// Cascading parameter providing access to the current HttpContext.
+    /// </summary>
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
 
-	[Parameter]
+    /// <summary>
+    /// Determines whether to use the minified antiforgery JavaScript resource.
+    /// </summary>
 #if DEBUG
-	public bool Minified { get; set; } = false;
+    public bool Minified { get; set; } = false;
 #else
-	public bool Minified { get; set; } = true;
+    public bool Minified { get; set; } = true;
 #endif
 
-	protected override void OnInitialized()
-	{
-		base.OnInitialized();
-	}
+    /// <summary>
+    /// Gets the standard (non-minified) antiforgery JavaScript resource contents.
+    /// </summary>
+    public string AntiforgeryJavaScript => GetString(nameof(AntiforgeryJavaScript));
 
-	public string AntiforgeryJavaScript => GetString(nameof(AntiforgeryJavaScript));
+    /// <summary>
+    /// Gets the minified antiforgery JavaScript resource contents.
+    /// </summary>
+    public string AntiforgeryJavaScriptMinified => GetString(nameof(AntiforgeryJavaScriptMinified));
 
-	public string AntiforgeryJavaScriptMinified => GetString(nameof(AntiforgeryJavaScriptMinified));
+    /// <summary>
+    /// Retrieves either the minified or non-minified antiforgery JavaScript, based on the <paramref name="minified"/> parameter.
+    /// </summary>
+    /// <param name="minified">True to load the minified resource; otherwise, false.</param>
+    /// <returns>The antiforgery JavaScript snippet.</returns>
+    public string GetAntiforgeryJavaScript(bool minified) => minified ? AntiforgeryJavaScriptMinified : AntiforgeryJavaScript;
 
-	public string GetAntiforgeryJavaScript(bool minified) => minified ? AntiforgeryJavaScriptMinified : AntiforgeryJavaScript;
+    /// <summary>
+    /// Loads the specified embedded resource from the assembly as a <see cref="string"/>.
+    /// </summary>
+    /// <param name="name">The resource name to retrieve.</param>
+    /// <returns>The embedded resource contents as a string.</returns>
+    /// <exception cref="ArgumentException">Thrown if the resource could not be found.</exception>
+    private static string GetString(string name)
+    {
+        var assembly = typeof(HtmxAntiforgeryScript).Assembly;
+        using var resource = assembly.GetManifestResourceStream(name);
 
-	private static string GetString(string name)
-	{
-		var assembly = typeof(HtmxAntiforgeryScript).Assembly;
-		using var resource = assembly.GetManifestResourceStream(name);
+        if (resource == null)
+            throw new ArgumentException($"Resource \"{name}\" was not found.", nameof(name));
 
-		if (resource == null)
-			throw new ArgumentException($"Resource \"{name}\" was not found.", nameof(name));
-            
-		using var reader = new StreamReader(resource);
-		var response = reader.ReadToEnd();
-		return response;
-	}
+        using var reader = new StreamReader(resource);
+        var response = reader.ReadToEnd();
+        return response;
+    }
 }

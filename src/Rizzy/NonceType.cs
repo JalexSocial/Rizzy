@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Nonce;
+﻿namespace Rizzy;
 
 /// <summary>
 /// Defines the different types of nonces used in Content Security Policies.

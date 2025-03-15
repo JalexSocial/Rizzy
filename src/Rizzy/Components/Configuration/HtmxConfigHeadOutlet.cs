@@ -6,9 +6,10 @@ using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using System.Text.Json;
 using Rizzy.Htmx;
-using Rizzy.Nonce;
+using Rizzy.Htmx.Antiforgery;
+using System.Web;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// This component will render a meta tag with the serialized <see cref="HtmxConfig"/> object,
@@ -17,12 +18,11 @@ namespace Rizzy.Components;
 public class HtmxConfigHeadOutlet : ComponentBase
 {
     private string _jsonConfig = string.Empty;
-
+	[Inject] private IRizzyNonceProvider? NonceProvider { get; set; }
     [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
     [Inject] private IAntiforgery Antiforgery { get; set; } = default!;
     [Inject] private IOptionsSnapshot<RizzyConfig> RizzyConfig { get; set; } = default!;
     [Inject] private IOptions<HtmxAntiforgeryOptions> AntiforgeryConfig { get; set; } = default!;
-    [Inject] private IRizzyNonceProvider NonceProvider { get; set; } = default!;
 
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
@@ -56,14 +56,14 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
             var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
 
-            config.Antiforgery.RequestToken = tokens.RequestToken!;
+            config.Antiforgery.RequestToken = HttpUtility.HtmlAttributeEncode(tokens.RequestToken)!;
         }
 
         if (config.GenerateScriptNonce)
-            config.InlineScriptNonce = NonceProvider.GetNonceFor(NonceType.Script);
+            config.InlineScriptNonce = NonceProvider?.GetNonce() ?? HttpContext?.GetNonce();
 
         if (config.GenerateStyleNonce)
-            config.InlineStyleNonce = NonceProvider.GetNonceFor(NonceType.Style);
+            config.InlineStyleNonce = NonceProvider?.GetNonce() ?? HttpContext?.GetNonce();
 
         _jsonConfig = config.Serialize();
 

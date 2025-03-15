@@ -7,7 +7,7 @@ using Rizzy.Utility;
 using System.Collections.ObjectModel;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// Groups child InputRadio components.

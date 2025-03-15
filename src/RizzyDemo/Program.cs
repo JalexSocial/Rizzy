@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Rizzy;
-using Rizzy.Components;
 using Rizzy.Htmx;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;
@@ -48,11 +47,13 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseAntiforgery();
 
 app.UseRouting();
 
 app.UseAuthorization();
+
+// Required (after authentication and authorization)
+app.UseAntiforgery();
 
 app.MapPost("/love-htmx",
     ([FromServices] IRizzyService rizzy) => rizzy.PartialView<LoveHtmx>(new { Message = "I ❤️ ASP.NET Core" }));

@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Rizzy.Htmx.Antiforgery;
 
 namespace Rizzy.Htmx;
 
@@ -16,8 +17,6 @@ namespace Rizzy.Htmx;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
-	private static readonly string _defaultCookieName = "HX-XSRF-TOKEN";
-
     /// <summary>
     /// Adds the Rizzy.Htmx services to the service collection with an optional default configuration.
     /// </summary>
@@ -34,7 +33,6 @@ public static class ServiceCollectionExtensions
 
         // Register configuration for Htmx.
         services.TryAddSingleton<IConfigureOptions<HtmxConfig>, ConfigureHtmxSettings>();
-        services.TryAddSingleton<IConfigureNamedOptions<HtmxConfig>, ConfigureHtmxSettings>();
 
         // Configure the default HtmxConfig.
         services.Configure<HtmxConfig>(configure ?? (options => { }));
@@ -56,7 +54,7 @@ public static class ServiceCollectionExtensions
         {
             opt.FormFieldName = antiforgeryOptions.Value.FormFieldName;
             opt.HeaderName = antiforgeryOptions.Value.HeaderName;
-            opt.CookieName = _defaultCookieName;
+            opt.CookieName = Constants.AntiforgeryCookieName;
         });
 
         services.AddAntiforgeryValidation();
@@ -83,7 +81,7 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Class responsible for configuring <see cref="HtmxConfig"/> options.
     /// </summary>
-    public class ConfigureHtmxSettings : IConfigureOptions<HtmxConfig>, IConfigureNamedOptions<HtmxConfig>
+    public class ConfigureHtmxSettings : IConfigureOptions<HtmxConfig>
     {
         private readonly HtmxAntiforgeryOptions _antiforgeryOptions;
 
@@ -95,17 +93,7 @@ public static class ServiceCollectionExtensions
         {
             _antiforgeryOptions = antiforgeryOptions.Value;
         }
-
-        /// <summary>
-        /// Configures a named instance of <see cref="HtmxConfig"/> options.
-        /// </summary>
-        /// <param name="name">The name of the options instance.</param>
-        /// <param name="options">The <see cref="HtmxConfig"/> options to configure.</param>
-        public void Configure(string? name, HtmxConfig options)
-        {
-            Configure(options);
-        }
-
+		
         /// <summary>
         /// Configures the default <see cref="HtmxConfig"/> options.
         /// </summary>

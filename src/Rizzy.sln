@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RizzyDemo", "RizzyDemo\Rizz
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rizzy.Tests", "..\test\Rizzy.Tests\Rizzy.Tests.csproj", "{3294AC12-9A14-4A4D-BD98-D08F2DD5B7D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rizzy.Nonce", "Rizzy.Nonce\Rizzy.Nonce.csproj", "{2C5ECCA2-C059-4679-A111-E611E43C631D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rizzy.Htmx", "Rizzy.Htmx\Rizzy.Htmx.csproj", "{A63A9003-CC36-474E-8333-118DC0AFAD54}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RizzyBoilerplate", "RizzyBoilerplate\RizzyBoilerplate.csproj", "{483780E3-70B2-4A13-B3CF-D1999BAF24DD}"
@@ -33,10 +31,6 @@ Global
 		{3294AC12-9A14-4A4D-BD98-D08F2DD5B7D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3294AC12-9A14-4A4D-BD98-D08F2DD5B7D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3294AC12-9A14-4A4D-BD98-D08F2DD5B7D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C5ECCA2-C059-4679-A111-E611E43C631D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C5ECCA2-C059-4679-A111-E611E43C631D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C5ECCA2-C059-4679-A111-E611E43C631D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C5ECCA2-C059-4679-A111-E611E43C631D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A63A9003-CC36-474E-8333-118DC0AFAD54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A63A9003-CC36-474E-8333-118DC0AFAD54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A63A9003-CC36-474E-8333-118DC0AFAD54}.Release|Any CPU.ActiveCfg = Release|Any CPU

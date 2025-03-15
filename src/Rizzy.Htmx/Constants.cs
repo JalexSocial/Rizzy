@@ -8,7 +8,22 @@ namespace Rizzy.Htmx;
 [SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Only containers for constants here. Nothing to see!")]
 internal static class Constants
 {
-    /// <summary>
+	public const string AntiforgeryCookieName = "";
+	internal static class Nonce
+	{
+		/// <summary>
+		/// Nonce headers for use with HTMX
+		/// </summary>
+		public const string NonceResponseHeader = "HX-Nonce";
+	}
+
+	internal static class HttpContextKeys
+	{
+		public const string HtmxRequestKey = "Rizzy.Http:HtmxRequest";
+		public const string FormFieldMappingsKey = "Rizzy.Http:AllFieldMappings";
+	}
+
+	/// <summary>
     /// Htmx attribute names.
     /// </summary>
     public static class Attributes

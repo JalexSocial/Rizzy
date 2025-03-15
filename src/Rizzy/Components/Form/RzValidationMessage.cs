@@ -7,7 +7,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 public class RzValidationMessage<TValue> : ValidationMessage<TValue>
 {

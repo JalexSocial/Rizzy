@@ -48,6 +48,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="Rizzy" />
         <InternalsVisibleTo Include="Rizzy.Tests" />
     </ItemGroup>
 

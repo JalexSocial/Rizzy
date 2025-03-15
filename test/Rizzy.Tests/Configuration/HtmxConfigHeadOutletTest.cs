@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Components;
 using Rizzy.FluentAssertions;
 using Rizzy.Htmx;
+using Rizzy.Htmx.Antiforgery;
 using Rizzy.Http;
 
 namespace Rizzy.Configuration;

@@ -6,7 +6,7 @@ using Rizzy.Components.Form.Helpers;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// An input component for editing numeric values. Supported numeric types are

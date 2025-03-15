@@ -2,13 +2,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-using Rizzy.Components;
-using Rizzy.Nonce;
-using Rizzy.Serialization;
-using Rizzy.Utility;
-using System;
-using Rizzy.Htmx;
 
 namespace Rizzy.Configuration;
 
@@ -50,12 +43,6 @@ public class RizzyConfigBuilder
         // Register HttpContextAccessor.
         _services.AddHttpContextAccessor();
 
-        // Register the nonce-related services.
-        _services.AddRizzyNonceProvider(options =>
-        {
-	        options.HMACKey = rizzyConfig.NonceHMACKey;
-        });
-
         // Configure the RizzyConfig.
         if (configBuilder != null)
         {
@@ -73,6 +60,7 @@ public class RizzyConfigBuilder
         // Add other necessary services.
         _services.AddSingleton<DataAnnotationsProcessor>();
         _services.AddScoped<IRizzyService, RizzyService>();
-        _services.AddScoped<IHtmxSwapService, Rizzy.Components.HtmxSwapService>();
+        _services.AddScoped<IHtmxSwapService, HtmxSwapService>();
+        _services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
     }
 }

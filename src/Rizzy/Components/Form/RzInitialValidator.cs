@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 public class RzInitialValidator : ComponentBase
 {

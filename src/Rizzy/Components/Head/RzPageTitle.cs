@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// Enables rendering an HTML <c>&lt;title&gt;</c> to a <see cref="RzHeadOutlet"/> component. This component currently is not operational in SSR mode

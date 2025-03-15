@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="Assets\css\site.css">
+        <Content Include="Assets\css\app.css">
             <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
         </Content>

@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// Processes Data Annotations on model properties and converts them to HTML5 data attributes.

@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
+﻿using System.Security.Cryptography;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 
 namespace Rizzy.Htmx;
 
 public static class HttpContextExtensions
 {
-	private const string HtmxRequestKey = "Rizzy.Http:HtmxRequest";
-	private const string FormFieldMappingsKey = "Rizzy.Http:AllFieldMappings";
-
     /// <summary>
     /// Extension method to check if a request is an Htmx request
     /// </summary>
@@ -28,14 +26,14 @@ public static class HttpContextExtensions
 	    ArgumentNullException.ThrowIfNull(request);
 
 	    // Check if the HtmxRequest is already created and stored in HttpContext.Items.
-	    if (request.HttpContext.Items.TryGetValue(HtmxRequestKey, out var existing) && existing is HtmxRequest htmxRequest)
+	    if (request.HttpContext.Items.TryGetValue(Constants.HttpContextKeys.HtmxRequestKey, out var existing) && existing is HtmxRequest htmxRequest)
 	    {
 		    return htmxRequest;
 	    }
 
 	    // Create new HtmxResponse and store it in HttpContext.Items.
 	    htmxRequest = new HtmxRequest(request.HttpContext);
-	    request.HttpContext.Items[HtmxRequestKey] = htmxRequest;
+	    request.HttpContext.Items[Constants.HttpContextKeys.HtmxRequestKey] = htmxRequest;
 
 	    return htmxRequest;
     }
@@ -87,11 +85,11 @@ public static class HttpContextExtensions
 
         // Get or create the "outer" dictionary that tracks all EditContext => field mappings.
         // If it does not exist, create it and store in HttpContext.Items.
-        if (!context.Items.TryGetValue(FormFieldMappingsKey, out var existing)
+        if (!context.Items.TryGetValue(Constants.HttpContextKeys.FormFieldMappingsKey, out var existing)
             || existing is not Dictionary<EditContext, Dictionary<FieldIdentifier, RzFormFieldMap>> formMappings)
         {
             formMappings = new Dictionary<EditContext, Dictionary<FieldIdentifier, RzFormFieldMap>>();
-            context.Items[FormFieldMappingsKey] = formMappings;
+            context.Items[Constants.HttpContextKeys.FormFieldMappingsKey] = formMappings;
         }
 
         // Now get or create the specific dictionary for the given EditContext.
@@ -116,11 +114,12 @@ public static class HttpContextExtensions
         ArgumentNullException.ThrowIfNull(editContext);
 
         // Look for the "outer" dictionary in HttpContext.Items.
-        if (context.Items.TryGetValue(FormFieldMappingsKey, out var existing)
+        if (context.Items.TryGetValue(Constants.HttpContextKeys.FormFieldMappingsKey, out var existing)
             && existing is Dictionary<EditContext, Dictionary<FieldIdentifier, RzFormFieldMap>> formMappings)
         {
             // If found, remove the specific dictionary entry for this EditContext.
             formMappings.Remove(editContext);
         }
     }
+
 }

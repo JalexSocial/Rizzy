@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Htmx;
+﻿namespace Rizzy.Htmx.Antiforgery;
 
 public enum AntiforgeryStrategy
 {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 public sealed class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
 {

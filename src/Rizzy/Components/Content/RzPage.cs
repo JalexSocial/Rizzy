@@ -5,18 +5,36 @@ using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using System.Reflection;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
-/// Page component container that provides a ViewContext cascading value
+/// Page component container
 /// </summary>
 public class RzPage : ComponentBase
 {
-    private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> _layoutAttributeCache = new();
+    /// <summary>
+    /// Caches layout attributes discovered on component types for faster lookups.
+    /// </summary>
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> LayoutAttributeCache = new();
+
+    /// <summary>
+    /// The layout to be used if one is present. If not set, uses <see cref="RizzyConfig.DefaultLayout"/>.
+    /// </summary>
     private Type? _layout = null;
 
-    [Inject] public IOptions<RizzyConfig> RizzyConfig { get; set; } = default!;
+    /// <summary>
+    /// Provides the application's Rizzy configuration, including default layout and root component settings.
+    /// </summary>
+    [Inject]
+    public IOptions<RizzyConfig> RizzyConfig { get; set; } = default!;
 
+    /// <summary>
+    /// Creates a cascading value around a specified render fragment.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the value to cascade.</typeparam>
+    /// <param name="builder">The render tree builder to use.</param>
+    /// <param name="value">The value to cascade.</param>
+    /// <param name="fragment">The fragment to render inside the cascading value.</param>
     public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
     {
         builder.OpenComponent<CascadingValue<TValue>>(0);
@@ -25,9 +43,12 @@ public class RzPage : ComponentBase
         builder.CloseComponent();
     }
 
+    /// <summary>
+    /// Builds the render tree for this page. Applies the root component and optional layout to the nested content.
+    /// </summary>
+    /// <param name="builder">The render tree builder used to construct the output.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-
         builder.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
         builder.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
         {
@@ -55,19 +76,30 @@ public class RzPage : ComponentBase
         builder.OpenComponent<HtmxSwapContent>(15);
         builder.CloseComponent();
         builder.CloseComponent();
-
     }
 
-    [Parameter, EditorRequired] public required Type ComponentType { get; set; } = default!;
+    /// <summary>
+    /// The type of the Razor component to dynamically render.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public required Type ComponentType { get; set; } = default!;
 
-    [Parameter, EditorRequired] public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
+    /// <summary>
+    /// A dictionary of parameter names and values for the <see cref="ComponentType"/>.
+    /// </summary>
+    [Parameter, EditorRequired]
+    public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
 
+    /// <summary>
+    /// Obtains layout information from the component's <see cref="LayoutAttribute"/> if present,
+    /// falling back to the <see cref="RizzyConfig.DefaultLayout" /> if not.
+    /// </summary>
     protected override void OnParametersSet()
     {
-        if (!_layoutAttributeCache.TryGetValue(ComponentType, out _layout))
+        if (!LayoutAttributeCache.TryGetValue(ComponentType, out _layout))
         {
             _layout = ComponentType.GetCustomAttribute<LayoutAttribute>()?.LayoutType;
-            _layoutAttributeCache.TryAdd(ComponentType, _layout);
+            LayoutAttributeCache.TryAdd(ComponentType, _layout);
         }
 
         if (_layout == null)

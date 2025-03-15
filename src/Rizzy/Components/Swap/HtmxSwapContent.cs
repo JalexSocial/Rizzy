@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 /// <summary>
 /// Razor component that fully renders any content from HtmxSwapService

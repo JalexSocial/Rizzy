@@ -1,4 +1,5 @@
 using Rizzy;
+using Rizzy.Components;
 using Rizzy.Htmx;
 using RizzyBoilerplate.Components.Layout;
 
@@ -33,6 +34,9 @@ app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// Required (after authentication and authorization)
+app.UseAntiforgery();
 
 app.MapStaticAssets();
 

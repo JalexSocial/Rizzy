@@ -6,7 +6,7 @@ using Rizzy.Components.Form.Helpers;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 
-namespace Rizzy.Components;
+namespace Rizzy;
 
 public class RzInputText : InputText
 {
