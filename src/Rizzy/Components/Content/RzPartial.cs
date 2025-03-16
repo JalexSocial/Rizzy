@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Rizzy;
 
@@ -30,18 +31,21 @@ public partial class RzPartial : ComponentBase
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> to receive the render output.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenComponent<LayoutView>(4);
-        builder.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
-        builder.AddAttribute(6, "ChildContent", (RenderFragment)((builder2) =>
+        CreateCascadingValue(builder, ModelState, builder2 =>
         {
-            builder2.OpenComponent<DynamicComponent>(7);
-            builder2.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-            builder2.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-            builder2.CloseComponent();
-        }));
-        builder.CloseComponent();
-        builder.OpenComponent<HtmxSwapContent>(15);
-        builder.CloseComponent();
+	        builder2.OpenComponent<LayoutView>(4);
+	        builder2.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
+	        builder2.AddAttribute(6, "ChildContent", (RenderFragment)((builder3) =>
+	        {
+		        builder3.OpenComponent<DynamicComponent>(7);
+		        builder3.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+		        builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+		        builder3.CloseComponent();
+	        }));
+	        builder2.CloseComponent();
+	        builder2.OpenComponent<HtmxSwapContent>(15);
+	        builder2.CloseComponent();
+        });
     }
 
     /// <summary>
@@ -55,4 +59,11 @@ public partial class RzPartial : ComponentBase
     /// </summary>
     [Parameter, EditorRequired]
     public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
+
+    /// <summary>
+    /// Optional ModelState provided by MVC
+    /// </summary>
+    [Parameter]
+    public ModelStateDictionary? ModelState { get; set; }
+
 }

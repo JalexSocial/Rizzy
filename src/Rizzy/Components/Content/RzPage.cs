@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Rizzy;
 
@@ -49,33 +50,36 @@ public class RzPage : ComponentBase
     /// <param name="builder">The render tree builder used to construct the output.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
-        builder.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
-        {
-            if (_layout != null)
-            {
-                builder3.OpenComponent<LayoutView>(6);
-                builder3.AddComponentParameter(7, "Layout", RuntimeHelpers.TypeCheck<System.Type>(_layout));
-                builder3.AddAttribute(8, "ChildContent", (RenderFragment)((builder4) =>
-                {
-                    builder4.OpenComponent<DynamicComponent>(9);
-                    builder4.AddComponentParameter(10, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-                    builder4.AddComponentParameter(11, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-                    builder4.CloseComponent();
-                }));
-                builder3.CloseComponent();
-            }
-            else
-            {
-                builder3.OpenComponent<DynamicComponent>(12);
-                builder3.AddComponentParameter(13, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-                builder3.AddComponentParameter(14, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-                builder3.CloseComponent();
-            }
-        }));
-        builder.OpenComponent<HtmxSwapContent>(15);
-        builder.CloseComponent();
-        builder.CloseComponent();
+	    CreateCascadingValue(builder, ModelState, builderPage =>
+	    {
+		    builderPage.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
+		    builderPage.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
+		    {
+			    if (_layout != null)
+			    {
+				    builder3.OpenComponent<LayoutView>(6);
+				    builder3.AddComponentParameter(7, "Layout", RuntimeHelpers.TypeCheck<System.Type>(_layout));
+				    builder3.AddAttribute(8, "ChildContent", (RenderFragment)((builder4) =>
+				    {
+					    builder4.OpenComponent<DynamicComponent>(9);
+					    builder4.AddComponentParameter(10, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+					    builder4.AddComponentParameter(11, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+					    builder4.CloseComponent();
+				    }));
+				    builder3.CloseComponent();
+			    }
+			    else
+			    {
+				    builder3.OpenComponent<DynamicComponent>(12);
+				    builder3.AddComponentParameter(13, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+				    builder3.AddComponentParameter(14, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+				    builder3.CloseComponent();
+			    }
+		    }));
+		    builderPage.OpenComponent<HtmxSwapContent>(15);
+		    builderPage.CloseComponent();
+		    builderPage.CloseComponent();
+	    });
     }
 
     /// <summary>
@@ -89,6 +93,12 @@ public class RzPage : ComponentBase
     /// </summary>
     [Parameter, EditorRequired]
     public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
+
+    /// <summary>
+    /// Optional ModelState provided by MVC
+    /// </summary>
+    [Parameter]
+    public ModelStateDictionary? ModelState { get; set; }
 
     /// <summary>
     /// Obtains layout information from the component's <see cref="LayoutAttribute"/> if present,

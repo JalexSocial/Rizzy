@@ -10,18 +10,30 @@ namespace Rizzy;
 /// <summary>
 /// An input component used for selecting a value from a group of choices.
 /// </summary>
-/// <typeparam name="TValue"></typeparam>
+/// <typeparam name="TValue">The type of the value.</typeparam>
 public class RzInputRadio<TValue> : InputRadio<TValue>
 {
+    /// <summary>
+    /// Gets or sets the DataAnnotationsProcessor.
+    /// </summary>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
-    [CascadingParameter] 
+    /// <summary>
+    /// Gets or sets the EditContext.
+    /// </summary>
+    [CascadingParameter]
     EditContext EditContext { get; set; } = default!;
 
+    /// <summary>
+    /// Gets or sets the Id of the input radio.
+    /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Method invoked when the component has received parameters from its parent in the render tree.
+    /// </summary>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();

@@ -9,16 +9,30 @@ using Rizzy.Htmx;
 
 namespace Rizzy;
 
+/// <summary>
+/// Represents a custom validation message component with extended capabilities for Blazor forms.
+/// </summary>
+/// <typeparam name="TValue">The type of the bound value.</typeparam>
 public class RzValidationMessage<TValue> : ValidationMessage<TValue>
 {
     private IDictionary<string, object> _mergedAttributes = default!;
     private string? _formattedValueExpression;
     private bool _shouldGenerateFieldNames;
+
+    /// <summary>
+    /// Gets or sets the current <see cref="EditContext"/> for the containing form.
+    /// </summary>
     [CascadingParameter] EditContext EditContext { get; set; } = default!;
 
+    /// <summary>
+    /// Gets or sets the current <see cref="HttpContext"/>, if available.
+    /// </summary>
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
+    /// <summary>
+    /// Invoked when the component's parameters are set. Configures or verifies required attributes.
+    /// </summary>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -57,6 +71,10 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     }
 
     /// <inheritdoc />
+    /// <summary>
+    /// Builds the render tree to display validation messages.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/>.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (For is null)
@@ -88,7 +106,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     }
 
     /// <summary>
-    /// This is fallback code pulled directly from the Asp.net source
+    /// Gets the name attribute value for generating validation messages.
     /// </summary>
     private string NameAttributeValue
     {
@@ -103,8 +121,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
             {
                 if (_formattedValueExpression is null && For is not null)
                 {
-                    _formattedValueExpression = //FieldPrefix != null ? FieldPrefix.GetFieldName(For) :
-                        ExpressionFormatter.FormatLambda(For);
+                    _formattedValueExpression = ExpressionFormatter.FormatLambda(For);
                 }
 
                 return _formattedValueExpression ?? string.Empty;

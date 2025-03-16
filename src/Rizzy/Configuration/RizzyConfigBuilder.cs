@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Components.Forms.Mapping;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -42,6 +43,7 @@ public class RizzyConfigBuilder
 
         // Register HttpContextAccessor.
         _services.AddHttpContextAccessor();
+        _services.AddSupplyValueFromFormProvider();
 
         // Configure the RizzyConfig.
         if (configBuilder != null)

@@ -9,11 +9,20 @@ namespace Rizzy;
 /// </summary>
 public class RzInputFile : InputFile
 {
+    /// <summary>
+    /// Gets or sets the ID of the input element.
+    /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Gets or sets the cascading parameter for the EditContext.
+    /// </summary>
     [CascadingParameter] EditContext EditContext { get; set; } = default!;
 
+    /// <summary>
+    /// Method invoked when the component has received parameters from its parent in the render tree.
+    /// </summary>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();

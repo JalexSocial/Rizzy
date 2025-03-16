@@ -12,18 +12,31 @@ namespace Rizzy;
 /// An input component for editing numeric values. Supported numeric types are
 /// Int32, Int64, Int16, Single, Double, Decimal.
 /// </summary>
-/// <typeparam name="TValue"></typeparam>
+/// <typeparam name="TValue">The type of the value being edited.</typeparam>
 public class RzInputNumber<TValue> : InputNumber<TValue>
 {
+    /// <summary>
+    /// Gets or sets the <see cref="DataAnnotationsProcessor"/> used to process data annotations.
+    /// </summary>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
+    /// <summary>
+    /// Gets or sets the <see cref="HttpContext"/> for the current request.
+    /// </summary>
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
+    /// <summary>
+    /// Gets or sets the ID of the input element.
+    /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Method invoked when the component has received parameters from its parent in the render tree,
+    /// and the incoming values have been assigned to properties.
+    /// </summary>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -49,6 +62,10 @@ public class RzInputNumber<TValue> : InputNumber<TValue>
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id);
     }
 
+    /// <summary>
+    /// Releases the unmanaged resources used by the component and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">A boolean value indicating whether the method has been called directly or indirectly by a user's code.</param>
     protected override void Dispose(bool disposing)
     {
         // When disposing, remove the field mapping.
@@ -57,5 +74,4 @@ public class RzInputNumber<TValue> : InputNumber<TValue>
 
         base.Dispose(disposing);
     }
-
 }

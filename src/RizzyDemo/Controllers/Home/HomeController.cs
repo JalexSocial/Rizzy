@@ -45,7 +45,10 @@ public class HomeController : RzController
     [HttpPost, ValidateAntiForgeryToken]
     public IResult Information([FromForm] Person person)
     {
-        return View<Information>();
+	    ModelState.AddModelError("Person.Name", "Name should be more conflagulated");
+
+//        return View<Information>(new { Person = person });
+	    return View<Information>();
     }
 
     public IResult Counter()

@@ -5,12 +5,19 @@ using Microsoft.AspNetCore.Components.Rendering;
 namespace Rizzy;
 
 /// <summary>
-/// Inherits ValidationSummary - Included for consistency
+/// A custom validation summary component that displays validation messages.
 /// </summary>
 public class RzValidationSummary : ValidationSummary
 {
+    /// <summary>
+    /// Gets or sets the <see cref="EditContext"/> for the form.
+    /// </summary>
     [CascadingParameter] EditContext EditContext { get; set; } = default!;
 
+    /// <summary>
+    /// Builds the render tree for the component.
+    /// </summary>
+    /// <param name="builder">The <see cref="RenderTreeBuilder"/> used to build the render tree.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         // As an optimization, only evaluate the messages enumerable once, and

@@ -14,22 +14,37 @@ namespace Rizzy;
 /// </summary>
 public class RzInputCheckbox : InputCheckbox
 {
+    /// <summary>
+    /// Gets or sets the data annotations processor service.
+    /// </summary>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
-    [CascadingParameter] 
+    /// <summary>
+    /// Gets or sets the HTTP context that can be used to retrieve field mappings.
+    /// </summary>
+    [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
+    /// <summary>
+    /// Gets or sets the id for the checkbox element.
+    /// An auto-generated id will be assigned if this is not set.
+    /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Called when the component is initialized.
+    /// </summary>
     protected override void OnInitialized()
     {
         base.OnInitialized();
-
         HttpContext?.GetOrAddFieldMapping(EditContext);
     }
 
+    /// <summary>
+    /// Called when the component has received parameters from its parent.
+    /// </summary>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -37,18 +52,13 @@ public class RzInputCheckbox : InputCheckbox
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputCheckbox)} must be enclosed within an {nameof(EditForm)}.");
 
-        // No validation
-
-        // If id doesn't exist then attempt to create one
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
 
-        // Get the field mapping dictionary for the given EditContext.
         var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
-        // Add mapping for this field (use FieldIdentifier from the base class).
         if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
         {
             fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
@@ -56,17 +66,18 @@ public class RzInputCheckbox : InputCheckbox
 
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
-
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }
 
+    /// <summary>
+    /// Disposes resources used by this component.
+    /// </summary>
+    /// <param name="disposing">Whether the component is disposing.</param>
     protected override void Dispose(bool disposing)
     {
-        // When disposing, remove the field mapping.
         var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
         fieldMapping?.Remove(FieldIdentifier);
 
         base.Dispose(disposing);
     }
-
 }

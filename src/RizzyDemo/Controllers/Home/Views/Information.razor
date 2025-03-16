@@ -7,9 +7,9 @@
 
 <div id="information">
 
-	<h3>Information</h3>
+    <h3>Information</h3>
 
-    <EditForm Model="Person" hx-post="/home/information" hx-target="#information">
+    <EditForm Model="Person" FormName="PersonEdit" hx-post="/home/information" hx-target="#information">
         <RzInitialValidator/>
         <RzValidationSummary/>
 
@@ -18,7 +18,7 @@
             <RzInputText class="form-control" @bind-Value="Person.Name"/>
             <RzValidationMessage For="@(() => Person.Name)"/>
         </div>
-        
+
         <RzValidationSummary/>
 
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -28,6 +28,21 @@
 
 @* ReSharper disable once CSharpWarnings::CS8618 *@
 @code {
-    [SupplyParameterFromForm]
-	public Person Person { get; set; } = new();
+
+    [SupplyParameterFromForm] 
+	public Person Person { get; set; } = new ();
+
+    [CascadingParameter]
+    public HttpContext HttpContext { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+    }
+
+	protected override void OnParametersSet()
+	{
+		base.OnParametersSet();
+	}
+
 }

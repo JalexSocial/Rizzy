@@ -12,18 +12,30 @@ namespace Rizzy;
 /// <summary>
 /// A dropdown selection component.
 /// </summary>
-/// <typeparam name="TValue"></typeparam>
+/// <typeparam name="TValue">The type of the value.</typeparam>
 public class RzInputSelect<TValue> : InputSelect<TValue>
 {
+    /// <summary>
+    /// Gets or sets the DataAnnotationsProcessor.
+    /// </summary>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
+    /// <summary>
+    /// Gets or sets the HttpContext.
+    /// </summary>
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
+    /// <summary>
+    /// Gets or sets the Id of the component.
+    /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Method invoked when the component has received parameters from its parent in the render tree.
+    /// </summary>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -54,6 +66,10 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }
 
+    /// <summary>
+    /// Releases the unmanaged resources used by the component and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing">A boolean value indicating whether the method is being called due to a call to Dispose.</param>
     protected override void Dispose(bool disposing)
     {
         // When disposing, remove the field mapping.
@@ -62,5 +78,4 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
 
         base.Dispose(disposing);
     }
-
 }

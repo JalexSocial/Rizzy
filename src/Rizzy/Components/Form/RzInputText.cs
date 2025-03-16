@@ -8,17 +8,33 @@ using Rizzy.Utility;
 
 namespace Rizzy;
 
+/// <summary>
+/// A custom input text component that extends the Blazor InputText component.
+/// </summary>
 public class RzInputText : InputText
 {
+    /// <summary>
+    /// Gets or sets the DataAnnotationsProcessor used to process data annotations.
+    /// </summary>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
+    /// <summary>
+    /// Gets or sets the HttpContext for the current request.
+    /// </summary>
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
+    /// <summary>
+    /// Gets or sets the ID of the input element.
+    /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Called when the component's parameters are set.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown if the component is not enclosed within an EditForm.</exception>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -44,6 +60,10 @@ public class RzInputText : InputText
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
     }
 
+    /// <summary>
+    /// Disposes the component and removes the field mapping.
+    /// </summary>
+    /// <param name="disposing">A boolean value indicating whether the component is being disposed.</param>
     protected override void Dispose(bool disposing)
     {
         // When disposing, remove the field mapping.
