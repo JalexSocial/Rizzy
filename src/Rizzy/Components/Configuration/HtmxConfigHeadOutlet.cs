@@ -26,11 +26,6 @@ public class HtmxConfigHeadOutlet : ComponentBase
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
-    /// <summary>
-    /// Specify a named configuration to use a non-default configuration
-    /// </summary>
-    [Parameter] public string? Configuration { get; set; } = default!;
-
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
@@ -39,7 +34,7 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-        var config = string.IsNullOrEmpty(Configuration) ? Options.Value : Options.Get(Configuration);
+        var config = Options.Value;
 
         if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
         {

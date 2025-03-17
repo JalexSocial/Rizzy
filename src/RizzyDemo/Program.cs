@@ -11,20 +11,13 @@ var builder = WebApplication.CreateBuilder(args);
 // This must be added after AddControllers
 builder.Services.AddRizzy(config =>
 {
-	config.RootComponent = typeof(HtmxApp<AppLayout>);
-	config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
+    config.RootComponent = typeof(HtmxApp<AppLayout>);
+    config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
 });
 
 builder.Services.AddHtmx(config =>
 {
 	config.SelfRequestsOnly = true;
-});
-
-// Add an alternate named configuration
-builder.Services.Configure<HtmxConfig>("articles", config =>
-{
-	config.SelfRequestsOnly = true;
-	config.GlobalViewTransitions = true;
 });
 
 // Add services to the container.

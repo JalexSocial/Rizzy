@@ -33,7 +33,7 @@
 	public Person Person { get; set; } = new ();
 
     [CascadingParameter]
-    public HttpContext HttpContext { get; set; }
+    public HttpContext? HttpContext { get; set; }
 
     protected override void OnInitialized()
     {

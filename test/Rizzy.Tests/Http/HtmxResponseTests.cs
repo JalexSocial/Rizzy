@@ -6,7 +6,6 @@ using Rizzy.Configuration;
 using Rizzy;
 using Rizzy.FluentAssertions;
 using Rizzy.Htmx;
-using static Rizzy.Configuration.RizzyConfigBuilder;
 
 namespace Rizzy.Http;
 
