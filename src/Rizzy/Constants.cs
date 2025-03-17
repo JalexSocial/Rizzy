@@ -2,6 +2,11 @@
 
 internal class Constants
 {
+    /// <summary>
+    /// Header name for the nonce value in the response if the request is an HTMX request.
+    /// </summary>
+    public const string NonceResponseHeader = "HX-Nonce";
+
     internal static class HttpContextKeys
     {
         /// <summary>

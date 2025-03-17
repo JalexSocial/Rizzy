@@ -42,6 +42,9 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
         // Cache the nonce values for the current request.
         context.Items[Constants.HttpContextKeys.NonceKey] = nonce;
 
+        // If CreateNonce is called we will append the nonce to the header 
+        context.Request.Headers.TryAdd(Constants.NonceResponseHeader, nonce);
+
         return nonce;
     }
 
