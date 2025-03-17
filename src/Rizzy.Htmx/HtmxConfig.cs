@@ -122,6 +122,15 @@ public record class HtmxConfig
     public string? InlineStyleNonce { get; set; }
 
     /// <summary>
+    /// Defaults to <c>''</c> (empty string) if this property is null,
+    /// meaning that no nonce has been defined for this document.  This is a Rizzy-specific setting
+    /// intended to allow a nonce to verify against without deliberately injecting it into all
+    /// htmx server responses
+    /// </summary>
+    [JsonInclude, JsonPropertyName("documentNonce")]
+    internal string? DocumentNonce { get; set; }
+
+    /// <summary>
     /// Defaults to <c>["class", "style", "width", "height"]</c> if this property is null.
     /// The attributes to settle during the settling phase
     /// </summary>

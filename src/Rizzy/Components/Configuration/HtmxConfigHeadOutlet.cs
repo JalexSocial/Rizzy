@@ -58,11 +58,14 @@ public class HtmxConfigHeadOutlet : ComponentBase
             config.Antiforgery.RequestToken = HttpUtility.HtmlAttributeEncode(tokens.RequestToken)!;
         }
 
+        // The document nonce is utilized by Rizzy to safely inject into htmx responses
+        config.DocumentNonce = NonceProvider?.GetNonce() ?? string.Empty;
+
         if (config.GenerateScriptNonce)
-            config.InlineScriptNonce = NonceProvider?.GetNonce() ?? HttpContext?.GetNonce();
+            config.InlineScriptNonce = config.DocumentNonce;
 
         if (config.GenerateStyleNonce)
-            config.InlineStyleNonce = NonceProvider?.GetNonce() ?? HttpContext?.GetNonce();
+            config.InlineStyleNonce = config.DocumentNonce;
 
         _jsonConfig = config.Serialize();
 

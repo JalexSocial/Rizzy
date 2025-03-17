@@ -6,7 +6,7 @@ namespace Rizzy.Configuration;
 public class RizzyConfig
 {
     private Type? _defaultLayout = null;
-    private Type? _rootComponent = typeof(EmptyRootComponent);
+    private Type? _rootComponent = typeof(HtmxApp<EmptyLayout>);
 
     public AntiforgeryStrategy AntiforgeryStrategy { get; set; } = AntiforgeryStrategy.GenerateTokensPerPage;
 
