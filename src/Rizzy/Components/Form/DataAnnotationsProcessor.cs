@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.ObjectModel;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -15,6 +8,11 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Localization;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
+using System.Reflection;
 
 namespace Rizzy;
 
@@ -56,7 +54,7 @@ public class DataAnnotationsProcessor
                            new ValidationAttributeAdapterProvider();
         // Attempt to resolve the localizer factory; if not present, _localizerFactory will be null.
         _localizerFactory = provider.GetService<IStringLocalizerFactory>();
-        _metadataProvider = provider.GetService<IModelMetadataProvider>() ?? 
+        _metadataProvider = provider.GetService<IModelMetadataProvider>() ??
                             new EmptyModelMetadataProvider();
 
         _attributeHandlers = new Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>>
@@ -262,8 +260,8 @@ public class DataAnnotationsProcessor
     /// A minimal implementation of ModelValidationContextBase using the correct constructor.
     /// </summary>
     private class DefaultModelValidationContext(
-	    ActionContext actionContext,
-	    ModelMetadata modelMetadata,
-	    IModelMetadataProvider metadataProvider)
-	    : ModelValidationContextBase(actionContext, modelMetadata, metadataProvider);
+        ActionContext actionContext,
+        ModelMetadata modelMetadata,
+        IModelMetadataProvider metadataProvider)
+        : ModelValidationContextBase(actionContext, modelMetadata, metadataProvider);
 }

@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 
 namespace Rizzy.Htmx;
@@ -23,19 +22,19 @@ public static class HttpContextExtensions
     /// <returns>An instance of HtmxResponse.</returns>
     public static HtmxRequest Htmx(this HttpRequest request)
     {
-	    ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(request);
 
-	    // Check if the HtmxRequest is already created and stored in HttpContext.Items.
-	    if (request.HttpContext.Items.TryGetValue(Constants.HttpContextKeys.HtmxRequestKey, out var existing) && existing is HtmxRequest htmxRequest)
-	    {
-		    return htmxRequest;
-	    }
+        // Check if the HtmxRequest is already created and stored in HttpContext.Items.
+        if (request.HttpContext.Items.TryGetValue(Constants.HttpContextKeys.HtmxRequestKey, out var existing) && existing is HtmxRequest htmxRequest)
+        {
+            return htmxRequest;
+        }
 
-	    // Create new HtmxResponse and store it in HttpContext.Items.
-	    htmxRequest = new HtmxRequest(request.HttpContext);
-	    request.HttpContext.Items[Constants.HttpContextKeys.HtmxRequestKey] = htmxRequest;
+        // Create new HtmxResponse and store it in HttpContext.Items.
+        htmxRequest = new HtmxRequest(request.HttpContext);
+        request.HttpContext.Items[Constants.HttpContextKeys.HtmxRequestKey] = htmxRequest;
 
-	    return htmxRequest;
+        return htmxRequest;
     }
 
     /// <summary>
@@ -45,14 +44,14 @@ public static class HttpContextExtensions
     /// <param name="action">An action that receives an HtmxResponse.</param>
     public static void Htmx(this HttpResponse response, Action<HtmxResponse> action)
     {
-	    ArgumentNullException.ThrowIfNull(response);
-	    ArgumentNullException.ThrowIfNull(action);
+        ArgumentNullException.ThrowIfNull(response);
+        ArgumentNullException.ThrowIfNull(action);
 
-	    // Create a new HtmxResponse.
-	    var htmxResponse = new HtmxResponse(response.HttpContext);
+        // Create a new HtmxResponse.
+        var htmxResponse = new HtmxResponse(response.HttpContext);
 
-	    // Invoke the action delegate, passing the newly created HtmxResponse.
-	    action(htmxResponse);
+        // Invoke the action delegate, passing the newly created HtmxResponse.
+        action(htmxResponse);
     }
 
     /// <summary>
@@ -62,9 +61,9 @@ public static class HttpContextExtensions
     /// <returns>A new instance of HtmxResponse.</returns>
     public static HtmxResponse Htmx(this HttpResponse response)
     {
-	    ArgumentNullException.ThrowIfNull(response);
+        ArgumentNullException.ThrowIfNull(response);
 
-	    return new HtmxResponse(response.HttpContext);
+        return new HtmxResponse(response.HttpContext);
     }
 
     /// <summary>

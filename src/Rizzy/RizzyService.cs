@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Rizzy.Components;
 using Rizzy.Htmx;
 
 namespace Rizzy;
@@ -14,7 +13,7 @@ namespace Rizzy;
 /// </summary>
 public sealed class RizzyService : IRizzyService
 {
-	private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private string? _currentActionUrl;
 
     /// <summary>
@@ -23,7 +22,7 @@ public sealed class RizzyService : IRizzyService
     /// <param name="httpContextAccessor">The HttpContextAccessor to access the scoped HttpContext.</param>
     public RizzyService(IHttpContextAccessor httpContextAccessor)
     {
-	    _httpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     /// <summary>
@@ -34,7 +33,7 @@ public sealed class RizzyService : IRizzyService
     /// <param name="modelState">Optional MVC ModelState</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a view.</returns>
     public IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent =>
-	    _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
+        _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
         View<TComponent>(data.ToDictionary(), modelState);
 
     /// <summary>
@@ -73,7 +72,7 @@ public sealed class RizzyService : IRizzyService
     /// <param name="modelState">Optional MVC ModelState</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a partial view.</returns>
     public IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent =>
-	    _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
+        _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
         PartialView<TComponent>(data.ToDictionary(), modelState);
 
     /// <summary>
@@ -93,8 +92,8 @@ public sealed class RizzyService : IRizzyService
         {
 	        // Add necessary parameters for rendering the component
 	        { "ComponentType", typeof(TComponent) },
-	        { "ComponentParameters", data },
-	        { "ModelState", modelState}
+            { "ComponentParameters", data },
+            { "ModelState", modelState}
         };
 
         // Return a result that can render the component as a partial view
@@ -121,7 +120,7 @@ public sealed class RizzyService : IRizzyService
     /// <returns></returns>
     public IResult PartialView(params RenderFragment[] fragments)
     {
-	    return new RazorComponentResult<FragmentComponent>(new { Fragments = fragments });
+        return new RazorComponentResult<FragmentComponent>(new { Fragments = fragments });
     }
 
     /// <summary>

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Components.Form.Helpers;
+using Rizzy.Htmx;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using Rizzy.Htmx;
 
 namespace Rizzy;
 

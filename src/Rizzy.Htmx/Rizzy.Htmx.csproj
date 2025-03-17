@@ -27,7 +27,7 @@
         <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
-        <Version>1.0.2</Version>
+        <Version>5.0.0</Version>
         <EnablePackageValidation>true</EnablePackageValidation>
         <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>

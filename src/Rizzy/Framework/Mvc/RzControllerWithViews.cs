@@ -3,14 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
-using Rizzy.Htmx;
 
 namespace Rizzy.Framework.Mvc;
 
 /// <summary>
 /// Base controller for Rizzy that provides access to Razor Component views and still provides standard MVC views
 /// </summary>
-public class RzControllerWithViews : Controller 
+public class RzControllerWithViews : Controller
 {
     private readonly IRizzyService? _serviceProxy = null;
     private IRizzyService RizzyService => _serviceProxy ?? this.HttpContext.RequestServices.GetRequiredService<IRizzyService>();

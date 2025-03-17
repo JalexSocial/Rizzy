@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rizzy.Components;
 #pragma warning disable BL0006
 
 namespace Rizzy.Utility;
@@ -28,7 +27,7 @@ public static class RenderFragmentExtensions
         }
 
         var builder = new RenderTreeBuilder();
-        fragment.Invoke(builder); 
+        fragment.Invoke(builder);
         var frames = builder.GetFrames();
         var markupContentList = new List<string>();
 

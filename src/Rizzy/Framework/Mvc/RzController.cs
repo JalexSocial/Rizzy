@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
-using Rizzy.Htmx;
-using System.Reflection;
 
 namespace Rizzy.Framework.Mvc;
 
@@ -65,7 +63,7 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     /// </summary>
     /// <param name="fragment">The <see cref="RenderFragment"/> to render.</param>
     /// <returns>An <see cref="IResult"/> that can render the fragment as a partial view.</returns>
-    public virtual IResult PartialView(RenderFragment fragment) 
+    public virtual IResult PartialView(RenderFragment fragment)
         => RizzyService.PartialView(fragment);
 
     /// <summary>
@@ -73,7 +71,7 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     /// </summary>
     /// <param name="fragments">The <see cref="RenderFragment"/> array to render.</param>
     /// <returns>An <see cref="IResult"/> that can render the fragments as a partial view.</returns>
-    public virtual IResult PartialView(params RenderFragment[] fragments) 
+    public virtual IResult PartialView(params RenderFragment[] fragments)
         => RizzyService.PartialView(fragments);
 
     /// <summary>

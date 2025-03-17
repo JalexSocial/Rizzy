@@ -1,15 +1,15 @@
-﻿using System.Net;
-using System.Text.Json;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Htmx.Serialization;
+using System.Net;
+using System.Text.Json;
 
 namespace Rizzy.Htmx;
 
 public sealed class HtmxResponse(HttpContext context)
 {
-	private const string EmptyResponseBodyRequestedKey = "Rizzy.Htmx.EmptyResponseBodyRequested";
+    private const string EmptyResponseBodyRequestedKey = "Rizzy.Htmx.EmptyResponseBodyRequested";
     private const string ItemsKeyPrefix = "02E0A668-6E6B-4C53-83A6-17E576073E96";
     private readonly IHeaderDictionary _headers = context.Response.Headers;
     private readonly bool _isHtmxRequest = context.Request.Headers.ContainsKey(HtmxRequestHeaderNames.HtmxRequest);
@@ -20,15 +20,15 @@ public sealed class HtmxResponse(HttpContext context)
     /// </summary>
     public bool EmptyResponseBodyRequested
     {
-	    get
-	    {
-		    if (context.Items.TryGetValue(EmptyResponseBodyRequestedKey, out var value) && value is bool flag)
-		    {
-			    return flag;
-		    }
-		    return false;
-	    }
-	    private set => context.Items[EmptyResponseBodyRequestedKey] = value;
+        get
+        {
+            if (context.Items.TryGetValue(EmptyResponseBodyRequestedKey, out var value) && value is bool flag)
+            {
+                return flag;
+            }
+            return false;
+        }
+        private set => context.Items[EmptyResponseBodyRequestedKey] = value;
     }
 
     /// <summary>

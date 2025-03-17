@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
-using System.Text.Json;
 using Rizzy.Htmx;
 using Rizzy.Htmx.Antiforgery;
 using System.Web;
@@ -18,7 +17,7 @@ namespace Rizzy;
 public class HtmxConfigHeadOutlet : ComponentBase
 {
     private string _jsonConfig = string.Empty;
-	[Inject] private IRizzyNonceProvider? NonceProvider { get; set; }
+    [Inject] private IRizzyNonceProvider? NonceProvider { get; set; }
     [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
     [Inject] private IAntiforgery Antiforgery { get; set; } = default!;
     [Inject] private IOptionsSnapshot<RizzyConfig> RizzyConfig { get; set; } = default!;

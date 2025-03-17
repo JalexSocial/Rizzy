@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Rizzy.Htmx;
 
 namespace Rizzy;
@@ -13,7 +12,7 @@ namespace Rizzy;
 /// </summary>
 public sealed class RzPageTitle : ComponentBase
 {
-    [CascadingParameter] 
+    [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
     /// <summary>

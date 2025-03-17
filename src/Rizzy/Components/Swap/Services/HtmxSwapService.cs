@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Rizzy;
 using Rizzy.Htmx;
 
 namespace Rizzy;
@@ -84,7 +83,7 @@ public class HtmxSwapService : IHtmxSwapService
     /// <typeparam name="TComponent">The type of the Razor component to add.</typeparam>
     public void AddSwappableComponent<TComponent>(string targetId, object? parameters = null, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null) where TComponent : IComponent =>
         AddSwappableComponent<TComponent>(targetId, parameters?.ToDictionary(), swapStyle, selector);
-    
+
 
     /// <summary>
     /// Adds a RenderFragment to the service for later rendering.

@@ -1,14 +1,9 @@
 ﻿using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Rizzy.Htmx.Antiforgery;
+using System.Reflection;
 
 namespace Rizzy.Htmx;
 
@@ -66,16 +61,16 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <returns></returns>
     private static IServiceCollection AddAntiforgeryValidation(
-	    this IServiceCollection services)
+        this IServiceCollection services)
     {
-	    var types = Assembly.Load("Microsoft.AspNetCore.Mvc.ViewFeatures")
-		    .GetTypes();
-	    var autoType = types.First(t => t.Name == "AutoValidateAntiforgeryTokenAuthorizationFilter"); // necessary for the AutoValidateAntiforgeryTokenAttribute
-	    var defaultType = types.First(t => t.Name == "ValidateAntiforgeryTokenAuthorizationFilter"); // necessary for the ValidateAntiforgeryTokenAttribute
-	    services.TryAddSingleton(autoType);
-	    services.TryAddSingleton(defaultType);
-		
-	    return services;
+        var types = Assembly.Load("Microsoft.AspNetCore.Mvc.ViewFeatures")
+            .GetTypes();
+        var autoType = types.First(t => t.Name == "AutoValidateAntiforgeryTokenAuthorizationFilter"); // necessary for the AutoValidateAntiforgeryTokenAttribute
+        var defaultType = types.First(t => t.Name == "ValidateAntiforgeryTokenAuthorizationFilter"); // necessary for the ValidateAntiforgeryTokenAttribute
+        services.TryAddSingleton(autoType);
+        services.TryAddSingleton(defaultType);
+
+        return services;
     }
 
     /// <summary>
@@ -93,7 +88,7 @@ public static class ServiceCollectionExtensions
         {
             _antiforgeryOptions = antiforgeryOptions.Value;
         }
-		
+
         /// <summary>
         /// Configures the default <see cref="HtmxConfig"/> options.
         /// </summary>

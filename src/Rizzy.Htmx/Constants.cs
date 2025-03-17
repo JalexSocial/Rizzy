@@ -3,27 +3,31 @@
 namespace Rizzy.Htmx;
 
 /// <summary>
-/// Useful string constants in Htmxor components.
+/// Useful string constants in Htmx components.
 /// </summary>
 [SuppressMessage("Design", "CA1034:Nested types should not be visible", Justification = "Only containers for constants here. Nothing to see!")]
 internal static class Constants
 {
-	public const string AntiforgeryCookieName = "";
-	internal static class Nonce
-	{
-		/// <summary>
-		/// Nonce headers for use with HTMX
-		/// </summary>
-		public const string NonceResponseHeader = "HX-Nonce";
-	}
+    /// <summary>
+    /// Default antiforgery cookie name
+    /// </summary>
+	public const string AntiforgeryCookieName = "HX-XSRF-TOKEN";
 
-	internal static class HttpContextKeys
-	{
-		public const string HtmxRequestKey = "Rizzy.Http:HtmxRequest";
-		public const string FormFieldMappingsKey = "Rizzy.Http:AllFieldMappings";
-	}
+    internal static class Nonce
+    {
+        /// <summary>
+        /// Nonce headers for use with HTMX
+        /// </summary>
+        public const string NonceResponseHeader = "HX-Nonce";
+    }
 
-	/// <summary>
+    internal static class HttpContextKeys
+    {
+        public const string HtmxRequestKey = "Rizzy.Http:HtmxRequest";
+        public const string FormFieldMappingsKey = "Rizzy.Http:AllFieldMappings";
+    }
+
+    /// <summary>
     /// Htmx attribute names.
     /// </summary>
     public static class Attributes

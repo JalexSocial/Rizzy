@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Rizzy.Configuration;
 
 namespace Rizzy;
@@ -16,5 +14,5 @@ public static class ServiceCollectionExtensions
     /// <param name="services"></param>
     /// <param name="configBuilder"></param>
     public static RizzyConfigBuilder AddRizzy(this IServiceCollection services, Action<RizzyConfig>? configBuilder = null) =>
-        new (services, configBuilder);
+        new(services, configBuilder);
 }

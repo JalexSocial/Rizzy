@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
+﻿using Rizzy.Serialization;
+using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Rizzy.Serialization;
 
 namespace Rizzy;
 
@@ -46,7 +46,7 @@ public static class ObjectExtensions
 
         var options = new JsonSerializerOptions
         {
-			Converters = { new SingleQuoteStringConverter() },
+            Converters = { new SingleQuoteStringConverter() },
             DefaultIgnoreCondition = ignoreNullValues ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
         };
 

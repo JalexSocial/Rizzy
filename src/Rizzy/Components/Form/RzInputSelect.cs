@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
-using Rizzy.Components.Form;
-using Rizzy.Components.Form.Helpers;
+using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.ObjectModel;
-using Rizzy.Htmx;
 
 namespace Rizzy;
 

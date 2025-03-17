@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Antiforgery;
-using Microsoft.AspNetCore.Components.Forms.Mapping;
+﻿using Microsoft.AspNetCore.Components.Forms.Mapping;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Rizzy.Htmx;
 
 namespace Rizzy.Configuration;
 

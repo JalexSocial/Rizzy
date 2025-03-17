@@ -242,7 +242,7 @@ public record class HtmxConfig
     /// <summary>
     /// If set to true, will utilize an IRizzyNonceProvider instance to generate script nonces
     /// </summary>
-    [JsonIgnore] 
+    [JsonIgnore]
     public bool GenerateScriptNonce { get; set; } = false;
 
     /// <summary>

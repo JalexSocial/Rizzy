@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
 using System.Security.Cryptography;
 
 namespace Rizzy;
@@ -26,22 +27,22 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
     /// <returns>A string representing a content security policy compatible nonce</returns>
     public string GetNonce()
     {
-	    var context = _httpContextAccessor.HttpContext
-	                  ?? throw new InvalidOperationException("No HttpContext available.");
+        var context = _httpContextAccessor.HttpContext
+                      ?? throw new InvalidOperationException("No HttpContext available.");
 
-	    // If nonce values have already been generated for this request, return them.
-	    if (context.Items.TryGetValue(Constants.HttpContextKeys.NonceKey, out object? eNonce) && eNonce is string eNonceValue)
-	    {
-		    return eNonceValue;
-	    }
+        // If nonce values have already been generated for this request, return them.
+        if (context.Items.TryGetValue(Constants.HttpContextKeys.NonceKey, out object? eNonce) && eNonce is string eNonceValue)
+        {
+            return eNonceValue;
+        }
 
-	    // Create a new nonce values container.
-	    var nonce = CreateNonce();
+        // Create a new nonce values container.
+        var nonce = CreateNonce();
 
-	    // Cache the nonce values for the current request.
-	    context.Items[Constants.HttpContextKeys.NonceKey] = nonce;
+        // Cache the nonce values for the current request.
+        context.Items[Constants.HttpContextKeys.NonceKey] = nonce;
 
-	    return nonce;
+        return nonce;
     }
 
     /// <summary>
@@ -50,9 +51,9 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
     /// <returns></returns>
     private static string CreateNonce()
     {
-	    byte[] randomBytes = new byte[32];
-	    RandomNumberGenerator.Fill(randomBytes);
+        byte[] randomBytes = new byte[32];
+        RandomNumberGenerator.Fill(randomBytes);
 
-	    return Convert.ToBase64String(randomBytes);
+        return Convert.ToBase64String(randomBytes);
     }
 }

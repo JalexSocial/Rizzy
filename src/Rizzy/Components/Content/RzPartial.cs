@@ -33,18 +33,18 @@ public partial class RzPartial : ComponentBase
     {
         CreateCascadingValue(builder, ModelState, builder2 =>
         {
-	        builder2.OpenComponent<LayoutView>(4);
-	        builder2.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
-	        builder2.AddAttribute(6, "ChildContent", (RenderFragment)((builder3) =>
-	        {
-		        builder3.OpenComponent<DynamicComponent>(7);
-		        builder3.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
-		        builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
-		        builder3.CloseComponent();
-	        }));
-	        builder2.CloseComponent();
-	        builder2.OpenComponent<HtmxSwapContent>(15);
-	        builder2.CloseComponent();
+            builder2.OpenComponent<LayoutView>(4);
+            builder2.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
+            builder2.AddAttribute(6, "ChildContent", (RenderFragment)((builder3) =>
+            {
+                builder3.OpenComponent<DynamicComponent>(7);
+                builder3.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+                builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+                builder3.CloseComponent();
+            }));
+            builder2.CloseComponent();
+            builder2.OpenComponent<HtmxSwapContent>(15);
+            builder2.CloseComponent();
         });
     }
 
