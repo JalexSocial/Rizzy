@@ -47,6 +47,7 @@ app.UseAuthorization();
 
 // Required (after authentication and authorization)
 app.UseAntiforgery();
+app.UseRizzy();
 
 app.MapPost("/love-htmx",
     ([FromServices] IRizzyService rizzy) => rizzy.PartialView<LoveHtmx>(new { Message = "I ❤️ ASP.NET Core" }));
