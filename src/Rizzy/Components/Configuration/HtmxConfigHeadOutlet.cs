@@ -54,7 +54,7 @@ public class HtmxConfigHeadOutlet : ComponentBase
         }
 
         // The document nonce is utilized by Rizzy to safely inject into htmx responses
-        config.DocumentNonce = HttpUtility.HtmlAttributeEncode(NonceProvider?.GetNonce()) ?? string.Empty;
+        config.DocumentNonce = NonceProvider?.GetNonce() ?? string.Empty;
 
         if (config.GenerateScriptNonce)
             config.InlineScriptNonce = config.DocumentNonce;

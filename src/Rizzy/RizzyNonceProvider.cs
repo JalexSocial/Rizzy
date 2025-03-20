@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Rizzy;
 
@@ -54,6 +55,6 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
         byte[] randomBytes = new byte[32];
         RandomNumberGenerator.Fill(randomBytes);
 
-        return Convert.ToBase64String(randomBytes);
+        return Base64UrlTextEncoder.Encode(randomBytes);
     }
 }
