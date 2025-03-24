@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "build": "webpack",
+    "llm": "repomix --include \"**/*.razor,**/*.razor.cs,**/*.cs,**/js/rizzy.js\" --ignore \"obj/,bin/\" --remove-empty-lines --remove-comments --style \"xml\" --output \"llmquery.prompt\""
+  },
+  "devDependencies": {
+    "webpack": "^5.98.0",
+    "webpack-cli": "^5.1.4",
+    "repomix": "^0.2.24"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "babel-loader": "^10.0.0",
+    "htmx.org": "^2.0.4"
+  }
+}

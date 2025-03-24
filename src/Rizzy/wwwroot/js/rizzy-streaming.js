@@ -4,35 +4,37 @@
  * Credits to SSE extension and Microsoft aspnetcore
  * at https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web.JS/src/Rendering/StreamingRendering.ts
  */
+import htmx from 'htmx';
+
 (function () {
 
     var api;
     var enableDomPreservation = true;
     var componentLoaded = false;
 
-    class BlazorStreamingUpdate extends HTMLElement {
+    class blazorStreamingUpdate extends HTMLElement {
         connectedCallback() {
-            const blazorSsrElement = this.parentNode
+            const blazorSsrElement = this.parentNode;
 
             // Synchronously remove this from the DOM to minimize our chance of affecting anything else
-            blazorSsrElement.parentNode?.removeChild(blazorSsrElement)
+            blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
 
             // When this element receives content, if it's <template blazor-component-id="...">...</template>,
             // insert the template content into the DOM
             blazorSsrElement.childNodes.forEach(node => {
                 if (node instanceof HTMLTemplateElement) {
-                    const componentId = node.getAttribute("blazor-component-id")
+                    const componentId = node.getAttribute("blazor-component-id");
                     if (componentId) {
-                        insertStreamingContentIntoDocument(componentId, node.content)
+                        insertStreamingContentIntoDocument(componentId, node.content);
                     }
                 }
-            })
+            });
 
-            htmx?.process(document.body)
+            htmx?.process(document.body);
         }
     }
 
-    htmx.defineExtension("blazor-streaming",
+    htmx.defineExtension("rizzy-streaming",
         {
             /**
              * Init saves the provided reference to the internal HTMX API.
@@ -47,7 +49,7 @@
                 // set a function in the public API for creating new EventSource objects
                 if (htmx.blazorSwapSsr == undefined) {
                     if (customElements.get('blazor-ssr-end') === undefined) {
-                        customElements.define('blazor-ssr-end', BlazorStreamingUpdate);
+                        customElements.define('blazor-ssr-end', blazorStreamingUpdate);
                     }
                     htmx.blazorSwapSsr = blazorSwapSsr;
                 }
@@ -97,7 +99,7 @@
                             container.id = cid;
 
                             // Swap in a container div to hold the streaming html
-                            swap(element, container.outerHTML, swapSpec);
+                            swap(element, container.outerHTML, swapSpec, xhr);
 
                             // The very first swap into the container can be a replacement swap
                             swapSpec.swapStyle = "innerHTML";
@@ -108,7 +110,7 @@
 
                         // Compute any new html in this chunk
                         diff = e.currentTarget.response.substring(last);
-                        swap(container, diff, swapSpec);
+                        swap(container, diff, swapSpec, xhr);
 
                         swapSpec.settleDelay = 0;
                         swapSpec.swapStyle = "beforeend";
@@ -140,13 +142,13 @@
         return false;
     }
 
-    function blazorSwapSsr(start, end, docFrag) {
+    function blazorSwapSsr(start, end, docFrag, xhr) {
         var newDiv = wrap(start, end, 'ssr' + crypto.randomUUID());
 
         var container = document.createElement('div');
         container.appendChild(docFrag);
 
-        swap(newDiv, container.innerHTML);
+        swap(newDiv, container.innerHTML, xhr);
 
         unwrap(newDiv);
     }
@@ -210,10 +212,10 @@
      * @param {HTMLElement} elt
      * @param {string} content
      */
-    function swap(elt, content, swapSpec) {
+    function swap(elt, content, swapSpec, xhr) {
 
         api.withExtensions(elt, function (extension) {
-            content = extension.transformResponse(content, null, elt);
+            content = extension.transformResponse(content, xhr, elt);
         });
 
         swapSpec ??= api.getSwapSpecification(elt);

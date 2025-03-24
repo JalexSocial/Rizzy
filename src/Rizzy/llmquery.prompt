@@ -1,0 +1,2415 @@
+This file is a merged representation of a subset of the codebase, containing specifically included files and files not matching ignore patterns, combined into a single document by Repomix.
+The content has been processed where comments have been removed, empty lines have been removed.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Only files matching these patterns are included: **/*.razor, **/*.razor.cs, **/*.cs, **/js/rizzy.js
+- Files matching these patterns are excluded: obj/, bin/
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Code comments have been removed from supported file types
+- Empty lines have been removed from all files
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+AppBuilderExtensions.cs
+Components/Configuration/HtmxAntiforgeryScript.razor
+Components/Configuration/HtmxConfigHeadOutlet.cs
+Components/Content/FragmentComponent.cs
+Components/Content/RzPage.cs
+Components/Content/RzPartial.cs
+Components/Form/DataAnnotationsProcessor.cs
+Components/Form/Helpers/ExpressionFormatter.cs
+Components/Form/Helpers/ReverseStringBuilder.cs
+Components/Form/RzInitialValidator.cs
+Components/Form/RzInputCheckbox.cs
+Components/Form/RzInputDate.cs
+Components/Form/RzInputFile.cs
+Components/Form/RzInputNumber.cs
+Components/Form/RzInputRadio.cs
+Components/Form/RzInputRadioGroup.cs
+Components/Form/RzInputSelect.cs
+Components/Form/RzInputText.cs
+Components/Form/RzInputTextArea.cs
+Components/Form/RzValidationMessage.cs
+Components/Form/RzValidationSummary.cs
+Components/Head/RzHeadContent.cs
+Components/Head/RzHeadOutlet.cs
+Components/Head/RzPageTitle.cs
+Components/Layout/EmptyLayout.cs
+Components/Layout/EmptyRootComponent.cs
+Components/Layout/HtmxApp.cs
+Components/Layout/HtmxLayout.cs
+Components/Layout/MinimalLayout.cs
+Components/Sections/RzSectionContent.cs
+Components/Sections/RzSectionOutlet.cs
+Components/Swap/HtmxSwapContent.cs
+Components/Swap/HtmxSwappable.cs
+Components/Swap/Services/HtmxSwapService.cs
+Components/Swap/Services/IHtmxSwapService.cs
+Configuration/RizzyConfig.cs
+Constants.cs
+Extensions/ObjectExtensions.cs
+Extensions/StringExtensions.cs
+Framework/Mvc/RzController.cs
+Framework/Mvc/RzControllerWithViews.cs
+HttpContextExtensions.cs
+IRizzyService.cs
+RizzyMiddleware.cs
+RizzyNonceProvider.cs
+RizzyService.cs
+Serialization/SingleQuoteStringConverter.cs
+ServiceCollectionExtensions.cs
+Utility/IdGenerator.cs
+Utility/RenderFragmentExtensions.cs
+wwwroot/js/rizzy.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="AppBuilderExtensions.cs">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+namespace Rizzy;
+public static class AppBuilderExtensions
+{
+    public static IApplicationBuilder UseRizzy(this IApplicationBuilder builder)
+    {
+        builder.UseMiddleware<RizzyMiddleware>();
+        return builder;
+    }
+}
+</file>
+
+<file path="Components/Configuration/HtmxAntiforgeryScript.razor">
+@using Microsoft.AspNetCore.Http
+
+@namespace Rizzy
+
+<script type="text/javascript" nonce="@HttpContext?.GetNonce()">
+	@((MarkupString)GetAntiforgeryJavaScript(Minified))
+</script>
+
+@code {
+
+    /// <summary>
+    /// Cascading parameter providing access to the current HttpContext.
+    /// </summary>
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+
+    /// <summary>
+    /// Determines whether to use the minified antiforgery JavaScript resource.
+    /// </summary>
+#if DEBUG
+    public bool Minified { get; set; } = false;
+#else
+    public bool Minified { get; set; } = true;
+#endif
+
+    /// <summary>
+    /// Gets the standard (non-minified) antiforgery JavaScript resource contents.
+    /// </summary>
+    public string AntiforgeryJavaScript => GetString(nameof(AntiforgeryJavaScript));
+
+    /// <summary>
+    /// Gets the minified antiforgery JavaScript resource contents.
+    /// </summary>
+    public string AntiforgeryJavaScriptMinified => GetString(nameof(AntiforgeryJavaScriptMinified));
+
+    /// <summary>
+    /// Retrieves either the minified or non-minified antiforgery JavaScript, based on the <paramref name="minified"/> parameter.
+    /// </summary>
+    /// <param name="minified">True to load the minified resource; otherwise, false.</param>
+    /// <returns>The antiforgery JavaScript snippet.</returns>
+    public string GetAntiforgeryJavaScript(bool minified) => minified ? AntiforgeryJavaScriptMinified : AntiforgeryJavaScript;
+
+    /// <summary>
+    /// Loads the specified embedded resource from the assembly as a <see cref="string"/>.
+    /// </summary>
+    /// <param name="name">The resource name to retrieve.</param>
+    /// <returns>The embedded resource contents as a string.</returns>
+    /// <exception cref="ArgumentException">Thrown if the resource could not be found.</exception>
+    private static string GetString(string name)
+    {
+        var assembly = typeof(HtmxAntiforgeryScript).Assembly;
+        using var resource = assembly.GetManifestResourceStream(name);
+
+        if (resource == null)
+            throw new ArgumentException($"Resource \"{name}\" was not found.", nameof(name));
+
+        using var reader = new StreamReader(resource);
+        var response = reader.ReadToEnd();
+        return response;
+    }
+}
+</file>
+
+<file path="Components/Configuration/HtmxConfigHeadOutlet.cs">
+using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using Rizzy.Configuration;
+using Rizzy.Htmx;
+using Rizzy.Htmx.Antiforgery;
+using System.Web;
+namespace Rizzy;
+public class HtmxConfigHeadOutlet : ComponentBase
+{
+    private string _jsonConfig = string.Empty;
+    [Inject] private IRizzyNonceProvider? NonceProvider { get; set; }
+    [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
+    [Inject] private IAntiforgery Antiforgery { get; set; } = default!;
+    [Inject] private IOptionsSnapshot<RizzyConfig> RizzyConfig { get; set; } = default!;
+    [Inject] private IOptions<HtmxAntiforgeryOptions> AntiforgeryConfig { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.AddMarkupContent(0, @$"<meta name=""htmx-config"" content='{_jsonConfig}'>");
+    }
+    protected override Task OnParametersSetAsync()
+    {
+        var config = Options.Value;
+        if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
+        {
+            config = config with
+            {
+                Antiforgery = new HtmxConfig.AntiForgeryConfiguration
+                {
+                    CookieName = AntiforgeryConfig.Value.CookieName,
+                    FormFieldName = AntiforgeryConfig.Value.FormFieldName,
+                    HeaderName = AntiforgeryConfig.Value.HeaderName,
+                }
+            };
+            var tokens = Antiforgery.GetAndStoreTokens(HttpContext!);
+            config.Antiforgery.RequestToken = HttpUtility.HtmlAttributeEncode(tokens.RequestToken)!;
+        }
+        config.DocumentNonce = NonceProvider?.GetNonce() ?? string.Empty;
+        if (config.GenerateScriptNonce)
+            config.InlineScriptNonce = config.DocumentNonce;
+        if (config.GenerateStyleNonce)
+            config.InlineStyleNonce = config.DocumentNonce;
+        _jsonConfig = config.Serialize();
+        return Task.CompletedTask;
+    }
+}
+</file>
+
+<file path="Components/Content/FragmentComponent.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+namespace Rizzy;
+public class FragmentComponent : ComponentBase
+{
+    [Parameter]
+    public RenderFragment? Fragment { get; set; }
+    [Parameter]
+    public IEnumerable<RenderFragment?>? Fragments { get; set; }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        if (Fragment != null)
+        {
+            builder.AddContent(0, Fragment);
+        }
+        if (Fragments != null)
+        {
+            foreach (var fragment in Fragments)
+            {
+                if (fragment != null)
+                {
+                    builder.AddContent(1, fragment);
+                }
+            }
+        }
+    }
+}
+</file>
+
+<file path="Components/Content/RzPage.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.CompilerServices;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Options;
+using Rizzy.Configuration;
+using System.Reflection;
+namespace Rizzy;
+public class RzPage : ComponentBase
+{
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> LayoutAttributeCache = new();
+    private Type? _layout = null;
+    [Inject]
+    public IOptions<RizzyConfig> RizzyConfig { get; set; } = default!;
+    public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
+    {
+        builder.OpenComponent<CascadingValue<TValue>>(0);
+        builder.AddComponentParameter(1, "Value", value);
+        builder.AddComponentParameter(2, "ChildContent", fragment);
+        builder.CloseComponent();
+    }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        CreateCascadingValue(builder, ModelState, builderPage =>
+        {
+            builderPage.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
+            builderPage.AddAttribute(5, "ChildContent", (RenderFragment)(builder3 =>
+            {
+                if (_layout != null)
+                {
+                    builder3.OpenComponent<LayoutView>(6);
+                    builder3.AddComponentParameter(7, "Layout", RuntimeHelpers.TypeCheck<System.Type>(_layout));
+                    builder3.AddAttribute(8, "ChildContent", (RenderFragment)((builder4) =>
+                    {
+                        builder4.OpenComponent<DynamicComponent>(9);
+                        builder4.AddComponentParameter(10, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+                        builder4.AddComponentParameter(11, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+                        builder4.CloseComponent();
+                    }));
+                    builder3.CloseComponent();
+                }
+                else
+                {
+                    builder3.OpenComponent<DynamicComponent>(12);
+                    builder3.AddComponentParameter(13, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+                    builder3.AddComponentParameter(14, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+                    builder3.CloseComponent();
+                }
+            }));
+            builderPage.OpenComponent<HtmxSwapContent>(15);
+            builderPage.CloseComponent();
+            builderPage.CloseComponent();
+        });
+    }
+    [Parameter, EditorRequired]
+    public required Type ComponentType { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
+    [Parameter]
+    public ModelStateDictionary? ModelState { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (!LayoutAttributeCache.TryGetValue(ComponentType, out _layout))
+        {
+            _layout = ComponentType.GetCustomAttribute<LayoutAttribute>()?.LayoutType;
+            LayoutAttributeCache.TryAdd(ComponentType, _layout);
+        }
+        if (_layout == null)
+        {
+            var config = RizzyConfig;
+            if (config?.Value.DefaultLayout != null)
+                _layout = config?.Value.DefaultLayout;
+        }
+    }
+}
+</file>
+
+<file path="Components/Content/RzPartial.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.CompilerServices;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+namespace Rizzy;
+public partial class RzPartial : ComponentBase
+{
+    public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
+    {
+        builder.OpenComponent<CascadingValue<TValue>>(0);
+        builder.AddComponentParameter(1, "Value", value);
+        builder.AddComponentParameter(2, "ChildContent", fragment);
+        builder.CloseComponent();
+    }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        CreateCascadingValue(builder, ModelState, builder2 =>
+        {
+            builder2.OpenComponent<LayoutView>(4);
+            builder2.AddComponentParameter(5, "Layout", typeof(EmptyLayout));
+            builder2.AddAttribute(6, "ChildContent", (RenderFragment)((builder3) =>
+            {
+                builder3.OpenComponent<DynamicComponent>(7);
+                builder3.AddComponentParameter(8, "Type", RuntimeHelpers.TypeCheck<System.Type>(ComponentType));
+                builder3.AddComponentParameter(9, "Parameters", RuntimeHelpers.TypeCheck<System.Collections.Generic.IDictionary<string, object?>>(ComponentParameters));
+                builder3.CloseComponent();
+            }));
+            builder2.CloseComponent();
+            builder2.OpenComponent<HtmxSwapContent>(15);
+            builder2.CloseComponent();
+        });
+    }
+    [Parameter, EditorRequired]
+    public required Type ComponentType { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public required Dictionary<string, object?> ComponentParameters { get; set; } = default!;
+    [Parameter]
+    public ModelStateDictionary? ModelState { get; set; }
+}
+</file>
+
+<file path="Components/Form/DataAnnotationsProcessor.cs">
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Localization;
+using System.Collections.Concurrent;
+using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
+using System.Reflection;
+namespace Rizzy;
+public class DataAnnotationsProcessor
+{
+    private readonly IServiceProvider _provider;
+    private readonly IValidationAttributeAdapterProvider _adapterProvider;
+    private readonly IStringLocalizerFactory? _localizerFactory;
+    private readonly IModelMetadataProvider _metadataProvider;
+    private readonly Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>> _attributeHandlers;
+    private static readonly ConcurrentDictionary<Type, PropertyCacheEntry> _propertyCache = new();
+    private class PropertyCacheEntry
+    {
+        public PropertyInfo PropertyInfo { get; }
+        public ValidationAttribute[] ValidationAttributes { get; }
+        public PropertyCacheEntry(PropertyInfo propInfo)
+        {
+            PropertyInfo = propInfo;
+            ValidationAttributes = propInfo.GetCustomAttributes<ValidationAttribute>(true).ToArray();
+        }
+    }
+    public DataAnnotationsProcessor(IServiceProvider provider)
+    {
+        _provider = provider ?? throw new ArgumentNullException(nameof(provider));
+        _adapterProvider = provider.GetService<IValidationAttributeAdapterProvider>() ??
+                           new ValidationAttributeAdapterProvider();
+        _localizerFactory = provider.GetService<IStringLocalizerFactory>();
+        _metadataProvider = provider.GetService<IModelMetadataProvider>() ??
+                            new EmptyModelMetadataProvider();
+        _attributeHandlers = new Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>>
+        {
+            { typeof(RequiredAttribute), HandleRequiredAttribute },
+            { typeof(StringLengthAttribute), HandleStringLengthAttribute },
+            { typeof(RangeAttribute), HandleRangeAttribute },
+            { typeof(RegularExpressionAttribute), HandleRegularExpressionAttribute },
+            { typeof(CompareAttribute), HandleCompareAttribute },
+            { typeof(EmailAddressAttribute), HandleEmailAddressAttribute },
+            { typeof(PhoneAttribute), HandlePhoneAttribute },
+            { typeof(UrlAttribute), HandleUrlAttribute },
+            { typeof(MinLengthAttribute), HandleMinLengthAttribute },
+            { typeof(MaxLengthAttribute), HandleMaxLengthAttribute },
+        };
+    }
+    public void AddAttributeHandler<TAttribute>(Action<TAttribute, IDictionary<string, object>, string> handler)
+        where TAttribute : ValidationAttribute
+    {
+        if (handler == null) throw new ArgumentNullException(nameof(handler));
+        _attributeHandlers[typeof(TAttribute)] = (attribute, attributes, message) =>
+            handler((TAttribute)attribute, attributes, message);
+    }
+    public IReadOnlyDictionary<string, object>? MergeAttributes<TValue>(
+        string controlName,
+        Expression<Func<TValue>>? valueExpression,
+        IReadOnlyDictionary<string, object>? additionalAttributes,
+        string? id = null)
+    {
+        if (valueExpression == null)
+        {
+            throw new InvalidOperationException($"{controlName} requires a ValueExpression parameter.");
+        }
+        var attrib = additionalAttributes is null
+            ? new Dictionary<string, object>()
+            : new Dictionary<string, object>(additionalAttributes);
+        if (id != null)
+        {
+            attrib.TryAdd("id", id);
+        }
+        var fieldIdentifier = FieldIdentifier.Create(valueExpression);
+        ProcessAttributes(fieldIdentifier, attrib);
+        return attrib.Count == 0 ? null : new ReadOnlyDictionary<string, object>(attrib);
+    }
+    private void ProcessAttributes(FieldIdentifier fieldIdentifier, IDictionary<string, object> attributes)
+    {
+        var propertyEntry = GetCachedProperty(fieldIdentifier);
+        var modelType = fieldIdentifier.Model.GetType();
+        var metadata = _metadataProvider.GetMetadataForProperty(modelType, fieldIdentifier.FieldName);
+        IStringLocalizer? localizer = _localizerFactory?.Create(modelType);
+        var actionContext = new ActionContext(
+            new DefaultHttpContext(),
+            new RouteData(),
+            new ActionDescriptor());
+        var validationContext = new DefaultModelValidationContext(actionContext, metadata, _metadataProvider);
+        if (propertyEntry.ValidationAttributes.Any())
+        {
+            attributes.TryAdd("data-val", "true");
+        }
+        foreach (var attribute in propertyEntry.ValidationAttributes)
+        {
+            string localizedMessage = GetLocalizedErrorMessage(attribute, metadata, validationContext, localizer)
+                ?? attribute.FormatErrorMessage(metadata.GetDisplayName());
+            if (_attributeHandlers.TryGetValue(attribute.GetType(), out var handler))
+            {
+                handler(attribute, attributes, localizedMessage);
+            }
+        }
+    }
+    private PropertyCacheEntry GetCachedProperty(FieldIdentifier fieldIdentifier)
+    {
+        return _propertyCache.GetOrAdd(fieldIdentifier.Model.GetType(), type =>
+        {
+            var propInfo = type.GetProperty(fieldIdentifier.FieldName);
+            if (propInfo == null)
+            {
+                throw new InvalidOperationException(
+                    $"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
+            }
+            return new PropertyCacheEntry(propInfo);
+        });
+    }
+    private string? GetLocalizedErrorMessage(
+        ValidationAttribute attribute,
+        ModelMetadata metadata,
+        ModelValidationContextBase validationContext,
+        IStringLocalizer? localizer)
+    {
+        var adapter = _adapterProvider.GetAttributeAdapter(attribute, localizer);
+        return adapter?.GetErrorMessage(validationContext);
+    }
+    private static void HandleRequiredAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        attributes["data-val-required"] = message;
+    }
+    private static void HandleStringLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        var stringLengthAttribute = (StringLengthAttribute)attribute;
+        attributes["data-val-length"] = message;
+        attributes["data-val-length-max"] = stringLengthAttribute.MaximumLength;
+        if (stringLengthAttribute.MinimumLength > 0)
+        {
+            attributes["data-val-length-min"] = stringLengthAttribute.MinimumLength;
+        }
+    }
+    private static void HandleRangeAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        var rangeAttribute = (RangeAttribute)attribute;
+        attributes["data-val-range"] = message;
+        attributes["data-val-range-min"] = rangeAttribute.Minimum;
+        attributes["data-val-range-max"] = rangeAttribute.Maximum;
+    }
+    private static void HandleRegularExpressionAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        var regexAttribute = (RegularExpressionAttribute)attribute;
+        attributes["data-val-regex"] = message;
+        attributes["data-val-regex-pattern"] = regexAttribute.Pattern;
+    }
+    private static void HandleCompareAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        var compareAttribute = (CompareAttribute)attribute;
+        attributes["data-val-equalto"] = message;
+        attributes["data-val-equalto-other"] = $"*.{compareAttribute.OtherProperty}";
+    }
+    private static void HandleEmailAddressAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        attributes["data-val-email"] = message;
+    }
+    private static void HandlePhoneAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        attributes["data-val-phone"] = message;
+    }
+    private static void HandleUrlAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        attributes["data-val-url"] = message;
+    }
+    private static void HandleMinLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        var minLengthAttribute = (MinLengthAttribute)attribute;
+        attributes["data-val-minlength"] = message;
+        attributes["data-val-minlength-min"] = minLengthAttribute.Length;
+    }
+    private static void HandleMaxLengthAttribute(ValidationAttribute attribute, IDictionary<string, object> attributes, string message)
+    {
+        var maxLengthAttribute = (MaxLengthAttribute)attribute;
+        attributes["data-val-maxlength"] = message;
+        attributes["data-val-maxlength-max"] = maxLengthAttribute.Length;
+    }
+    private class DefaultModelValidationContext(
+        ActionContext actionContext,
+        ModelMetadata modelMetadata,
+        IModelMetadataProvider metadataProvider)
+        : ModelValidationContextBase(actionContext, modelMetadata, metadataProvider);
+}
+</file>
+
+<file path="Components/Form/Helpers/ExpressionFormatter.cs">
+using System.Collections.Concurrent;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Runtime.Serialization;
+namespace Rizzy.Components.Form.Helpers;
+public static class ExpressionFormatter
+{
+    static ExpressionFormatter()
+    {
+    }
+    internal const int StackAllocBufferSize = 128;
+    private delegate void CapturedValueFormatter(object closure, ref ReverseStringBuilder builder);
+    private static readonly ConcurrentDictionary<MemberInfo, CapturedValueFormatter> s_capturedValueFormatterCache = new();
+    private static readonly ConcurrentDictionary<MethodInfo, MethodInfoData> s_methodInfoDataCache = new();
+    public static void ClearCache()
+    {
+        s_capturedValueFormatterCache.Clear();
+        s_methodInfoDataCache.Clear();
+    }
+    public static string FormatLambda(LambdaExpression expression)
+    {
+        return FormatLambda(expression, prefix: null);
+    }
+    public static string FormatLambda(LambdaExpression expression, string? prefix = null)
+    {
+        var builder = new ReverseStringBuilder(stackalloc char[StackAllocBufferSize]);
+        var node = expression.Body;
+        var wasLastExpressionMemberAccess = false;
+        var wasLastExpressionIndexer = false;
+        while (node is not null)
+        {
+            switch (node.NodeType)
+            {
+                case ExpressionType.Constant:
+                    var constantExpression = (ConstantExpression)node;
+                    node = null;
+                    break;
+                case ExpressionType.Call:
+                    var methodCallExpression = (MethodCallExpression)node;
+                    if (!IsSingleArgumentIndexer(methodCallExpression))
+                    {
+                        throw new InvalidOperationException("Method calls cannot be formatted.");
+                    }
+                    node = methodCallExpression.Object;
+                    if (prefix != null && node is ConstantExpression)
+                    {
+                        break;
+                    }
+                    if (wasLastExpressionMemberAccess)
+                    {
+                        wasLastExpressionMemberAccess = false;
+                        builder.InsertFront(".");
+                    }
+                    wasLastExpressionIndexer = true;
+                    builder.InsertFront("]");
+                    FormatIndexArgument(methodCallExpression.Arguments[0], ref builder);
+                    builder.InsertFront("[");
+                    break;
+                case ExpressionType.ArrayIndex:
+                    var binaryExpression = (BinaryExpression)node;
+                    node = binaryExpression.Left;
+                    if (prefix != null && node is ConstantExpression)
+                    {
+                        break;
+                    }
+                    if (wasLastExpressionMemberAccess)
+                    {
+                        wasLastExpressionMemberAccess = false;
+                        builder.InsertFront(".");
+                    }
+                    builder.InsertFront("]");
+                    FormatIndexArgument(binaryExpression.Right, ref builder);
+                    builder.InsertFront("[");
+                    wasLastExpressionIndexer = true;
+                    break;
+                case ExpressionType.MemberAccess:
+                    var memberExpression = (MemberExpression)node;
+                    node = memberExpression.Expression;
+                    if (prefix != null && node is ConstantExpression)
+                    {
+                        break;
+                    }
+                    if (wasLastExpressionMemberAccess)
+                    {
+                        builder.InsertFront(".");
+                    }
+                    wasLastExpressionMemberAccess = true;
+                    wasLastExpressionIndexer = false;
+                    var name = memberExpression.Member.GetCustomAttribute<DataMemberAttribute>()?.Name ?? memberExpression.Member.Name;
+                    builder.InsertFront(name);
+                    break;
+                default:
+                    node = null;
+                    break;
+            }
+        }
+        if (prefix != null)
+        {
+            if (!builder.Empty && !wasLastExpressionIndexer)
+            {
+                builder.InsertFront(".");
+            }
+            builder.InsertFront(prefix);
+        }
+        var result = builder.ToString();
+        builder.Dispose();
+        return result;
+    }
+    internal static bool IsSingleArgumentIndexer(Expression expression)
+    {
+        if (expression is not MethodCallExpression methodExpression || methodExpression.Arguments.Count != 1)
+        {
+            return false;
+        }
+        var methodInfoData = GetOrCreateMethodInfoData(methodExpression.Method);
+        return methodInfoData.IsSingleArgumentIndexer;
+    }
+    private static MethodInfoData GetOrCreateMethodInfoData(MethodInfo methodInfo)
+    {
+        if (!s_methodInfoDataCache.TryGetValue(methodInfo, out var methodInfoData))
+        {
+            methodInfoData = GetMethodInfoData(methodInfo);
+            s_methodInfoDataCache[methodInfo] = methodInfoData;
+        }
+        return methodInfoData;
+        [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "The relevant members should be preserved since they were referenced in a LINQ expression")]
+        static MethodInfoData GetMethodInfoData(MethodInfo methodInfo)
+        {
+            var declaringType = methodInfo.DeclaringType;
+            if (declaringType is null)
+            {
+                return new(isSingleArgumentIndexer: false);
+            }
+            var defaultMember = declaringType.GetCustomAttribute<DefaultMemberAttribute>(inherit: true);
+            if (defaultMember is null)
+            {
+                return new(isSingleArgumentIndexer: false);
+            }
+            var runtimeProperties = declaringType.GetRuntimeProperties();
+            if (runtimeProperties is null)
+            {
+                return new(isSingleArgumentIndexer: false);
+            }
+            foreach (var property in runtimeProperties)
+            {
+                if (string.Equals(defaultMember.MemberName, property.Name, StringComparison.Ordinal) &&
+                    property.GetMethod == methodInfo)
+                {
+                    return new(isSingleArgumentIndexer: true);
+                }
+            }
+            return new(isSingleArgumentIndexer: false);
+        }
+    }
+    private static void FormatIndexArgument(
+        Expression indexExpression,
+        ref ReverseStringBuilder builder)
+    {
+        switch (indexExpression)
+        {
+            case MemberExpression memberExpression when memberExpression.Expression is ConstantExpression constantExpression:
+                FormatCapturedValue(memberExpression, constantExpression, ref builder);
+                break;
+            case ConstantExpression constantExpression:
+                FormatConstantValue(constantExpression, ref builder);
+                break;
+            default:
+                throw new InvalidOperationException($"Unable to evaluate index expressions of type '{indexExpression.GetType().Name}'.");
+        }
+    }
+    internal static string FormatIndexArgument(
+        Expression indexExpression)
+    {
+        var builder = new ReverseStringBuilder(stackalloc char[StackAllocBufferSize]);
+        try
+        {
+            FormatIndexArgument(indexExpression, ref builder);
+            var result = builder.ToString();
+            return result;
+        }
+        finally
+        {
+            builder.Dispose();
+        }
+    }
+    private static void FormatCapturedValue(MemberExpression memberExpression, ConstantExpression constantExpression, ref ReverseStringBuilder builder)
+    {
+        var member = memberExpression.Member;
+        if (!s_capturedValueFormatterCache.TryGetValue(member, out var format))
+        {
+            format = CreateCapturedValueFormatter(memberExpression);
+            s_capturedValueFormatterCache[member] = format;
+        }
+        format(constantExpression.Value!, ref builder);
+    }
+    private static CapturedValueFormatter CreateCapturedValueFormatter(MemberExpression memberExpression)
+    {
+        var memberType = memberExpression.Type;
+        if (memberType == typeof(int))
+        {
+            var func = CompileMemberEvaluator<int>(memberExpression);
+            return (object closure, ref ReverseStringBuilder builder) => builder.InsertFront(func.Invoke(closure));
+        }
+        else if (memberType == typeof(string))
+        {
+            var func = CompileMemberEvaluator<string>(memberExpression);
+            return (object closure, ref ReverseStringBuilder builder) => builder.InsertFront(func.Invoke(closure));
+        }
+        else if (typeof(ISpanFormattable).IsAssignableFrom(memberType))
+        {
+            var func = CompileMemberEvaluator<ISpanFormattable>(memberExpression);
+            return (object closure, ref ReverseStringBuilder builder) => builder.InsertFront(func.Invoke(closure));
+        }
+        else if (typeof(IFormattable).IsAssignableFrom(memberType))
+        {
+            var func = CompileMemberEvaluator<IFormattable>(memberExpression);
+            return (object closure, ref ReverseStringBuilder builder) => builder.InsertFront(func.Invoke(closure));
+        }
+        else
+        {
+            throw new InvalidOperationException($"Cannot format an index argument of type '{memberType}'.");
+        }
+        static Func<object, TResult> CompileMemberEvaluator<TResult>(MemberExpression memberExpression)
+        {
+            var parameterExpression = Expression.Parameter(typeof(object));
+            var convertExpression = Expression.Convert(parameterExpression, memberExpression.Member.DeclaringType!);
+            var replacedMemberExpression = memberExpression.Update(convertExpression);
+            var replacedExpression = Expression.Lambda<Func<object, TResult>>(replacedMemberExpression, parameterExpression);
+            return replacedExpression.Compile();
+        }
+    }
+    private static void FormatConstantValue(ConstantExpression constantExpression, ref ReverseStringBuilder builder)
+    {
+        switch (constantExpression.Value)
+        {
+            case string s:
+                builder.InsertFront(s);
+                break;
+            case ISpanFormattable spanFormattable:
+                builder.InsertFront(spanFormattable);
+                break;
+            case IFormattable formattable:
+                builder.InsertFront(formattable);
+                break;
+            case null:
+                builder.InsertFront("null");
+                break;
+            case var x:
+                throw new InvalidOperationException($"Unable to format constant values of type '{x.GetType()}'.");
+        }
+    }
+    private readonly struct MethodInfoData
+    {
+        public bool IsSingleArgumentIndexer { get; }
+        public MethodInfoData(bool isSingleArgumentIndexer)
+        {
+            IsSingleArgumentIndexer = isSingleArgumentIndexer;
+        }
+    }
+}
+</file>
+
+<file path="Components/Form/Helpers/ReverseStringBuilder.cs">
+using System.Buffers;
+using System.Globalization;
+namespace Rizzy.Components.Form.Helpers;
+internal ref struct ReverseStringBuilder
+{
+    public const int MinimumRentedArraySize = 1024;
+    private static readonly ArrayPool<char> s_arrayPool = ArrayPool<char>.Shared;
+    private int _nextEndIndex;
+    private Span<char> _currentBuffer;
+    private SequenceSegment? _fallbackSequenceSegment;
+    internal int SequenceSegmentCount => _fallbackSequenceSegment?.Count() ?? 0;
+    public ReverseStringBuilder(int conservativeEstimatedStringLength)
+    {
+        var array = s_arrayPool.Rent(conservativeEstimatedStringLength);
+        _fallbackSequenceSegment = new(array);
+        _currentBuffer = array;
+        _nextEndIndex = _currentBuffer.Length;
+    }
+    public ReverseStringBuilder(Span<char> initialBuffer)
+    {
+        _currentBuffer = initialBuffer;
+        _nextEndIndex = _currentBuffer.Length;
+    }
+    public bool Empty => _nextEndIndex == _currentBuffer.Length;
+    public void InsertFront(scoped ReadOnlySpan<char> span)
+    {
+        var startIndex = _nextEndIndex - span.Length;
+        if (startIndex >= 0)
+        {
+            span.CopyTo(_currentBuffer[startIndex..]);
+            _nextEndIndex = startIndex;
+            return;
+        }
+        if (_fallbackSequenceSegment is null)
+        {
+            var remainingLength = -startIndex;
+            var sizeToRent = _currentBuffer.Length + Math.Max(MinimumRentedArraySize, remainingLength * 2);
+            var newBuffer = s_arrayPool.Rent(sizeToRent);
+            _fallbackSequenceSegment = new(newBuffer);
+            _nextEndIndex = newBuffer.Length - _currentBuffer.Length;
+            _currentBuffer.CopyTo(newBuffer.AsSpan()[_nextEndIndex..]);
+            _currentBuffer = newBuffer;
+            startIndex = _nextEndIndex - span.Length;
+            span.CopyTo(_currentBuffer[startIndex..]);
+            _nextEndIndex = startIndex;
+        }
+        else
+        {
+            var remainingLength = -startIndex;
+            span[remainingLength..].CopyTo(_currentBuffer);
+            span = span[..remainingLength];
+            var sizeToRent = Math.Max(MinimumRentedArraySize, remainingLength * 2);
+            var newBuffer = s_arrayPool.Rent(sizeToRent);
+            _fallbackSequenceSegment = new(newBuffer, _fallbackSequenceSegment);
+            _currentBuffer = newBuffer;
+            startIndex = _currentBuffer.Length - remainingLength;
+            span.CopyTo(_currentBuffer[startIndex..]);
+            _nextEndIndex = startIndex;
+        }
+    }
+    public void InsertFront<T>(T value) where T : ISpanFormattable
+    {
+        Span<char> result = stackalloc char[11];
+        if (value.TryFormat(result, out var charsWritten, format: default, CultureInfo.InvariantCulture))
+        {
+            InsertFront(result[..charsWritten]);
+        }
+        else
+        {
+            InsertFront((IFormattable)value);
+        }
+    }
+    public void InsertFront(IFormattable formattable)
+        => InsertFront(formattable.ToString(null, CultureInfo.InvariantCulture));
+    public override readonly string ToString()
+        => _fallbackSequenceSegment is null
+            ? new(_currentBuffer[_nextEndIndex..])
+            : _fallbackSequenceSegment.ToString(_nextEndIndex);
+    public readonly void Dispose()
+    {
+        _fallbackSequenceSegment?.Dispose();
+    }
+    private sealed class SequenceSegment : ReadOnlySequenceSegment<char>, IDisposable
+    {
+        private readonly char[] _array;
+        public SequenceSegment(char[] array, SequenceSegment? next = null)
+        {
+            _array = array;
+            Memory = array;
+            Next = next;
+        }
+        internal int Count()
+        {
+            var count = 0;
+            for (var current = this; current is not null; current = current.Next as SequenceSegment)
+            {
+                count++;
+            }
+            return count;
+        }
+        public string ToString(int startIndex)
+        {
+            RunningIndex = 0;
+            var tail = this;
+            while (tail.Next is SequenceSegment next)
+            {
+                next.RunningIndex = tail.RunningIndex + tail.Memory.Length;
+                tail = next;
+            }
+            var sequence = new ReadOnlySequence<char>(this, startIndex, tail, tail.Memory.Length);
+            return sequence.ToString();
+        }
+        public void Dispose()
+        {
+            for (var current = this; current is not null; current = current.Next as SequenceSegment)
+            {
+                s_arrayPool.Return(current._array);
+            }
+        }
+    }
+}
+</file>
+
+<file path="Components/Form/RzInitialValidator.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+namespace Rizzy;
+public class RzInitialValidator : ComponentBase
+{
+    [CascadingParameter]
+    public EditContext? EditContext { get; set; }
+    [CascadingParameter]
+    public ModelStateDictionary? ModelState { get; set; }
+    [Inject] private IServiceProvider ServiceProvider { get; set; } = default!;
+    protected override void OnParametersSet()
+    {
+        if (ModelState != null && EditContext != null)
+        {
+            var messages = new ValidationMessageStore(EditContext);
+            foreach (var error in ModelState.SelectMany(s => s.Value?.Errors.Select(e => (s.Key, e.ErrorMessage)) ?? Enumerable.Empty<(string, string)>()))
+            {
+                messages.Add(EditContext.Field(error.Item1), error.Item2);
+            }
+            EditContext.NotifyValidationStateChanged();
+        }
+        else
+        {
+            EditContext?.Validate();
+        }
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputCheckbox.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+using System.Collections.ObjectModel;
+namespace Rizzy;
+public class RzInputCheckbox : InputCheckbox
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        HttpContext?.GetOrAddFieldMapping(EditContext);
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputCheckbox)} must be enclosed within an {nameof(EditForm)}.");
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue);
+        }
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
+        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+        attrib.TryAdd("id", Id);
+        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputDate.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+namespace Rizzy;
+public class RzInputDate<TValue> : InputDate<TValue>
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputDate<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue);
+        }
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
+        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputFile.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Collections.ObjectModel;
+namespace Rizzy;
+public class RzInputFile : InputFile
+{
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    [CascadingParameter] EditContext EditContext { get; set; } = default!;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputFile)} must be enclosed within an {nameof(EditForm)}.");
+        if (!string.IsNullOrEmpty(Id))
+        {
+            var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attrib.TryAdd("id", Id);
+            AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        }
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputNumber.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+namespace Rizzy;
+public class RzInputNumber<TValue> : InputNumber<TValue>
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputNumber<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue);
+        }
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
+        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputRadio.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Collections.ObjectModel;
+namespace Rizzy;
+public class RzInputRadio<TValue> : InputRadio<TValue>
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    EditContext EditContext { get; set; } = default!;
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputRadio<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+        attrib.TryAdd("id", Id);
+        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputRadioGroup.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+using System.Collections.ObjectModel;
+namespace Rizzy;
+public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputRadioGroup<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue);
+        }
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
+        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+        attrib.TryAdd("id", Id);
+        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputSelect.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+using System.Collections.ObjectModel;
+namespace Rizzy;
+public class RzInputSelect<TValue> : InputSelect<TValue>
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputSelect<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue);
+        }
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
+        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+        attrib.TryAdd("id", Id);
+        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputText.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+namespace Rizzy;
+public class RzInputText : InputText
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputText)} must be enclosed within an {nameof(EditForm)}.");
+        if (string.IsNullOrEmpty(Id) && AdditionalAttributes != null)
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue);
+        }
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
+        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputTextArea.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+namespace Rizzy;
+public class RzInputTextArea : InputTextArea
+{
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(EditForm)}.");
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue);
+        }
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        {
+            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+        }
+        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
+    }
+    protected override void Dispose(bool disposing)
+    {
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        fieldMapping?.Remove(FieldIdentifier);
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzValidationMessage.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Components.Form.Helpers;
+using Rizzy.Htmx;
+using System.Collections.ObjectModel;
+using System.Globalization;
+namespace Rizzy;
+public class RzValidationMessage<TValue> : ValidationMessage<TValue>
+{
+    private IDictionary<string, object> _mergedAttributes = default!;
+    private string? _formattedValueExpression;
+    private bool _shouldGenerateFieldNames;
+    [CascadingParameter] EditContext EditContext { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (EditContext is null)
+            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        _mergedAttributes = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+        _shouldGenerateFieldNames = EditContext.ShouldUseFieldIdentifiers;
+        if (For is null)
+            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
+        var field = FieldIdentifier.Create(For);
+        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        string fieldName;
+        if (fieldMapping != null && fieldMapping.TryGetValue(field, out var mapping))
+        {
+            fieldName = mapping.FieldName;
+        }
+        else
+        {
+            fieldName = NameAttributeValue;
+        }
+        _mergedAttributes["data-valmsg-for"] = fieldName;
+        _mergedAttributes["data-valmsg-replace"] = "true";
+        AdditionalAttributes = new ReadOnlyDictionary<string, object>(_mergedAttributes);
+    }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        if (For is null)
+            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
+        var field = FieldIdentifier.Create(For);
+        var messages = EditContext.GetValidationMessages(field);
+        if (messages.Any())
+        {
+            foreach (var message in EditContext.GetValidationMessages(field))
+            {
+                builder.OpenElement(0, "div");
+                builder.AddAttribute(1, "class", "validation-message field-validation-error");
+                builder.AddMultipleAttributes(2, AdditionalAttributes);
+                builder.AddContent(3, message);
+                builder.CloseElement();
+            }
+        }
+        else
+        {
+            builder.OpenElement(10, "div");
+            builder.AddAttribute(11, "class", "validation-message");
+            builder.AddMultipleAttributes(12, AdditionalAttributes);
+            builder.AddContent(13, string.Empty);
+            builder.CloseElement();
+        }
+    }
+    private string NameAttributeValue
+    {
+        get
+        {
+            if (AdditionalAttributes?.TryGetValue("name", out var nameAttributeValue) ?? false)
+            {
+                return Convert.ToString(nameAttributeValue, CultureInfo.InvariantCulture) ?? string.Empty;
+            }
+            if (_shouldGenerateFieldNames)
+            {
+                if (_formattedValueExpression is null && For is not null)
+                {
+                    _formattedValueExpression = ExpressionFormatter.FormatLambda(For);
+                }
+                return _formattedValueExpression ?? string.Empty;
+            }
+            return string.Empty;
+        }
+    }
+}
+</file>
+
+<file path="Components/Form/RzValidationSummary.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Components.Rendering;
+namespace Rizzy;
+public class RzValidationSummary : ValidationSummary
+{
+    [CascadingParameter] EditContext EditContext { get; set; } = default!;
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        var validationMessages = Model is null ?
+            EditContext.GetValidationMessages().ToList() :
+            EditContext.GetValidationMessages(new FieldIdentifier(Model, string.Empty)).ToList();
+        if (validationMessages.Count > 0)
+        {
+            var first = true;
+            foreach (var error in validationMessages)
+            {
+                if (first)
+                {
+                    first = false;
+                    builder.OpenElement(0, "ul");
+                    builder.AddAttribute(1, "class", "validation-errors");
+                    builder.AddMultipleAttributes(2, AdditionalAttributes);
+                }
+                builder.OpenElement(3, "li");
+                builder.AddAttribute(4, "class", "validation-message");
+                builder.AddContent(5, error);
+                builder.CloseElement();
+            }
+            if (!first)
+            {
+                builder.CloseElement();
+            }
+        }
+    }
+}
+</file>
+
+<file path="Components/Head/RzHeadContent.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Sections;
+namespace Rizzy;
+public sealed class RzHeadContent : ComponentBase
+{
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<SectionContent>(0);
+        builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.HeadSectionId);
+        builder.AddComponentParameter(2, nameof(SectionContent.ChildContent), ChildContent);
+        builder.CloseComponent();
+    }
+}
+</file>
+
+<file path="Components/Head/RzHeadOutlet.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Sections;
+namespace Rizzy;
+public sealed class RzHeadOutlet : ComponentBase
+{
+    internal static readonly object HeadSectionId = new();
+    internal static readonly object TitleSectionId = new();
+    private readonly string? _defaultTitle = null;
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<SectionOutlet>(0);
+        builder.AddComponentParameter(1, nameof(SectionOutlet.SectionId), TitleSectionId);
+        builder.CloseComponent();
+        if (!string.IsNullOrEmpty(_defaultTitle))
+        {
+            builder.OpenComponent<SectionContent>(2);
+            builder.AddComponentParameter(3, nameof(SectionContent.SectionId), TitleSectionId);
+            builder.AddComponentParameter(4, "IsDefaultContent", true);
+            builder.AddComponentParameter(5, nameof(SectionContent.ChildContent), (RenderFragment)BuildDefaultTitleRenderTree);
+            builder.CloseComponent();
+        }
+        builder.OpenComponent<SectionOutlet>(6);
+        builder.AddComponentParameter(7, nameof(SectionOutlet.SectionId), HeadSectionId);
+        builder.CloseComponent();
+    }
+    private void BuildDefaultTitleRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "title");
+        builder.AddContent(1, _defaultTitle);
+        builder.CloseElement();
+    }
+}
+</file>
+
+<file path="Components/Head/RzPageTitle.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Sections;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+namespace Rizzy;
+public sealed class RzPageTitle : ComponentBase
+{
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        if (HttpContext?.Request.IsHtmx() == true)
+        {
+            builder.OpenComponent<SectionContent>(0);
+            builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.TitleSectionId);
+            builder.AddComponentParameter(2, nameof(SectionContent.ChildContent), (RenderFragment)BuildTitleRenderTree);
+            builder.CloseComponent();
+        }
+        else
+        {
+            BuildTitleRenderTree(builder);
+        }
+    }
+    private void BuildTitleRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "title");
+        builder.AddContent(1, ChildContent);
+        builder.CloseElement();
+    }
+}
+</file>
+
+<file path="Components/Layout/EmptyLayout.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+namespace Rizzy;
+internal class EmptyLayout : LayoutComponentBase
+{
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.AddContent(0, Body);
+    }
+}
+</file>
+
+<file path="Components/Layout/EmptyRootComponent.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+namespace Rizzy;
+internal class EmptyRootComponent : ComponentBase
+{
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "html");
+        builder.OpenElement(1, "body");
+        builder.AddContent(2, ChildContent);
+        builder.CloseElement();
+        builder.CloseElement();
+    }
+}
+</file>
+
+<file path="Components/Layout/HtmxApp.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Http;
+namespace Rizzy;
+public sealed class HtmxApp<T> : ComponentBase where T : LayoutComponentBase
+{
+    [CascadingParameter]
+    public HttpContext? Context { get; set; }
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<HtmxLayout<T>>(0);
+        builder.AddAttribute(1, "IsRootComponent", true);
+        builder.AddAttribute(2, "Body", (RenderFragment)(builder2 =>
+        {
+            builder2.AddContent(3, ChildContent);
+        }));
+        builder.CloseComponent();
+    }
+}
+</file>
+
+<file path="Components/Layout/HtmxLayout.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+namespace Rizzy;
+public sealed class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponentBase
+{
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public bool IsRootComponent { get; set; } = false;
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        if (HttpContext?.Request.IsHtmx() == true)
+        {
+            HttpContext?.Response.Headers.TryAdd("Vary", HtmxRequestHeaderNames.HtmxRequest);
+            if (IsRootComponent)
+            {
+                builder.OpenComponent<MinimalLayout>(0);
+            }
+            else
+            {
+                builder.OpenComponent<EmptyLayout>(0);
+            }
+        }
+        else
+        {
+            builder.OpenComponent<T>(0);
+        }
+        builder.AddComponentParameter(1, "Body", Body);
+        builder.CloseComponent();
+    }
+}
+</file>
+
+<file path="Components/Layout/MinimalLayout.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+namespace Rizzy;
+internal class MinimalLayout : LayoutComponentBase
+{
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "html");
+        builder.OpenElement(1, "body");
+        builder.AddContent(2, Body);
+        builder.CloseElement();
+        builder.CloseElement();
+    }
+}
+</file>
+
+<file path="Components/Sections/RzSectionContent.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Sections;
+namespace Rizzy;
+public class RzSectionContent : ComponentBase
+{
+    [Parameter] public string? SectionName { get; set; }
+    [Parameter] public object? SectionId { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<SectionContent>(0);
+        builder.AddAttribute(1, nameof(SectionName), SectionName);
+        builder.AddAttribute(2, nameof(SectionId), SectionId);
+        builder.AddAttribute(3, nameof(ChildContent), ChildContent);
+        builder.CloseComponent();
+    }
+}
+</file>
+
+<file path="Components/Sections/RzSectionOutlet.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.Sections;
+namespace Rizzy;
+public class RzSectionOutlet : ComponentBase
+{
+    [Parameter] public string? SectionName { get; set; }
+    [Parameter] public object? SectionId { get; set; }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<SectionOutlet>(0);
+        builder.AddAttribute(1, nameof(SectionName), SectionName);
+        builder.AddAttribute(2, nameof(SectionId), SectionId);
+        builder.CloseComponent();
+    }
+}
+</file>
+
+<file path="Components/Swap/HtmxSwapContent.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+namespace Rizzy;
+public class HtmxSwapContent : ComponentBase
+{
+    [Inject] public IHtmxSwapService HtmxSwapService { get; set; } = default!;
+    protected override void OnInitialized()
+    {
+        HtmxSwapService.ContentItemsUpdated += (sender, args) => StateHasChanged();
+    }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        if (HtmxSwapService.ContentAvailable)
+            builder.AddContent(0, HtmxSwapService.RenderToFragment());
+    }
+}
+</file>
+
+<file path="Components/Swap/HtmxSwappable.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Rizzy.Htmx;
+namespace Rizzy;
+public class HtmxSwappable : ComponentBase
+{
+    private string _swapParam = string.Empty;
+    [Parameter, EditorRequired]
+    public string TargetId { get; set; } = default!;
+    [Parameter]
+    public SwapStyle SwapStyle { get; set; } = SwapStyle.outerHTML;
+    [Parameter]
+    public string Selector { get; set; } = default!;
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+    protected override void OnParametersSet()
+    {
+        var style = SwapStyle.ToHtmxString();
+        if (!string.IsNullOrEmpty(Selector))
+            _swapParam = $"{style}:{Selector}";
+        else
+            _swapParam = style;
+    }
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "div");
+        builder.AddAttribute(1, "id", TargetId);
+        builder.AddAttribute(2, "hx-swap-oob", _swapParam);
+        builder.AddContent(3, ChildContent);
+        builder.CloseElement();
+    }
+}
+</file>
+
+<file path="Components/Swap/Services/HtmxSwapService.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Rizzy.Htmx;
+namespace Rizzy;
+public class HtmxSwapService : IHtmxSwapService
+{
+    private readonly HttpContext _httpContext;
+    private readonly IServiceProvider _serviceProvider;
+    private List<ContentItem> _contentItems = new List<ContentItem>();
+    public event EventHandler? ContentItemsUpdated;
+    private enum RzContentType
+    {
+        Swappable,
+        RawHtml
+    }
+    public HtmxSwapService(IHttpContextAccessor contextAccessor, IServiceProvider serviceProvider)
+    {
+        _httpContext = contextAccessor.HttpContext!;
+        _serviceProvider = serviceProvider;
+    }
+    private record struct ContentItem(RzContentType ContentType, string TargetId, SwapStyle SwapStyle, string Selector, RenderFragment Content);
+    protected virtual void OnContentItemsUpdated()
+    {
+        ContentItemsUpdated?.Invoke(this, EventArgs.Empty);
+    }
+    public void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object?>? parameters = null, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null) where TComponent : IComponent
+    {
+        var component = new RenderFragment(builder =>
+        {
+            builder.OpenComponent(0, typeof(TComponent));
+            if (parameters != null)
+            {
+                foreach (var parameter in parameters)
+                {
+                    builder.AddAttribute(1, parameter.Key, parameter.Value);
+                }
+            }
+            builder.CloseComponent();
+        });
+        _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, component));
+        OnContentItemsUpdated();
+    }
+    public void AddSwappableComponent<TComponent>(string targetId, object? parameters = null, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null) where TComponent : IComponent =>
+        AddSwappableComponent<TComponent>(targetId, parameters?.ToDictionary(), swapStyle, selector);
+    public void AddSwappableFragment(string targetId, RenderFragment renderFragment, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null)
+    {
+        _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, renderFragment));
+        OnContentItemsUpdated();
+    }
+    public void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null)
+    {
+        var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(1, content));
+        _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, contentFragment));
+        OnContentItemsUpdated();
+    }
+    public void AddRawContent(string content)
+    {
+        var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(2, content));
+        _contentItems.Add(new ContentItem(RzContentType.RawHtml, string.Empty, SwapStyle.none, string.Empty, contentFragment));
+        OnContentItemsUpdated();
+    }
+    public RenderFragment RenderToFragment()
+    {
+        var isHtmx = new HtmxRequest(_httpContext).IsHtmx;
+        return builder =>
+        {
+            foreach (var item in _contentItems)
+            {
+                if (item.ContentType == RzContentType.RawHtml)
+                {
+                    builder.AddContent(3, item.Content);
+                }
+                else if (item.ContentType == RzContentType.Swappable && isHtmx)
+                {
+                    builder.OpenComponent(3, typeof(HtmxSwappable));
+                    builder.AddAttribute(4, "TargetId", item.TargetId);
+                    builder.AddAttribute(5, "SwapStyle", item.SwapStyle);
+                    builder.AddAttribute(6, "Selector", item.Selector);
+                    builder.AddAttribute(7, "ChildContent", item.Content);
+                    builder.CloseComponent();
+                }
+            }
+        };
+    }
+    public async Task<string> RenderToString()
+    {
+        var content = string.Empty;
+        if (ContentAvailable)
+        {
+            ILoggerFactory loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
+            await using var renderer = new HtmlRenderer(_serviceProvider, loggerFactory);
+            content = await renderer.Dispatcher.InvokeAsync(async () =>
+            {
+                var output = await renderer.RenderComponentAsync<HtmxSwapContent>();
+                return output.ToHtmlString();
+            });
+        }
+        return content;
+    }
+    public void Clear()
+    {
+        _contentItems.Clear();
+    }
+    public bool ContentAvailable => _contentItems.Count > 0;
+}
+</file>
+
+<file path="Components/Swap/Services/IHtmxSwapService.cs">
+using Microsoft.AspNetCore.Components;
+using Rizzy.Htmx;
+namespace Rizzy;
+public interface IHtmxSwapService
+{
+    event EventHandler? ContentItemsUpdated;
+    void AddSwappableComponent<TComponent>(string targetId, Dictionary<string, object?>? parameters = null, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null) where TComponent : IComponent;
+    void AddSwappableComponent<TComponent>(string targetId, object? parameters = null, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null) where TComponent : IComponent;
+    void AddSwappableFragment(string targetId, RenderFragment renderFragment, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null);
+    void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null);
+    void AddRawContent(string content);
+    RenderFragment RenderToFragment();
+    Task<string> RenderToString();
+    void Clear();
+    bool ContentAvailable { get; }
+}
+</file>
+
+<file path="Configuration/RizzyConfig.cs">
+using Microsoft.AspNetCore.Components;
+using Rizzy.Htmx.Antiforgery;
+namespace Rizzy.Configuration;
+public class RizzyConfig
+{
+    private Type? _defaultLayout = null;
+    private Type? _rootComponent = typeof(HtmxApp<EmptyLayout>);
+    public AntiforgeryStrategy AntiforgeryStrategy { get; set; } = AntiforgeryStrategy.GenerateTokensPerPage;
+    public Type? DefaultLayout
+    {
+        get => _defaultLayout;
+        set
+        {
+            if (value != null && !typeof(LayoutComponentBase).IsAssignableFrom(value))
+                throw new Exception($"{nameof(value)} is not a Razor layout component");
+            _defaultLayout = value;
+        }
+    }
+    public Type? RootComponent
+    {
+        get => _rootComponent;
+        set
+        {
+            if (value != null)
+            {
+                if (!value.IsGenericType || value.GetGenericTypeDefinition() != typeof(HtmxApp<>) ||
+                    !typeof(LayoutComponentBase).IsAssignableFrom(value.GetGenericArguments()[0]))
+                {
+                    throw new Exception($"{nameof(value)} must be of type HtmxApp<T> where T is a subclass of LayoutComponentBase");
+                }
+            }
+            _rootComponent = value;
+        }
+    }
+}
+</file>
+
+<file path="Constants.cs">
+namespace Rizzy;
+internal class Constants
+{
+    public const string NonceResponseHeader = "HX-Nonce";
+    internal static class HttpContextKeys
+    {
+        public const string NonceKey = "RizzyNonce";
+    }
+}
+</file>
+
+<file path="Extensions/ObjectExtensions.cs">
+using Rizzy.Serialization;
+using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+namespace Rizzy;
+public static class ObjectExtensions
+{
+    public static Dictionary<string, object?> ToDictionary(this object? values)
+    {
+        var dict = new Dictionary<string, object?>(StringComparer.OrdinalIgnoreCase);
+        if (values != null)
+        {
+            foreach (PropertyDescriptor propertyDescriptor in TypeDescriptor.GetProperties(values))
+            {
+                if (propertyDescriptor is null) continue;
+                object? obj = propertyDescriptor.GetValue(values);
+                dict.Add(propertyDescriptor.Name, obj);
+            }
+        }
+        return dict;
+    }
+    public static string SerializeAsAlpineData(this object? value, bool ignoreNullValues = false)
+    {
+        if (value is null)
+            return string.Empty;
+        var options = new JsonSerializerOptions
+        {
+            Converters = { new SingleQuoteStringConverter() },
+            DefaultIgnoreCondition = ignoreNullValues ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
+        };
+        return JsonSerializer.Serialize(value, options);
+    }
+}
+</file>
+
+<file path="Extensions/StringExtensions.cs">
+namespace Rizzy;
+internal static class StringExtensions
+{
+    public static string CapitalizeFirstLetter(this string input)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return input;
+        }
+        return char.ToUpper(input[0]) + input.Substring(1);
+    }
+}
+</file>
+
+<file path="Framework/Mvc/RzController.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text.Json;
+namespace Rizzy.Framework.Mvc;
+public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, IDisposable
+{
+    private readonly IRizzyService? _serviceProxy = null;
+    private IRizzyService RizzyService => _serviceProxy ?? this.HttpContext.RequestServices.GetRequiredService<IRizzyService>();
+    public string CurrentActionUrl => RizzyService.CurrentActionUrl;
+    public virtual IResult View<TComponent>(object? data = null) where TComponent : IComponent
+        => RizzyService.View<TComponent>(data, ModelState);
+    public virtual IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
+        => RizzyService.View<TComponent>(data, ModelState);
+    public virtual IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent
+        => RizzyService.PartialView<TComponent>(data, ModelState);
+    public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
+        => RizzyService.PartialView<TComponent>(data, ModelState);
+    public virtual IResult PartialView(RenderFragment fragment)
+        => RizzyService.PartialView(fragment);
+    public virtual IResult PartialView(params RenderFragment[] fragments)
+        => RizzyService.PartialView(fragments);
+    [NonAction]
+    public virtual JsonResult Json(object? data)
+    {
+        return new JsonResult(data);
+    }
+    [NonAction]
+    public virtual JsonResult Json(object? data, object? serializerSettings)
+    {
+        return new JsonResult(data, serializerSettings);
+    }
+    [NonAction]
+    public virtual void OnActionExecuting(ActionExecutingContext context)
+    {
+        HttpContext.InitializeBlazorFormData();
+    }
+    [NonAction]
+    public virtual void OnActionExecuted(ActionExecutedContext context)
+    {
+    }
+    [NonAction]
+    public virtual Task OnActionExecutionAsync(
+        ActionExecutingContext context,
+        ActionExecutionDelegate next)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(next);
+        OnActionExecuting(context);
+        if (context.Result == null)
+        {
+            var task = next();
+            if (!task.IsCompletedSuccessfully)
+            {
+                return Awaited(this, task);
+            }
+            OnActionExecuted(task.Result);
+        }
+        return Task.CompletedTask;
+        static async Task Awaited(RzController controller, Task<ActionExecutedContext> task)
+        {
+            controller.OnActionExecuted(await task);
+        }
+    }
+    public void Dispose() => Dispose(disposing: true);
+    protected virtual void Dispose(bool disposing)
+    {
+    }
+}
+</file>
+
+<file path="Framework/Mvc/RzControllerWithViews.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
+namespace Rizzy.Framework.Mvc;
+public class RzControllerWithViews : Controller
+{
+    private readonly IRizzyService? _serviceProxy = null;
+    private IRizzyService RizzyService => _serviceProxy ?? this.HttpContext.RequestServices.GetRequiredService<IRizzyService>();
+    public string CurrentActionUrl => RizzyService.CurrentActionUrl;
+    public virtual IResult View<TComponent>(object? data = null) where TComponent : IComponent
+        => RizzyService.View<TComponent>(data, ModelState);
+    public virtual IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
+        => RizzyService.View<TComponent>(data, ModelState);
+    public virtual IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent
+        => RizzyService.PartialView<TComponent>(data, ModelState);
+    public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
+        => RizzyService.PartialView<TComponent>(data, ModelState);
+    public virtual IResult PartialView(RenderFragment fragment)
+        => RizzyService.PartialView(fragment);
+    public virtual IResult PartialView(params RenderFragment[] fragments)
+        => RizzyService.PartialView(fragments);
+    [NonAction]
+    public override void OnActionExecuting(ActionExecutingContext context)
+    {
+        HttpContext.InitializeBlazorFormData();
+    }
+}
+</file>
+
+<file path="HttpContextExtensions.cs">
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Rizzy.Htmx;
+using System.Reflection;
+namespace Rizzy;
+public static class HttpContextExtensions
+{
+    public static string GetNonce(this HttpContext context)
+    {
+        var provider = context.RequestServices.GetRequiredService<IRizzyNonceProvider>();
+        return provider.GetNonce();
+    }
+    internal static void InitializeBlazorFormData(this HttpContext context)
+    {
+        if (!context.Request.HasFormContentType)
+            return;
+        var form = context.Request.Form;
+        var formFiles = context.Request.Form.Files;
+        string? handlerValue = form["_handler"].FirstOrDefault();
+        if (handlerValue is null)
+            return;
+        var types = Assembly.Load("Microsoft.AspNetCore.Components.Endpoints").GetTypes();
+        var providerType = types.First(t => t.Name == "HttpContextFormDataProvider");
+        var formDictType = types.First(t => t.Name == "FormCollectionReadOnlyDictionary");
+        object formDataProvider = context.RequestServices.GetRequiredService(providerType)
+                                  ?? throw new Exception("HttpContextFormDataProvider is not registered.");
+        object formDictInstance = Activator.CreateInstance(formDictType, form)
+                                  ?? throw new Exception("Unable to create an instance of FormCollectionReadOnlyDictionary.");
+        MethodInfo setFormDataMethod = providerType.GetMethod("SetFormData", BindingFlags.Public | BindingFlags.Instance)
+                                       ?? throw new Exception("SetFormData method not found.");
+        setFormDataMethod.Invoke(formDataProvider, [handlerValue, formDictInstance, formFiles]);
+    }
+}
+</file>
+
+<file path="IRizzyService.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+namespace Rizzy;
+public interface IRizzyService
+{
+    string CurrentActionUrl { get; }
+    IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent;
+    IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent;
+    IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent;
+    IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent;
+    IResult PartialView(RenderFragment fragment);
+    IResult PartialView(params RenderFragment[] fragments);
+}
+</file>
+
+<file path="RizzyMiddleware.cs">
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Rizzy;
+using Rizzy.Htmx;
+namespace Rizzy;
+public class RizzyMiddleware
+{
+    private readonly RequestDelegate _next;
+    public RizzyMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+    public async Task InvokeAsync(HttpContext context, IRizzyNonceProvider nonceProvider)
+    {
+        if (context.Request.IsHtmx())
+        {
+            var nonce = nonceProvider.GetNonce();
+            context.Response.Headers.TryAdd(Constants.NonceResponseHeader, nonce);
+        }
+        await _next(context);
+    }
+}
+</file>
+
+<file path="RizzyNonceProvider.cs">
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.WebUtilities;
+namespace Rizzy;
+public sealed class RizzyNonceProvider : IRizzyNonceProvider
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    public RizzyNonceProvider(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+    }
+    public string GetNonce()
+    {
+        var context = _httpContextAccessor.HttpContext
+                      ?? throw new InvalidOperationException("No HttpContext available.");
+        if (context.Items.TryGetValue(Constants.HttpContextKeys.NonceKey, out object? eNonce) && eNonce is string eNonceValue)
+        {
+            return eNonceValue;
+        }
+        var nonce = CreateNonce();
+        context.Items[Constants.HttpContextKeys.NonceKey] = nonce;
+        return nonce;
+    }
+    private static string CreateNonce()
+    {
+        byte[] randomBytes = new byte[32];
+        RandomNumberGenerator.Fill(randomBytes);
+        return Base64UrlTextEncoder.Encode(randomBytes);
+    }
+}
+</file>
+
+<file path="RizzyService.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Rizzy.Htmx;
+namespace Rizzy;
+public sealed class RizzyService : IRizzyService
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private string? _currentActionUrl;
+    public RizzyService(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+    public IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent =>
+        _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
+        View<TComponent>(data.ToDictionary(), modelState);
+    public IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
+    {
+        if (_httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true)
+            return Results.NoContent();
+        var parameters = new Dictionary<string, object?>
+        {
+            { "ComponentType", typeof(TComponent) },
+            { "ComponentParameters", data },
+            { "ModelState", modelState}
+        };
+        return new RazorComponentResult<RzPage>(parameters)
+        {
+            PreventStreamingRendering = false
+        };
+    }
+    public IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent =>
+        _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
+        PartialView<TComponent>(data.ToDictionary(), modelState);
+    public IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
+    {
+        if (_httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true)
+            return Results.NoContent();
+        var parameters = new Dictionary<string, object?>
+        {
+	        { "ComponentType", typeof(TComponent) },
+            { "ComponentParameters", data },
+            { "ModelState", modelState}
+        };
+        return new RazorComponentResult<RzPartial>(parameters)
+        {
+            PreventStreamingRendering = false
+        };
+    }
+    public IResult PartialView(RenderFragment fragment)
+    {
+        return new RazorComponentResult<FragmentComponent>(new { Fragment = fragment });
+    }
+    public IResult PartialView(params RenderFragment[] fragments)
+    {
+        return new RazorComponentResult<FragmentComponent>(new { Fragments = fragments });
+    }
+    public string CurrentActionUrl => _currentActionUrl ??= _httpContextAccessor?.HttpContext?.Request.GetEncodedPathAndQuery() ?? string.Empty;
+}
+</file>
+
+<file path="Serialization/SingleQuoteStringConverter.cs">
+using System.Text.Json;
+using System.Text.Json.Serialization;
+namespace Rizzy.Serialization;
+internal class SingleQuoteStringConverter : JsonConverter<string>
+{
+    public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return reader.GetString() ?? string.Empty;
+    }
+    public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
+    {
+        writer.WriteRawValue($"'{value.Replace("'", "\\'")}'", true);
+    }
+}
+</file>
+
+<file path="ServiceCollectionExtensions.cs">
+using Microsoft.AspNetCore.Components.Forms.Mapping;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Rizzy.Configuration;
+using Rizzy.Htmx;
+namespace Rizzy;
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddRizzy(this IServiceCollection services, Action<RizzyConfig>? configBuilder = null)
+    {
+        services = services ?? throw new ArgumentNullException(nameof(services));
+        services.AddHttpContextAccessor();
+        services.AddSupplyValueFromFormProvider();
+        services.Configure(configBuilder ?? (cfg => { }));
+        services.AddSingleton<DataAnnotationsProcessor>();
+        services.AddScoped<IRizzyService, RizzyService>();
+        services.AddScoped<IHtmxSwapService, HtmxSwapService>();
+        services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
+        return services;
+    }
+}
+</file>
+
+<file path="Utility/IdGenerator.cs">
+using Sqids;
+namespace Rizzy.Utility;
+public static class IdGenerator
+{
+    private static Random _random = new(System.Environment.TickCount);
+    private static long _counter = DateTime.UtcNow.Ticks;
+    private static SqidsEncoder<long> _encoder = new(new SqidsOptions()
+    {
+        Alphabet = new string("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".OrderBy(x => _random.Next()).ToArray()),
+    });
+    public static string UniqueId(string prefix)
+    {
+        long uniqueNumber = Interlocked.Increment(ref _counter);
+        var encodedNumber = _encoder.Encode(uniqueNumber);
+        string finalPrefix = string.IsNullOrWhiteSpace(prefix) ? "id" : prefix;
+        return $"{finalPrefix}{encodedNumber}";
+    }
+}
+</file>
+
+<file path="Utility/RenderFragmentExtensions.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Rendering;
+using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+#pragma warning disable BL0006
+namespace Rizzy.Utility;
+public static class RenderFragmentExtensions
+{
+    public static string AsMarkupString(this RenderFragment? fragment)
+    {
+        if (fragment == null)
+        {
+            return string.Empty;
+        }
+        var builder = new RenderTreeBuilder();
+        fragment.Invoke(builder);
+        var frames = builder.GetFrames();
+        var markupContentList = new List<string>();
+        for (int i = 0; i < frames.Count; i++)
+        {
+            var frame = frames.Array[i];
+            if (frame is { FrameType: RenderTreeFrameType.Markup, MarkupContent: not null })
+            {
+                markupContentList.Add(frame.MarkupContent);
+            }
+        }
+        if (markupContentList.Count > 0 && string.IsNullOrWhiteSpace(markupContentList[0]))
+        {
+            markupContentList.RemoveAt(0);
+        }
+        if (markupContentList.Count > 0 && string.IsNullOrWhiteSpace(markupContentList[^1]))
+        {
+            markupContentList.RemoveAt(markupContentList.Count - 1);
+        }
+        return string.Join("\n", markupContentList);
+    }
+    public static async Task<string> RenderHtmlAsync(this RenderFragment? fragment, IServiceProvider serviceProvider)
+    {
+        if (fragment is null)
+            return string.Empty;
+        ILoggerFactory loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+        await using var htmlRenderer = new HtmlRenderer(serviceProvider, loggerFactory);
+        var html = await htmlRenderer.Dispatcher.InvokeAsync(async () =>
+        {
+            var dictionary = new Dictionary<string, object?>
+            {
+                { "Fragment", fragment }
+            };
+            var parameters = ParameterView.FromDictionary(dictionary);
+            var output = await htmlRenderer.RenderComponentAsync<FragmentComponent>(parameters);
+            return output.ToHtmlString();
+        });
+        return html;
+    }
+}
+</file>
+
+<file path="wwwroot/js/rizzy.js">
+import "./rizzy-nonce"
+import "./rizzy-streaming"
+</file>
+
+</files>

@@ -76,4 +76,17 @@
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\dist\" />
+	  <Folder Include="wwwroot\js\vendor\" />
+	</ItemGroup>
+
+    <Target Name="Webpack" BeforeTargets="Build">
+        <Exec Command="npm run build" />
+    </Target>
+
+    <Target Name="LLM" AfterTargets="Build">
+        <Exec Command="npm run llm" />
+    </Target>
+    
 </Project>
