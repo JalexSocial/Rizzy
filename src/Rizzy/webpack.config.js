@@ -24,9 +24,6 @@ module.exports = [
                 }
             ]
         },
-        externals: {
-            htmx: 'htmx.org'
-        },
         resolve: {
             extensions: ['.js'], // Automatically resolve these extensions
             modules: ['node_modules'], // Allow imports from node_modules

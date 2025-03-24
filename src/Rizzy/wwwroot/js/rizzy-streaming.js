@@ -4,7 +4,7 @@
  * Credits to SSE extension and Microsoft aspnetcore
  * at https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web.JS/src/Rendering/StreamingRendering.ts
  */
-import htmx from 'htmx';
+//import htmx from 'htmx.org';
 
 (function () {
 
@@ -109,7 +109,7 @@ import htmx from 'htmx';
                         }
 
                         // Compute any new html in this chunk
-                        diff = e.currentTarget.response.substring(last);
+                        let diff = e.currentTarget.response.substring(last);
                         swap(container, diff, swapSpec, xhr);
 
                         swapSpec.settleDelay = 0;
