@@ -1,5 +1,34 @@
 /******/ var __webpack_modules__ = ({
 
+/***/ "./wwwroot/js/antiforgerySnippet.min.js":
+/*!**********************************************!*\
+  !*** ./wwwroot/js/antiforgerySnippet.min.js ***!
+  \**********************************************/
+/***/ (() => {
+
+document.body.attributes.__htmx_antiforgery || (document.addEventListener("htmx:configRequest", function (e) {
+  if ("GET" === e.detail.verb.toUpperCase()) return;
+  var t = htmx.config.antiforgery;
+  if (t) {
+    if (e.detail.parameters[t.formFieldName]) return;
+    t.headerName ? e.detail.headers[t.headerName] = t.requestToken : e.detail.parameters[t.formFieldName] = t.requestToken;
+  }
+}), document.addEventListener("htmx:afterOnLoad", function (e) {
+  if (e.detail.boosted) {
+    var t = new DOMParser(),
+      r = t.parseFromString(e.detail.xhr.responseText, "text/html"),
+      a = "meta[name=htmx-config]",
+      i = r.querySelector(a);
+    if (i) {
+      var n = document.querySelector(a),
+        o = "antiforgery";
+      htmx.config[o] = JSON.parse(i.attributes.content.value)[o], n.replaceWith(i);
+    }
+  }
+}), document.body.attributes.__htmx_antiforgery = !0);
+
+/***/ }),
+
 /***/ "./wwwroot/js/rizzy-nonce.js":
 /*!***********************************!*\
   !*** ./wwwroot/js/rizzy-nonce.js ***!
@@ -2098,6 +2127,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _rizzy_streaming__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_rizzy_streaming__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _vendor_aspnet_validation_aspnet_validation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./vendor/aspnet-validation/aspnet-validation */ "./wwwroot/js/vendor/aspnet-validation/aspnet-validation.js");
 /* harmony import */ var _vendor_aspnet_validation_aspnet_validation__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_vendor_aspnet_validation_aspnet_validation__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _antiforgerySnippet_min__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./antiforgerySnippet.min */ "./wwwroot/js/antiforgerySnippet.min.js");
+/* harmony import */ var _antiforgerySnippet_min__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_antiforgerySnippet_min__WEBPACK_IMPORTED_MODULE_3__);
+
 
 
 
