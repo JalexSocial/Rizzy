@@ -26,7 +26,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>5.0.7</Version>
+    <Version>5.0.8</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -81,6 +81,17 @@
 	  <Folder Include="wwwroot\js\vendor\" />
 	</ItemGroup>
 
+    <ItemGroup>
+        <StaticFiles Include="wwwroot/dist/**/*.*"/>
+    </ItemGroup>
+
+    <Target Name="CopyCustomContentBuild" AfterTargets="Build">
+        <Copy SourceFiles="@(StaticFiles)" DestinationFolder="$(OutDir)/wwwroot/dist/%(RecursiveDir)" SkipUnchangedFiles="true" />
+    </Target>
+    <Target Name="CopyCustomContentPublish" AfterTargets="Publish">
+        <Copy SourceFiles="@(StaticFiles)" DestinationFolder="$(OutDir)/wwwroot/dist/%(RecursiveDir)" SkipUnchangedFiles="true" />
+    </Target>
+    
     <Target Name="Webpack" BeforeTargets="Build">
         <Exec Command="npm run build" />
     </Target>
