@@ -2410,6 +2410,10 @@ public static class RenderFragmentExtensions
 <file path="wwwroot/js/rizzy.js">
 import "./rizzy-nonce"
 import "./rizzy-streaming"
+import { ValidationService } from "./vendor/aspnet-validation/aspnet-validation";
+let validationService = new ValidationService();
+validationService.bootstrap({ watch: true });
+window.validation = validationService;
 </file>
 
 </files>
