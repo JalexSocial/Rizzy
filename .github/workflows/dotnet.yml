@@ -19,6 +19,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install npm packages for Rizzy
+        working-directory: ./src/Rizzy  # Specify the directory containing package.json
+        run: npm install
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
