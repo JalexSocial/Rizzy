@@ -45,7 +45,7 @@
                 // the existing document nonce. Note that at minimum the server text originates
                 // from is same-origin and the newScriptNonce that is replaced is determined
                 // from response headers which are only available when processing the xmlHttpRequest
-                if (documentNonce)
+                if (documentNonce && newScriptNonce)
                     text = text.replaceAll(newScriptNonce, documentNonce);
 
                 const parser = new DOMParser();
