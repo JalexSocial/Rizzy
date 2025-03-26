@@ -39,12 +39,6 @@
 	<ItemGroup>
 	  <Content Remove="DefaultDocumentation.json" />
 	</ItemGroup>
-
-    <ItemGroup>
-        <Content Include="wwwroot\dist\*.*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>    
 	
 	<ItemGroup>
 		<PackageReference Include="DefaultDocumentation" Version="0.8.2" PrivateAssets="all" />
