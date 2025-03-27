@@ -1,8 +1,8 @@
-<img src="https://jalexsocial.github.io/Rizzy/media/rizzy-logo.png?cache=bust1" width="600"/>
+<img src="https://jalexsocial.github.io/Rizzy/media/rizzy-logo.png?cache=bust3" width="600"/>
 
 # Rizzy: Asp.net and HTMX using Blazor's Razor component model
 
-Rizzy is a lightweight library that enhances Asp.net MVC applications by seamlessly integrating Razor components for UI development and working harmoniously with HTMX for progressive enhancement. With Rizzy, you can leverage Razor components to create interactive user interfaces while providing a smooth frontend user experience through HTMX.
+Rizzy is a lightweight library that enhances Asp.net MVC applications by seamlessly integrating Razor components for UI development and working with HTMX for progressive enhancement. With Rizzy, you can use composable Razor components to create dynamic and interactive user interfaces while ensuring a smooth user experience through HTMX.
 
 ## Documentation Site
 
