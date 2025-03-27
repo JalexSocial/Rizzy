@@ -40,7 +40,7 @@ module.exports = [
             path: path.resolve(__dirname, 'wwwroot/dist/'),
         },
         mode: 'production', // Enables unminified output
-        devtool: 'source-map', // Optional: Generates source maps for easier debugging
+        //devtool: 'source-map', // Optional: Generates source maps for easier debugging
         module: {
             rules: [
                 {

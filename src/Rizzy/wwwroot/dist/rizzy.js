@@ -7,22 +7,49 @@
 /***/ (() => {
 
 document.body.attributes.__htmx_antiforgery || (document.addEventListener("htmx:configRequest", function (e) {
-  if ("GET" === e.detail.verb.toUpperCase()) return;
-  var t = htmx.config.antiforgery;
-  if (t) {
-    if (e.detail.parameters[t.formFieldName]) return;
-    t.headerName ? e.detail.headers[t.headerName] = t.requestToken : e.detail.parameters[t.formFieldName] = t.requestToken;
+  var _htmx$config;
+  var _e$detail = e.detail,
+    t = _e$detail.verb,
+    r = _e$detail.parameters,
+    n = _e$detail.headers;
+  if ("GET" === (t === null || t === void 0 ? void 0 : t.toUpperCase())) return;
+  var i = (_htmx$config = htmx.config) === null || _htmx$config === void 0 ? void 0 : _htmx$config.antiforgery;
+  if (!i) return;
+  var a = i.headerName,
+    o = i.requestToken,
+    f = i.formFieldName;
+  if (!a && !f) {
+    console.warn("Antiforgery configuration is missing both headerName and formFieldName. Token not added.");
+    return;
   }
+  f && r[f] || (a ? n[a] = o : r[f] = o);
 }), document.addEventListener("htmx:afterOnLoad", function (e) {
   if (e.detail.boosted) {
-    var t = new DOMParser(),
-      r = t.parseFromString(e.detail.xhr.responseText, "text/html"),
-      a = "meta[name=htmx-config]",
-      i = r.querySelector(a);
-    if (i) {
-      var n = document.querySelector(a),
-        o = "antiforgery";
-      htmx.config[o] = JSON.parse(i.attributes.content.value)[o], n.replaceWith(i);
+    var t = e.detail.xhr.responseText,
+      r = t.indexOf('<meta name="htmx-config"'),
+      n = t.indexOf(">", r) + 1,
+      i = t.indexOf("</meta>", n);
+    if (r > -1) {
+      var a = "";
+      if (i > -1) {
+        var o = t.indexOf("/", r);
+        a = o > -1 && o < n ? t.substring(r, n) : t.substring(r, t.indexOf("</meta>") + 7);
+      } else a = t.substring(r, n);
+      var f = /content="([^"]*)"/,
+        s = a.match(f);
+      if (s && s[1]) {
+        var d = s[1],
+          m = document.querySelector("meta[name=htmx-config]"),
+          g = "antiforgery";
+        try {
+          htmx.config[g] = JSON.parse(d)[g];
+        } catch (l) {
+          console.error("Error parsing htmx-config JSON:", l);
+          return;
+        }
+        var c = document.createElement("meta");
+        c.setAttribute("name", "htmx-config"), c.setAttribute("content", d), m.replaceWith(c);
+      }
     }
   }
 }), document.body.attributes.__htmx_antiforgery = !0);
@@ -77,7 +104,7 @@ document.body.attributes.__htmx_antiforgery || (document.addEventListener("htmx:
       // the existing document nonce. Note that at minimum the server text originates
       // from is same-origin and the newScriptNonce that is replaced is determined
       // from response headers which are only available when processing the xmlHttpRequest
-      if (documentNonce) text = text.replaceAll(newScriptNonce, documentNonce);
+      if (documentNonce && newScriptNonce) text = text.replaceAll(newScriptNonce, documentNonce);
       var parser = new DOMParser();
       try {
         // At this point any remaining elements that don't have the correct
