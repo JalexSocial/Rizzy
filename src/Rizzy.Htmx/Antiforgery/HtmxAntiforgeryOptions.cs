@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Htmx.Antiforgery;
+﻿namespace Rizzy.Htmx;
 
 /// <summary>
 /// Represents the options for Rizzy's antiforgery support.

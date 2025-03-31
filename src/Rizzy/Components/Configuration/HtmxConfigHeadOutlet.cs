@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using Rizzy.Htmx;
-using Rizzy.Htmx.Antiforgery;
 using System.Web;
 
 namespace Rizzy;

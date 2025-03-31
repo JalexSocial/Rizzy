@@ -194,7 +194,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using Rizzy.Htmx;
-using Rizzy.Htmx.Antiforgery;
 using System.Web;
 namespace Rizzy;
 public class HtmxConfigHeadOutlet : ComponentBase
@@ -1903,7 +1902,7 @@ public interface IHtmxSwapService
 
 <file path="Configuration/RizzyConfig.cs">
 using Microsoft.AspNetCore.Components;
-using Rizzy.Htmx.Antiforgery;
+using Rizzy.Htmx;
 namespace Rizzy.Configuration;
 public class RizzyConfig
 {

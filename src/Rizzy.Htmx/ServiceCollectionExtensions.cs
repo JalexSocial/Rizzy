@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Rizzy.Htmx.Antiforgery;
 using System.Reflection;
 
 namespace Rizzy.Htmx;

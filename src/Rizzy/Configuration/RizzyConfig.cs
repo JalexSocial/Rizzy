@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Rizzy.Htmx.Antiforgery;
+using Rizzy.Htmx;
 
 namespace Rizzy.Configuration;
 
