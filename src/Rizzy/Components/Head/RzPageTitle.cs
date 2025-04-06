@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 
@@ -26,14 +27,14 @@ public sealed class RzPageTitle : ComponentBase
     {
         if (HttpContext?.Request.IsHtmx() == true)
         {
+            BuildTitleRenderTree(builder);
+        }
+        else
+        {
             builder.OpenComponent<SectionContent>(0);
             builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.TitleSectionId);
             builder.AddComponentParameter(2, nameof(SectionContent.ChildContent), (RenderFragment)BuildTitleRenderTree);
             builder.CloseComponent();
-        }
-        else
-        {
-            BuildTitleRenderTree(builder);
         }
     }
 
