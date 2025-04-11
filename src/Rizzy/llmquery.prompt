@@ -1535,6 +1535,7 @@ public sealed class RzHeadOutlet : ComponentBase
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 namespace Rizzy;
@@ -1548,14 +1549,14 @@ public sealed class RzPageTitle : ComponentBase
     {
         if (HttpContext?.Request.IsHtmx() == true)
         {
+            BuildTitleRenderTree(builder);
+        }
+        else
+        {
             builder.OpenComponent<SectionContent>(0);
             builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.TitleSectionId);
             builder.AddComponentParameter(2, nameof(SectionContent.ChildContent), (RenderFragment)BuildTitleRenderTree);
             builder.CloseComponent();
-        }
-        else
-        {
-            BuildTitleRenderTree(builder);
         }
     }
     private void BuildTitleRenderTree(RenderTreeBuilder builder)
@@ -2411,9 +2412,13 @@ import "./rizzy-nonce"
 import "./rizzy-streaming"
 import { ValidationService } from "./vendor/aspnet-validation/aspnet-validation";
 import "./antiforgerySnippet.min";
-let validationService = new ValidationService();
-validationService.bootstrap({ watch: true });
-window.validation = validationService;
+let validation = new ValidationService();
+validation.bootstrap({ watch: true });
+const Rizzy = {
+    validation
+};
+window.Rizzy = { ...(window.Rizzy || {}), Rizzy };
+export default Rizzy;
 </file>
 
 </files>

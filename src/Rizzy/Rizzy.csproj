@@ -78,7 +78,6 @@
 
 	<ItemGroup>
 	  <Folder Include="wwwroot\dist\" />
-	  <Folder Include="wwwroot\js\vendor\" />
 	</ItemGroup>
 
     <Target Name="Webpack" BeforeTargets="Build">
