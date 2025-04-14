@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Rizzy.Serialization;
+namespace Rizzy;
 
 internal class SingleQuoteStringConverter : JsonConverter<string>
 {

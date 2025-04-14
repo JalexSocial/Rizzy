@@ -48,7 +48,6 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-AppBuilderExtensions.cs
 Components/Configuration/HtmxAntiforgeryScript.razor
 Components/Configuration/HtmxConfigHeadOutlet.cs
 Components/Content/FragmentComponent.cs
@@ -85,17 +84,28 @@ Components/Swap/Services/HtmxSwapService.cs
 Components/Swap/Services/IHtmxSwapService.cs
 Configuration/RizzyConfig.cs
 Constants.cs
+Extensions/AppBuilderExtensions.cs
+Extensions/HttpContextExtensions.cs
 Extensions/ObjectExtensions.cs
+Extensions/ServiceCollectionExtensions.cs
 Extensions/StringExtensions.cs
 Framework/Mvc/RzController.cs
 Framework/Mvc/RzControllerWithViews.cs
-HttpContextExtensions.cs
 IRizzyService.cs
-RizzyMiddleware.cs
-RizzyNonceProvider.cs
-RizzyService.cs
+IToastService.cs
+Serialization/EnumMemberJsonConverter.cs
 Serialization/SingleQuoteStringConverter.cs
-ServiceCollectionExtensions.cs
+Services/Rizzy/Middleware/RizzyMiddleware.cs
+Services/Rizzy/RizzyService.cs
+Services/RizzyNonceProvider/RizzyNonceProvider.cs
+Services/Toast/Enum/ToastEffect.cs
+Services/Toast/Enum/ToastPosition.cs
+Services/Toast/Enum/ToastStatus.cs
+Services/Toast/Enum/ToastType.cs
+Services/Toast/Middleware/ToastMiddleware.cs
+Services/Toast/Models/ToastMessage.cs
+Services/Toast/Models/ToastMessageOptions.cs
+Services/Toast/ToastService.cs
 Utility/IdGenerator.cs
 Utility/RenderFragmentExtensions.cs
 wwwroot/js/rizzy.js
@@ -103,24 +113,6 @@ wwwroot/js/rizzy.js
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="AppBuilderExtensions.cs">
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-namespace Rizzy;
-public static class AppBuilderExtensions
-{
-    public static IApplicationBuilder UseRizzy(this IApplicationBuilder builder)
-    {
-        builder.UseMiddleware<RizzyMiddleware>();
-        return builder;
-    }
-}
-</file>
 
 <file path="Components/Configuration/HtmxAntiforgeryScript.razor">
 @using Microsoft.AspNetCore.Http
@@ -1100,7 +1092,8 @@ public class RzInputFile : InputFile
 {
     [Parameter]
     public string Id { get; set; } = string.Empty;
-    [CascadingParameter] EditContext EditContext { get; set; } = default!;
+    [CascadingParameter]
+    public EditContext EditContext { get; set; } = default!;
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
@@ -1163,17 +1156,11 @@ using System.Collections.ObjectModel;
 namespace Rizzy;
 public class RzInputRadio<TValue> : InputRadio<TValue>
 {
-    [Inject]
-    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
-    [CascadingParameter]
-    EditContext EditContext { get; set; } = default!;
     [Parameter]
     public string Id { get; set; } = string.Empty;
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputRadio<TValue>)} must be enclosed within an {nameof(EditForm)}.");
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
@@ -1944,6 +1931,7 @@ namespace Rizzy;
 internal class Constants
 {
     public const string NonceResponseHeader = "HX-Nonce";
+    public const string ToastBroadcastEventName = "rz:toast-broadcast";
     internal static class HttpContextKeys
     {
         public const string NonceKey = "RizzyNonce";
@@ -1951,8 +1939,61 @@ internal class Constants
 }
 </file>
 
+<file path="Extensions/AppBuilderExtensions.cs">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+namespace Rizzy;
+public static class AppBuilderExtensions
+{
+    public static IApplicationBuilder UseRizzy(this IApplicationBuilder builder)
+    {
+        builder.UseMiddleware<RizzyMiddleware>();
+        return builder;
+    }
+}
+</file>
+
+<file path="Extensions/HttpContextExtensions.cs">
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Rizzy.Htmx;
+using System.Reflection;
+namespace Rizzy;
+public static class HttpContextExtensions
+{
+    public static string GetNonce(this HttpContext context)
+    {
+        var provider = context.RequestServices.GetRequiredService<IRizzyNonceProvider>();
+        return provider.GetNonce();
+    }
+    internal static void InitializeBlazorFormData(this HttpContext context)
+    {
+        if (!context.Request.HasFormContentType)
+            return;
+        var form = context.Request.Form;
+        var formFiles = context.Request.Form.Files;
+        string? handlerValue = form["_handler"].FirstOrDefault();
+        if (handlerValue is null)
+            return;
+        var types = Assembly.Load("Microsoft.AspNetCore.Components.Endpoints").GetTypes();
+        var providerType = types.First(t => t.Name == "HttpContextFormDataProvider");
+        var formDictType = types.First(t => t.Name == "FormCollectionReadOnlyDictionary");
+        object formDataProvider = context.RequestServices.GetRequiredService(providerType)
+                                  ?? throw new Exception("HttpContextFormDataProvider is not registered.");
+        object formDictInstance = Activator.CreateInstance(formDictType, form)
+                                  ?? throw new Exception("Unable to create an instance of FormCollectionReadOnlyDictionary.");
+        MethodInfo setFormDataMethod = providerType.GetMethod("SetFormData", BindingFlags.Public | BindingFlags.Instance)
+                                       ?? throw new Exception("SetFormData method not found.");
+        setFormDataMethod.Invoke(formDataProvider, [handlerValue, formDictInstance, formFiles]);
+    }
+}
+</file>
+
 <file path="Extensions/ObjectExtensions.cs">
-using Rizzy.Serialization;
 using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -1983,6 +2024,30 @@ public static class ObjectExtensions
             DefaultIgnoreCondition = ignoreNullValues ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
         };
         return JsonSerializer.Serialize(value, options);
+    }
+}
+</file>
+
+<file path="Extensions/ServiceCollectionExtensions.cs">
+using Microsoft.AspNetCore.Components.Forms.Mapping;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Rizzy.Configuration;
+using Rizzy.Htmx;
+namespace Rizzy;
+public static class ServiceCollectionExtensions
+{
+    public static IServiceCollection AddRizzy(this IServiceCollection services, Action<RizzyConfig>? configBuilder = null)
+    {
+        services = services ?? throw new ArgumentNullException(nameof(services));
+        services.AddHttpContextAccessor();
+        services.AddSupplyValueFromFormProvider();
+        services.Configure(configBuilder ?? (cfg => { }));
+        services.AddSingleton<DataAnnotationsProcessor>();
+        services.AddScoped<IRizzyService, RizzyService>();
+        services.AddScoped<IHtmxSwapService, HtmxSwapService>();
+        services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
+        return services;
     }
 }
 </file>
@@ -2108,42 +2173,6 @@ public class RzControllerWithViews : Controller
 }
 </file>
 
-<file path="HttpContextExtensions.cs">
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Rizzy.Htmx;
-using System.Reflection;
-namespace Rizzy;
-public static class HttpContextExtensions
-{
-    public static string GetNonce(this HttpContext context)
-    {
-        var provider = context.RequestServices.GetRequiredService<IRizzyNonceProvider>();
-        return provider.GetNonce();
-    }
-    internal static void InitializeBlazorFormData(this HttpContext context)
-    {
-        if (!context.Request.HasFormContentType)
-            return;
-        var form = context.Request.Form;
-        var formFiles = context.Request.Form.Files;
-        string? handlerValue = form["_handler"].FirstOrDefault();
-        if (handlerValue is null)
-            return;
-        var types = Assembly.Load("Microsoft.AspNetCore.Components.Endpoints").GetTypes();
-        var providerType = types.First(t => t.Name == "HttpContextFormDataProvider");
-        var formDictType = types.First(t => t.Name == "FormCollectionReadOnlyDictionary");
-        object formDataProvider = context.RequestServices.GetRequiredService(providerType)
-                                  ?? throw new Exception("HttpContextFormDataProvider is not registered.");
-        object formDictInstance = Activator.CreateInstance(formDictType, form)
-                                  ?? throw new Exception("Unable to create an instance of FormCollectionReadOnlyDictionary.");
-        MethodInfo setFormDataMethod = providerType.GetMethod("SetFormData", BindingFlags.Public | BindingFlags.Instance)
-                                       ?? throw new Exception("SetFormData method not found.");
-        setFormDataMethod.Invoke(formDataProvider, [handlerValue, formDictInstance, formFiles]);
-    }
-}
-</file>
-
 <file path="IRizzyService.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
@@ -2161,7 +2190,144 @@ public interface IRizzyService
 }
 </file>
 
-<file path="RizzyMiddleware.cs">
+<file path="IToastService.cs">
+namespace Rizzy;
+public interface IToastService
+{
+	void Success(string text, string? title = null, ToastMessageOptions? options = null);
+	void Warning(string text, string? title = null, ToastMessageOptions? options = null);
+	void Information(string text, string? title = null, ToastMessageOptions? options = null);
+	void Error(string text, string? title = null, ToastMessageOptions? options = null);
+	void Custom(ToastMessage notification);
+	List<ToastMessage> ReadAllNotifications();
+	void RemoveAll();
+}
+</file>
+
+<file path="Serialization/EnumMemberJsonConverter.cs">
+using System.Collections.Concurrent;
+using System.Reflection;
+using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+namespace Rizzy;
+internal class EnumMemberJsonConverter<T> : JsonConverter<T> where T : struct, Enum
+{
+    private static readonly ConcurrentDictionary<Type, IReadOnlyDictionary<T, string>> WriteCache = new();
+    private static readonly ConcurrentDictionary<Type, IReadOnlyDictionary<string, T>> ReadCache = new(
+        concurrencyLevel: Environment.ProcessorCount,
+        capacity: 1
+    );
+    private static void InitializeCaches(Type enumType, JsonSerializerOptions options)
+    {
+        if (!ReadCache.ContainsKey(enumType))
+        {
+            var stringComparer = options?.PropertyNameCaseInsensitive ?? false
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+            var writeMap = new Dictionary<T, string>();
+            var readMap = new Dictionary<string, T>(stringComparer);
+            foreach (T enumValue in Enum.GetValues(enumType).Cast<T>())
+            {
+                string memberName = enumValue.ToString();
+                MemberInfo? member = enumType.GetMember(memberName).FirstOrDefault();
+                string effectiveStringValue = memberName;
+                if (member != null)
+                {
+                    var attribute = member.GetCustomAttribute<EnumMemberAttribute>(false);
+                    if (attribute != null && !string.IsNullOrEmpty(attribute.Value))
+                    {
+                        effectiveStringValue = attribute.Value;
+                        if (!readMap.TryAdd(attribute.Value, enumValue))
+                        {
+                        }
+                    }
+                }
+                writeMap[enumValue] = effectiveStringValue;
+                readMap.TryAdd(memberName, enumValue);
+            }
+            WriteCache.TryAdd(enumType, writeMap);
+            var finalReadCache = new Dictionary<string, T>(readMap, stringComparer);
+            ReadCache.TryAdd(enumType, finalReadCache);
+        }
+    }
+    public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        InitializeCaches(typeToConvert, options);
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            string enumString = reader.GetString() ?? string.Empty;
+            if (enumString == null)
+            {
+               throw new JsonException($"Cannot convert null to Enum \"{typeToConvert.Name}\".");
+            }
+            if (ReadCache.TryGetValue(typeToConvert, out var readMap) && readMap.TryGetValue(enumString, out T enumValue))
+            {
+                return enumValue;
+            }
+            throw new JsonException($"Unable to convert \"{enumString}\" to Enum \"{typeToConvert.Name}\". No matching EnumMemberAttribute value or enum name found.");
+        }
+        else if (reader.TokenType == JsonTokenType.Number)
+        {
+            Type underlyingType = Enum.GetUnderlyingType(typeToConvert);
+            object numericValue;
+            if (underlyingType == typeof(int) && reader.TryGetInt32(out int intValue)) numericValue = intValue;
+            else if (underlyingType == typeof(uint) && reader.TryGetUInt32(out uint uintValue)) numericValue = uintValue;
+            else if (underlyingType == typeof(long) && reader.TryGetInt64(out long longValue)) numericValue = longValue;
+            else if (underlyingType == typeof(ulong) && reader.TryGetUInt64(out ulong ulongValue)) numericValue = ulongValue;
+            else if (underlyingType == typeof(short) && reader.TryGetInt16(out short shortValue)) numericValue = shortValue;
+            else if (underlyingType == typeof(ushort) && reader.TryGetUInt16(out ushort ushortValue)) numericValue = ushortValue;
+            else if (underlyingType == typeof(byte) && reader.TryGetByte(out byte byteValue)) numericValue = byteValue;
+            else if (underlyingType == typeof(sbyte) && reader.TryGetSByte(out sbyte sbyteValue)) numericValue = sbyteValue;
+            else
+            {
+                throw new JsonException($"Cannot read number token for enum {typeToConvert.Name} with underlying type {underlyingType.Name}.");
+            }
+            try {
+                 if (!Enum.IsDefined(typeToConvert, numericValue))
+                 {
+                    throw new JsonException($"Numeric value {numericValue} is not defined in Enum \"{typeToConvert.Name}\".");
+                 }
+                return (T)Enum.ToObject(typeToConvert, numericValue);
+            } catch (ArgumentException ex) {
+                 throw new JsonException($"Numeric value {numericValue} is not valid for Enum \"{typeToConvert.Name}\".", ex);
+            }
+        }
+        throw new JsonException($"Unexpected token {reader.TokenType} when parsing enum \"{typeToConvert.Name}\". Expected String or Number.");
+    }
+    public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+    {
+        InitializeCaches(typeof(T), options);
+        if (WriteCache.TryGetValue(typeof(T), out var writeMap) && writeMap.TryGetValue(value, out string? stringValue))
+        {
+            writer.WriteStringValue(stringValue ?? string.Empty);
+        }
+        else
+        {
+            writer.WriteStringValue(value.ToString());
+        }
+    }
+}
+</file>
+
+<file path="Serialization/SingleQuoteStringConverter.cs">
+using System.Text.Json;
+using System.Text.Json.Serialization;
+namespace Rizzy;
+internal class SingleQuoteStringConverter : JsonConverter<string>
+{
+    public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        return reader.GetString() ?? string.Empty;
+    }
+    public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
+    {
+        writer.WriteRawValue($"'{value.Replace("'", "\\'")}'", true);
+    }
+}
+</file>
+
+<file path="Services/Rizzy/Middleware/RizzyMiddleware.cs">
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -2187,41 +2353,7 @@ public class RizzyMiddleware
 }
 </file>
 
-<file path="RizzyNonceProvider.cs">
-using Microsoft.AspNetCore.Http;
-using Rizzy.Htmx;
-using System.Security.Cryptography;
-using Microsoft.AspNetCore.WebUtilities;
-namespace Rizzy;
-public sealed class RizzyNonceProvider : IRizzyNonceProvider
-{
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    public RizzyNonceProvider(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
-    }
-    public string GetNonce()
-    {
-        var context = _httpContextAccessor.HttpContext
-                      ?? throw new InvalidOperationException("No HttpContext available.");
-        if (context.Items.TryGetValue(Constants.HttpContextKeys.NonceKey, out object? eNonce) && eNonce is string eNonceValue)
-        {
-            return eNonceValue;
-        }
-        var nonce = CreateNonce();
-        context.Items[Constants.HttpContextKeys.NonceKey] = nonce;
-        return nonce;
-    }
-    private static string CreateNonce()
-    {
-        byte[] randomBytes = new byte[32];
-        RandomNumberGenerator.Fill(randomBytes);
-        return Base64UrlTextEncoder.Encode(randomBytes);
-    }
-}
-</file>
-
-<file path="RizzyService.cs">
+<file path="Services/Rizzy/RizzyService.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -2285,43 +2417,337 @@ public sealed class RizzyService : IRizzyService
 }
 </file>
 
-<file path="Serialization/SingleQuoteStringConverter.cs">
-using System.Text.Json;
-using System.Text.Json.Serialization;
-namespace Rizzy.Serialization;
-internal class SingleQuoteStringConverter : JsonConverter<string>
+<file path="Services/RizzyNonceProvider/RizzyNonceProvider.cs">
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using System.Security.Cryptography;
+using Microsoft.AspNetCore.WebUtilities;
+namespace Rizzy;
+public sealed class RizzyNonceProvider : IRizzyNonceProvider
 {
-    public override string Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    public RizzyNonceProvider(IHttpContextAccessor httpContextAccessor)
     {
-        return reader.GetString() ?? string.Empty;
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
     }
-    public override void Write(Utf8JsonWriter writer, string value, JsonSerializerOptions options)
+    public string GetNonce()
     {
-        writer.WriteRawValue($"'{value.Replace("'", "\\'")}'", true);
+        var context = _httpContextAccessor.HttpContext
+                      ?? throw new InvalidOperationException("No HttpContext available.");
+        if (context.Items.TryGetValue(Constants.HttpContextKeys.NonceKey, out object? eNonce) && eNonce is string eNonceValue)
+        {
+            return eNonceValue;
+        }
+        var nonce = CreateNonce();
+        context.Items[Constants.HttpContextKeys.NonceKey] = nonce;
+        return nonce;
+    }
+    private static string CreateNonce()
+    {
+        byte[] randomBytes = new byte[32];
+        RandomNumberGenerator.Fill(randomBytes);
+        return Base64UrlTextEncoder.Encode(randomBytes);
     }
 }
 </file>
 
-<file path="ServiceCollectionExtensions.cs">
-using Microsoft.AspNetCore.Components.Forms.Mapping;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Rizzy.Configuration;
-using Rizzy.Htmx;
+<file path="Services/Toast/Enum/ToastEffect.cs">
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 namespace Rizzy;
-public static class ServiceCollectionExtensions
+[JsonConverter(typeof(EnumMemberJsonConverter<ToastEffect>))]
+public enum ToastEffect
 {
-    public static IServiceCollection AddRizzy(this IServiceCollection services, Action<RizzyConfig>? configBuilder = null)
+    [EnumMember(Value = "fade")]
+    Fade,
+    [EnumMember(Value = "slide")]
+    Slide
+}
+</file>
+
+<file path="Services/Toast/Enum/ToastPosition.cs">
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+namespace Rizzy;
+[JsonConverter(typeof(EnumMemberJsonConverter<ToastPosition>))]
+public enum ToastPosition
+{
+    [EnumMember(Value = "right top")]
+    RightTop,
+    [EnumMember(Value = "top right")]
+    TopRight,
+    [EnumMember(Value = "right bottom")]
+    RightBottom,
+    [EnumMember(Value = "bottom right")]
+    BottomRight,
+    [EnumMember(Value = "left top")]
+    LeftTop,
+    [EnumMember(Value = "top left")]
+    TopLeft,
+    [EnumMember(Value = "left bottom")]
+    LeftBottom,
+    [EnumMember(Value = "bottom left")]
+    BottomLeft,
+    [EnumMember(Value = "center top")]
+    CenterTop,
+    [EnumMember(Value = "x-center top")]
+    XCenterTop,
+    [EnumMember(Value = "center bottom")]
+    CenterBottom,
+    [EnumMember(Value = "x-center bottom")]
+    XCenterBottom,
+    [EnumMember(Value = "left center")]
+    LeftCenter,
+    [EnumMember(Value = "left y-center")]
+    LeftYCenter,
+    [EnumMember(Value = "y-center left")]
+    YCenterLeft,
+    [EnumMember(Value = "right center")]
+    RightCenter,
+    [EnumMember(Value = "right y-center")]
+    RightYCenter,
+    [EnumMember(Value = "y-center right")]
+    YCenterRight,
+    [EnumMember(Value = "top center")]
+    TopCenter,
+    [EnumMember(Value = "top x-center")]
+    TopXCenter,
+    [EnumMember(Value = "bottom center")]
+    BottomCenter,
+    [EnumMember(Value = "bottom x-center")]
+    BottomXCenter,
+    [EnumMember(Value = "center")]
+    Center
+}
+</file>
+
+<file path="Services/Toast/Enum/ToastStatus.cs">
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+namespace Rizzy;
+[JsonConverter(typeof(EnumMemberJsonConverter<ToastStatus>))]
+public enum ToastStatus
+{
+    [EnumMember(Value = "success")]
+    Success,
+    [EnumMember(Value = "error")]
+    Error,
+    [EnumMember(Value = "warning")]
+    Warning,
+    [EnumMember(Value = "info")]
+    Info
+}
+</file>
+
+<file path="Services/Toast/Enum/ToastType.cs">
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
+namespace Rizzy;
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum ToastType
+{
+	[EnumMember(Value = "outline")]
+	Outline,
+	[EnumMember(Value = "filled")]
+	Filled
+}
+</file>
+
+<file path="Services/Toast/Middleware/ToastMiddleware.cs">
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Rizzy.Htmx;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+namespace Rizzy;
+public class ToastMiddleware
+{
+    private readonly ILogger<ToastMiddleware> _logger;
+    private readonly RequestDelegate _next;
+    public ToastMiddleware(RequestDelegate next, ILogger<ToastMiddleware> logger)
     {
-        services = services ?? throw new ArgumentNullException(nameof(services));
-        services.AddHttpContextAccessor();
-        services.AddSupplyValueFromFormProvider();
-        services.Configure(configBuilder ?? (cfg => { }));
-        services.AddSingleton<DataAnnotationsProcessor>();
-        services.AddScoped<IRizzyService, RizzyService>();
-        services.AddScoped<IHtmxSwapService, HtmxSwapService>();
-        services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
-        return services;
+        _next = next ?? throw new ArgumentNullException(nameof(next));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
+    public async Task InvokeAsync(HttpContext context)
+    {
+        if (!context.Request.IsHtmx())
+        {
+            await _next(context);
+            return;
+        }
+        var toastService = context.RequestServices.GetRequiredService<IToastService>();
+        context.Response.OnStarting(AddToastTriggerCallback, (context, toastService));
+        await _next(context);
+    }
+    private Task AddToastTriggerCallback(object state)
+    {
+        if (state is not (HttpContext httpContext, IToastService toastService))
+        {
+            _logger.LogWarning("Invalid state object received in {CallbackName}. Expected (HttpContext, IToastService).", nameof(AddToastTriggerCallback));
+            return Task.CompletedTask;
+        }
+        try
+        {
+            if (httpContext.Response.HasStarted)
+            {
+                _logger.LogWarning("Response has already started in {CallbackName}. Cannot add HX-Trigger.", nameof(AddToastTriggerCallback));
+                return Task.CompletedTask;
+            }
+            _logger.LogTrace("Processing HTMX request for potential toasts.");
+            var messages = toastService.ReadAllNotifications();
+            if (messages.Any())
+            {
+                _logger.LogInformation("Found {Count} toast notifications to trigger.", messages.Count);
+                var response = new HtmxResponse(httpContext);
+                response.Trigger(Constants.ToastBroadcastEventName, messages);
+                toastService.RemoveAll();
+                _logger.LogTrace("Cleared toast notifications from service.");
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred in {CallbackName} while processing toasts.", nameof(AddToastTriggerCallback));
+        }
+        return Task.CompletedTask;
+    }
+}
+</file>
+
+<file path="Services/Toast/Models/ToastMessage.cs">
+using System.Text.Json.Serialization;
+namespace Rizzy;
+public sealed record class ToastMessage : ToastMessageOptions
+{
+	[JsonPropertyName("status")]
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+	public ToastStatus Status { get; init; } = ToastStatus.Info;
+	[JsonPropertyName("title")]
+	[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+	public string? Title { get; init; }
+	[JsonPropertyName("text")]
+	public required string Text { get; init; }
+}
+</file>
+
+<file path="Services/Toast/Models/ToastMessageOptions.cs">
+using System.Text.Json.Serialization;
+namespace Rizzy;
+public record class ToastMessageOptions
+{
+    [JsonPropertyName("customIcon")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? CustomIcon { get; init; }
+    [JsonPropertyName("customClass")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? CustomClass { get; init; }
+    [JsonPropertyName("effect")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ToastEffect? Effect { get; init; }
+    [JsonPropertyName("speed")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? Speed { get; init; }
+    [JsonPropertyName("showIcon")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? ShowIcon { get; init; }
+    [JsonPropertyName("showCloseButton")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? ShowCloseButton { get; init; }
+    [JsonPropertyName("autoclose")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? AutoClose { get; init; }
+    [JsonPropertyName("autotimeout")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public int? AutoTimeout { get; init; }
+    [JsonPropertyName("position")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public ToastPosition? Position { get; init; }
+    [JsonPropertyName("gap")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public int? Gap { get; init; }
+    [JsonPropertyName("distance")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public int? Distance { get; init; }
+    [JsonPropertyName("type")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public ToastType? Type { get; init; }
+}
+</file>
+
+<file path="Services/Toast/ToastService.cs">
+using System;
+using System.Collections.Generic;
+namespace Rizzy;
+public class ToastService : IToastService
+{
+    private readonly List<ToastMessage> _notifications = new();
+    public ToastService() { }
+    private static string GetDefaultTitle(ToastStatus status)
+    {
+        return status switch
+        {
+            ToastStatus.Success => "Success",
+            ToastStatus.Error => "Error",
+            ToastStatus.Warning => "Warning",
+            ToastStatus.Info => "Info",
+            _ => "Notification",
+        };
+    }
+    private void AddToast(ToastStatus status, string title, string text, ToastMessageOptions? options)
+    {
+        var message = new ToastMessage
+        {
+            Status = status,
+            Title = title,
+            Text = text
+        };
+        if (options != null)
+        {
+            message = message with
+            {
+                CustomIcon = options.CustomIcon ?? message.CustomIcon,
+                CustomClass = options.CustomClass ?? message.CustomClass,
+                Effect = options.Effect ?? message.Effect,
+                Speed = options.Speed ?? message.Speed,
+                ShowIcon = options.ShowIcon ?? message.ShowIcon,
+                ShowCloseButton = options.ShowCloseButton ?? message.ShowCloseButton,
+                AutoClose = options.AutoClose ?? message.AutoClose,
+                AutoTimeout = options.AutoTimeout ?? message.AutoTimeout,
+                Position = options.Position ?? message.Position,
+                Gap = options.Gap ?? message.Gap,
+                Distance = options.Distance ?? message.Distance,
+                Type = options.Type ?? message.Type
+            };
+        }
+        _notifications.Add(message);
+    }
+    public void Success(string text, string? title = null, ToastMessageOptions? options = null) =>
+        AddToast(ToastStatus.Success, title ?? GetDefaultTitle(ToastStatus.Success), text, options);
+    public void Warning(string text, string? title = null, ToastMessageOptions? options = null) =>
+        AddToast(ToastStatus.Warning, title ?? GetDefaultTitle(ToastStatus.Warning), text, options);
+    public void Information(string text, string? title = null, ToastMessageOptions? options = null) =>
+        AddToast(ToastStatus.Info, title ?? GetDefaultTitle(ToastStatus.Info), text, options);
+    public void Error(string text, string? title = null, ToastMessageOptions? options = null) =>
+        AddToast(ToastStatus.Error, title ?? GetDefaultTitle(ToastStatus.Error), text, options);
+    public void Custom(ToastMessage notification)
+    {
+        ArgumentNullException.ThrowIfNull(notification);
+        if (string.IsNullOrEmpty(notification.Text))
+        {
+             throw new ArgumentException("The 'Text' property of the notification cannot be null or empty.", nameof(notification));
+        }
+        var finalNotification = notification with { Title = notification.Title ?? GetDefaultTitle(notification.Status) };
+        _notifications.Add(finalNotification);
+    }
+    public List<ToastMessage> ReadAllNotifications()
+    {
+        return [.._notifications];
+    }
+    public void RemoveAll()
+    {
+        _notifications.Clear();
     }
 }
 </file>
@@ -2410,14 +2836,14 @@ public static class RenderFragmentExtensions
 <file path="wwwroot/js/rizzy.js">
 import "./rizzy-nonce"
 import "./rizzy-streaming"
-import { ValidationService } from "./vendor/aspnet-validation/aspnet-validation";
-import "./antiforgerySnippet.min";
+import { ValidationService } from "aspnet-client-validation";
+import "./antiforgerySnippet";
 let validation = new ValidationService();
 validation.bootstrap({ watch: true });
 const Rizzy = {
     validation
 };
-window.Rizzy = { ...(window.Rizzy || {}), Rizzy };
+window.Rizzy = { ...(window.Rizzy || {}), ...Rizzy };
 export default Rizzy;
 </file>
 

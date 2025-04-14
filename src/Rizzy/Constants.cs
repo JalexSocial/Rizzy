@@ -7,6 +7,13 @@ internal class Constants
     /// </summary>
     public const string NonceResponseHeader = "HX-Nonce";
 
+    //--- Javascript Event Names ---
+    
+    /// <summary>
+    /// Toast broadcast event 
+    /// </summary>
+    public const string ToastBroadcastEventName = "rz:toast-broadcast";
+
     internal static class HttpContextKeys
     {
         /// <summary>
