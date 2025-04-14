@@ -18,7 +18,8 @@ public class RzInputFile : InputFile
     /// <summary>
     /// Gets or sets the cascading parameter for the EditContext.
     /// </summary>
-    [CascadingParameter] EditContext EditContext { get; set; } = default!;
+    [CascadingParameter] 
+    public EditContext EditContext { get; set; } = default!;
 
     /// <summary>
     /// Method invoked when the component has received parameters from its parent in the render tree.

@@ -11,18 +11,6 @@ namespace Rizzy;
 public class RzInputRadio<TValue> : InputRadio<TValue>
 {
     /// <summary>
-    /// Gets or sets the DataAnnotationsProcessor.
-    /// </summary>
-    [Inject]
-    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
-
-    /// <summary>
-    /// Gets or sets the EditContext.
-    /// </summary>
-    [CascadingParameter]
-    EditContext EditContext { get; set; } = default!;
-
-    /// <summary>
     /// Gets or sets the Id of the input radio.
     /// </summary>
     [Parameter]
@@ -34,11 +22,6 @@ public class RzInputRadio<TValue> : InputRadio<TValue>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputRadio<TValue>)} must be enclosed within an {nameof(EditForm)}.");
-
-        // No validation
 
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
