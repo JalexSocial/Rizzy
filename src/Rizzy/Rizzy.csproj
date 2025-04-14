@@ -80,6 +80,13 @@
 	  <Folder Include="wwwroot\dist\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.css" />
+	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.js" />
+	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.min.js" />
+	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.min.js.map" />
+	</ItemGroup>
+
     <Target Name="Webpack" BeforeTargets="Build">
         <Exec Command="npm run build" />
     </Target>

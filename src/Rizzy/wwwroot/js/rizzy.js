@@ -1,7 +1,7 @@
 import "./rizzy-nonce"
 import "./rizzy-streaming"
-import { ValidationService } from "./vendor/aspnet-validation/aspnet-validation";
-import "./antiforgerySnippet.min";
+import { ValidationService } from "aspnet-client-validation";
+import "./antiforgerySnippet";
 
 // Set up ASP.NET validation
 let validation = new ValidationService();
