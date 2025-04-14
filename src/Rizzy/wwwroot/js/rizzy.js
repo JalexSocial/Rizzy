@@ -11,6 +11,6 @@ const Rizzy = {
     validation
 };
 
-window.Rizzy = { ...(window.Rizzy || {}), Rizzy };
+window.Rizzy = { ...(window.Rizzy || {}), ...Rizzy };
 
 export default Rizzy;
