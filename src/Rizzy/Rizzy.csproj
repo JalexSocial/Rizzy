@@ -71,18 +71,30 @@
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Assets\" />
-	  <Folder Include="wwwroot\dist\" />
-	</ItemGroup>
-    
-	<ItemGroup>
-	  <EmbeddedResource Include="Assets\js\antiforgerySnippet.js" />
-	  <EmbeddedResource Include="Assets\js\antiforgerySnippet.min.js" />
-	</ItemGroup>
+    <PropertyGroup>
+        <!-- Define the directory path once -->
+        <ClientPackageDir>$(MSBuildProjectDirectory)/../../packages</ClientPackageDir>
+        <!-- Define a stamp file to track installation -->
+        <NodeModulesStampFile>/node_modules/.install-stamp</NodeModulesStampFile>
+    </PropertyGroup>
 
-    <Target Name="Webpack" BeforeTargets="Build">
-        <Exec Command="npm run build" />
+    <Target Name="InstallClientPackages"
+            BeforeTargets="BuildClientAssets"
+            Inputs="$(ClientPackageDir)/rizzy/package.json;$(ClientPackageDir)/rizzy/package-lock.json"
+            Outputs="$(ClientPackageDir)/rizzy$(NodeModulesStampFile)">
+
+        <Message Text="Ensuring npm packages are installed in $(ClientPackageDir)..." Importance="high" />
+        <!-- WorkingDirectory uses the property defined above -->
+        <Exec Command="npm install" WorkingDirectory="$(ClientPackageDir)/rizzy" />
+        <!-- Create or update the stamp file after install succeeds -->
+        <Touch Files="$(ClientPackageDir)/rizzy$(NodeModulesStampFile)" AlwaysCreate="true" />
+
+    </Target>
+
+    <Target Name="BuildClientAssets" BeforeTargets="Build">
+        <!-- This target now implicitly depends on InstallClientPackages running first if needed -->
+        <Message Text="Building client assets in $(ClientPackageDir)/rizzy..." Importance="high" />
+        <Exec Command="npm run build" WorkingDirectory="$(ClientPackageDir)/rizzy" />
     </Target>
 
     <Target Name="LLM" AfterTargets="Build">

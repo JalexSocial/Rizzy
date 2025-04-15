@@ -32,7 +32,7 @@ The content is organized as follows:
 <notes>
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Only files matching these patterns are included: **/*.razor, **/*.razor.cs, **/*.cs, **/js/rizzy.js
+- Only files matching these patterns are included: **/*.razor, **/*.razor.cs, **/*.cs, ../packages/rizzy/src/js/**/*.js
 - Files matching these patterns are excluded: obj/, bin/
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
@@ -48,7 +48,6 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
-Assets/js/rizzy.js
 Components/Configuration/HtmxAntiforgeryScript.razor
 Components/Configuration/HtmxConfigHeadOutlet.cs
 Components/Content/FragmentComponent.cs
@@ -113,20 +112,6 @@ Utility/RenderFragmentExtensions.cs
 
 <files>
 This section contains the contents of the repository's files.
-
-<file path="Assets/js/rizzy.js">
-import "./rizzy-nonce"
-import "./rizzy-streaming"
-import { ValidationService } from "aspnet-client-validation";
-import "./antiforgerySnippet";
-let validation = new ValidationService();
-validation.bootstrap({ watch: true });
-const Rizzy = {
-    validation
-};
-window.Rizzy = { ...(window.Rizzy || {}), ...Rizzy };
-export default Rizzy;
-</file>
 
 <file path="Components/Configuration/HtmxAntiforgeryScript.razor">
 @using Microsoft.AspNetCore.Http

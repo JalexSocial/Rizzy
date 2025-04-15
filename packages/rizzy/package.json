@@ -1,0 +1,39 @@
+{
+  "name": "rizzy",
+  "version": "5.0.12",
+  "description": "Client library for Asp.net Rizzy",
+  "main": "rizzy.js",
+  "scripts": {
+    "build": "webpack",
+    "build:dev": "webpack --mode development --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jalexsocial/rizzy.git"
+  },
+  "keywords": [
+    "asp.net",
+    "blazor",
+    "htmx",
+    "razor",
+    "mvc"
+  ],
+  "author": "Michael Tanczos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jalexsocial/rizzy/issues"
+  },
+  "homepage": "https://github.com/jalexsocial/rizzy#readme",
+  "dependencies": {
+    "aspnet-client-validation": "^0.11.1",
+    "htmx.org": "^2.0.4"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.26.9",
+    "babel-loader": "^10.0.0",
+    "copy-webpack-plugin": "^13.0.0",
+    "webpack": "^5.99.5",
+    "webpack-cli": "^6.0.1"
+  }
+}
