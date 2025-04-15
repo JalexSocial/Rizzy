@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = [
     {
         name: 'rizzy',
-        entry: path.resolve(__dirname, 'wwwroot/js/rizzy.js'),
+        entry: path.resolve(__dirname, 'Assets/js/rizzy.js'),
         output: {
             filename: 'rizzy.js',
             path: path.resolve(__dirname, 'wwwroot/dist/'),
@@ -34,7 +34,7 @@ module.exports = [
     },
     {
         name: 'rizzy',
-        entry: path.resolve(__dirname, 'wwwroot/js/rizzy.js'),
+        entry: path.resolve(__dirname, 'Assets/js/rizzy.js'),
         output: {
             filename: 'rizzy.min.js',
             path: path.resolve(__dirname, 'wwwroot/dist/'),

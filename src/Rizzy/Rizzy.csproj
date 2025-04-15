@@ -66,25 +66,19 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="wwwroot\js\antiforgerySnippet.js" LogicalName="AntiforgeryJavaScript" />
-		<EmbeddedResource Include="wwwroot\js\antiforgerySnippet.min.js" LogicalName="AntiforgeryJavaScriptMinified" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
 		<ProjectReference Include="..\Rizzy.Htmx\Rizzy.Htmx.csproj" />
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Assets\" />
 	  <Folder Include="wwwroot\dist\" />
 	</ItemGroup>
-
+    
 	<ItemGroup>
-	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.css" />
-	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.js" />
-	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.min.js" />
-	  <_ContentIncludedByDefault Remove="wwwroot\js\vendor\aspnet-validation\aspnet-validation.min.js.map" />
+	  <EmbeddedResource Include="Assets\js\antiforgerySnippet.js" />
+	  <EmbeddedResource Include="Assets\js\antiforgerySnippet.min.js" />
 	</ItemGroup>
 
     <Target Name="Webpack" BeforeTargets="Build">

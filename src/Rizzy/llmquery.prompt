@@ -48,6 +48,7 @@ The content is organized as follows:
 </file_summary>
 
 <directory_structure>
+Assets/js/rizzy.js
 Components/Configuration/HtmxAntiforgeryScript.razor
 Components/Configuration/HtmxConfigHeadOutlet.cs
 Components/Content/FragmentComponent.cs
@@ -108,11 +109,24 @@ Services/Toast/Models/ToastMessageOptions.cs
 Services/Toast/ToastService.cs
 Utility/IdGenerator.cs
 Utility/RenderFragmentExtensions.cs
-wwwroot/js/rizzy.js
 </directory_structure>
 
 <files>
 This section contains the contents of the repository's files.
+
+<file path="Assets/js/rizzy.js">
+import "./rizzy-nonce"
+import "./rizzy-streaming"
+import { ValidationService } from "aspnet-client-validation";
+import "./antiforgerySnippet";
+let validation = new ValidationService();
+validation.bootstrap({ watch: true });
+const Rizzy = {
+    validation
+};
+window.Rizzy = { ...(window.Rizzy || {}), ...Rizzy };
+export default Rizzy;
+</file>
 
 <file path="Components/Configuration/HtmxAntiforgeryScript.razor">
 @using Microsoft.AspNetCore.Http
@@ -2831,20 +2845,6 @@ public static class RenderFragmentExtensions
         return html;
     }
 }
-</file>
-
-<file path="wwwroot/js/rizzy.js">
-import "./rizzy-nonce"
-import "./rizzy-streaming"
-import { ValidationService } from "aspnet-client-validation";
-import "./antiforgerySnippet";
-let validation = new ValidationService();
-validation.bootstrap({ watch: true });
-const Rizzy = {
-    validation
-};
-window.Rizzy = { ...(window.Rizzy || {}), ...Rizzy };
-export default Rizzy;
 </file>
 
 </files>
