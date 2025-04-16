@@ -39,17 +39,16 @@ public static class ServiceCollectionExtensions
     /// </summary>
     private static void AddHtmxAntiForgery(IServiceCollection services)
     {
-        // Resolve the current AntiforgeryOptions instance.
-        // Note: We build a temporary ServiceProvider for resolving the options.
-        using var sp = services.BuildServiceProvider();
+        services.AddAntiforgery();
 
-        var antiforgeryOptions = sp.GetRequiredService<IOptions<AntiforgeryOptions>>();
-        services.Configure<HtmxAntiforgeryOptions>(opt =>
-        {
-            opt.FormFieldName = antiforgeryOptions.Value.FormFieldName;
-            opt.HeaderName = antiforgeryOptions.Value.HeaderName;
-            opt.CookieName = Constants.AntiforgeryCookieName;
-        });
+        services.AddOptions<HtmxAntiforgeryOptions>()
+            .Configure<IOptions<AntiforgeryOptions>>(
+                (htmxOpt, antiOpt) =>
+                {
+                    htmxOpt.FormFieldName = antiOpt.Value.FormFieldName;
+                    htmxOpt.HeaderName    = antiOpt.Value.HeaderName;
+                    htmxOpt.CookieName    = Constants.AntiforgeryCookieName;
+                });
 
         services.AddAntiforgeryValidation();
     }
