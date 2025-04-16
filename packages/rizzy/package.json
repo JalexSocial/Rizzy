@@ -1,5 +1,5 @@
 {
-  "name": "rizzy",
+  "name": "@jalexsocial/rizzy",
   "version": "5.0.12",
   "description": "Client library for Asp.net Rizzy",
   "main": "rizzy.js",
