@@ -50,12 +50,20 @@ jobs:
         run: dotnet build --no-restore -c Release
         working-directory: src/Rizzy.Htmx
 
-      - name: Publish Rizzy
-        run: dotnet publish --no-restore -c Release -o ./publish
+      - name: Publish Rizzy for net8.0
+        run: dotnet publish --no-restore -c Release -f net8.0 -o ./publish/net8.0
         working-directory: src/Rizzy
 
-      - name: Publish Rizzy.Htmx
-        run: dotnet publish --no-restore -c Release -o ./publish
+      - name: Publish Rizzy for net9.0
+        run: dotnet publish --no-restore -c Release -f net9.0 -o ./publish/net9.0
+        working-directory: src/Rizzy
+
+      - name: Publish Rizzy.Htmx for net8.0
+        run: dotnet publish --no-restore -c Release -f net8.0 -o ./publish/net8.0
+        working-directory: src/Rizzy.Htmx
+
+      - name: Publish Rizzy.Htmx for net9.0
+        run: dotnet publish --no-restore -c Release -f net9.0 -o ./publish/net9.0
         working-directory: src/Rizzy.Htmx
 
       - name: Test Rizzy
