@@ -29,6 +29,9 @@ public class RzInputTextArea : InputTextArea
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
+    // Ensures expensive initialization logic is executed just once.
+    private bool _initialized;
+    
     /// <summary>
     /// Method invoked when the component has received parameters from its parent in the render tree.
     /// </summary>
@@ -36,6 +39,8 @@ public class RzInputTextArea : InputTextArea
     {
         base.OnParametersSet();
 
+        if (_initialized) return;
+        
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(EditForm)}.");
 
@@ -55,6 +60,8 @@ public class RzInputTextArea : InputTextArea
         }
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
+
+        _initialized = true;
     }
 
     /// <summary>

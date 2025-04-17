@@ -1,8 +1,8 @@
 {
   "name": "@jalexsocial/rizzy",
-  "version": "5.0.12",
+  "version": "5.0.0",
   "description": "Client library for Asp.net Rizzy",
-  "main": "rizzy.js",
+  "main": "dist/js/rizzy.js",
   "scripts": {
     "build": "webpack",
     "build:dev": "webpack --mode development --watch",

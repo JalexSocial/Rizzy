@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          registry-url: https://registry.npmjs.org/
 
       - name: Install npm packages for Rizzy
         working-directory: ./src/Rizzy  # Specify the directory containing package.json
@@ -69,3 +70,30 @@ jobs:
         with:   
           PROJECT_FILE_PATH: src/Rizzy.Htmx/Rizzy.Htmx.csproj  
           NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+
+      - name: Extract version from Rizzy.csproj
+        id: get_version
+        shell: bash
+        run: |
+          # If you use <VersionPrefix>/<VersionSuffix> adjust the grep accordingly
+          ver=$(grep -oPm1 '(?<=<Version>)[^<]+' src/Rizzy/Rizzy.csproj)
+          echo "version=$ver" >> "$GITHUB_OUTPUT"
+
+      - name: Set npm package.json version
+        working-directory: packages/rizzy
+        run: |
+          npm pkg set version=${{ steps.get_version.outputs.version }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build package
+        run: npm run build
+        
+      # 3. Publish the JS package to npm (runs after NuGet publish because it’s later in the step list)
+      - name: Publish Rizzy JS package to npm
+        working-directory: packages/rizzy
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # create this secret in the repo / org
+        run: |
+          npm publish --access public

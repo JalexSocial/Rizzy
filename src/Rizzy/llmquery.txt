@@ -1308,9 +1308,11 @@ public class RzInputTextArea : InputTextArea
     public HttpContext? HttpContext { get; set; }
     [Parameter]
     public string Id { get; set; } = string.Empty;
+    private bool _initialized;
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
+        if (_initialized) return;
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(EditForm)}.");
         if (string.IsNullOrEmpty(Id))
@@ -1323,6 +1325,7 @@ public class RzInputTextArea : InputTextArea
             fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
+        _initialized = true;
     }
     protected override void Dispose(bool disposing)
     {
