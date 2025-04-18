@@ -8,9 +8,6 @@ Rizzy is a lightweight library that enhances Asp.net MVC applications by seamles
 
 For detailed documentation and examples, please visit the [Rizzy Documentation Site](https://jalexsocial.github.io/rizzy.docs/).
 
-Okay, here's a compelling description aimed at developers, explaining the value proposition of using a mature framework like ASP.NET MVC alongside a component-based technology like Razor Components, specifically within the context Rizzy enables (implicitly using HTMX):
-
-
 ## Leverage the Best of Both Worlds: Robust MVC Structure meets Modern Blazor UI Components
 
 Remember the power and structure of ASP.NET MVC? The clear separation of concerns, the robust routing and model binding, the mature ecosystem for handling business logic, security, and data access? It's a solid foundation many .NET developers know and trust.
