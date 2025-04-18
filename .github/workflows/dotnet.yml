@@ -103,7 +103,6 @@ jobs:
         working-directory: packages/rizzy
         run: npm run build
         
-      # 3. Publish the JS package to npm (runs after NuGet publish because it’s later in the step list)
       - name: Publish Rizzy JS package to npm
         working-directory: packages/rizzy
         env:
