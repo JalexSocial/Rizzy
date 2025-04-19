@@ -10,27 +10,27 @@ namespace Rizzy;
 
 /// <summary>
 /// Middleware responsible for intercepting HTTP responses for HTMX requests.
-/// It reads pending toast notifications from the registered <see cref="IToastService"/>,
+/// It reads pending toast notifications from the registered <see cref="IRizzyToastService"/>,
 /// adds them to the 'HX-Trigger' header for client-side display via a specified event (e.g., "rz:toast-broadcast"),
 /// and then clears the notifications from the service for the current request.
 /// </summary>
 /// <remarks>
 /// This middleware should typically be registered as a singleton in the application's pipeline,
 /// usually after routing and authentication but before the endpoint execution, to ensure it can
-/// capture responses correctly. It relies on a scoped <see cref="IToastService"/> being registered.
+/// capture responses correctly. It relies on a scoped <see cref="IRizzyToastService"/> being registered.
 /// </remarks>
-public class ToastMiddleware
+public class RizzyToastMiddleware
 {
-    private readonly ILogger<ToastMiddleware> _logger;
+    private readonly ILogger<RizzyToastMiddleware> _logger;
     private readonly RequestDelegate _next;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ToastMiddleware"/> class.
+    /// Initializes a new instance of the <see cref="RizzyToastMiddleware"/> class.
     /// </summary>
     /// <param name="next">The next middleware delegate in the pipeline.</param>
     /// <param name="logger">The logger instance for recording diagnostic information.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="next"/> or <paramref name="logger"/> is null.</exception>
-    public ToastMiddleware(RequestDelegate next, ILogger<ToastMiddleware> logger)
+    public RizzyToastMiddleware(RequestDelegate next, ILogger<RizzyToastMiddleware> logger)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -42,7 +42,7 @@ public class ToastMiddleware
     /// </summary>
     /// <param name="context">The <see cref="HttpContext"/> for the current request.</param>
     /// <remarks>
-    /// This method resolves the scoped <see cref="IToastService"/> and passes it to the OnStarting callback
+    /// This method resolves the scoped <see cref="IRizzyToastService"/> and passes it to the OnStarting callback
     /// via the state parameter to avoid scope conflicts inherent in middleware field injection.
     /// </remarks>
     /// <returns>A <see cref="Task"/> that represents the execution of this middleware.</returns>
@@ -57,7 +57,7 @@ public class ToastMiddleware
         
         // Resolve the scoped IToastService within the request scope.
         // Do NOT store this in a field of the middleware (singleton) instance.
-        var toastService = context.RequestServices.GetRequiredService<IToastService>();
+        var toastService = context.RequestServices.GetRequiredService<IRizzyToastService>();
 
         // Register the callback to execute just before response headers are sent.
         // Pass the HttpContext and the resolved scoped toastService as state.
@@ -77,7 +77,7 @@ public class ToastMiddleware
     private Task AddToastTriggerCallback(object state)
     {
         // Safely unpack the state tuple
-        if (state is not (HttpContext httpContext, IToastService toastService))
+        if (state is not (HttpContext httpContext, IRizzyToastService toastService))
         {
             _logger.LogWarning("Invalid state object received in {CallbackName}. Expected (HttpContext, IToastService).", nameof(AddToastTriggerCallback));
             return Task.CompletedTask; 

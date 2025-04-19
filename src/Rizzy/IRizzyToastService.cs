@@ -3,7 +3,7 @@
 /// <summary>
 /// Toast service interface
 /// </summary>
-public interface IToastService
+public interface IRizzyToastService
 {
 	/// <summary>
 	/// Adds a success toast notification.

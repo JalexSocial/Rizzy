@@ -7,7 +7,7 @@ namespace Rizzy;
 /// An implementation that stores toast notifications in an in-memory list
 /// and provides methods to create standard toast types.
 /// </summary>
-public class ToastService : IToastService
+public class RizzyToastService : IRizzyToastService
 {
     /// <summary>
     /// Internal list holding the pending toast notifications.
@@ -15,9 +15,9 @@ public class ToastService : IToastService
     private readonly List<ToastMessage> _notifications = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ToastService"/> class.
+    /// Initializes a new instance of the <see cref="RizzyToastService"/> class.
     /// </summary>
-    public ToastService() { }
+    public RizzyToastService() { }
 
     /// <summary>
     /// Internal helper to get a default title based on status.

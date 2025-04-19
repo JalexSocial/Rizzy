@@ -24,7 +24,7 @@ public sealed record class ToastMessage : ToastMessageOptions
 
 	/// <summary>
 	/// Gets the optional main title text displayed at the top of the notification.
-	/// If left null when the toast is created via <see cref="ToastService"/> methods (e.g., `Success`, `Error`),
+	/// If left null when the toast is created via <see cref="RizzyToastService"/> methods (e.g., `Success`, `Error`),
 	/// a default title corresponding to the <see cref="Status"/> will be automatically assigned by the service.
 	/// </summary>
 	[JsonPropertyName("title")]
