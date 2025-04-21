@@ -1,6 +1,6 @@
 # Rizzy Client
 
-[![npm version](https://img.shields.io/npm/v/rizzy.svg)](https://www.npmjs.com/package/rizzy)
+[![npm version](https://img.shields.io/npm/v/@jalexsocial/rizzy.svg)](https://www.npmjs.com/package/@jalexsocial/rizzy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Client-side JavaScript components and utilities for the [Rizzy Framework](https://github.com/jalexsocial/rizzy), designed to seamlessly integrate HTMX with Blazor Server-Side Rendering (SSR).
