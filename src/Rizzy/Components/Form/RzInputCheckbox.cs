@@ -32,15 +32,6 @@ public class RzInputCheckbox : InputCheckbox
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// Called when the component is initialized.
-    /// </summary>
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        HttpContext?.GetOrAddFieldMapping(EditContext);
-    }
-
-    /// <summary>
     /// Called when the component has received parameters from its parent.
     /// </summary>
     protected override void OnParametersSet()
