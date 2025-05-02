@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
+using System.Collections.Generic;
 
 namespace Rizzy;
 
@@ -12,6 +13,10 @@ namespace Rizzy;
 /// <typeparam name="TValue"></typeparam>
 public class RzInputDate<TValue> : InputDate<TValue>
 {
+    // Store the specific field mapping dictionary and identifier
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
+    
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
@@ -28,19 +33,22 @@ public class RzInputDate<TValue> : InputDate<TValue>
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputDate<TValue>)} must be enclosed within an {nameof(EditForm)}.");
 
+        // Store the FieldIdentifier locally
+        _fieldIdentifier = FieldIdentifier;
+        
         // If id doesn't exist then attempt to create one
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
 
-        // Get the field mapping dictionary for the given EditContext.
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        // Get and store the fieldMapping dictionary instance
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
         // Add mapping for this field (use FieldIdentifier from the base class).
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id);
@@ -48,11 +56,14 @@ public class RzInputDate<TValue> : InputDate<TValue>
 
     protected override void Dispose(bool disposing)
     {
-        // When disposing, remove the field mapping.
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        // Use the locally stored fieldMapping and fieldIdentifier for removal
+        // This avoids accessing the potentially null EditContext here.
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null; // Optional: Clear the reference
+        }
 
         base.Dispose(disposing);
     }
-
 }

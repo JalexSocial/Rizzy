@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
+using System.Collections.Generic;
 
 namespace Rizzy;
 
@@ -11,6 +12,10 @@ namespace Rizzy;
 /// </summary>
 public class RzInputTextArea : InputTextArea
 {
+    // Store the specific field mapping dictionary and identifier
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
+    
     /// <summary>
     /// Gets or sets the DataAnnotationsProcessor used to process data annotations.
     /// </summary>
@@ -39,24 +44,28 @@ public class RzInputTextArea : InputTextArea
     {
         base.OnParametersSet();
 
-        if (_initialized) return;
-        
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(EditForm)}.");
 
+        // Always store the FieldIdentifier locally, even if already initialized
+        _fieldIdentifier = FieldIdentifier;
+        
+        // Always update the field mapping reference
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        
+        // Skip the rest of initialization if already done
+        if (_initialized) return;
+        
         // If id doesn't exist then attempt to create one
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
 
-        // Get the field mapping dictionary for the given EditContext.
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-
         // Add mapping for this field (use FieldIdentifier from the base class).
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
 
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
@@ -70,9 +79,13 @@ public class RzInputTextArea : InputTextArea
     /// <param name="disposing">A boolean value indicating whether the method has been called directly or indirectly by a user's code.</param>
     protected override void Dispose(bool disposing)
     {
-        // When disposing, remove the field mapping.
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        // Use the locally stored fieldMapping and fieldIdentifier for removal
+        // This avoids accessing the potentially null EditContext here.
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null; // Optional: Clear the reference
+        }
 
         base.Dispose(disposing);
     }

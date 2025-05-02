@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace Rizzy;
 
@@ -13,6 +14,10 @@ namespace Rizzy;
 /// <typeparam name="TValue">The type of the value.</typeparam>
 public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
 {
+    // Store the specific field mapping dictionary and identifier
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
+    
     /// <summary>
     /// Gets or sets the DataAnnotationsProcessor.
     /// </summary>
@@ -41,6 +46,9 @@ public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputRadioGroup<TValue>)} must be enclosed within an {nameof(EditForm)}.");
 
+        // Store the FieldIdentifier locally
+        _fieldIdentifier = FieldIdentifier;
+        
         // No validation
 
         // If id doesn't exist then attempt to create one
@@ -49,13 +57,13 @@ public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
 
-        // Get the field mapping dictionary for the given EditContext.
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        // Get and store the fieldMapping dictionary instance
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
         // Add mapping for this field (use FieldIdentifier from the base class).
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
 
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
@@ -70,9 +78,13 @@ public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
     /// <param name="disposing">A boolean value indicating whether the method has been called directly or indirectly by a user's code.</param>
     protected override void Dispose(bool disposing)
     {
-        // When disposing, remove the field mapping.
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        // Use the locally stored fieldMapping and fieldIdentifier for removal
+        // This avoids accessing the potentially null EditContext here.
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null; // Optional: Clear the reference
+        }
 
         base.Dispose(disposing);
     }

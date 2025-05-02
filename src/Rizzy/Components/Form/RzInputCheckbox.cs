@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.ObjectModel;
+using System.Collections.Generic; // Add this using directive
 
 namespace Rizzy;
 
@@ -12,6 +13,10 @@ namespace Rizzy;
 /// </summary>
 public class RzInputCheckbox : InputCheckbox
 {
+    // Store the specific field mapping dictionary and identifier
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
+
     /// <summary>
     /// Gets or sets the data annotations processor service.
     /// </summary>
@@ -41,16 +46,21 @@ public class RzInputCheckbox : InputCheckbox
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputCheckbox)} must be enclosed within an {nameof(EditForm)}.");
 
+        // Store the FieldIdentifier locally
+        _fieldIdentifier = FieldIdentifier;
+
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
 
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        // Get and store the fieldMapping dictionary instance
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        // Use the local variable for the add operation
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
 
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
@@ -64,8 +74,13 @@ public class RzInputCheckbox : InputCheckbox
     /// <param name="disposing">Whether the component is disposing.</param>
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        // Use the locally stored fieldMapping and fieldIdentifier for removal
+        // This avoids accessing the potentially null EditContext here.
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null; // Optional: Clear the reference
+        }
 
         base.Dispose(disposing);
     }
