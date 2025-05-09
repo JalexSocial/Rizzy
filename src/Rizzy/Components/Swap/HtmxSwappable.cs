@@ -7,7 +7,8 @@ namespace Rizzy;
 /// <summary>
 /// A Blazor component that enables swapping HTML content dynamically based on specified parameters through Htmx.
 /// </summary>
-public class HtmxSwappable : ComponentBase
+[RizzyParameterize] 
+public partial class HtmxSwappable : ComponentBase
 {
     private string _swapParam = string.Empty;
 

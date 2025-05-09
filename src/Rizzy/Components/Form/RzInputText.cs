@@ -10,7 +10,8 @@ namespace Rizzy;
 /// <summary>
 /// A custom input text component that extends the Blazor InputText component.
 /// </summary>
-public class RzInputText : InputText
+[RizzyParameterize] 
+public partial class RzInputText : InputText
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;

@@ -8,6 +8,7 @@ namespace Rizzy;
 /// <summary>
 /// A Razor component used to render a partial view without a layout.
 /// </summary>
+[RizzyParameterize] 
 public partial class RzPartial : ComponentBase
 {
     /// <summary>

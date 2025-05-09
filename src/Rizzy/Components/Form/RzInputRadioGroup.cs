@@ -12,7 +12,8 @@ namespace Rizzy;
 /// Groups child InputRadio components.
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
-public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
+[RizzyParameterize] 
+public partial class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;

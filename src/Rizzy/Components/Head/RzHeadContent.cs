@@ -10,7 +10,8 @@ namespace Rizzy;
 /// <summary>
 /// Provides content to <see cref="RzHeadOutlet"/> components.
 /// </summary>
-public sealed class RzHeadContent : ComponentBase
+[RizzyParameterize]
+public sealed partial class RzHeadContent : ComponentBase
 {
     /// <summary>
     /// Gets or sets the content to be rendered in <see cref="RzHeadOutlet"/> instances.
