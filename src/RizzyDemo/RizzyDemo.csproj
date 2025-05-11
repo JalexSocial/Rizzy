@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <EnableSourceControlManagerQueries>true</EnableSourceControlManagerQueries>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +25,9 @@
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+    <ProjectReference Include="..\Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"/>    
   </ItemGroup>
 
   <ItemGroup>
