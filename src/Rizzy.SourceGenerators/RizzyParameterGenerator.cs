@@ -47,58 +47,81 @@ namespace Rizzy
 #nullable restore
 ";
 
-        public void Initialize(IncrementalGeneratorInitializationContext context)
-        {
-            // Debugger.Launch(); 
+/// <summary>
+/// Called by the compiler to initialize the generator and register generation steps.
+/// </summary>
+/// <param name="context">The incremental generator initialization context.</param>
+public void Initialize(IncrementalGeneratorInitializationContext context)
+{
+    // Debugger.Launch(); // Uncomment to debug during build
 
-            context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
-                "RizzyParameterizeAttribute.g.cs",
-                SourceText.From(RizzyParameterizeAttributeSource, Encoding.UTF8)));
+    // ALWAYS add the attribute source via PostInitializationOutput.
+    // This is the most reliable way to ensure it's available for the compilation
+    // when the main ExecuteGeneration step runs.
+    // This will lead to CS0436 if Rizzy.dll (also using this generator) is referenced,
+    // which is an acceptable trade-off for ensuring the generator works standalone.
+    context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
+        "RizzyParameterizeAttribute.g.cs",
+        SourceText.From(RizzyParameterizeAttributeSource, Encoding.UTF8)));
 
-            IncrementalValuesProvider<ClassDeclarationSyntax> classDeclarations = context.SyntaxProvider
-                .CreateSyntaxProvider(
-                    // Pass static methods directly or ensure lambdas match the expected signature
-                    predicate: IsSyntaxTargetForGeneration, 
-                    transform: GetSemanticTargetForGeneration)
-                .Where(static m => m is not null)!; 
+    // Pipeline to find relevant ClassDeclarationSyntax nodes
+    IncrementalValuesProvider<ClassDeclarationSyntax> classDeclarations = context.SyntaxProvider
+        .CreateSyntaxProvider(
+            predicate: static (s, token) => IsSyntaxTargetForGeneration(s, token),
+            transform: static (ctx, token) => GetSemanticTargetForGeneration(ctx, token))
+        .Where(static m => m is not null)!;
 
-            IncrementalValueProvider<(Compilation, ImmutableArray<ClassDeclarationSyntax>)> compilationAndClasses =
-                context.CompilationProvider.Combine(classDeclarations.Collect());
+    // Combine with compilation
+    IncrementalValueProvider<(Compilation, ImmutableArray<ClassDeclarationSyntax>)> compilationAndClasses =
+        context.CompilationProvider.Combine(classDeclarations.Collect());
 
-            context.RegisterSourceOutput(compilationAndClasses,
-                (spc, source) => ExecuteGeneration(source.Item1, source.Item2, spc));
-        }
+    // Register the main source generation action
+    context.RegisterSourceOutput(compilationAndClasses,
+        (spc, source) => ExecuteGeneration(source.Item1, source.Item2, spc));
+}
 
-        // Made static and added CancellationToken parameter
+        /// <summary>
+        /// A predicate used to quickly filter syntax nodes for potential processing.
+        /// It identifies class declarations that have attributes and syntactically contain the text "RizzyParameterize".
+        /// </summary>
         private static bool IsSyntaxTargetForGeneration(SyntaxNode node, CancellationToken _) =>
             node is ClassDeclarationSyntax cds && cds.AttributeLists.Count > 0 &&
-            cds.ToString().Contains("RizzyParameterize");
+            // Using GetText().ToString() is more robust than node.ToString() for full content
+            cds.GetText().ToString().Contains("RizzyParameterize");
 
-        // Made static and added CancellationToken parameter
+        /// <summary>
+        /// A transform function that converts a <see cref="GeneratorSyntaxContext"/> for a candidate syntax node
+        /// into a <see cref="ClassDeclarationSyntax"/> if the node represents a class.
+        /// </summary>
         private static ClassDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken _)
         {
-            // The transform context.Node is the syntax node that passed the predicate.
             return context.Node as ClassDeclarationSyntax;
         }
 
-        private void ExecuteGeneration(
-            Compilation compilation,
-            ImmutableArray<ClassDeclarationSyntax> classes,
-            SourceProductionContext spc)
+        /// <summary>
+        /// The main execution logic for the source generator.
+        /// </summary>
+        private void ExecuteGeneration(Compilation compilation, ImmutableArray<ClassDeclarationSyntax> classes, SourceProductionContext spc)
         {
             if (classes.IsDefaultOrEmpty) return;
 
-            // Symbols we really need
-            INamedTypeSymbol? parameterAttributeSymbol =
-                compilation.GetTypeByMetadataName(ParameterAttributeFullName);
-            if (parameterAttributeSymbol is null) return;
+            INamedTypeSymbol? parameterizeAttributeSymbol = compilation.GetTypeByMetadataName(RizzyParameterizeAttributeFullName);
+            // If this is null, the attribute source wasn't added or found, or there's a namespace mismatch.
+            // This is a critical check.
+            if (parameterizeAttributeSymbol == null) 
+            {
+                // Optionally report a diagnostic to understand why it's not found
+                // spc.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("RZ9999", "Debug", $"RizzyParameterizeAttribute symbol was not found by GetTypeByMetadataName. FullName used: {RizzyParameterizeAttributeFullName}", "Debug", DiagnosticSeverity.Warning, true), Location.None));
+                return;
+            }
 
-            INamedTypeSymbol? editorRequiredAttributeSymbol =
-                compilation.GetTypeByMetadataName(EditorRequiredAttributeFullName);
-            if (editorRequiredAttributeSymbol is null) return;
+            INamedTypeSymbol? parameterAttributeSymbol = compilation.GetTypeByMetadataName(ParameterAttributeFullName);
+            if (parameterAttributeSymbol == null) return; 
 
-            INamedTypeSymbol? componentBaseSymbol =
-                compilation.GetTypeByMetadataName(ComponentBaseFullName);
+            INamedTypeSymbol? editorRequiredAttributeSymbol = compilation.GetTypeByMetadataName(EditorRequiredAttributeFullName);
+            if (editorRequiredAttributeSymbol == null) return; 
+
+            INamedTypeSymbol? componentBaseSymbol = compilation.GetTypeByMetadataName(ComponentBaseFullName);
 
             var processedSymbols = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
 
@@ -107,12 +130,15 @@ namespace Rizzy
                 if (spc.CancellationToken.IsCancellationRequested) return;
 
                 SemanticModel semanticModel = compilation.GetSemanticModel(classDec.SyntaxTree);
-                if (semanticModel.GetDeclaredSymbol(classDec, spc.CancellationToken) is not INamedTypeSymbol classSymbol)
-                    continue;
+                if (semanticModel.GetDeclaredSymbol(classDec, spc.CancellationToken) is not INamedTypeSymbol classSymbol) continue;
+                
+                if (!processedSymbols.Add(classSymbol)) continue; 
 
-                // Ensure we only process each symbol once
-                if (!processedSymbols.Add(classSymbol))
+                // Now, use the resolved parameterizeAttributeSymbol for the semantic check
+                if (!classSymbol.GetAttributes().Any(ad => SymbolEqualityComparer.Default.Equals(ad.AttributeClass, parameterizeAttributeSymbol)))
+                {
                     continue;
+                }
 
                 bool hasRizzyParameterize =
                     classSymbol.GetAttributes()
@@ -175,9 +201,9 @@ namespace Rizzy
                     spc.AddSource(uniqueFileName, SourceText.From(classSource, Encoding.UTF8));
                 }
             }
+            
         }
 
-        
        private List<ParameterData> CollectParameters(
             INamedTypeSymbol classSymbol,
             INamedTypeSymbol parameterAttributeSymbol,
@@ -300,8 +326,26 @@ namespace Rizzy
             foreach (var paramData in parameters) 
             {
                 string paramNameCamelCase = ToCamelCase(paramData.PropertySymbol.Name);
-                string? paramSummary = GetXmlDocsSummary(paramData.PropertySymbol) ?? $"The value for the <c>{paramData.PropertySymbol.Name}</c> parameter.";
-                methodBuilder.AppendLine($@"    /// <param name=""{paramNameCamelCase}"">{XmlEncode(paramSummary)}</param>");
+                string? rawSummary = GetXmlDocsSummary(paramData.PropertySymbol);
+                string paramSummaryFallback = $"The value for the <c>{paramData.PropertySymbol.Name}</c> parameter.";
+                string finalSummary = rawSummary ?? paramSummaryFallback;
+
+                var summaryLines = finalSummary.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+                
+                methodBuilder.Append($@"    /// <param name=""{paramNameCamelCase}"">");
+                for (int i = 0; i < summaryLines.Length; i++)
+                {
+                    if (i > 0) 
+                    {
+                        methodBuilder.AppendLine(); 
+                        methodBuilder.Append($"    /// {XmlEncode(summaryLines[i])}"); 
+                    }
+                    else 
+                    {
+                        methodBuilder.Append(XmlEncode(summaryLines[i]));
+                    }
+                }
+                methodBuilder.AppendLine("</param>");
             }
             methodBuilder.AppendLine($@"    /// <returns>A <see cref=""global::System.Collections.Generic.Dictionary{{string,object}}"" /> containing the component parameters.</returns>");
             

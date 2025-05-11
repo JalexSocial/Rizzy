@@ -30,12 +30,8 @@
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-
-	<PropertyGroup>
-		<GenerateDocumentationFile>false</GenerateDocumentationFile>
-	</PropertyGroup>
 
 	<ItemGroup>
 	  <Content Remove="DefaultDocumentation.json" />
