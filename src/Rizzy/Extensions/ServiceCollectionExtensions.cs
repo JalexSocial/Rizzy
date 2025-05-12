@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Rizzy.Configuration;
 using Rizzy.Htmx;
+using Rizzy.State.Configuration;
 
 namespace Rizzy;
 
@@ -31,7 +32,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRizzyService, RizzyService>();
         services.AddScoped<IHtmxSwapService, HtmxSwapService>();
         services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
-
+	    services.AddRizzyState();
+        
         return services;
     }
 }

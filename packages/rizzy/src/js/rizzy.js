@@ -1,5 +1,6 @@
 import "./rizzy-nonce"
 import "./rizzy-streaming"
+import "./rizzy-state";
 import { ValidationService } from "aspnet-client-validation";
 import "./antiforgerySnippet";
 

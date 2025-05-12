@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RizzyBoilerplate", "RizzyBo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rizzy.SourceGenerators", "Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj", "{5F1ACC23-710E-4117-9814-45836B481D65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rizzy.State", "Rizzy.State\Rizzy.State.csproj", "{6343C38A-BB89-4333-9C03-858ED04C7165}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{5F1ACC23-710E-4117-9814-45836B481D65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F1ACC23-710E-4117-9814-45836B481D65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F1ACC23-710E-4117-9814-45836B481D65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6343C38A-BB89-4333-9C03-858ED04C7165}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6343C38A-BB89-4333-9C03-858ED04C7165}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6343C38A-BB89-4333-9C03-858ED04C7165}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6343C38A-BB89-4333-9C03-858ED04C7165}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

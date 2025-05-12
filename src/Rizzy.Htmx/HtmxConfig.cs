@@ -95,7 +95,7 @@ public record class HtmxConfig
 
     /// <summary>
     /// Defaults to <see langword="true" /> if this property is null. 
-    /// Can be used to disable htmx’s use of eval for certain features (e.g. trigger filters).
+    /// Can be used to disable htmxï¿½s use of eval for certain features (e.g. trigger filters).
     /// </summary>
     [JsonPropertyName("allowEval")]
     public bool? AllowEval { get; set; }
@@ -244,10 +244,15 @@ public record class HtmxConfig
     [JsonPropertyName("triggerSpecsCache")]
     public TriggerSpecificationCache? TriggerSpecsCache { get; set; }
 
-
     [JsonInclude, JsonPropertyName("antiforgery")]
     internal AntiForgeryConfiguration? Antiforgery { get; set; } = null;
 
+    /// <summary>
+    /// Selector for the element that will be used to store the Rizzy view state
+    /// </summary>
+    [JsonInclude, JsonPropertyName("rizzyStateSelector")]
+    public string? RizzyStateSelector { get; set; } // e.g., "#rz-state"
+    
     /// <summary>
     /// If set to true, will utilize an IRizzyNonceProvider instance to generate script nonces
     /// </summary>

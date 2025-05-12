@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using Rizzy.Htmx;
 using System.Web;
+using Rizzy.State;
 
 namespace Rizzy;
 
@@ -61,6 +62,8 @@ public class HtmxConfigHeadOutlet : ComponentBase
         if (config.GenerateStyleNonce)
             config.InlineStyleNonce = config.DocumentNonce;
 
+        config.RizzyStateSelector = $"#{RizzyStateConstants.RzStateScriptTagId}";
+        
         _jsonConfig = config.Serialize();
 
         return Task.CompletedTask;

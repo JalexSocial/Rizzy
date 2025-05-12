@@ -24,6 +24,7 @@ builder.Services.AddHtmx(config =>
 builder.Services.AddControllers();
 
 builder.Services.AddRazorComponents();
+builder.Services.AddDataProtection();
 
 builder.Services.AddSingleton<HtmxCounter.HtmxCounterState>();
 builder.Services.AddSingleton<PostRepo>();

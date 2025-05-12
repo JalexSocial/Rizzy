@@ -68,6 +68,7 @@
 		<ProjectReference Include="..\Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"/>
+		<ProjectReference Include="..\Rizzy.State\Rizzy.State.csproj" />
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 

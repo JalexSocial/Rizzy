@@ -1649,6 +1649,176 @@ if (!document.body.attributes.__htmx_antiforgery) {
 
 /***/ }),
 
+/***/ "./src/js/rizzy-state.js":
+/*!*******************************!*\
+  !*** ./src/js/rizzy-state.js ***!
+  \*******************************/
+/***/ (() => {
+
+var _document$querySelect, _document$querySelect2;
+// Ensure Rizzy global and store structure exists
+window.Rizzy = window.Rizzy || {};
+window.Rizzy.store = window.Rizzy.store || {};
+
+// Initialize or augment the 'rz' namespaced store for state features
+window.Rizzy.store.rz = Alpine.reactive({
+  token: (_document$querySelect = (_document$querySelect2 = document.querySelector(htmx.config.rizzyStateSelector || "#".concat(RizzyStateConstants.RzStateScriptTagId))) === null || _document$querySelect2 === void 0 || (_document$querySelect2 = _document$querySelect2.textContent) === null || _document$querySelect2 === void 0 ? void 0 : _document$querySelect2.trim()) !== null && _document$querySelect !== void 0 ? _document$querySelect : '',
+  patch: [],
+  q: Promise.resolve(),
+  isProcessing: false,
+  // To potentially indicate if a stateful request is in flight via the queue
+  operationId: null // Stores the current RZ-Operation-Id for debugging or advanced scenarios
+});
+
+/**
+ * Alpine.js magic helper to enqueue a JSON Patch operation.
+ * Usage: <button @click="$mut('replace', '/propertyName', newValue)">...</button>
+ * @param {string} op - The JSON Patch operation (e.g., 'add', 'remove', 'replace', 'move', 'copy', 'test').
+ * @param {string} path - The JSON Pointer path to the target property.
+ * @param {any} value - The value for the operation (e.g., new value for 'replace' or 'add').
+ */
+Alpine.magic('mut', function () {
+  return function (op, path, value) {
+    window.Rizzy.store.rz.patch.push({
+      op: op,
+      path: path,
+      value: value
+    });
+  };
+});
+
+/**
+ * Enqueues an htmx request promise onto a FIFO queue to ensure sequential processing.
+ * @param {object} htmxEventDetail - The event.detail object from htmx:configRequest.
+ * @returns {Promise} A promise that resolves or rejects when the htmx request lifecycle completes.
+ */
+function enqueueHtmxRequest(htmxEventDetail) {
+  var xhr = htmxEventDetail.xhr;
+  var store = window.Rizzy.store.rz;
+  var requestPromise = new Promise(function (resolve, reject) {
+    // 'loadend' fires for both success and error, after 'load'/'error'/'abort'
+    xhr.addEventListener('loadend', function () {
+      // Resolve with enough info for the chain to know if it should proceed or if it's an error state
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve({
+          status: xhr.status,
+          responseText: xhr.responseText,
+          xhr: xhr
+        });
+      } else {
+        // For htmx, even errors might be "handled" by swapping error content.
+        // We resolve so the queue continues, but error handlers (like htmx:responseError) can still act.
+        resolve({
+          status: xhr.status,
+          error: true,
+          xhr: xhr
+        });
+      }
+    }, {
+      once: true
+    });
+
+    // Explicit error/abort also "resolve" the queue's link, but state-error event handles UX
+    xhr.addEventListener('error', function () {
+      return resolve({
+        error: true,
+        aborted: false,
+        xhr: xhr
+      });
+    }, {
+      once: true
+    });
+    xhr.addEventListener('abort', function () {
+      return resolve({
+        error: true,
+        aborted: true,
+        xhr: xhr
+      });
+    }, {
+      once: true
+    });
+  });
+  store.q = store.q["catch"](function () {/* Swallow previous error to allow queue to continue */}).then(function () {
+    store.isProcessing = true; // Mark as processing before starting the actual request
+    store.operationId = htmxEventDetail.headers['RZ-Operation-Id']; // Store current op ID
+    return requestPromise;
+  })["finally"](function () {
+    // This simplistic 'isProcessing' might need refinement for highly concurrent UI updates.
+    // If queue length > 0 after this, it's still processing.
+    store.isProcessing = false; // Mark as done after this request settles
+    store.operationId = null;
+  });
+  return store.q;
+}
+
+// htmx event listeners
+htmx.on('htmx:configRequest', function (event) {
+  var detail = event.detail;
+  var store = window.Rizzy.store.rz;
+  var targetElement = event.target;
+
+  // Only add state/patch for mutating verbs unless explicitly configured otherwise
+  if (detail.verb && detail.verb.toLowerCase() !== 'get') {
+    detail.headers = detail.headers || {}; // Ensure headers object exists
+    detail.headers[RizzyStateConstants.HtmxRequestHeaders.RZRequest] = '1';
+    detail.headers['RZ-Operation-Id'] = crypto.randomUUID();
+    detail.parameters = detail.parameters || {};
+    detail.parameters[RizzyStateConstants.HtmxRequestHeaders.RZState] = store.token;
+    detail.parameters[RizzyStateConstants.HtmxRequestHeaders.RZPatch] = JSON.stringify(store.patch);
+    store.patch = []; // Clear patch after adding to current request
+  }
+
+  // Queue the request unless it's marked to bypass
+  if (targetElement && targetElement.closest('.x-rz-long') && targetElement.getAttribute('hx-sync') === 'this:drop') {
+    // Element is marked to bypass Rizzy's queue and use htmx's own sync="this:drop"
+  } else if (detail.verb && detail.verb.toLowerCase() !== 'get') {
+    // Typically only queue mutating verbs
+    enqueueHtmxRequest(detail);
+  }
+});
+htmx.on('htmx:afterOnLoad', function (event) {
+  var newToken = event.detail.xhr.getResponseHeader(RizzyStateConstants.HtmxResponseHeaders.RZState);
+  if (newToken) {
+    window.Rizzy.store.rz.token = newToken;
+  }
+  // Potentially re-initialize Alpine.js on new content if htmx.process did not handle it.
+  // However, htmx.process(event.detail.target) is usually sufficient or done by default.
+});
+htmx.on('htmx:responseError', function (event) {
+  // Dispatch a global event for UI components to listen to
+  window.dispatchEvent(new CustomEvent('rizzy:state-error', {
+    bubbles: true,
+    composed: true,
+    detail: {
+      xhr: event.detail.xhr,
+      error: event.detail.error,
+      // Native XHR error event if network error
+      target: event.detail.target,
+      message: "Request to ".concat(event.detail.pathInfo.requestPath, " failed with status ").concat(event.detail.xhr.status, ".")
+    }
+  }));
+});
+
+// Expose constants to JS if needed, e.g., for the script tag ID
+// This assumes RizzyStateConstants.cs is somehow made available or its values are hardcoded here.
+// For simplicity, we'll assume #rz-state is the default and can be overridden by htmx.config.rizzyStateSelector
+var RizzyStateConstants = {
+  RzStateScriptTagId: "rz-state",
+  // Must match server-side default
+  HtmxRequestHeaders: {
+    // For client-side use if constructing hx-headers manually
+    RZRequest: "RZ-Request",
+    RZState: "rz-state",
+    // form param
+    RZPatch: "rz-patch" // form param
+  },
+  HtmxResponseHeaders: {
+    RZState: "RZ-State" // http header
+  }
+};
+
+/***/ }),
+
 /***/ "./src/js/rizzy-streaming.js":
 /*!***********************************!*\
   !*** ./src/js/rizzy-streaming.js ***!
@@ -2052,10 +2222,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _rizzy_nonce__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_rizzy_nonce__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _rizzy_streaming__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./rizzy-streaming */ "./src/js/rizzy-streaming.js");
 /* harmony import */ var _rizzy_streaming__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_rizzy_streaming__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var aspnet_client_validation__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! aspnet-client-validation */ "./node_modules/aspnet-client-validation/dist/aspnet-validation.js");
-/* harmony import */ var aspnet_client_validation__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(aspnet_client_validation__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _antiforgerySnippet__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./antiforgerySnippet */ "./src/js/antiforgerySnippet.js");
-/* harmony import */ var _antiforgerySnippet__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_antiforgerySnippet__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _rizzy_state__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./rizzy-state */ "./src/js/rizzy-state.js");
+/* harmony import */ var _rizzy_state__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_rizzy_state__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var aspnet_client_validation__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! aspnet-client-validation */ "./node_modules/aspnet-client-validation/dist/aspnet-validation.js");
+/* harmony import */ var aspnet_client_validation__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(aspnet_client_validation__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _antiforgerySnippet__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./antiforgerySnippet */ "./src/js/antiforgerySnippet.js");
+/* harmony import */ var _antiforgerySnippet__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_antiforgerySnippet__WEBPACK_IMPORTED_MODULE_4__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
@@ -2067,8 +2239,9 @@ function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e 
 
 
 
+
 // Set up ASP.NET validation
-var validation = new aspnet_client_validation__WEBPACK_IMPORTED_MODULE_2__.ValidationService();
+var validation = new aspnet_client_validation__WEBPACK_IMPORTED_MODULE_3__.ValidationService();
 validation.bootstrap({
   watch: true
 });

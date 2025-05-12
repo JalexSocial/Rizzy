@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
+using Rizzy.State;
 
 namespace Rizzy;
 
@@ -24,6 +26,9 @@ public partial class RzPage : ComponentBase
     /// </summary>
     private Type? _layout = null;
 
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    
     /// <summary>
     /// Provides the application's Rizzy configuration, including default layout and root component settings.
     /// </summary>
@@ -51,6 +56,22 @@ public partial class RzPage : ComponentBase
     /// <param name="builder">The render tree builder used to construct the output.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
+        if (HttpContext?.Items.TryGetValue(RizzyStateConstants.HttpContextItems.StateForView, out var tokenObject) == true &&
+            tokenObject is string stateToken && !string.IsNullOrEmpty(stateToken))
+        {
+            // Render the script tag for initial state hydration
+            builder.OpenElement(0, "script");
+            builder.AddAttribute(1, "id", RizzyStateConstants.RzStateScriptTagId);
+            builder.AddAttribute(2, "type", "application/json");
+            // Nonce: application/json script tags are generally not considered executable by CSP script-src
+            // so they don't strictly need a nonce for that purpose.
+            // If you still want to add it for other reasons or stricter policies:
+            // var nonce = HttpContext.GetNonce(); // Assuming GetNonce() extension method
+            // if (!string.IsNullOrEmpty(nonce)) builder.AddAttribute(3, "nonce", nonce);
+            builder.AddContent(3, (MarkupString)stateToken); // Render token as raw content
+            builder.CloseElement(); // script
+        }
+        
         CreateCascadingValue(builder, ModelState, builderPage =>
         {
             builderPage.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));

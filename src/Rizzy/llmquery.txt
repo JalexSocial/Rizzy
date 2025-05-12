@@ -187,6 +187,7 @@ using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using Rizzy.Htmx;
 using System.Web;
+using Rizzy.State;
 namespace Rizzy;
 public class HtmxConfigHeadOutlet : ComponentBase
 {
@@ -224,6 +225,7 @@ public class HtmxConfigHeadOutlet : ComponentBase
             config.InlineScriptNonce = config.DocumentNonce;
         if (config.GenerateStyleNonce)
             config.InlineStyleNonce = config.DocumentNonce;
+        config.RizzyStateSelector = $"#{RizzyStateConstants.RzStateScriptTagId}";
         _jsonConfig = config.Serialize();
         return Task.CompletedTask;
     }
@@ -270,12 +272,16 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using System.Reflection;
+using Microsoft.AspNetCore.Http;
+using Rizzy.State;
 namespace Rizzy;
 [RizzyParameterize]
 public partial class RzPage : ComponentBase
 {
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> LayoutAttributeCache = new();
     private Type? _layout = null;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
     [Inject]
     public IOptions<RizzyConfig> RizzyConfig { get; set; } = default!;
     public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
@@ -287,6 +293,15 @@ public partial class RzPage : ComponentBase
     }
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
+        if (HttpContext?.Items.TryGetValue(RizzyStateConstants.HttpContextItems.StateForView, out var tokenObject) == true &&
+            tokenObject is string stateToken && !string.IsNullOrEmpty(stateToken))
+        {
+            builder.OpenElement(0, "script");
+            builder.AddAttribute(1, "id", RizzyStateConstants.RzStateScriptTagId);
+            builder.AddAttribute(2, "type", "application/json");
+            builder.AddContent(3, (MarkupString)stateToken);
+            builder.CloseElement();
+        }
         CreateCascadingValue(builder, ModelState, builderPage =>
         {
             builderPage.OpenComponent(4, RizzyConfig.Value.RootComponent ?? typeof(EmptyRootComponent));
@@ -2100,6 +2115,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Rizzy.Configuration;
 using Rizzy.Htmx;
+using Rizzy.State.Configuration;
 namespace Rizzy;
 public static class ServiceCollectionExtensions
 {
@@ -2113,6 +2129,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRizzyService, RizzyService>();
         services.AddScoped<IHtmxSwapService, HtmxSwapService>();
         services.TryAddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
+	    services.AddRizzyState();
         return services;
     }
 }
