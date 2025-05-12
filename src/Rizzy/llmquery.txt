@@ -92,20 +92,20 @@ Extensions/StringExtensions.cs
 Framework/Mvc/RzController.cs
 Framework/Mvc/RzControllerWithViews.cs
 IRizzyService.cs
-IToastService.cs
+IRizzyToastService.cs
 Serialization/EnumMemberJsonConverter.cs
 Serialization/SingleQuoteStringConverter.cs
 Services/Rizzy/Middleware/RizzyMiddleware.cs
 Services/Rizzy/RizzyService.cs
 Services/RizzyNonceProvider/RizzyNonceProvider.cs
-Services/Toast/Enum/ToastEffect.cs
-Services/Toast/Enum/ToastPosition.cs
-Services/Toast/Enum/ToastStatus.cs
-Services/Toast/Enum/ToastType.cs
-Services/Toast/Middleware/ToastMiddleware.cs
-Services/Toast/Models/ToastMessage.cs
-Services/Toast/Models/ToastMessageOptions.cs
-Services/Toast/ToastService.cs
+Services/RizzyToast/Enum/ToastEffect.cs
+Services/RizzyToast/Enum/ToastPosition.cs
+Services/RizzyToast/Enum/ToastStatus.cs
+Services/RizzyToast/Enum/ToastType.cs
+Services/RizzyToast/Middleware/RizzyToastMiddleware.cs
+Services/RizzyToast/Models/ToastMessage.cs
+Services/RizzyToast/Models/ToastMessageOptions.cs
+Services/RizzyToast/RizzyToastService.cs
 Utility/IdGenerator.cs
 Utility/RenderFragmentExtensions.cs
 </directory_structure>
@@ -114,6 +114,7 @@ Utility/RenderFragmentExtensions.cs
 This section contains the contents of the repository's files.
 
 <file path="Components/Configuration/HtmxAntiforgeryScript.razor">
+@using System.IO
 @using Microsoft.AspNetCore.Http
 
 @namespace Rizzy
@@ -232,8 +233,10 @@ public class HtmxConfigHeadOutlet : ComponentBase
 <file path="Components/Content/FragmentComponent.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Rizzy.Framework.Mvc;
 namespace Rizzy;
-public class FragmentComponent : ComponentBase
+[RizzyParameterize]
+public partial class FragmentComponent : ComponentBase
 {
     [Parameter]
     public RenderFragment? Fragment { get; set; }
@@ -268,7 +271,8 @@ using Microsoft.Extensions.Options;
 using Rizzy.Configuration;
 using System.Reflection;
 namespace Rizzy;
-public class RzPage : ComponentBase
+[RizzyParameterize]
+public partial class RzPage : ComponentBase
 {
     private static readonly System.Collections.Concurrent.ConcurrentDictionary<Type, Type?> LayoutAttributeCache = new();
     private Type? _layout = null;
@@ -343,6 +347,7 @@ using Microsoft.AspNetCore.Components.CompilerServices;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Rizzy;
+[RizzyParameterize]
 public partial class RzPartial : ComponentBase
 {
     public static void CreateCascadingValue<TValue>(RenderTreeBuilder builder, TValue value, RenderFragment fragment)
@@ -995,39 +1000,40 @@ public class RzInitialValidator : ComponentBase
 </file>
 
 <file path="Components/Form/RzInputCheckbox.cs">
+using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 namespace Rizzy;
-public class RzInputCheckbox : InputCheckbox
+[RizzyParameterize]
+public partial class RzInputCheckbox : InputCheckbox
 {
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
     [Parameter]
     public string Id { get; set; } = string.Empty;
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        HttpContext?.GetOrAddFieldMapping(EditContext);
-    }
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputCheckbox)} must be enclosed within an {nameof(EditForm)}.");
+        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
@@ -1035,8 +1041,11 @@ public class RzInputCheckbox : InputCheckbox
     }
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
         base.Dispose(disposing);
     }
 }
@@ -1048,9 +1057,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
+using System.Collections.Generic;
 namespace Rizzy;
-public class RzInputDate<TValue> : InputDate<TValue>
+[RizzyParameterize]
+public partial class RzInputDate<TValue> : InputDate<TValue>
 {
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
     [CascadingParameter]
@@ -1062,21 +1075,25 @@ public class RzInputDate<TValue> : InputDate<TValue>
         base.OnParametersSet();
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputDate<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id);
     }
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
         base.Dispose(disposing);
     }
 }
@@ -1087,7 +1104,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.ObjectModel;
 namespace Rizzy;
-public class RzInputFile : InputFile
+[RizzyParameterize]
+public partial class RzInputFile : InputFile
 {
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -1114,9 +1132,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
+using System.Collections.Generic;
 namespace Rizzy;
-public class RzInputNumber<TValue> : InputNumber<TValue>
+[RizzyParameterize]
+public partial class RzInputNumber<TValue> : InputNumber<TValue>
 {
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
     [CascadingParameter]
@@ -1128,21 +1150,25 @@ public class RzInputNumber<TValue> : InputNumber<TValue>
         base.OnParametersSet();
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputNumber<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id);
     }
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
         base.Dispose(disposing);
     }
 }
@@ -1153,7 +1179,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.ObjectModel;
 namespace Rizzy;
-public class RzInputRadio<TValue> : InputRadio<TValue>
+[RizzyParameterize]
+public partial class RzInputRadio<TValue> : InputRadio<TValue>
 {
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -1174,9 +1201,13 @@ using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 namespace Rizzy;
-public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
+[RizzyParameterize]
+public partial class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
 {
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
     [CascadingParameter]
@@ -1188,14 +1219,15 @@ public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
         base.OnParametersSet();
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputRadioGroup<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
@@ -1203,8 +1235,11 @@ public class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
     }
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
         base.Dispose(disposing);
     }
 }
@@ -1217,9 +1252,13 @@ using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 namespace Rizzy;
-public class RzInputSelect<TValue> : InputSelect<TValue>
+[RizzyParameterize]
+public partial class RzInputSelect<TValue> : InputSelect<TValue>
 {
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
     [CascadingParameter]
@@ -1231,14 +1270,15 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
         base.OnParametersSet();
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputSelect<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
@@ -1246,8 +1286,11 @@ public class RzInputSelect<TValue> : InputSelect<TValue>
     }
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
         base.Dispose(disposing);
     }
 }
@@ -1259,9 +1302,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
+using System.Collections.Generic;
 namespace Rizzy;
-public class RzInputText : InputText
+[RizzyParameterize]
+public partial class RzInputText : InputText
 {
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
     [CascadingParameter]
@@ -1273,21 +1320,25 @@ public class RzInputText : InputText
         base.OnParametersSet();
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputText)} must be enclosed within an {nameof(EditForm)}.");
+        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id) && AdditionalAttributes != null)
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
     }
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
         base.Dispose(disposing);
     }
 }
@@ -1299,9 +1350,13 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
+using System.Collections.Generic;
 namespace Rizzy;
-public class RzInputTextArea : InputTextArea
+[RizzyParameterize]
+public partial class RzInputTextArea : InputTextArea
 {
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
     [CascadingParameter]
@@ -1312,25 +1367,29 @@ public class RzInputTextArea : InputTextArea
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (_initialized) return;
         if (EditContext is null)
             throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(EditForm)}.");
+        _fieldIdentifier = FieldIdentifier;
+        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+        if (_initialized) return;
         if (string.IsNullOrEmpty(Id))
         {
             Id = IdGenerator.UniqueId(NameAttributeValue);
         }
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (fieldMapping != null && !fieldMapping.ContainsKey(FieldIdentifier))
+        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
         {
-            fieldMapping[FieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
         }
         AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
         _initialized = true;
     }
     protected override void Dispose(bool disposing)
     {
-        var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        fieldMapping?.Remove(FieldIdentifier);
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
         base.Dispose(disposing);
     }
 }
@@ -1470,7 +1529,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 namespace Rizzy;
-public sealed class RzHeadContent : ComponentBase
+[RizzyParameterize]
+public sealed partial class RzHeadContent : ComponentBase
 {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -1528,7 +1588,8 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 namespace Rizzy;
-public sealed class RzPageTitle : ComponentBase
+[RizzyParameterize]
+public sealed partial class RzPageTitle : ComponentBase
 {
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
@@ -1671,7 +1732,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 namespace Rizzy;
-public class RzSectionContent : ComponentBase
+[RizzyParameterize]
+public partial class RzSectionContent : ComponentBase
 {
     [Parameter] public string? SectionName { get; set; }
     [Parameter] public object? SectionId { get; set; }
@@ -1692,7 +1754,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 namespace Rizzy;
-public class RzSectionOutlet : ComponentBase
+[RizzyParameterize]
+public partial class RzSectionOutlet : ComponentBase
 {
     [Parameter] public string? SectionName { get; set; }
     [Parameter] public object? SectionId { get; set; }
@@ -1730,7 +1793,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Rizzy.Htmx;
 namespace Rizzy;
-public class HtmxSwappable : ComponentBase
+[RizzyParameterize]
+public partial class HtmxSwappable : ComponentBase
 {
     private string _swapParam = string.Empty;
     [Parameter, EditorRequired]
@@ -2192,9 +2256,9 @@ public interface IRizzyService
 }
 </file>
 
-<file path="IToastService.cs">
+<file path="IRizzyToastService.cs">
 namespace Rizzy;
-public interface IToastService
+public interface IRizzyToastService
 {
 	void Success(string text, string? title = null, ToastMessageOptions? options = null);
 	void Warning(string text, string? title = null, ToastMessageOptions? options = null);
@@ -2453,7 +2517,7 @@ public sealed class RizzyNonceProvider : IRizzyNonceProvider
 }
 </file>
 
-<file path="Services/Toast/Enum/ToastEffect.cs">
+<file path="Services/RizzyToast/Enum/ToastEffect.cs">
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 namespace Rizzy;
@@ -2467,7 +2531,7 @@ public enum ToastEffect
 }
 </file>
 
-<file path="Services/Toast/Enum/ToastPosition.cs">
+<file path="Services/RizzyToast/Enum/ToastPosition.cs">
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 namespace Rizzy;
@@ -2523,7 +2587,7 @@ public enum ToastPosition
 }
 </file>
 
-<file path="Services/Toast/Enum/ToastStatus.cs">
+<file path="Services/RizzyToast/Enum/ToastStatus.cs">
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 namespace Rizzy;
@@ -2541,7 +2605,7 @@ public enum ToastStatus
 }
 </file>
 
-<file path="Services/Toast/Enum/ToastType.cs">
+<file path="Services/RizzyToast/Enum/ToastType.cs">
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 namespace Rizzy;
@@ -2555,7 +2619,7 @@ public enum ToastType
 }
 </file>
 
-<file path="Services/Toast/Middleware/ToastMiddleware.cs">
+<file path="Services/RizzyToast/Middleware/RizzyToastMiddleware.cs">
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -2564,11 +2628,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 namespace Rizzy;
-public class ToastMiddleware
+public class RizzyToastMiddleware
 {
-    private readonly ILogger<ToastMiddleware> _logger;
+    private readonly ILogger<RizzyToastMiddleware> _logger;
     private readonly RequestDelegate _next;
-    public ToastMiddleware(RequestDelegate next, ILogger<ToastMiddleware> logger)
+    public RizzyToastMiddleware(RequestDelegate next, ILogger<RizzyToastMiddleware> logger)
     {
         _next = next ?? throw new ArgumentNullException(nameof(next));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -2580,13 +2644,13 @@ public class ToastMiddleware
             await _next(context);
             return;
         }
-        var toastService = context.RequestServices.GetRequiredService<IToastService>();
+        var toastService = context.RequestServices.GetRequiredService<IRizzyToastService>();
         context.Response.OnStarting(AddToastTriggerCallback, (context, toastService));
         await _next(context);
     }
     private Task AddToastTriggerCallback(object state)
     {
-        if (state is not (HttpContext httpContext, IToastService toastService))
+        if (state is not (HttpContext httpContext, IRizzyToastService toastService))
         {
             _logger.LogWarning("Invalid state object received in {CallbackName}. Expected (HttpContext, IToastService).", nameof(AddToastTriggerCallback));
             return Task.CompletedTask;
@@ -2618,7 +2682,7 @@ public class ToastMiddleware
 }
 </file>
 
-<file path="Services/Toast/Models/ToastMessage.cs">
+<file path="Services/RizzyToast/Models/ToastMessage.cs">
 using System.Text.Json.Serialization;
 namespace Rizzy;
 public sealed record class ToastMessage : ToastMessageOptions
@@ -2634,7 +2698,7 @@ public sealed record class ToastMessage : ToastMessageOptions
 }
 </file>
 
-<file path="Services/Toast/Models/ToastMessageOptions.cs">
+<file path="Services/RizzyToast/Models/ToastMessageOptions.cs">
 using System.Text.Json.Serialization;
 namespace Rizzy;
 public record class ToastMessageOptions
@@ -2678,14 +2742,14 @@ public record class ToastMessageOptions
 }
 </file>
 
-<file path="Services/Toast/ToastService.cs">
+<file path="Services/RizzyToast/RizzyToastService.cs">
 using System;
 using System.Collections.Generic;
 namespace Rizzy;
-public class ToastService : IToastService
+public class RizzyToastService : IRizzyToastService
 {
     private readonly List<ToastMessage> _notifications = new();
-    public ToastService() { }
+    public RizzyToastService() { }
     private static string GetDefaultTitle(ToastStatus status)
     {
         return status switch

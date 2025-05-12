@@ -12,7 +12,8 @@ namespace Rizzy;
 /// A dropdown selection component.
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
-public class RzInputSelect<TValue> : InputSelect<TValue>
+[RizzyParameterize] 
+public partial class RzInputSelect<TValue> : InputSelect<TValue>
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;

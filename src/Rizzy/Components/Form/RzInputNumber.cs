@@ -12,7 +12,8 @@ namespace Rizzy;
 /// Int32, Int64, Int16, Single, Double, Decimal.
 /// </summary>
 /// <typeparam name="TValue">The type of the value being edited.</typeparam>
-public class RzInputNumber<TValue> : InputNumber<TValue>
+[RizzyParameterize] 
+public partial class RzInputNumber<TValue> : InputNumber<TValue>
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;

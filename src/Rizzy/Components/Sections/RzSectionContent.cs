@@ -9,7 +9,8 @@ namespace Rizzy;
 /// This class acts as a proxy to the original <see cref="SectionContent"/>, forwarding all parameters directly to it
 /// and rendering its output with no additional markup.
 /// </summary>
-public class RzSectionContent : ComponentBase
+[RizzyParameterize]
+public partial class RzSectionContent : ComponentBase
 {
     /// <summary>
     /// Gets or sets the <see cref="string"/> ID that determines which <see cref="SectionOutlet"/> instance will render

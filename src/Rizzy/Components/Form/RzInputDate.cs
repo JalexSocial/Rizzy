@@ -11,7 +11,8 @@ namespace Rizzy;
 /// An input component for editing date values.
 /// </summary>
 /// <typeparam name="TValue"></typeparam>
-public class RzInputDate<TValue> : InputDate<TValue>
+[RizzyParameterize]
+public partial class RzInputDate<TValue> : InputDate<TValue>
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
