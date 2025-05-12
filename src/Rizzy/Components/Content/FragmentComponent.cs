@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
+using Rizzy.Framework.Mvc;
 
 namespace Rizzy;
 
 /// <summary>
 /// Component that encapsulates one or more <see cref="RenderFragment"/> instances for use as partial or child components.
 /// </summary>
-public class FragmentComponent : ComponentBase
+[RizzyParameterize]
+public partial class FragmentComponent : ComponentBase
 {
     /// <summary>
     /// A single <see cref="RenderFragment"/> to be rendered.

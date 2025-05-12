@@ -11,7 +11,8 @@ namespace Rizzy;
 /// <summary>
 /// Page component container
 /// </summary>
-public class RzPage : ComponentBase
+[RizzyParameterize] 
+public partial class RzPage : ComponentBase
 {
     /// <summary>
     /// Caches layout attributes discovered on component types for faster lookups.

@@ -26,15 +26,12 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>5.1.3</Version>
+    <Version>5.1.4</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
-
-	<PropertyGroup>
-		<GenerateDocumentationFile>false</GenerateDocumentationFile>
-	</PropertyGroup>
 
 	<ItemGroup>
 	  <Content Remove="DefaultDocumentation.json" />
@@ -68,9 +65,16 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
 		<ProjectReference Include="..\Rizzy.Htmx\Rizzy.Htmx.csproj" />
+		<ProjectReference Include="..\Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"/>
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 
+    <PropertyGroup>
+        <IncludeAnalyzerInPackage>true</IncludeAnalyzerInPackage>
+    </PropertyGroup>
+    
     <PropertyGroup>
         <!-- Define the directory path once -->
         <ClientPackageDir>$(MSBuildProjectDirectory)/../../packages</ClientPackageDir>

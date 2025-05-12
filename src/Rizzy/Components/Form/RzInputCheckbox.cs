@@ -1,17 +1,19 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.ObjectModel;
-using System.Collections.Generic; // Add this using directive
+using System.Collections.Generic; 
 
 namespace Rizzy;
 
 /// <summary>
 /// An input component for editing Boolean values.
 /// </summary>
-public class RzInputCheckbox : InputCheckbox
+[RizzyParameterize] 
+public partial class RzInputCheckbox : InputCheckbox
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
