@@ -67,11 +67,12 @@ public class HomeController : RzController
         return View<HtmxCounter>(new { State = state });
     }
 
-    public IResult Weather()
+    [Microsoft.AspNetCore.Mvc.Route("/home/weather")]
+    public IResult WeatherInfo()
     {
         _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.innerHTML);
 
-        return View<Weather>();
+        return View<Weather>(Weather.Params(zipCode: 12345));
     }
 
     [HtmxRequest]
