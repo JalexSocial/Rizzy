@@ -64,7 +64,10 @@ public class HomeController : RzController
     {
         state.Value++;
 
-        return View<HtmxCounter>(new { State = state });
+        return View<HtmxCounter>(parameters => 
+                parameters.Add(counter => counter.State, state)
+            );  
+        // return View<HtmxCounter>(new { State = state });
     }
 
     [Microsoft.AspNetCore.Mvc.Route("/home/weather")]
@@ -72,6 +75,11 @@ public class HomeController : RzController
     {
         _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.innerHTML);
 
+        // return View<Weather>(new { ZipCode = 12345 });
+        // -or-
+        // return View<Weather>(parameters => 
+        //    parameters.Add(weather => weather.ZipCode, 12345));
+        // -or- (recommended, since Weather uses source generator)
         return View<Weather>(Weather.Params(zipCode: 12345));
     }
 

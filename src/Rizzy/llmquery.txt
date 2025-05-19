@@ -95,7 +95,10 @@ IRizzyService.cs
 IRizzyToastService.cs
 Serialization/EnumMemberJsonConverter.cs
 Serialization/SingleQuoteStringConverter.cs
+Services/Rizzy/Builder/ComponentMetadataCache.cs
+Services/Rizzy/Builder/ParameterMetadata.cs
 Services/Rizzy/Middleware/RizzyMiddleware.cs
+Services/Rizzy/RizzyComponentParameterBuilder.cs
 Services/Rizzy/RizzyService.cs
 Services/RizzyNonceProvider/RizzyNonceProvider.cs
 Services/RizzyToast/Enum/ToastEffect.cs
@@ -2140,45 +2143,61 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace Rizzy.Framework.Mvc;
 public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, IDisposable
 {
-    private readonly IRizzyService? _serviceProxy = null;
-    private IRizzyService RizzyService => _serviceProxy ?? this.HttpContext.RequestServices.GetRequiredService<IRizzyService>();
-    public string CurrentActionUrl => RizzyService.CurrentActionUrl;
-    public virtual IResult View<TComponent>(object? data = null) where TComponent : IComponent
-        => RizzyService.View<TComponent>(data, ModelState);
-    public virtual IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
-        => RizzyService.View<TComponent>(data, ModelState);
-    public virtual IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent
-        => RizzyService.PartialView<TComponent>(data, ModelState);
-    public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
-        => RizzyService.PartialView<TComponent>(data, ModelState);
-    public virtual IResult PartialView(RenderFragment fragment)
-        => RizzyService.PartialView(fragment);
-    public virtual IResult PartialView(params RenderFragment[] fragments)
-        => RizzyService.PartialView(fragments);
+    private IRizzyService? _rizzyServiceInstance;
+    protected IRizzyService Rizzy => _rizzyServiceInstance ??= HttpContext.RequestServices.GetRequiredService<IRizzyService>();
+    public string CurrentActionUrl => Rizzy.CurrentActionUrl;
     [NonAction]
-    public virtual JsonResult Json(object? data)
+    public virtual IResult View<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent
+        => Rizzy.View<TComponent>(parameterBuilderAction, modelState);
+    [NonAction]
+    public virtual IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.View<TComponent>(data, modelState);
+    [NonAction]
+    public virtual IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.View<TComponent>(data, modelState);
+    [NonAction]
+    public virtual IResult PartialView<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent
+        => Rizzy.PartialView<TComponent>(parameterBuilderAction, modelState);
+    [NonAction]
+    public virtual IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.PartialView<TComponent>(data, modelState);
+    [NonAction]
+    public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.PartialView<TComponent>(data, modelState);
+    [NonAction]
+    public virtual IResult PartialView(RenderFragment fragment)
+        => Rizzy.PartialView(fragment);
+    [NonAction]
+    public virtual IResult PartialView(params RenderFragment[] fragments)
+        => Rizzy.PartialView(fragments);
+    [NonAction]
+    public JsonResult Json(object? data)
     {
         return new JsonResult(data);
     }
     [NonAction]
-    public virtual JsonResult Json(object? data, object? serializerSettings)
+    public JsonResult Json(object? data, object? serializerSettings)
     {
         return new JsonResult(data, serializerSettings);
     }
     [NonAction]
     public virtual void OnActionExecuting(ActionExecutingContext context)
     {
-        HttpContext.InitializeBlazorFormData();
+        ArgumentNullException.ThrowIfNull(context);
+        context.HttpContext.InitializeBlazorFormData();
     }
     [NonAction]
     public virtual void OnActionExecuted(ActionExecutedContext context)
     {
     }
     [NonAction]
-    public virtual Task OnActionExecutionAsync(
+    public virtual async Task OnActionExecutionAsync(
         ActionExecutingContext context,
         ActionExecutionDelegate next)
     {
@@ -2187,20 +2206,15 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
         OnActionExecuting(context);
         if (context.Result == null)
         {
-            var task = next();
-            if (!task.IsCompletedSuccessfully)
-            {
-                return Awaited(this, task);
-            }
-            OnActionExecuted(task.Result);
-        }
-        return Task.CompletedTask;
-        static async Task Awaited(RzController controller, Task<ActionExecutedContext> task)
-        {
-            controller.OnActionExecuted(await task);
+            var executedContext = await next();
+            OnActionExecuted(executedContext);
         }
     }
-    public void Dispose() => Dispose(disposing: true);
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
     protected virtual void Dispose(bool disposing)
     {
     }
@@ -2208,33 +2222,50 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
 </file>
 
 <file path="Framework/Mvc/RzControllerWithViews.cs">
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 namespace Rizzy.Framework.Mvc;
 public class RzControllerWithViews : Controller
 {
-    private readonly IRizzyService? _serviceProxy = null;
-    private IRizzyService RizzyService => _serviceProxy ?? this.HttpContext.RequestServices.GetRequiredService<IRizzyService>();
-    public string CurrentActionUrl => RizzyService.CurrentActionUrl;
-    public virtual IResult View<TComponent>(object? data = null) where TComponent : IComponent
-        => RizzyService.View<TComponent>(data, ModelState);
-    public virtual IResult View<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
-        => RizzyService.View<TComponent>(data, ModelState);
-    public virtual IResult PartialView<TComponent>(object? data = null) where TComponent : IComponent
-        => RizzyService.PartialView<TComponent>(data, ModelState);
-    public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data) where TComponent : IComponent
-        => RizzyService.PartialView<TComponent>(data, ModelState);
+    private IRizzyService? _rizzyServiceInstance;
+    protected IRizzyService Rizzy => _rizzyServiceInstance ??= HttpContext.RequestServices.GetRequiredService<IRizzyService>();
+    public string CurrentActionUrl => Rizzy.CurrentActionUrl;
+    [NonAction]
+    public virtual IResult View<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent
+        => Rizzy.View<TComponent>(parameterBuilderAction, modelState);
+    [NonAction]
+    public virtual IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.View<TComponent>(data, modelState);
+    [NonAction]
+    public virtual IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.View<TComponent>(data, modelState);
+    [NonAction]
+    public virtual IResult PartialView<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent
+        => Rizzy.PartialView<TComponent>(parameterBuilderAction, modelState);
+    [NonAction]
+    public virtual IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.PartialView<TComponent>(data, modelState);
+    [NonAction]
+    public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
+        => Rizzy.PartialView<TComponent>(data, modelState);
+    [NonAction]
     public virtual IResult PartialView(RenderFragment fragment)
-        => RizzyService.PartialView(fragment);
+        => Rizzy.PartialView(fragment);
+    [NonAction]
     public virtual IResult PartialView(params RenderFragment[] fragments)
-        => RizzyService.PartialView(fragments);
+        => Rizzy.PartialView(fragments);
     [NonAction]
     public override void OnActionExecuting(ActionExecutingContext context)
     {
-        HttpContext.InitializeBlazorFormData();
+        ArgumentNullException.ThrowIfNull(context);
+        context.HttpContext.InitializeBlazorFormData();
     }
 }
 </file>
@@ -2247,10 +2278,18 @@ namespace Rizzy;
 public interface IRizzyService
 {
     string CurrentActionUrl { get; }
-    IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent;
-    IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent;
-    IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent;
-    IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent;
+    IResult View<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent;
+    IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent;
+    IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent;
+    IResult PartialView<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent;
+    IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent;
+    IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent;
     IResult PartialView(RenderFragment fragment);
     IResult PartialView(params RenderFragment[] fragments);
 }
@@ -2393,6 +2432,69 @@ internal class SingleQuoteStringConverter : JsonConverter<string>
 }
 </file>
 
+<file path="Services/Rizzy/Builder/ComponentMetadataCache.cs">
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using Microsoft.AspNetCore.Components;
+namespace Rizzy.Internal;
+internal static class ComponentMetadataCache
+{
+    private static readonly ConcurrentDictionary<Type, IReadOnlyList<ParameterMetadata>> Cache = new();
+    private static readonly Type ComponentBaseTypeGlobal = typeof(ComponentBase);
+    public static IReadOnlyList<ParameterMetadata> GetParameterMetadata(Type componentType)
+    {
+        return Cache.GetOrAdd(componentType, CalculateMetadataForType);
+    }
+    private static IReadOnlyList<ParameterMetadata> CalculateMetadataForType(Type componentType)
+    {
+        var parameterList = new List<ParameterMetadata>();
+        var namesEncountered = new HashSet<string>(StringComparer.Ordinal);
+        Type? currentTypeInHierarchy = componentType;
+        while (currentTypeInHierarchy != null &&
+               currentTypeInHierarchy != typeof(object) &&
+               currentTypeInHierarchy != ComponentBaseTypeGlobal)
+        {
+            var properties = currentTypeInHierarchy.GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            foreach (var propertyInfo in properties)
+            {
+                var parameterAttribute = propertyInfo.GetCustomAttribute<ParameterAttribute>(inherit: false);
+                if (parameterAttribute != null)
+                {
+                    if (namesEncountered.Add(propertyInfo.Name))
+                    {
+                        var editorRequiredAttribute = propertyInfo.GetCustomAttribute<EditorRequiredAttribute>(inherit: false);
+                        parameterList.Add(new ParameterMetadata(
+                            propertyInfo.Name,
+                            propertyInfo,
+                            propertyInfo.PropertyType,
+                            IsEditorRequired: editorRequiredAttribute != null
+                        ));
+                    }
+                }
+            }
+            currentTypeInHierarchy = currentTypeInHierarchy.BaseType;
+        }
+        return parameterList.AsReadOnly();
+    }
+}
+</file>
+
+<file path="Services/Rizzy/Builder/ParameterMetadata.cs">
+using System.Reflection;
+using Microsoft.AspNetCore.Components;
+namespace Rizzy.Internal;
+internal record ParameterMetadata(
+	string Name,
+	PropertyInfo PropertyInfo,
+	Type ParameterType,
+	bool IsEditorRequired
+);
+</file>
+
 <file path="Services/Rizzy/Middleware/RizzyMiddleware.cs">
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -2419,12 +2521,120 @@ public class RizzyMiddleware
 }
 </file>
 
+<file path="Services/Rizzy/RizzyComponentParameterBuilder.cs">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using Microsoft.AspNetCore.Components;
+using Rizzy.Internal;
+namespace Rizzy;
+    public class RizzyComponentParameterBuilder<TComponent> where TComponent : IComponent
+    {
+        private readonly Dictionary<string, object?> _parameters = new(StringComparer.Ordinal);
+        private static readonly Type ComponentTypeStatic = typeof(TComponent);
+        private readonly IReadOnlyList<ParameterMetadata> _componentParameterMetadata;
+        public RizzyComponentParameterBuilder()
+        {
+            _componentParameterMetadata = ComponentMetadataCache.GetParameterMetadata(ComponentTypeStatic);
+        }
+        public RizzyComponentParameterBuilder<TComponent> Add<TValue>(
+            Expression<Func<TComponent, TValue>> parameterSelector,
+            TValue value)
+        {
+            ArgumentNullException.ThrowIfNull(parameterSelector);
+            if (parameterSelector.Body is not MemberExpression memberExpression ||
+                memberExpression.Member is not PropertyInfo selectedPropertyInfo)
+            {
+                throw new ArgumentException(
+                    "The parameter selector must be a simple property access expression (e.g., p => p.MyProperty).",
+                    nameof(parameterSelector));
+            }
+            string propertyName = selectedPropertyInfo.Name;
+            var parameterMeta = _componentParameterMetadata.FirstOrDefault(p => p.Name.Equals(propertyName, StringComparison.Ordinal));
+            if (parameterMeta is null)
+            {
+                throw new ArgumentException($"Property '{propertyName}' is not a recognized [Parameter] on component '{ComponentTypeStatic.FullName}'. Ensure the property is public, on the component or a qualifying base class, and decorated with [Parameter].", nameof(parameterSelector));
+            }
+            ValidateAndAssignValue(propertyName, parameterMeta.ParameterType, value);
+            _parameters[propertyName] = value;
+            return this;
+        }
+        private static void ValidateAndAssignValue<TValue>(string propertyName, Type expectedType, TValue value)
+        {
+            if (value is null)
+            {
+                if (expectedType.IsValueType && Nullable.GetUnderlyingType(expectedType) is null)
+                {
+                    throw new ArgumentException($"Cannot assign null to non-nullable value type parameter '{propertyName}' of type '{expectedType.FullName}'.");
+                }
+            }
+            else
+            {
+                Type actualValueType = value.GetType();
+                if (!expectedType.IsAssignableFrom(actualValueType))
+                {
+                    Type? underlyingExpectedType = Nullable.GetUnderlyingType(expectedType);
+                    if (underlyingExpectedType is null || underlyingExpectedType != actualValueType)
+                    {
+                        throw new ArgumentException($"Type mismatch for parameter '{propertyName}'. Component expects an assignable type to '{expectedType.FullName}' but the provided value is of type '{actualValueType.FullName}'.");
+                    }
+                }
+            }
+        }
+        public RizzyComponentParameterBuilder<TComponent> AddChildContent(RenderFragment? childContentFragment)
+        {
+            const string childContentName = "ChildContent";
+            var childContentMeta = _componentParameterMetadata.FirstOrDefault(p => p.Name.Equals(childContentName, StringComparison.Ordinal));
+            if (childContentMeta is null)
+                throw new InvalidOperationException($"Component '{ComponentTypeStatic.FullName}' does not have a [Parameter] named '{childContentName}'.");
+            if (childContentMeta.ParameterType != typeof(RenderFragment))
+                throw new InvalidOperationException($"The '{childContentName}' parameter on component '{ComponentTypeStatic.FullName}' is not of type '{nameof(RenderFragment)}'. Its actual type is '{childContentMeta.ParameterType.FullName}'.");
+            _parameters[childContentName] = childContentFragment;
+            return this;
+        }
+        public RizzyComponentParameterBuilder<TComponent> AddChildContent(string? markup) =>
+            AddChildContent(builder => builder.AddMarkupContent(0, markup));
+        public RizzyComponentParameterBuilder<TComponent> Add(Expression<Func<TComponent, EventCallback>> selector, Action? callback)
+        {
+            return Add(selector, EventCallback.Factory.Create(callback?.Target!, callback ?? (() => { })));
+        }
+        public RizzyComponentParameterBuilder<TComponent> Add(Expression<Func<TComponent, EventCallback>> selector, Func<Task>? callback)
+        {
+            return Add(selector, EventCallback.Factory.Create(callback?.Target!, callback ?? (() => Task.CompletedTask)));
+        }
+        public RizzyComponentParameterBuilder<TComponent> Add<TArg>(Expression<Func<TComponent, EventCallback<TArg>>> selector, Action<TArg>? callback)
+        {
+            return Add(selector, EventCallback.Factory.Create<TArg>(callback?.Target!, callback ?? ((TArg _) => { })));
+        }
+        public RizzyComponentParameterBuilder<TComponent> Add<TArg>(Expression<Func<TComponent, EventCallback<TArg>>> selector, Func<TArg, Task>? callback)
+        {
+            return Add(selector, EventCallback.Factory.Create<TArg>(callback?.Target!, callback ?? ((TArg _) => Task.CompletedTask)));
+        }
+        public Dictionary<string, object?> Build()
+        {
+            foreach (var meta in _componentParameterMetadata)
+            {
+                if (meta.IsEditorRequired && !_parameters.ContainsKey(meta.Name))
+                {
+                    throw new ArgumentException($"Required parameter '{meta.Name}' for component '{ComponentTypeStatic.FullName}' was not provided. Ensure all parameters marked with [EditorRequired] are set using the builder.");
+                }
+            }
+            return new Dictionary<string, object?>(_parameters, StringComparer.Ordinal);
+        }
+    }
+</file>
+
 <file path="Services/Rizzy/RizzyService.cs">
+#nullable enable
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
+using System;
 using Rizzy.Htmx;
 namespace Rizzy;
 public sealed class RizzyService : IRizzyService
@@ -2433,38 +2643,61 @@ public sealed class RizzyService : IRizzyService
     private string? _currentActionUrl;
     public RizzyService(IHttpContextAccessor httpContextAccessor)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
+    }
+    private HttpContext HttpContextSafe => _httpContextAccessor.HttpContext ??
+        throw new InvalidOperationException("HttpContext is not available. Ensure IHttpContextAccessor is registered and accessible, and that this service is used within an active HTTP request scope.");
+    public string CurrentActionUrl => _currentActionUrl ??= HttpContextSafe.Request.GetEncodedPathAndQuery();
+    public IResult View<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent
+    {
+        ArgumentNullException.ThrowIfNull(parameterBuilderAction);
+        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
+            return Results.NoContent();
+        var builderInstance = new RizzyComponentParameterBuilder<TComponent>();
+        parameterBuilderAction(builderInstance);
+        var parametersDictionary = builderInstance.Build();
+        return View<TComponent>(parametersDictionary, modelState);
     }
     public IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent =>
-        _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
         View<TComponent>(data.ToDictionary(), modelState);
     public IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
     {
-        if (_httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true)
+        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
             return Results.NoContent();
-        var parameters = new Dictionary<string, object?>
+        var parameters = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
             { "ComponentType", typeof(TComponent) },
             { "ComponentParameters", data },
-            { "ModelState", modelState}
+            { "ModelState", modelState }
         };
         return new RazorComponentResult<RzPage>(parameters)
         {
             PreventStreamingRendering = false
         };
     }
+    public IResult PartialView<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
+        where TComponent : IComponent
+    {
+        ArgumentNullException.ThrowIfNull(parameterBuilderAction);
+        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
+            return Results.NoContent();
+        var builderInstance = new RizzyComponentParameterBuilder<TComponent>();
+        parameterBuilderAction(builderInstance);
+        var parametersDictionary = builderInstance.Build();
+        return PartialView<TComponent>(parametersDictionary, modelState);
+    }
     public IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent =>
-        _httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true ? Results.NoContent() :
         PartialView<TComponent>(data.ToDictionary(), modelState);
     public IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
     {
-        if (_httpContextAccessor.HttpContext?.Response.Htmx().EmptyResponseBodyRequested == true)
+        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
             return Results.NoContent();
-        var parameters = new Dictionary<string, object?>
+        var parameters = new Dictionary<string, object?>(StringComparer.Ordinal)
         {
-	        { "ComponentType", typeof(TComponent) },
+            { "ComponentType", typeof(TComponent) },
             { "ComponentParameters", data },
-            { "ModelState", modelState}
+            { "ModelState", modelState }
         };
         return new RazorComponentResult<RzPartial>(parameters)
         {
@@ -2473,13 +2706,18 @@ public sealed class RizzyService : IRizzyService
     }
     public IResult PartialView(RenderFragment fragment)
     {
+        ArgumentNullException.ThrowIfNull(fragment);
+        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
+            return Results.NoContent();
         return new RazorComponentResult<FragmentComponent>(new { Fragment = fragment });
     }
     public IResult PartialView(params RenderFragment[] fragments)
     {
+        ArgumentNullException.ThrowIfNull(fragments);
+        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
+            return Results.NoContent();
         return new RazorComponentResult<FragmentComponent>(new { Fragments = fragments });
     }
-    public string CurrentActionUrl => _currentActionUrl ??= _httpContextAccessor?.HttpContext?.Request.GetEncodedPathAndQuery() ?? string.Empty;
 }
 </file>
 
