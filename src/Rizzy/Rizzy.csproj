@@ -26,7 +26,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>5.1.5</Version>
+    <Version>5.1.6</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -69,6 +69,10 @@
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"/>
 		<Using Include="System.Diagnostics.CodeAnalysis" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="wwwroot\js\" />
 	</ItemGroup>
 
     <PropertyGroup>

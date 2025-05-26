@@ -1,2 +1,1521 @@
-/*! For license information please see rizzy.js.LICENSE.txt */
-var __webpack_modules__={"./node_modules/aspnet-client-validation/dist/aspnet-validation.js":e=>{var t;self,t=()=>(()=>{"use strict";var e={d:(t,r)=>{for(var n in r)e.o(r,n)&&!e.o(t,n)&&Object.defineProperty(t,n,{enumerable:!0,get:r[n]})},o:(e,t)=>Object.prototype.hasOwnProperty.call(e,t),r:e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})}},t={};e.r(t),e.d(t,{MvcValidationProviders:()=>u,ValidationService:()=>c,isValidatable:()=>o});var r=function(e,t,r,n){return new(r||(r=Promise))((function(i,o){function a(e){try{l(n.next(e))}catch(e){o(e)}}function s(e){try{l(n.throw(e))}catch(e){o(e)}}function l(e){var t;e.done?i(e.value):(t=e.value,t instanceof r?t:new r((function(e){e(t)}))).then(a,s)}l((n=n.apply(e,t||[])).next())}))},n=function(e,t){var r,n,i,o,a={label:0,sent:function(){if(1&i[0])throw i[1];return i[1]},trys:[],ops:[]};return o={next:s(0),throw:s(1),return:s(2)},"function"==typeof Symbol&&(o[Symbol.iterator]=function(){return this}),o;function s(s){return function(l){return function(s){if(r)throw new TypeError("Generator is already executing.");for(;o&&(o=0,s[0]&&(a=0)),a;)try{if(r=1,n&&(i=2&s[0]?n.return:s[0]?n.throw||((i=n.return)&&i.call(n),0):n.next)&&!(i=i.call(n,s[1])).done)return i;switch(n=0,i&&(s=[2&s[0],i.value]),s[0]){case 0:case 1:i=s;break;case 4:return a.label++,{value:s[1],done:!1};case 5:a.label++,n=s[1],s=[0];continue;case 7:s=a.ops.pop(),a.trys.pop();continue;default:if(!((i=(i=a.trys).length>0&&i[i.length-1])||6!==s[0]&&2!==s[0])){a=0;continue}if(3===s[0]&&(!i||s[1]>i[0]&&s[1]<i[3])){a.label=s[1];break}if(6===s[0]&&a.label<i[1]){a.label=i[1],i=s;break}if(i&&a.label<i[2]){a.label=i[2],a.ops.push(s);break}i[2]&&a.ops.pop(),a.trys.pop();continue}s=t.call(e,a)}catch(e){s=[6,e],n=0}finally{r=i=0}if(5&s[0])throw s[1];return{value:s[0]?s[1]:void 0,done:!0}}([s,l])}}},i=new(function(){function e(){this.warn=globalThis.console.warn}return e.prototype.log=function(e){for(var t=[],r=1;r<arguments.length;r++)t[r-1]=arguments[r]},e}()),o=function(e){return e instanceof HTMLInputElement||e instanceof HTMLSelectElement||e instanceof HTMLTextAreaElement},a=["input","select","textarea"],s=function(e){return a.map((function(t){return"".concat(t).concat(e||"")})).join(",")};function l(e,t){var r=e.name,n=t.substring(2),i=r.lastIndexOf(".");if(i>-1){var a=r.substring(0,i)+"."+n,l=document.getElementsByName(a)[0];if(o(l))return l}return e.form.querySelector(s("[name=".concat(n,"]")))}var u=function(){this.required=function(e,t,r){var n=t.type.toLowerCase();if("checkbox"===n||"radio"===n){for(var i=0,o=Array.from(t.form.querySelectorAll(s("[name='".concat(t.name,"'][type='").concat(n,"']"))));i<o.length;i++){var a=o[i];if(a instanceof HTMLInputElement&&!0===a.checked)return!0}if("checkbox"===n){var l=t.form.querySelector("input[name='".concat(t.name,"'][type='hidden']"));if(l instanceof HTMLInputElement&&"false"===l.value)return!0}return!1}return Boolean(null==e?void 0:e.trim())},this.stringLength=function(e,t,r){if(!e)return!0;if(r.min){var n=parseInt(r.min);if(e.length<n)return!1}if(r.max){var i=parseInt(r.max);if(e.length>i)return!1}return!0},this.compare=function(e,t,r){if(!r.other)return!0;var n=l(t,r.other);return!n||n.value===e},this.range=function(e,t,r){if(!e)return!0;var n=parseFloat(e);return!(isNaN(n)||r.min&&n<parseFloat(r.min)||r.max&&n>parseFloat(r.max))},this.regex=function(e,t,r){return!e||!r.pattern||new RegExp(r.pattern).test(e)},this.email=function(e,t,r){return!e||/^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/.test(e)},this.creditcard=function(e,t,r){if(!e)return!0;if(/[^0-9 \-]+/.test(e))return!1;var n,i,o=0,a=0,s=!1;if((e=e.replace(/\D/g,"")).length<13||e.length>19)return!1;for(n=e.length-1;n>=0;n--)i=e.charAt(n),a=parseInt(i,10),s&&(a*=2)>9&&(a-=9),o+=a,s=!s;return o%10==0},this.url=function(e,t,r){if(!e)return!0;var n=e.toLowerCase();return n.indexOf("http://")>-1||n.indexOf("https://")>-1||n.indexOf("ftp://")>-1},this.phone=function(e,t,r){return!e||!/[\+\-\s][\-\s]/g.test(e)&&/^\+?[0-9\-\s]+$/.test(e)},this.remote=function(e,t,r){if(!e)return!0;for(var n=r.additionalfields.split(","),i={},o=0,a=n;o<a.length;o++){var s=a[o],u=s.substr(2),c=l(t,s);Boolean(c&&c.value)&&(c instanceof HTMLInputElement&&("checkbox"===c.type||"radio"===c.type)?i[u]=c.checked?c.value:"":i[u]=c.value)}var d=r.url,f=[];for(var u in i){var m=encodeURIComponent(u)+"="+encodeURIComponent(i[u]);f.push(m)}var p=f.join("&");return new Promise((function(e,t){var n=new XMLHttpRequest;if(r.type&&"post"===r.type.toLowerCase()){var o=new FormData;for(var a in i)o.append(a,i[a]);n.open("post",d),n.setRequestHeader("Content-Type","application/x-www-form-urlencoded"),n.send(p)}else n.open("get",d+"?"+p),n.send();n.onload=function(r){if(n.status>=200&&n.status<300){var i=JSON.parse(n.responseText);e(i)}else t({status:n.status,statusText:n.statusText,data:n.responseText})},n.onerror=function(e){t({status:n.status,statusText:n.statusText,data:n.responseText})}}))}},c=function(){function e(e){var t=this;this.providers={},this.messageFor={},this.elementUIDs=[],this.elementByUID={},this.formInputs={},this.validators={},this.formEvents={},this.inputEvents={},this.summary={},this.debounce=300,this.allowHiddenFields=!1,this.validateForm=function(e,i){return r(t,void 0,void 0,(function(){var t,r,o;return n(this,(function(n){switch(n.label){case 0:if(!(e instanceof HTMLFormElement))throw new Error("validateForm() can only be called on <form> elements");return t=this.getElementUID(e),r=this.formEvents[t],(o=!r)?[3,2]:[4,r(void 0,i)];case 1:o=n.sent(),n.label=2;case 2:return[2,o]}}))}))},this.validateField=function(e,i){return r(t,void 0,void 0,(function(){var t,r,o;return n(this,(function(n){switch(n.label){case 0:return t=this.getElementUID(e),r=this.inputEvents[t],(o=!r)?[3,2]:[4,r(void 0,i)];case 1:o=n.sent(),n.label=2;case 2:return[2,o]}}))}))},this.preValidate=function(e){e.preventDefault(),e.stopImmediatePropagation()},this.handleValidated=function(e,r,n){if(!(e instanceof HTMLFormElement))throw new Error("handleValidated() can only be called on <form> elements");r?n&&t.submitValidForm(e,n):t.focusFirstInvalid(e)},this.submitValidForm=function(e,t){if(!(e instanceof HTMLFormElement))throw new Error("submitValidForm() can only be called on <form> elements");var r=new SubmitEvent("submit",t);if(e.dispatchEvent(r)){var n=t.submitter,i=null,o=e.action;if(n){var a=n.getAttribute("name");a&&((i=document.createElement("input")).type="hidden",i.name=a,i.value=n.getAttribute("value"),e.appendChild(i));var s=n.getAttribute("formaction");s&&(e.action=s)}try{e.submit()}finally{i&&e.removeChild(i),e.action=o}}},this.focusFirstInvalid=function(e){if(!(e instanceof HTMLFormElement))throw new Error("focusFirstInvalid() can only be called on <form> elements");var r=t.getElementUID(e),n=t.formInputs[r],i=null==n?void 0:n.find((function(e){return t.summary[e]}));if(i){var o=t.elementByUID[i];o instanceof HTMLElement&&o.focus()}},this.isValid=function(e,r,n){if(void 0===r&&(r=!0),!(e instanceof HTMLFormElement))throw new Error("isValid() can only be called on <form> elements");r&&t.validateForm(e,n);var i=t.getElementUID(e),o=t.formInputs[i];return!(!0===(null==o?void 0:o.some((function(e){return t.summary[e]}))))},this.isFieldValid=function(e,r,n){void 0===r&&(r=!0),r&&t.validateField(e,n);var i=t.getElementUID(e);return void 0===t.summary[i]},this.options={root:document.body,watch:!1,addNoValidate:!0},this.ValidationInputCssClassName="input-validation-error",this.ValidationInputValidCssClassName="input-validation-valid",this.ValidationMessageCssClassName="field-validation-error",this.ValidationMessageValidCssClassName="field-validation-valid",this.ValidationSummaryCssClassName="validation-summary-errors",this.ValidationSummaryValidCssClassName="validation-summary-valid",this.logger=e||i}return e.prototype.addProvider=function(e,t){this.providers[e]||(this.logger.log("Registered provider: %s",e),this.providers[e]=t)},e.prototype.addMvcProviders=function(){var e=new u;this.addProvider("required",e.required),this.addProvider("length",e.stringLength),this.addProvider("maxlength",e.stringLength),this.addProvider("minlength",e.stringLength),this.addProvider("equalto",e.compare),this.addProvider("range",e.range),this.addProvider("regex",e.regex),this.addProvider("creditcard",e.creditcard),this.addProvider("email",e.email),this.addProvider("url",e.url),this.addProvider("phone",e.phone),this.addProvider("remote",e.remote)},e.prototype.scanMessages=function(e,t){for(var r=0,n=Array.from(e.querySelectorAll("span[form]"));r<n.length;r++){var i=n[r];(u=document.getElementById(i.getAttribute("form")))instanceof HTMLFormElement&&t.call(this,u,i)}var o=Array.from(e.querySelectorAll("form"));e instanceof HTMLFormElement&&o.push(e);var a=e instanceof Element?e.closest("form"):null;a&&o.push(a);for(var s=0,l=o;s<l.length;s++)for(var u=l[s],c=0,d=Array.from(u.querySelectorAll("[data-valmsg-for]"));c<d.length;c++)i=d[c],t.call(this,u,i)},e.prototype.pushValidationMessageSpan=function(e,t){var r,n,i,o=this.getElementUID(e),a=null!==(r=(i=this.messageFor)[o])&&void 0!==r?r:i[o]={},s=t.getAttribute("data-valmsg-for");if(s){var l=null!==(n=a[s])&&void 0!==n?n:a[s]=[];l.indexOf(t)<0?l.push(t):this.logger.log("Validation element for '%s' is already tracked",name,t)}},e.prototype.removeValidationMessageSpan=function(e,t){var r=this.getElementUID(e),n=this.messageFor[r];if(n){var i=t.getAttribute("data-valmsg-for");if(i){var o=n[i];if(o){var a=o.indexOf(t);a>=0?o.splice(a,1):this.logger.log("Validation element for '%s' was already removed",name,t)}}}},e.prototype.parseDirectives=function(e){for(var t={},r={},n=0;n<e.length;n++){var i=e[n];if(0===i.name.indexOf("data-val-")){var o=i.name.substr(9);r[o]=i.value}}var a=function(e){if(-1===e.indexOf("-")){for(var n=Object.keys(r).filter((function(t){return t!==e&&0===t.indexOf(e)})),i={error:r[e],params:{}},o=(e+"-").length,a=0;a<n.length;a++){var s=r[n[a]],l=n[a].substr(o);i.params[l]=s}t[e]=i}};for(var o in r)a(o);return t},e.prototype.guid4=function(){return"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,(function(e){var t=16*Math.random()|0;return("x"==e?t:3&t|8).toString(16)}))},e.prototype.getElementUID=function(e){var t=this.elementUIDs.filter((function(t){return t.node===e}))[0];if(t)return t.uid;var r=this.guid4();return this.elementUIDs.push({node:e,uid:r}),this.elementByUID[r]=e,r},e.prototype.getFormValidationTask=function(e){var t=this.formInputs[e];if(!t||0===t.length)return Promise.resolve(!0);for(var r=[],n=0,i=t;n<i.length;n++){var o=i[n],a=this.validators[o];a&&r.push(a)}var s=r.map((function(e){return e()}));return Promise.all(s).then((function(e){return e.every((function(e){return e}))}))},e.prototype.getMessageFor=function(e){var t;if(e.form){var r=this.getElementUID(e.form);return null===(t=this.messageFor[r])||void 0===t?void 0:t[e.name]}},e.prototype.shouldValidate=function(e){return!(e&&e.submitter&&e.submitter.formNoValidate)},e.prototype.trackFormInput=function(e,t){var i,o,a=this,s=this.getElementUID(e),l=null!==(i=(o=this.formInputs)[s])&&void 0!==i?i:o[s]=[];if(-1===l.indexOf(t)?(l.push(t),this.options.addNoValidate?(this.logger.log("Setting novalidate on form",e),e.setAttribute("novalidate","novalidate")):this.logger.log("Not setting novalidate on form",e)):this.logger.log("Form input for UID '%s' is already tracked",t),!this.formEvents[s]){var u=null,c=function(t,i){return u||(a.shouldValidate(t)?(u=a.getFormValidationTask(s),t&&a.preValidate(t),a.logger.log("Validating",e),u.then((function(o){return r(a,void 0,void 0,(function(){var r;return n(this,(function(n){switch(n.label){case 0:return this.logger.log("Validated (success = %s)",o,e),i?(i(o),[2,o]):(r=new CustomEvent("validation",{detail:{valid:o}}),e.dispatchEvent(r),[4,new Promise((function(e){return setTimeout(e,0)}))]);case 1:return n.sent(),this.handleValidated(e,o,t),[2,o]}}))}))})).catch((function(e){return a.logger.log("Validation error",e),!1})).finally((function(){u=null}))):Promise.resolve(!0))};e.addEventListener("submit",c);var d=function(e){for(var t=0,r=a.formInputs[s];t<r.length;t++){var n=r[t];a.resetField(n)}a.renderSummary()};e.addEventListener("reset",d),c.remove=function(){e.removeEventListener("submit",c),e.removeEventListener("reset",d)},this.formEvents[s]=c}},e.prototype.reset=function(e){this.isDisabled(e)?this.resetField(this.getElementUID(e)):this.scan(e)},e.prototype.resetField=function(e){var t=this.elementByUID[e];this.swapClasses(t,"",this.ValidationInputCssClassName),this.swapClasses(t,"",this.ValidationInputValidCssClassName);var r=o(t)&&this.getMessageFor(t);if(r)for(var n=0;n<r.length;n++)r[n].innerHTML="",this.swapClasses(r[n],"",this.ValidationMessageCssClassName),this.swapClasses(r[n],"",this.ValidationMessageValidCssClassName);delete this.summary[e]},e.prototype.untrackFormInput=function(e,t){var r,n=this.getElementUID(e),i=this.formInputs[n];if(i){var o=i.indexOf(t);o>=0?(i.splice(o,1),i.length||(null===(r=this.formEvents[n])||void 0===r||r.remove(),delete this.formEvents[n],delete this.formInputs[n],delete this.messageFor[n])):this.logger.log("Form input for UID '%s' was already removed",t)}},e.prototype.addInput=function(e){var t,i=this,o=this.getElementUID(e),a=this.parseDirectives(e.attributes);if(this.validators[o]=this.createValidator(e,a),e.form&&this.trackFormInput(e.form,o),!this.inputEvents[o]){var s=function(t,a){return r(i,void 0,void 0,(function(){var r,i,s;return n(this,(function(n){switch(n.label){case 0:if(!(r=this.validators[o]))return[2,!0];if(!e.dataset.valEvent&&t&&"input"===t.type&&!e.classList.contains(this.ValidationInputCssClassName))return[2,!0];this.logger.log("Validating",{event:t}),n.label=1;case 1:return n.trys.push([1,3,,4]),[4,r()];case 2:return i=n.sent(),a(i),[2,i];case 3:return s=n.sent(),this.logger.log("Validation error",s),[2,!1];case 4:return[2]}}))}))},l=null;s.debounced=function(e,t){null!==l&&clearTimeout(l),l=setTimeout((function(){s(e,t)}),i.debounce)};var u=e instanceof HTMLSelectElement?"change":"input change",c=(null!==(t=e.dataset.valEvent)&&void 0!==t?t:u).split(" ");c.forEach((function(t){e.addEventListener(t,s.debounced)})),s.remove=function(){c.forEach((function(t){e.removeEventListener(t,s.debounced)}))},this.inputEvents[o]=s}},e.prototype.removeInput=function(e){var t=this.getElementUID(e),r=this.inputEvents[t];(null==r?void 0:r.remove)&&(r.remove(),delete r.remove),delete this.summary[t],delete this.inputEvents[t],delete this.validators[t],e.form&&this.untrackFormInput(e.form,t)},e.prototype.scanInputs=function(e,t){var r=Array.from(e.querySelectorAll(s('[data-val="true"]')));o(e)&&"true"===e.getAttribute("data-val")&&r.push(e);for(var n=0;n<r.length;n++){var i=r[n];t.call(this,i)}},e.prototype.createSummaryDOM=function(){if(!Object.keys(this.summary).length)return null;var e=[],t=document.createElement("ul");for(var r in this.summary){var n=this.elementByUID[r];if(!(n instanceof HTMLInputElement&&("checkbox"===n.type||"radio"===n.type)&&n.className===this.ValidationInputValidCssClassName||e.indexOf(this.summary[r])>-1)){var i=document.createElement("li");i.innerHTML=this.summary[r],t.appendChild(i),e.push(this.summary[r])}}return t},e.prototype.renderSummary=function(){var e=document.querySelectorAll('[data-valmsg-summary="true"]');if(e.length){var t=JSON.stringify(this.summary,Object.keys(this.summary).sort());if(t!==this.renderedSummaryJSON){this.renderedSummaryJSON=t;for(var r=this.createSummaryDOM(),n=0;n<e.length;n++){for(var i=e[n],o=i.querySelectorAll("ul"),a=0;a<o.length;a++)o[a].remove();r&&r.hasChildNodes()?(this.swapClasses(i,this.ValidationSummaryCssClassName,this.ValidationSummaryValidCssClassName),i.appendChild(r.cloneNode(!0))):this.swapClasses(i,this.ValidationSummaryValidCssClassName,this.ValidationSummaryCssClassName)}}}},e.prototype.addError=function(e,t){var r=this.getMessageFor(e);if(r)for(var n=0;n<r.length;n++)r[n],r[n].innerHTML=t,this.swapClasses(r[n],this.ValidationMessageCssClassName,this.ValidationMessageValidCssClassName);if(this.highlight(e,this.ValidationInputCssClassName,this.ValidationInputValidCssClassName),e.form){var i=e.form.querySelectorAll(s('[name="'.concat(e.name,'"]')));for(n=0;n<i.length;n++){this.swapClasses(i[n],this.ValidationInputCssClassName,this.ValidationInputValidCssClassName);var o=this.getElementUID(i[n]);this.summary[o]=t}}this.renderSummary()},e.prototype.removeError=function(e){var t=this.getMessageFor(e);if(t)for(var r=0;r<t.length;r++)t[r].innerHTML="",this.swapClasses(t[r],this.ValidationMessageValidCssClassName,this.ValidationMessageCssClassName);if(this.unhighlight(e,this.ValidationInputCssClassName,this.ValidationInputValidCssClassName),e.form){var n=e.form.querySelectorAll(s('[name="'.concat(e.name,'"]')));for(r=0;r<n.length;r++){this.swapClasses(n[r],this.ValidationInputValidCssClassName,this.ValidationInputCssClassName);var i=this.getElementUID(n[r]);delete this.summary[i]}}this.renderSummary()},e.prototype.createValidator=function(e,t){var i=this;return function(){return r(i,void 0,void 0,(function(){var r,i,o,a,s,l,u,c,d,f,m;return n(this,(function(n){switch(n.label){case 0:if(this.isHidden(e)||this.isDisabled(e))return[3,7];for(o in i=[],r=t)i.push(o);a=0,n.label=1;case 1:return a<i.length?(o=i[a])in r?(l=t[s=o],(u=this.providers[s])?(this.logger.log("Running %s validator on element",s,e),c=u(e.value,e,l.params),d=!1,f=l.error,"boolean"!=typeof c?[3,2]:(d=c,[3,5])):(this.logger.log("aspnet-validation provider not implemented: %s",s),[3,6])):[3,6]:[3,7];case 2:return"string"!=typeof c?[3,3]:(d=!1,f=c,[3,5]);case 3:return[4,c];case 4:"boolean"==typeof(m=n.sent())?d=m:(d=!1,f=m),n.label=5;case 5:if(!d)return this.addError(e,f),[2,!1];n.label=6;case 6:return a++,[3,1];case 7:return this.removeError(e),[2,!0]}}))}))}},e.prototype.isHidden=function(e){return!(this.allowHiddenFields||e.offsetWidth||e.offsetHeight||e.getClientRects().length)},e.prototype.isDisabled=function(e){return e.disabled},e.prototype.swapClasses=function(e,t,r){!t||this.isDisabled(e)||e.classList.contains(t)||e.classList.add(t),e.classList.contains(r)&&e.classList.remove(r)},e.prototype.bootstrap=function(e){var t=this;Object.assign(this.options,e),this.addMvcProviders();var r=window.document,n=this.options.root,i=function(){t.scan(n),t.options.watch&&t.watch(n)};"complete"===r.readyState||"interactive"===r.readyState?i():r.addEventListener("DOMContentLoaded",i)},e.prototype.scan=function(e){null!=e||(e=this.options.root),this.logger.log("Scanning",e),this.scanMessages(e,this.pushValidationMessageSpan),this.scanInputs(e,this.addInput)},e.prototype.remove=function(e){null!=e||(e=this.options.root),this.logger.log("Removing",e),this.scanMessages(e,this.removeValidationMessageSpan),this.scanInputs(e,this.removeInput)},e.prototype.watch=function(e){var t=this;null!=e||(e=this.options.root),this.observer=new MutationObserver((function(e){e.forEach((function(e){t.observed(e)}))})),this.observer.observe(e,{attributes:!0,childList:!0,subtree:!0}),this.logger.log("Watching for mutations")},e.prototype.observed=function(e){var t,r,n;if("childList"===e.type){for(var i=0;i<e.addedNodes.length;i++){var o=e.addedNodes[i];this.logger.log("Added node",o),o instanceof HTMLElement&&this.scan(o)}for(i=0;i<e.removedNodes.length;i++)o=e.removedNodes[i],this.logger.log("Removed node",o),o instanceof HTMLElement&&this.remove(o)}else if("attributes"===e.type&&e.target instanceof HTMLElement)if("disabled"===e.attributeName){var a=e.target;this.reset(a)}else{var s=null!==(t=e.oldValue)&&void 0!==t?t:"",l=null!==(n=null===(r=e.target.attributes[e.attributeName])||void 0===r?void 0:r.value)&&void 0!==n?n:"";this.logger.log("Attribute '%s' changed from '%s' to '%s'",e.attributeName,s,l,e.target),s!==l&&this.scan(e.target)}},e.prototype.highlight=function(e,t,r){this.swapClasses(e,t,r)},e.prototype.unhighlight=function(e,t,r){this.swapClasses(e,r,t)},e}();return t})(),e.exports=t()},"./src/js/antiforgerySnippet.js":()=>{document.body.attributes.__htmx_antiforgery||(document.addEventListener("htmx:configRequest",(function(e){var t,r=e.detail,n=r.verb,i=r.parameters,o=r.headers;if("GET"!==(null==n?void 0:n.toUpperCase())){var a=null===(t=htmx.config)||void 0===t?void 0:t.antiforgery;if(a){var s=a.headerName,l=a.requestToken,u=a.formFieldName;s||u?u&&i[u]||(s?o[s]=l:i[u]=l):console.warn("Antiforgery configuration is missing both headerName and formFieldName. Token not added.")}}})),document.addEventListener("htmx:afterOnLoad",(function(e){if(e.detail.boosted){var t=e.detail.xhr.responseText,r=t.indexOf('<meta name="htmx-config"'),n=t.indexOf(">",r)+1,i=t.indexOf("</meta>",n);if(r>-1){var o="";if(i>-1){var a=t.indexOf("/",r);o=a>-1&&a<n?t.substring(r,n):t.substring(r,t.indexOf("</meta>")+7)}else o=t.substring(r,n);var s=o.match(/content="([^"]*)"/);if(s&&s[1]){var l=s[1],u=document.querySelector("meta[name=htmx-config]"),c="antiforgery";try{htmx.config[c]=JSON.parse(l)[c]}catch(e){return void console.error("Error parsing htmx-config JSON:",e)}var d=document.createElement("meta");d.setAttribute("name","htmx-config"),d.setAttribute("content",l),u.replaceWith(d)}}}})),document.body.attributes.__htmx_antiforgery=!0)},"./src/js/rizzy-nonce.js":()=>{htmx.defineExtension("rizzy-nonce",{transformResponse:function(e,t,r){var n,i=null!==(n=htmx.config.documentNonce)&&void 0!==n?n:htmx.config.inlineScriptNonce;i||(console.warn("rizzy-nonce extension loaded but no no nonce found for document. Inline scripts may be blocked."),i=""),htmx.config.refreshOnHistoryMiss=!0;var o=null==t?void 0:t.getResponseHeader("HX-Nonce");if(!o){var a=null==t?void 0:t.getResponseHeader("content-security-policy");if(a){var s=a.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);s&&(o=s[2])}}return t&&window.location.hostname&&new URL(t.responseURL).hostname!==window.location.hostname&&(o=""),null!=o||(o=""),this.processUnsafeHtml(e,i,o)},processUnsafeHtml:function(e,t,r){t&&r&&(e=e.replaceAll(r,t));var n=new DOMParser;try{var i=n.parseFromString(e,"text/html");if(i)return Array.from(i.querySelectorAll('[hx-ext*="ignore:rizzy-nonce"], [data-hx-ext*="ignore:rizzy-nonce"]')).forEach((function(e){e.remove()})),i.querySelectorAll("script, style, link").forEach((function(e){e.getAttribute("nonce")!==t&&e.remove()})),i.documentElement.outerHTML}catch(e){}return""}})},"./src/js/rizzy-streaming.js":()=>{function e(t){return e="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},e(t)}function t(e,t){for(var n=0;n<t.length;n++){var i=t[n];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,r(i.key),i)}}function r(t){var r=function(t){if("object"!=e(t)||!t)return t;var r=t[Symbol.toPrimitive];if(void 0!==r){var n=r.call(t,"string");if("object"!=e(n))return n;throw new TypeError("@@toPrimitive must return a primitive value.")}return String(t)}(t);return"symbol"==e(r)?r:r+""}function n(e){var t="function"==typeof Map?new Map:void 0;return n=function(e){if(null===e||!function(e){try{return-1!==Function.toString.call(e).indexOf("[native code]")}catch(t){return"function"==typeof e}}(e))return e;if("function"!=typeof e)throw new TypeError("Super expression must either be null or a function");if(void 0!==t){if(t.has(e))return t.get(e);t.set(e,r)}function r(){return function(e,t,r){if(i())return Reflect.construct.apply(null,arguments);var n=[null];n.push.apply(n,t);var a=new(e.bind.apply(e,n));return r&&o(a,r.prototype),a}(e,arguments,a(this).constructor)}return r.prototype=Object.create(e.prototype,{constructor:{value:r,enumerable:!1,writable:!0,configurable:!0}}),o(r,e)},n(e)}function i(){try{var e=!Boolean.prototype.valueOf.call(Reflect.construct(Boolean,[],(function(){})))}catch(e){}return(i=function(){return!!e})()}function o(e,t){return o=Object.setPrototypeOf?Object.setPrototypeOf.bind():function(e,t){return e.__proto__=t,e},o(e,t)}function a(e){return a=Object.setPrototypeOf?Object.getPrototypeOf.bind():function(e){return e.__proto__||Object.getPrototypeOf(e)},a(e)}!function(){var r,s=function(r){function n(){return function(e,t){if(!(e instanceof t))throw new TypeError("Cannot call a class as a function")}(this,n),function(t,r,n){return r=a(r),function(t,r){if(r&&("object"==e(r)||"function"==typeof r))return r;if(void 0!==r)throw new TypeError("Derived constructors may only return object or undefined");return function(e){if(void 0===e)throw new ReferenceError("this hasn't been initialised - super() hasn't been called");return e}(t)}(t,i()?Reflect.construct(r,n||[],a(t).constructor):r.apply(t,n))}(this,n,arguments)}return function(e,t){if("function"!=typeof t&&null!==t)throw new TypeError("Super expression must either be null or a function");e.prototype=Object.create(t&&t.prototype,{constructor:{value:e,writable:!0,configurable:!0}}),Object.defineProperty(e,"prototype",{writable:!1}),t&&o(e,t)}(n,r),s=n,(u=[{key:"connectedCallback",value:function(){var e,t,r=this.parentNode;null===(e=r.parentNode)||void 0===e||e.removeChild(r),r.childNodes.forEach((function(e){if(e instanceof HTMLTemplateElement){var t=e.getAttribute("blazor-component-id");t&&function(e,t){var r=function(e){for(var t="bl:".concat(e),r=document.createNodeIterator(document,NodeFilter.SHOW_COMMENT),n=null;(n=r.nextNode())&&n.textContent!==t;);if(!n)return null;for(var i="/bl:".concat(e),o=null;(o=r.nextNode())&&o.textContent!==i;);return o?{startMarker:n,endMarker:o}:null}(e);if(r){var n=r.startMarker,i=r.endMarker;if(function(e){if(!e||e.nodeType!==Node.COMMENT_NODE)return!1;for(var t=e.parentNode;null!==t;){if(t===document.head)return!0;t=t.parentNode}return!1}(n)){var o=i.parentNode,a=new Range;for(a.setStart(n,n.textContent.length),a.setEnd(i,0),a.deleteContents();t.childNodes[0];)o.insertBefore(t.childNodes[0],i)}else l(n,i,t)}}(t,e.content)}})),null===(t=htmx)||void 0===t||t.process(document.body)}}])&&t(s.prototype,u),Object.defineProperty(s,"prototype",{writable:!1}),s;var s,u}(n(HTMLElement));function l(e,t,r,n){var i=function(e,t,r){var n=document.createElement("div");n.id=r;for(var i=e.nextSibling;i&&i!==t;)n.appendChild(i),i=e.nextSibling;return e.parentNode.insertBefore(n,t),n}(e,t,"ssr"+crypto.randomUUID()),o=document.createElement("div");o.appendChild(r),c(i,o.innerHTML,n),u(i)}function u(e){if(e.parentNode){for(;e.firstChild;)e.parentNode.insertBefore(e.firstChild,e);e.parentNode.removeChild(e)}}function c(e,t,n,i){r.withExtensions(e,(function(r){t=r.transformResponse(t,i,e)})),null!=n||(n=r.getSwapSpecification(e));var o=r.getTarget(e),a=r.makeSettleInfo(e);r.swap(o,t,n),a.elts.forEach((function(e){e.classList&&e.classList.add(htmx.config.settlingClass),r.triggerEvent(e,"htmx:beforeSettle")})),n.settleDelay>0?setTimeout(d(a),n.settleDelay):d(a)()}function d(e){return function(){e.tasks.forEach((function(e){e.call()})),e.elts.forEach((function(e){e.classList&&e.classList.remove(htmx.config.settlingClass),r.triggerEvent(e,"htmx:afterSettle")}))}}htmx.defineExtension("rizzy-streaming",{init:function(e){r=e,null==htmx.blazorSwapSsr&&(void 0===customElements.get("blazor-ssr-end")&&customElements.define("blazor-ssr-end",s),htmx.blazorSwapSsr=l)},onEvent:function(e,t){var n;if("htmx:afterOnLoad"===e)null===(n=htmx)||void 0===n||n.process(document.body);else if("htmx:beforeRequest"===e){var i=t.detail.elt;t.detail.requestConfig.target&&t.detail.requestConfig.target.addEventListener("htmx:beforeSwap",(function(e){}),{once:!0});var o=0,a=r.getSwapSpecification(i),s=t.detail.xhr,l="ctr"+crypto.randomUUID();s.addEventListener("readystatechange",(function(){if(4===s.readyState){var e=document.getElementById(l);null!=e&&u(e)}})),s.addEventListener("progress",(function(e){var t,r=document.getElementById(l);null==r&&((r=document.createElement("div")).id=l,c(i,r.outerHTML,a,s),a.swapStyle="innerHTML",r=null!==(t=document.getElementById(l))&&void 0!==t?t:r),c(r,e.currentTarget.response.substring(o),a,s),a.settleDelay=0,a.swapStyle="beforeend",o=e.loaded}))}return!0}})}()}},__webpack_module_cache__={};function __webpack_require__(e){var t=__webpack_module_cache__[e];if(void 0!==t)return t.exports;var r=__webpack_module_cache__[e]={exports:{}};return __webpack_modules__[e](r,r.exports,__webpack_require__),r.exports}__webpack_require__.n=e=>{var t=e&&e.__esModule?()=>e.default:()=>e;return __webpack_require__.d(t,{a:t}),t},__webpack_require__.d=(e,t)=>{for(var r in t)__webpack_require__.o(t,r)&&!__webpack_require__.o(e,r)&&Object.defineProperty(e,r,{enumerable:!0,get:t[r]})},__webpack_require__.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t),__webpack_require__.r=e=>{"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})};var __webpack_exports__={};(()=>{__webpack_require__.r(__webpack_exports__),__webpack_require__.d(__webpack_exports__,{default:()=>s}),__webpack_require__("./src/js/rizzy-nonce.js"),__webpack_require__("./src/js/rizzy-streaming.js");var e=__webpack_require__("./node_modules/aspnet-client-validation/dist/aspnet-validation.js");function t(e){return t="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e},t(e)}function r(e,t){var r=Object.keys(e);if(Object.getOwnPropertySymbols){var n=Object.getOwnPropertySymbols(e);t&&(n=n.filter((function(t){return Object.getOwnPropertyDescriptor(e,t).enumerable}))),r.push.apply(r,n)}return r}function n(e){for(var t=1;t<arguments.length;t++){var n=null!=arguments[t]?arguments[t]:{};t%2?r(Object(n),!0).forEach((function(t){i(e,t,n[t])})):Object.getOwnPropertyDescriptors?Object.defineProperties(e,Object.getOwnPropertyDescriptors(n)):r(Object(n)).forEach((function(t){Object.defineProperty(e,t,Object.getOwnPropertyDescriptor(n,t))}))}return e}function i(e,r,n){return(r=function(e){var r=function(e){if("object"!=t(e)||!e)return e;var r=e[Symbol.toPrimitive];if(void 0!==r){var n=r.call(e,"string");if("object"!=t(n))return n;throw new TypeError("@@toPrimitive must return a primitive value.")}return String(e)}(e);return"symbol"==t(r)?r:r+""}(r))in e?Object.defineProperty(e,r,{value:n,enumerable:!0,configurable:!0,writable:!0}):e[r]=n,e}__webpack_require__("./src/js/antiforgerySnippet.js");var o=new e.ValidationService;o.bootstrap({watch:!0});var a={validation:o};window.Rizzy=n(n({},window.Rizzy||{}),a);const s=a})();
+(function(global, factory) {
+  typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.Rizzy = factory());
+})(this, function() {
+  "use strict";
+  (function() {
+    htmx.defineExtension(
+      "rizzy-nonce",
+      {
+        transformResponse: function(text, xhr, elt) {
+          let documentNonce = htmx.config.documentNonce ?? htmx.config.inlineScriptNonce;
+          if (!documentNonce) {
+            console.warn("rizzy-nonce extension loaded but no no nonce found for document. Inline scripts may be blocked.");
+            documentNonce = "";
+          }
+          htmx.config.refreshOnHistoryMiss = true;
+          let nonce = xhr?.getResponseHeader("HX-Nonce");
+          if (!nonce) {
+            const csp = xhr?.getResponseHeader("content-security-policy");
+            if (csp) {
+              const cspMatch = csp.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);
+              if (cspMatch) {
+                nonce = cspMatch[2];
+              }
+            }
+          }
+          if (xhr && window.location.hostname) {
+            const responseURL = new URL(xhr.responseURL);
+            if (responseURL.hostname !== window.location.hostname) {
+              nonce = "";
+            }
+          }
+          nonce ?? (nonce = "");
+          return this.processUnsafeHtml(text, documentNonce, nonce);
+        },
+        processUnsafeHtml: function(text, documentNonce, newScriptNonce) {
+          if (documentNonce && newScriptNonce)
+            text = text.replaceAll(newScriptNonce, documentNonce);
+          const parser = new DOMParser();
+          try {
+            let doc = parser.parseFromString(text, "text/html");
+            if (doc) {
+              Array.from(doc.querySelectorAll('[hx-ext*="ignore:rizzy-nonce"], [data-hx-ext*="ignore:rizzy-nonce"]')).forEach((elt) => {
+                elt.remove();
+              });
+              const elements = doc.querySelectorAll("script, style, link");
+              elements.forEach((elt) => {
+                const nonce = elt.getAttribute("nonce");
+                if (nonce !== documentNonce) {
+                  elt.remove();
+                }
+              });
+              return doc.documentElement.outerHTML;
+            }
+          } catch (_) {
+          }
+          return "";
+        }
+      }
+    );
+  })();
+  (function() {
+    var api;
+    var enableDomPreservation = true;
+    class blazorStreamingUpdate extends HTMLElement {
+      connectedCallback() {
+        const blazorSsrElement = this.parentNode;
+        blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
+        blazorSsrElement.childNodes.forEach((node) => {
+          if (node instanceof HTMLTemplateElement) {
+            const componentId = node.getAttribute("blazor-component-id");
+            if (componentId) {
+              insertStreamingContentIntoDocument(componentId, node.content);
+            }
+          }
+        });
+        htmx?.process(document.body);
+      }
+    }
+    htmx.defineExtension(
+      "rizzy-streaming",
+      {
+        /**
+         * Init saves the provided reference to the internal HTMX API.
+         *
+         * @param {import("../htmx").HtmxInternalApi} api
+         * @returns void
+         */
+        init: function(apiRef) {
+          api = apiRef;
+          if (htmx.blazorSwapSsr == void 0) {
+            if (customElements.get("blazor-ssr-end") === void 0) {
+              customElements.define("blazor-ssr-end", blazorStreamingUpdate);
+            }
+            htmx.blazorSwapSsr = blazorSwapSsr;
+          }
+        },
+        onEvent: function(name2, evt) {
+          if (name2 === "htmx:afterOnLoad") {
+            htmx?.process(document.body);
+          } else if (name2 === "htmx:beforeRequest") {
+            var element = evt.detail.elt;
+            if (evt.detail.requestConfig.target) {
+              evt.detail.requestConfig.target.addEventListener(
+                "htmx:beforeSwap",
+                (e) => {
+                },
+                { once: true }
+              );
+            }
+            var last = 0;
+            var swapSpec = api.getSwapSpecification(element);
+            var xhr = evt.detail.xhr;
+            var cid = "ctr" + crypto.randomUUID();
+            xhr.addEventListener("readystatechange", () => {
+              if (xhr.readyState === 4) {
+                var container = document.getElementById(cid);
+                if (container != null)
+                  unwrap(container);
+              }
+            });
+            xhr.addEventListener("progress", (e) => {
+              var container = document.getElementById(cid);
+              if (container == null) {
+                container = document.createElement("div");
+                container.id = cid;
+                swap(element, container.outerHTML, swapSpec, xhr);
+                swapSpec.swapStyle = "innerHTML";
+                container = document.getElementById(cid) ?? container;
+              }
+              let diff = e.currentTarget.response.substring(last);
+              swap(container, diff, swapSpec, xhr);
+              swapSpec.settleDelay = 0;
+              swapSpec.swapStyle = "beforeend";
+              last = e.loaded;
+            });
+          }
+          return true;
+        }
+      }
+    );
+    function isCommentNodeInHead(commentNode) {
+      if (commentNode && commentNode.nodeType === Node.COMMENT_NODE) {
+        let currentNode = commentNode.parentNode;
+        while (currentNode !== null) {
+          if (currentNode === document.head) {
+            return true;
+          }
+          currentNode = currentNode.parentNode;
+        }
+      } else {
+        return false;
+      }
+      return false;
+    }
+    function blazorSwapSsr(start, end, docFrag, xhr) {
+      var newDiv = wrap(start, end, "ssr" + crypto.randomUUID());
+      var container = document.createElement("div");
+      container.appendChild(docFrag);
+      swap(newDiv, container.innerHTML, xhr);
+      unwrap(newDiv);
+    }
+    function wrap(start, end, id) {
+      var newDiv = document.createElement("div");
+      newDiv.id = id;
+      var currentNode = start.nextSibling;
+      while (currentNode && currentNode !== end) {
+        newDiv.appendChild(currentNode);
+        currentNode = start.nextSibling;
+      }
+      start.parentNode.insertBefore(newDiv, end);
+      return newDiv;
+    }
+    function unwrap(element) {
+      if (element.parentNode) {
+        while (element.firstChild) {
+          element.parentNode.insertBefore(element.firstChild, element);
+        }
+        element.parentNode.removeChild(element);
+      }
+    }
+    function swap(elt, content, swapSpec, xhr) {
+      api.withExtensions(elt, function(extension) {
+        content = extension.transformResponse(content, xhr, elt);
+      });
+      swapSpec ?? (swapSpec = api.getSwapSpecification(elt));
+      var target = api.getTarget(elt);
+      var settleInfo = api.makeSettleInfo(elt);
+      api.swap(target, content, swapSpec);
+      settleInfo.elts.forEach(function(elt2) {
+        if (elt2.classList) {
+          elt2.classList.add(htmx.config.settlingClass);
+        }
+        api.triggerEvent(elt2, "htmx:beforeSettle");
+      });
+      if (swapSpec.settleDelay > 0) {
+        setTimeout(doSettle(settleInfo), swapSpec.settleDelay);
+      } else {
+        doSettle(settleInfo)();
+      }
+    }
+    function doSettle(settleInfo) {
+      return function() {
+        settleInfo.tasks.forEach(function(task) {
+          task.call();
+        });
+        settleInfo.elts.forEach(function(elt) {
+          if (elt.classList) {
+            elt.classList.remove(htmx.config.settlingClass);
+          }
+          api.triggerEvent(elt, "htmx:afterSettle");
+        });
+      };
+    }
+    function insertStreamingContentIntoDocument(componentIdAsString, docFrag) {
+      const markers = findStreamingMarkers(componentIdAsString);
+      if (markers) {
+        const { startMarker, endMarker } = markers;
+        enableDomPreservation = !isCommentNodeInHead(startMarker);
+        if (enableDomPreservation) {
+          blazorSwapSsr(startMarker, endMarker, docFrag);
+        } else {
+          const destinationRoot = endMarker.parentNode;
+          const existingContent = new Range();
+          existingContent.setStart(startMarker, startMarker.textContent.length);
+          existingContent.setEnd(endMarker, 0);
+          existingContent.deleteContents();
+          while (docFrag.childNodes[0]) {
+            destinationRoot.insertBefore(docFrag.childNodes[0], endMarker);
+          }
+        }
+      }
+    }
+    function findStreamingMarkers(componentIdAsString) {
+      const expectedStartText = `bl:${componentIdAsString}`;
+      const iterator = document.createNodeIterator(
+        document,
+        NodeFilter.SHOW_COMMENT
+      );
+      let startMarker = null;
+      while (startMarker = iterator.nextNode()) {
+        if (startMarker.textContent === expectedStartText) {
+          break;
+        }
+      }
+      if (!startMarker) {
+        return null;
+      }
+      const expectedEndText = `/bl:${componentIdAsString}`;
+      let endMarker = null;
+      while (endMarker = iterator.nextNode()) {
+        if (endMarker.textContent === expectedEndText) {
+          break;
+        }
+      }
+      return endMarker ? { startMarker, endMarker } : null;
+    }
+  })();
+  var aspnetValidation = { exports: {} };
+  var hasRequiredAspnetValidation;
+  function requireAspnetValidation() {
+    if (hasRequiredAspnetValidation) return aspnetValidation.exports;
+    hasRequiredAspnetValidation = 1;
+    (function(module2, exports2) {
+      (function webpackUniversalModuleDefinition(root, factory) {
+        module2.exports = factory();
+      })(self, () => {
+        return (
+          /******/
+          (() => {
+            var __webpack_require__ = {};
+            (() => {
+              __webpack_require__.d = (exports3, definition) => {
+                for (var key in definition) {
+                  if (__webpack_require__.o(definition, key) && !__webpack_require__.o(exports3, key)) {
+                    Object.defineProperty(exports3, key, { enumerable: true, get: definition[key] });
+                  }
+                }
+              };
+            })();
+            (() => {
+              __webpack_require__.o = (obj, prop) => Object.prototype.hasOwnProperty.call(obj, prop);
+            })();
+            (() => {
+              __webpack_require__.r = (exports3) => {
+                if (typeof Symbol !== "undefined" && Symbol.toStringTag) {
+                  Object.defineProperty(exports3, Symbol.toStringTag, { value: "Module" });
+                }
+                Object.defineProperty(exports3, "__esModule", { value: true });
+              };
+            })();
+            var __webpack_exports__ = {};
+            /*!**********************!*\
+              !*** ./src/index.ts ***!
+              \**********************/
+            __webpack_require__.r(__webpack_exports__);
+            __webpack_require__.d(__webpack_exports__, {
+              /* harmony export */
+              MvcValidationProviders: () => (
+                /* binding */
+                MvcValidationProviders
+              ),
+              /* harmony export */
+              ValidationService: () => (
+                /* binding */
+                ValidationService
+              ),
+              /* harmony export */
+              isValidatable: () => (
+                /* binding */
+                isValidatable
+              )
+              /* harmony export */
+            });
+            var __awaiter = function(thisArg, _arguments, P, generator) {
+              function adopt(value) {
+                return value instanceof P ? value : new P(function(resolve) {
+                  resolve(value);
+                });
+              }
+              return new (P || (P = Promise))(function(resolve, reject) {
+                function fulfilled(value) {
+                  try {
+                    step(generator.next(value));
+                  } catch (e) {
+                    reject(e);
+                  }
+                }
+                function rejected(value) {
+                  try {
+                    step(generator["throw"](value));
+                  } catch (e) {
+                    reject(e);
+                  }
+                }
+                function step(result) {
+                  result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+                }
+                step((generator = generator.apply(thisArg, _arguments || [])).next());
+              });
+            };
+            var __generator = function(thisArg, body) {
+              var _ = { label: 0, sent: function() {
+                if (t[0] & 1) throw t[1];
+                return t[1];
+              }, trys: [], ops: [] }, f, y, t, g;
+              return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() {
+                return this;
+              }), g;
+              function verb(n) {
+                return function(v) {
+                  return step([n, v]);
+                };
+              }
+              function step(op) {
+                if (f) throw new TypeError("Generator is already executing.");
+                while (g && (g = 0, op[0] && (_ = 0)), _) try {
+                  if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                  if (y = 0, t) op = [op[0] & 2, t.value];
+                  switch (op[0]) {
+                    case 0:
+                    case 1:
+                      t = op;
+                      break;
+                    case 4:
+                      _.label++;
+                      return { value: op[1], done: false };
+                    case 5:
+                      _.label++;
+                      y = op[1];
+                      op = [0];
+                      continue;
+                    case 7:
+                      op = _.ops.pop();
+                      _.trys.pop();
+                      continue;
+                    default:
+                      if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+                        _ = 0;
+                        continue;
+                      }
+                      if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+                        _.label = op[1];
+                        break;
+                      }
+                      if (op[0] === 6 && _.label < t[1]) {
+                        _.label = t[1];
+                        t = op;
+                        break;
+                      }
+                      if (t && _.label < t[2]) {
+                        _.label = t[2];
+                        _.ops.push(op);
+                        break;
+                      }
+                      if (t[2]) _.ops.pop();
+                      _.trys.pop();
+                      continue;
+                  }
+                  op = body.call(thisArg, _);
+                } catch (e) {
+                  op = [6, e];
+                  y = 0;
+                } finally {
+                  f = t = 0;
+                }
+                if (op[0] & 5) throw op[1];
+                return { value: op[0] ? op[1] : void 0, done: true };
+              }
+            };
+            var nullLogger = new /** @class */
+            (function() {
+              function class_1() {
+                this.warn = globalThis.console.warn;
+              }
+              class_1.prototype.log = function(_) {
+              };
+              return class_1;
+            }())();
+            var isValidatable = function(element) {
+              return element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement;
+            };
+            var validatableElementTypes = ["input", "select", "textarea"];
+            var validatableSelector = function(selector) {
+              return validatableElementTypes.map(function(t) {
+                return "".concat(t).concat(selector || "");
+              }).join(",");
+            };
+            function getRelativeFormElement(element, selector) {
+              var elementName = element.name;
+              var selectedName = selector.substring(2);
+              var objectName = "";
+              var dotLocation = elementName.lastIndexOf(".");
+              if (dotLocation > -1) {
+                objectName = elementName.substring(0, dotLocation);
+                var relativeElementName = objectName + "." + selectedName;
+                var relativeElement = document.getElementsByName(relativeElementName)[0];
+                if (isValidatable(relativeElement)) {
+                  return relativeElement;
+                }
+              }
+              return element.form.querySelector(validatableSelector("[name=".concat(selectedName, "]")));
+            }
+            var MvcValidationProviders = (
+              /** @class */
+              /* @__PURE__ */ function() {
+                function MvcValidationProviders2() {
+                  this.required = function(value, element, params) {
+                    var elementType = element.type.toLowerCase();
+                    if (elementType === "checkbox" || elementType === "radio") {
+                      var allElementsOfThisName = Array.from(element.form.querySelectorAll(validatableSelector("[name='".concat(element.name, "'][type='").concat(elementType, "']"))));
+                      for (var _i = 0, allElementsOfThisName_1 = allElementsOfThisName; _i < allElementsOfThisName_1.length; _i++) {
+                        var element_1 = allElementsOfThisName_1[_i];
+                        if (element_1 instanceof HTMLInputElement && element_1.checked === true) {
+                          return true;
+                        }
+                      }
+                      if (elementType === "checkbox") {
+                        var checkboxHiddenInput = element.form.querySelector("input[name='".concat(element.name, "'][type='hidden']"));
+                        if (checkboxHiddenInput instanceof HTMLInputElement && checkboxHiddenInput.value === "false") {
+                          return true;
+                        }
+                      }
+                      return false;
+                    }
+                    return Boolean(value === null || value === void 0 ? void 0 : value.trim());
+                  };
+                  this.stringLength = function(value, element, params) {
+                    if (!value) {
+                      return true;
+                    }
+                    if (params.min) {
+                      var min = parseInt(params.min);
+                      if (value.length < min) {
+                        return false;
+                      }
+                    }
+                    if (params.max) {
+                      var max = parseInt(params.max);
+                      if (value.length > max) {
+                        return false;
+                      }
+                    }
+                    return true;
+                  };
+                  this.compare = function(value, element, params) {
+                    if (!params.other) {
+                      return true;
+                    }
+                    var otherElement = getRelativeFormElement(element, params.other);
+                    if (!otherElement) {
+                      return true;
+                    }
+                    return otherElement.value === value;
+                  };
+                  this.range = function(value, element, params) {
+                    if (!value) {
+                      return true;
+                    }
+                    var val = parseFloat(value);
+                    if (isNaN(val)) {
+                      return false;
+                    }
+                    if (params.min) {
+                      var min = parseFloat(params.min);
+                      if (val < min) {
+                        return false;
+                      }
+                    }
+                    if (params.max) {
+                      var max = parseFloat(params.max);
+                      if (val > max) {
+                        return false;
+                      }
+                    }
+                    return true;
+                  };
+                  this.regex = function(value, element, params) {
+                    if (!value || !params.pattern) {
+                      return true;
+                    }
+                    var r = new RegExp(params.pattern);
+                    return r.test(value);
+                  };
+                  this.email = function(value, element, params) {
+                    if (!value) {
+                      return true;
+                    }
+                    var r = /^([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x22([^\x0d\x22\x5c\x80-\xff]|\x5c[\x00-\x7f])*\x22))*\x40([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d)(\x2e([^\x00-\x20\x22\x28\x29\x2c\x2e\x3a-\x3c\x3e\x40\x5b-\x5d\x7f-\xff]+|\x5b([^\x0d\x5b-\x5d\x80-\xff]|\x5c[\x00-\x7f])*\x5d))*(\.\w{2,})+$/;
+                    return r.test(value);
+                  };
+                  this.creditcard = function(value, element, params) {
+                    if (!value) {
+                      return true;
+                    }
+                    if (/[^0-9 \-]+/.test(value)) {
+                      return false;
+                    }
+                    var nCheck = 0, nDigit = 0, bEven = false, n, cDigit;
+                    value = value.replace(/\D/g, "");
+                    if (value.length < 13 || value.length > 19) {
+                      return false;
+                    }
+                    for (n = value.length - 1; n >= 0; n--) {
+                      cDigit = value.charAt(n);
+                      nDigit = parseInt(cDigit, 10);
+                      if (bEven) {
+                        if ((nDigit *= 2) > 9) {
+                          nDigit -= 9;
+                        }
+                      }
+                      nCheck += nDigit;
+                      bEven = !bEven;
+                    }
+                    return nCheck % 10 === 0;
+                  };
+                  this.url = function(value, element, params) {
+                    if (!value) {
+                      return true;
+                    }
+                    var lowerCaseValue = value.toLowerCase();
+                    return lowerCaseValue.indexOf("http://") > -1 || lowerCaseValue.indexOf("https://") > -1 || lowerCaseValue.indexOf("ftp://") > -1;
+                  };
+                  this.phone = function(value, element, params) {
+                    if (!value) {
+                      return true;
+                    }
+                    var consecutiveSeparator = /[\+\-\s][\-\s]/g;
+                    if (consecutiveSeparator.test(value)) {
+                      return false;
+                    }
+                    var r = /^\+?[0-9\-\s]+$/;
+                    return r.test(value);
+                  };
+                  this.remote = function(value, element, params) {
+                    if (!value) {
+                      return true;
+                    }
+                    var fieldSelectors = params.additionalfields.split(",");
+                    var fields = {};
+                    for (var _i = 0, fieldSelectors_1 = fieldSelectors; _i < fieldSelectors_1.length; _i++) {
+                      var fieldSelector = fieldSelectors_1[_i];
+                      var fieldName = fieldSelector.substr(2);
+                      var fieldElement = getRelativeFormElement(element, fieldSelector);
+                      var hasValue = Boolean(fieldElement && fieldElement.value);
+                      if (!hasValue) {
+                        continue;
+                      }
+                      if (fieldElement instanceof HTMLInputElement && (fieldElement.type === "checkbox" || fieldElement.type === "radio")) {
+                        fields[fieldName] = fieldElement.checked ? fieldElement.value : "";
+                      } else {
+                        fields[fieldName] = fieldElement.value;
+                      }
+                    }
+                    var url = params["url"];
+                    var encodedParams = [];
+                    for (var fieldName in fields) {
+                      var encodedParam = encodeURIComponent(fieldName) + "=" + encodeURIComponent(fields[fieldName]);
+                      encodedParams.push(encodedParam);
+                    }
+                    var payload = encodedParams.join("&");
+                    return new Promise(function(ok, reject) {
+                      var request = new XMLHttpRequest();
+                      if (params.type && params.type.toLowerCase() === "post") {
+                        var postData = new FormData();
+                        for (var fieldName2 in fields) {
+                          postData.append(fieldName2, fields[fieldName2]);
+                        }
+                        request.open("post", url);
+                        request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                        request.send(payload);
+                      } else {
+                        request.open("get", url + "?" + payload);
+                        request.send();
+                      }
+                      request.onload = function(e) {
+                        if (request.status >= 200 && request.status < 300) {
+                          var data = JSON.parse(request.responseText);
+                          ok(data);
+                        } else {
+                          reject({
+                            status: request.status,
+                            statusText: request.statusText,
+                            data: request.responseText
+                          });
+                        }
+                      };
+                      request.onerror = function(e) {
+                        reject({
+                          status: request.status,
+                          statusText: request.statusText,
+                          data: request.responseText
+                        });
+                      };
+                    });
+                  };
+                }
+                return MvcValidationProviders2;
+              }()
+            );
+            var ValidationService = (
+              /** @class */
+              function() {
+                function ValidationService2(logger) {
+                  var _this = this;
+                  this.providers = {};
+                  this.messageFor = {};
+                  this.elementUIDs = [];
+                  this.elementByUID = {};
+                  this.formInputs = {};
+                  this.validators = {};
+                  this.formEvents = {};
+                  this.inputEvents = {};
+                  this.summary = {};
+                  this.debounce = 300;
+                  this.allowHiddenFields = false;
+                  this.validateForm = function(form, callback) {
+                    return __awaiter(_this, void 0, void 0, function() {
+                      var formUID, formValidationEvent, _a;
+                      return __generator(this, function(_b) {
+                        switch (_b.label) {
+                          case 0:
+                            if (!(form instanceof HTMLFormElement)) {
+                              throw new Error("validateForm() can only be called on <form> elements");
+                            }
+                            formUID = this.getElementUID(form);
+                            formValidationEvent = this.formEvents[formUID];
+                            _a = !formValidationEvent;
+                            if (_a) return [3, 2];
+                            return [4, formValidationEvent(void 0, callback)];
+                          case 1:
+                            _a = _b.sent();
+                            _b.label = 2;
+                          case 2:
+                            return [2, _a];
+                        }
+                      });
+                    });
+                  };
+                  this.validateField = function(field, callback) {
+                    return __awaiter(_this, void 0, void 0, function() {
+                      var fieldUID, fieldValidationEvent, _a;
+                      return __generator(this, function(_b) {
+                        switch (_b.label) {
+                          case 0:
+                            fieldUID = this.getElementUID(field);
+                            fieldValidationEvent = this.inputEvents[fieldUID];
+                            _a = !fieldValidationEvent;
+                            if (_a) return [3, 2];
+                            return [4, fieldValidationEvent(void 0, callback)];
+                          case 1:
+                            _a = _b.sent();
+                            _b.label = 2;
+                          case 2:
+                            return [2, _a];
+                        }
+                      });
+                    });
+                  };
+                  this.preValidate = function(submitEvent) {
+                    submitEvent.preventDefault();
+                    submitEvent.stopImmediatePropagation();
+                  };
+                  this.handleValidated = function(form, success, submitEvent) {
+                    if (!(form instanceof HTMLFormElement)) {
+                      throw new Error("handleValidated() can only be called on <form> elements");
+                    }
+                    if (success) {
+                      if (submitEvent) {
+                        _this.submitValidForm(form, submitEvent);
+                      }
+                    } else {
+                      _this.focusFirstInvalid(form);
+                    }
+                  };
+                  this.submitValidForm = function(form, submitEvent) {
+                    if (!(form instanceof HTMLFormElement)) {
+                      throw new Error("submitValidForm() can only be called on <form> elements");
+                    }
+                    var newEvent = new SubmitEvent("submit", submitEvent);
+                    if (form.dispatchEvent(newEvent)) {
+                      var submitter = submitEvent.submitter;
+                      var submitterInput = null;
+                      var initialFormAction = form.action;
+                      if (submitter) {
+                        var name_1 = submitter.getAttribute("name");
+                        if (name_1) {
+                          submitterInput = document.createElement("input");
+                          submitterInput.type = "hidden";
+                          submitterInput.name = name_1;
+                          submitterInput.value = submitter.getAttribute("value");
+                          form.appendChild(submitterInput);
+                        }
+                        var formAction = submitter.getAttribute("formaction");
+                        if (formAction) {
+                          form.action = formAction;
+                        }
+                      }
+                      try {
+                        form.submit();
+                      } finally {
+                        if (submitterInput) {
+                          form.removeChild(submitterInput);
+                        }
+                        form.action = initialFormAction;
+                      }
+                    }
+                  };
+                  this.focusFirstInvalid = function(form) {
+                    if (!(form instanceof HTMLFormElement)) {
+                      throw new Error("focusFirstInvalid() can only be called on <form> elements");
+                    }
+                    var formUID = _this.getElementUID(form);
+                    var formInputUIDs = _this.formInputs[formUID];
+                    var invalidFormInputUID = formInputUIDs === null || formInputUIDs === void 0 ? void 0 : formInputUIDs.find(function(uid) {
+                      return _this.summary[uid];
+                    });
+                    if (invalidFormInputUID) {
+                      var firstInvalid = _this.elementByUID[invalidFormInputUID];
+                      if (firstInvalid instanceof HTMLElement) {
+                        firstInvalid.focus();
+                      }
+                    }
+                  };
+                  this.isValid = function(form, prevalidate, callback) {
+                    if (prevalidate === void 0) {
+                      prevalidate = true;
+                    }
+                    if (!(form instanceof HTMLFormElement)) {
+                      throw new Error("isValid() can only be called on <form> elements");
+                    }
+                    if (prevalidate) {
+                      _this.validateForm(form, callback);
+                    }
+                    var formUID = _this.getElementUID(form);
+                    var formInputUIDs = _this.formInputs[formUID];
+                    var formIsInvalid = (formInputUIDs === null || formInputUIDs === void 0 ? void 0 : formInputUIDs.some(function(uid) {
+                      return _this.summary[uid];
+                    })) === true;
+                    return !formIsInvalid;
+                  };
+                  this.isFieldValid = function(field, prevalidate, callback) {
+                    if (prevalidate === void 0) {
+                      prevalidate = true;
+                    }
+                    if (prevalidate) {
+                      _this.validateField(field, callback);
+                    }
+                    var fieldUID = _this.getElementUID(field);
+                    return _this.summary[fieldUID] === void 0;
+                  };
+                  this.options = {
+                    root: document.body,
+                    watch: false,
+                    addNoValidate: true
+                  };
+                  this.ValidationInputCssClassName = "input-validation-error";
+                  this.ValidationInputValidCssClassName = "input-validation-valid";
+                  this.ValidationMessageCssClassName = "field-validation-error";
+                  this.ValidationMessageValidCssClassName = "field-validation-valid";
+                  this.ValidationSummaryCssClassName = "validation-summary-errors";
+                  this.ValidationSummaryValidCssClassName = "validation-summary-valid";
+                  this.logger = logger || nullLogger;
+                }
+                ValidationService2.prototype.addProvider = function(name2, callback) {
+                  if (this.providers[name2]) {
+                    return;
+                  }
+                  this.logger.log("Registered provider: %s", name2);
+                  this.providers[name2] = callback;
+                };
+                ValidationService2.prototype.addMvcProviders = function() {
+                  var mvc = new MvcValidationProviders();
+                  this.addProvider("required", mvc.required);
+                  this.addProvider("length", mvc.stringLength);
+                  this.addProvider("maxlength", mvc.stringLength);
+                  this.addProvider("minlength", mvc.stringLength);
+                  this.addProvider("equalto", mvc.compare);
+                  this.addProvider("range", mvc.range);
+                  this.addProvider("regex", mvc.regex);
+                  this.addProvider("creditcard", mvc.creditcard);
+                  this.addProvider("email", mvc.email);
+                  this.addProvider("url", mvc.url);
+                  this.addProvider("phone", mvc.phone);
+                  this.addProvider("remote", mvc.remote);
+                };
+                ValidationService2.prototype.scanMessages = function(root, cb) {
+                  var validationMessageElements = Array.from(root.querySelectorAll("span[form]"));
+                  for (var _i = 0, validationMessageElements_1 = validationMessageElements; _i < validationMessageElements_1.length; _i++) {
+                    var span = validationMessageElements_1[_i];
+                    var form = document.getElementById(span.getAttribute("form"));
+                    if (form instanceof HTMLFormElement) {
+                      cb.call(this, form, span);
+                    }
+                  }
+                  var forms = Array.from(root.querySelectorAll("form"));
+                  if (root instanceof HTMLFormElement) {
+                    forms.push(root);
+                  }
+                  var containingForm = root instanceof Element ? root.closest("form") : null;
+                  if (containingForm) {
+                    forms.push(containingForm);
+                  }
+                  for (var _a = 0, forms_1 = forms; _a < forms_1.length; _a++) {
+                    var form = forms_1[_a];
+                    var validationMessageElements_3 = Array.from(form.querySelectorAll("[data-valmsg-for]"));
+                    for (var _b = 0, validationMessageElements_2 = validationMessageElements_3; _b < validationMessageElements_2.length; _b++) {
+                      var span = validationMessageElements_2[_b];
+                      cb.call(this, form, span);
+                    }
+                  }
+                };
+                ValidationService2.prototype.pushValidationMessageSpan = function(form, span) {
+                  var _a, _b;
+                  var _c;
+                  var formId = this.getElementUID(form);
+                  var formSpans = (_a = (_c = this.messageFor)[formId]) !== null && _a !== void 0 ? _a : _c[formId] = {};
+                  var messageForId = span.getAttribute("data-valmsg-for");
+                  if (!messageForId)
+                    return;
+                  var spans = (_b = formSpans[messageForId]) !== null && _b !== void 0 ? _b : formSpans[messageForId] = [];
+                  if (spans.indexOf(span) < 0) {
+                    spans.push(span);
+                  } else {
+                    this.logger.log("Validation element for '%s' is already tracked", name, span);
+                  }
+                };
+                ValidationService2.prototype.removeValidationMessageSpan = function(form, span) {
+                  var formId = this.getElementUID(form);
+                  var formSpans = this.messageFor[formId];
+                  if (!formSpans)
+                    return;
+                  var messageForId = span.getAttribute("data-valmsg-for");
+                  if (!messageForId)
+                    return;
+                  var spans = formSpans[messageForId];
+                  if (!spans) {
+                    return;
+                  }
+                  var index = spans.indexOf(span);
+                  if (index >= 0) {
+                    spans.splice(index, 1);
+                  } else {
+                    this.logger.log("Validation element for '%s' was already removed", name, span);
+                  }
+                };
+                ValidationService2.prototype.parseDirectives = function(attributes) {
+                  var directives = {};
+                  var validationAtributes = {};
+                  var cut = "data-val-".length;
+                  for (var i = 0; i < attributes.length; i++) {
+                    var a = attributes[i];
+                    if (a.name.indexOf("data-val-") === 0) {
+                      var key = a.name.substr(cut);
+                      validationAtributes[key] = a.value;
+                    }
+                  }
+                  var _loop_1 = function(key2) {
+                    if (key2.indexOf("-") === -1) {
+                      var parameters = Object.keys(validationAtributes).filter(function(Q) {
+                        return Q !== key2 && Q.indexOf(key2) === 0;
+                      });
+                      var directive = {
+                        error: validationAtributes[key2],
+                        params: {}
+                      };
+                      var pcut = (key2 + "-").length;
+                      for (var i2 = 0; i2 < parameters.length; i2++) {
+                        var pvalue = validationAtributes[parameters[i2]];
+                        var pkey = parameters[i2].substr(pcut);
+                        directive.params[pkey] = pvalue;
+                      }
+                      directives[key2] = directive;
+                    }
+                  };
+                  for (var key in validationAtributes) {
+                    _loop_1(key);
+                  }
+                  return directives;
+                };
+                ValidationService2.prototype.guid4 = function() {
+                  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0, v = c == "x" ? r : r & 3 | 8;
+                    return v.toString(16);
+                  });
+                };
+                ValidationService2.prototype.getElementUID = function(node) {
+                  var x = this.elementUIDs.filter(function(e) {
+                    return e.node === node;
+                  })[0];
+                  if (x) {
+                    return x.uid;
+                  }
+                  var uid = this.guid4();
+                  this.elementUIDs.push({
+                    node,
+                    uid
+                  });
+                  this.elementByUID[uid] = node;
+                  return uid;
+                };
+                ValidationService2.prototype.getFormValidationTask = function(formUID) {
+                  var formInputUIDs = this.formInputs[formUID];
+                  if (!formInputUIDs || formInputUIDs.length === 0) {
+                    return Promise.resolve(true);
+                  }
+                  var formValidators = [];
+                  for (var _i = 0, formInputUIDs_1 = formInputUIDs; _i < formInputUIDs_1.length; _i++) {
+                    var inputUID = formInputUIDs_1[_i];
+                    var validator = this.validators[inputUID];
+                    if (validator) {
+                      formValidators.push(validator);
+                    }
+                  }
+                  var tasks = formValidators.map(function(factory) {
+                    return factory();
+                  });
+                  return Promise.all(tasks).then(function(result) {
+                    return result.every(function(e) {
+                      return e;
+                    });
+                  });
+                };
+                ValidationService2.prototype.getMessageFor = function(input) {
+                  var _a;
+                  if (!input.form) {
+                    return void 0;
+                  }
+                  var formId = this.getElementUID(input.form);
+                  return (_a = this.messageFor[formId]) === null || _a === void 0 ? void 0 : _a[input.name];
+                };
+                ValidationService2.prototype.shouldValidate = function(e) {
+                  return !(e && e["submitter"] && e["submitter"]["formNoValidate"]);
+                };
+                ValidationService2.prototype.trackFormInput = function(form, inputUID) {
+                  var _this = this;
+                  var _a;
+                  var _b;
+                  var formUID = this.getElementUID(form);
+                  var formInputUIDs = (_a = (_b = this.formInputs)[formUID]) !== null && _a !== void 0 ? _a : _b[formUID] = [];
+                  var add = formInputUIDs.indexOf(inputUID) === -1;
+                  if (add) {
+                    formInputUIDs.push(inputUID);
+                    if (this.options.addNoValidate) {
+                      this.logger.log("Setting novalidate on form", form);
+                      form.setAttribute("novalidate", "novalidate");
+                    } else {
+                      this.logger.log("Not setting novalidate on form", form);
+                    }
+                  } else {
+                    this.logger.log("Form input for UID '%s' is already tracked", inputUID);
+                  }
+                  if (this.formEvents[formUID]) {
+                    return;
+                  }
+                  var validationTask = null;
+                  var cb = function(e, callback) {
+                    if (validationTask) {
+                      return validationTask;
+                    }
+                    if (!_this.shouldValidate(e)) {
+                      return Promise.resolve(true);
+                    }
+                    validationTask = _this.getFormValidationTask(formUID);
+                    if (e) {
+                      _this.preValidate(e);
+                    }
+                    _this.logger.log("Validating", form);
+                    return validationTask.then(function(success) {
+                      return __awaiter(_this, void 0, void 0, function() {
+                        var validationEvent;
+                        return __generator(this, function(_a2) {
+                          switch (_a2.label) {
+                            case 0:
+                              this.logger.log("Validated (success = %s)", success, form);
+                              if (callback) {
+                                callback(success);
+                                return [2, success];
+                              }
+                              validationEvent = new CustomEvent("validation", {
+                                detail: { valid: success }
+                              });
+                              form.dispatchEvent(validationEvent);
+                              return [4, new Promise(function(resolve) {
+                                return setTimeout(resolve, 0);
+                              })];
+                            case 1:
+                              _a2.sent();
+                              this.handleValidated(form, success, e);
+                              return [2, success];
+                          }
+                        });
+                      });
+                    }).catch(function(error) {
+                      _this.logger.log("Validation error", error);
+                      return false;
+                    }).finally(function() {
+                      validationTask = null;
+                    });
+                  };
+                  form.addEventListener("submit", cb);
+                  var cbReset = function(e) {
+                    var formInputUIDs2 = _this.formInputs[formUID];
+                    for (var _i = 0, formInputUIDs_2 = formInputUIDs2; _i < formInputUIDs_2.length; _i++) {
+                      var inputUID_1 = formInputUIDs_2[_i];
+                      _this.resetField(inputUID_1);
+                    }
+                    _this.renderSummary();
+                  };
+                  form.addEventListener("reset", cbReset);
+                  cb.remove = function() {
+                    form.removeEventListener("submit", cb);
+                    form.removeEventListener("reset", cbReset);
+                  };
+                  this.formEvents[formUID] = cb;
+                };
+                ValidationService2.prototype.reset = function(input) {
+                  if (this.isDisabled(input)) {
+                    this.resetField(this.getElementUID(input));
+                  } else {
+                    this.scan(input);
+                  }
+                };
+                ValidationService2.prototype.resetField = function(inputUID) {
+                  var input = this.elementByUID[inputUID];
+                  this.swapClasses(input, "", this.ValidationInputCssClassName);
+                  this.swapClasses(input, "", this.ValidationInputValidCssClassName);
+                  var spans = isValidatable(input) && this.getMessageFor(input);
+                  if (spans) {
+                    for (var i = 0; i < spans.length; i++) {
+                      spans[i].innerHTML = "";
+                      this.swapClasses(spans[i], "", this.ValidationMessageCssClassName);
+                      this.swapClasses(spans[i], "", this.ValidationMessageValidCssClassName);
+                    }
+                  }
+                  delete this.summary[inputUID];
+                };
+                ValidationService2.prototype.untrackFormInput = function(form, inputUID) {
+                  var _a;
+                  var formUID = this.getElementUID(form);
+                  var formInputUIDs = this.formInputs[formUID];
+                  if (!formInputUIDs) {
+                    return;
+                  }
+                  var indexToRemove = formInputUIDs.indexOf(inputUID);
+                  if (indexToRemove >= 0) {
+                    formInputUIDs.splice(indexToRemove, 1);
+                    if (!formInputUIDs.length) {
+                      (_a = this.formEvents[formUID]) === null || _a === void 0 ? void 0 : _a.remove();
+                      delete this.formEvents[formUID];
+                      delete this.formInputs[formUID];
+                      delete this.messageFor[formUID];
+                    }
+                  } else {
+                    this.logger.log("Form input for UID '%s' was already removed", inputUID);
+                  }
+                };
+                ValidationService2.prototype.addInput = function(input) {
+                  var _this = this;
+                  var _a;
+                  var uid = this.getElementUID(input);
+                  var directives = this.parseDirectives(input.attributes);
+                  this.validators[uid] = this.createValidator(input, directives);
+                  if (input.form) {
+                    this.trackFormInput(input.form, uid);
+                  }
+                  if (this.inputEvents[uid]) {
+                    return;
+                  }
+                  var cb = function(event, callback) {
+                    return __awaiter(_this, void 0, void 0, function() {
+                      var validate, success, error_1;
+                      return __generator(this, function(_a2) {
+                        switch (_a2.label) {
+                          case 0:
+                            validate = this.validators[uid];
+                            if (!validate)
+                              return [2, true];
+                            if (!input.dataset.valEvent && event && event.type === "input" && !input.classList.contains(this.ValidationInputCssClassName)) {
+                              return [2, true];
+                            }
+                            this.logger.log("Validating", { event });
+                            _a2.label = 1;
+                          case 1:
+                            _a2.trys.push([1, 3, , 4]);
+                            return [4, validate()];
+                          case 2:
+                            success = _a2.sent();
+                            callback(success);
+                            return [2, success];
+                          case 3:
+                            error_1 = _a2.sent();
+                            this.logger.log("Validation error", error_1);
+                            return [2, false];
+                          case 4:
+                            return [
+                              2
+                              /*return*/
+                            ];
+                        }
+                      });
+                    });
+                  };
+                  var debounceTimeoutID = null;
+                  cb.debounced = function(event, callback) {
+                    if (debounceTimeoutID !== null) {
+                      clearTimeout(debounceTimeoutID);
+                    }
+                    debounceTimeoutID = setTimeout(function() {
+                      cb(event, callback);
+                    }, _this.debounce);
+                  };
+                  var defaultEvent = input instanceof HTMLSelectElement ? "change" : "input change";
+                  var validateEvent = (_a = input.dataset.valEvent) !== null && _a !== void 0 ? _a : defaultEvent;
+                  var events = validateEvent.split(" ");
+                  events.forEach(function(eventName) {
+                    input.addEventListener(eventName, cb.debounced);
+                  });
+                  cb.remove = function() {
+                    events.forEach(function(eventName) {
+                      input.removeEventListener(eventName, cb.debounced);
+                    });
+                  };
+                  this.inputEvents[uid] = cb;
+                };
+                ValidationService2.prototype.removeInput = function(input) {
+                  var uid = this.getElementUID(input);
+                  var cb = this.inputEvents[uid];
+                  if (cb === null || cb === void 0 ? void 0 : cb.remove) {
+                    cb.remove();
+                    delete cb.remove;
+                  }
+                  delete this.summary[uid];
+                  delete this.inputEvents[uid];
+                  delete this.validators[uid];
+                  if (input.form) {
+                    this.untrackFormInput(input.form, uid);
+                  }
+                };
+                ValidationService2.prototype.scanInputs = function(root, cb) {
+                  var inputs = Array.from(root.querySelectorAll(validatableSelector('[data-val="true"]')));
+                  if (isValidatable(root) && root.getAttribute("data-val") === "true") {
+                    inputs.push(root);
+                  }
+                  for (var i = 0; i < inputs.length; i++) {
+                    var input = inputs[i];
+                    cb.call(this, input);
+                  }
+                };
+                ValidationService2.prototype.createSummaryDOM = function() {
+                  if (!Object.keys(this.summary).length) {
+                    return null;
+                  }
+                  var renderedMessages = [];
+                  var ul = document.createElement("ul");
+                  for (var key in this.summary) {
+                    var matchingElement = this.elementByUID[key];
+                    if (matchingElement instanceof HTMLInputElement) {
+                      if (matchingElement.type === "checkbox" || matchingElement.type === "radio") {
+                        if (matchingElement.className === this.ValidationInputValidCssClassName) {
+                          continue;
+                        }
+                      }
+                    }
+                    if (renderedMessages.indexOf(this.summary[key]) > -1) {
+                      continue;
+                    }
+                    var li = document.createElement("li");
+                    li.innerHTML = this.summary[key];
+                    ul.appendChild(li);
+                    renderedMessages.push(this.summary[key]);
+                  }
+                  return ul;
+                };
+                ValidationService2.prototype.renderSummary = function() {
+                  var summaryElements = document.querySelectorAll('[data-valmsg-summary="true"]');
+                  if (!summaryElements.length) {
+                    return;
+                  }
+                  var shadow = JSON.stringify(this.summary, Object.keys(this.summary).sort());
+                  if (shadow === this.renderedSummaryJSON) {
+                    return;
+                  }
+                  this.renderedSummaryJSON = shadow;
+                  var ul = this.createSummaryDOM();
+                  for (var i = 0; i < summaryElements.length; i++) {
+                    var e = summaryElements[i];
+                    var listElements = e.querySelectorAll("ul");
+                    for (var j = 0; j < listElements.length; j++) {
+                      listElements[j].remove();
+                    }
+                    if (ul && ul.hasChildNodes()) {
+                      this.swapClasses(e, this.ValidationSummaryCssClassName, this.ValidationSummaryValidCssClassName);
+                      e.appendChild(ul.cloneNode(true));
+                    } else {
+                      this.swapClasses(e, this.ValidationSummaryValidCssClassName, this.ValidationSummaryCssClassName);
+                    }
+                  }
+                };
+                ValidationService2.prototype.addError = function(input, message) {
+                  var spans = this.getMessageFor(input);
+                  if (spans) {
+                    for (var i = 0; i < spans.length; i++) {
+                      spans[i];
+                      spans[i].innerHTML = message;
+                      this.swapClasses(spans[i], this.ValidationMessageCssClassName, this.ValidationMessageValidCssClassName);
+                    }
+                  }
+                  this.highlight(input, this.ValidationInputCssClassName, this.ValidationInputValidCssClassName);
+                  if (input.form) {
+                    var inputs = input.form.querySelectorAll(validatableSelector('[name="'.concat(input.name, '"]')));
+                    for (var i = 0; i < inputs.length; i++) {
+                      this.swapClasses(inputs[i], this.ValidationInputCssClassName, this.ValidationInputValidCssClassName);
+                      var uid = this.getElementUID(inputs[i]);
+                      this.summary[uid] = message;
+                    }
+                  }
+                  this.renderSummary();
+                };
+                ValidationService2.prototype.removeError = function(input) {
+                  var spans = this.getMessageFor(input);
+                  if (spans) {
+                    for (var i = 0; i < spans.length; i++) {
+                      spans[i].innerHTML = "";
+                      this.swapClasses(spans[i], this.ValidationMessageValidCssClassName, this.ValidationMessageCssClassName);
+                    }
+                  }
+                  this.unhighlight(input, this.ValidationInputCssClassName, this.ValidationInputValidCssClassName);
+                  if (input.form) {
+                    var inputs = input.form.querySelectorAll(validatableSelector('[name="'.concat(input.name, '"]')));
+                    for (var i = 0; i < inputs.length; i++) {
+                      this.swapClasses(inputs[i], this.ValidationInputValidCssClassName, this.ValidationInputCssClassName);
+                      var uid = this.getElementUID(inputs[i]);
+                      delete this.summary[uid];
+                    }
+                  }
+                  this.renderSummary();
+                };
+                ValidationService2.prototype.createValidator = function(input, directives) {
+                  var _this = this;
+                  return function() {
+                    return __awaiter(_this, void 0, void 0, function() {
+                      var _a, _b, _c, _i, key, directive, provider, result, valid, error, resolution;
+                      return __generator(this, function(_d) {
+                        switch (_d.label) {
+                          case 0:
+                            if (!(!this.isHidden(input) && !this.isDisabled(input))) return [3, 7];
+                            _a = directives;
+                            _b = [];
+                            for (_c in _a)
+                              _b.push(_c);
+                            _i = 0;
+                            _d.label = 1;
+                          case 1:
+                            if (!(_i < _b.length)) return [3, 7];
+                            _c = _b[_i];
+                            if (!(_c in _a)) return [3, 6];
+                            key = _c;
+                            directive = directives[key];
+                            provider = this.providers[key];
+                            if (!provider) {
+                              this.logger.log("aspnet-validation provider not implemented: %s", key);
+                              return [3, 6];
+                            }
+                            this.logger.log("Running %s validator on element", key, input);
+                            result = provider(input.value, input, directive.params);
+                            valid = false;
+                            error = directive.error;
+                            if (!(typeof result === "boolean")) return [3, 2];
+                            valid = result;
+                            return [3, 5];
+                          case 2:
+                            if (!(typeof result === "string")) return [3, 3];
+                            valid = false;
+                            error = result;
+                            return [3, 5];
+                          case 3:
+                            return [4, result];
+                          case 4:
+                            resolution = _d.sent();
+                            if (typeof resolution === "boolean") {
+                              valid = resolution;
+                            } else {
+                              valid = false;
+                              error = resolution;
+                            }
+                            _d.label = 5;
+                          case 5:
+                            if (!valid) {
+                              this.addError(input, error);
+                              return [2, false];
+                            }
+                            _d.label = 6;
+                          case 6:
+                            _i++;
+                            return [3, 1];
+                          case 7:
+                            this.removeError(input);
+                            return [2, true];
+                        }
+                      });
+                    });
+                  };
+                };
+                ValidationService2.prototype.isHidden = function(input) {
+                  return !(this.allowHiddenFields || input.offsetWidth || input.offsetHeight || input.getClientRects().length);
+                };
+                ValidationService2.prototype.isDisabled = function(input) {
+                  return input.disabled;
+                };
+                ValidationService2.prototype.swapClasses = function(element, addClass, removeClass) {
+                  if (addClass && !this.isDisabled(element) && !element.classList.contains(addClass)) {
+                    element.classList.add(addClass);
+                  }
+                  if (element.classList.contains(removeClass)) {
+                    element.classList.remove(removeClass);
+                  }
+                };
+                ValidationService2.prototype.bootstrap = function(options) {
+                  var _this = this;
+                  Object.assign(this.options, options);
+                  this.addMvcProviders();
+                  var document2 = window.document;
+                  var root = this.options.root;
+                  var init = function() {
+                    _this.scan(root);
+                    if (_this.options.watch) {
+                      _this.watch(root);
+                    }
+                  };
+                  if (document2.readyState === "complete" || document2.readyState === "interactive") {
+                    init();
+                  } else {
+                    document2.addEventListener("DOMContentLoaded", init);
+                  }
+                };
+                ValidationService2.prototype.scan = function(root) {
+                  root !== null && root !== void 0 ? root : root = this.options.root;
+                  this.logger.log("Scanning", root);
+                  this.scanMessages(root, this.pushValidationMessageSpan);
+                  this.scanInputs(root, this.addInput);
+                };
+                ValidationService2.prototype.remove = function(root) {
+                  root !== null && root !== void 0 ? root : root = this.options.root;
+                  this.logger.log("Removing", root);
+                  this.scanMessages(root, this.removeValidationMessageSpan);
+                  this.scanInputs(root, this.removeInput);
+                };
+                ValidationService2.prototype.watch = function(root) {
+                  var _this = this;
+                  root !== null && root !== void 0 ? root : root = this.options.root;
+                  this.observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                      _this.observed(mutation);
+                    });
+                  });
+                  this.observer.observe(root, {
+                    attributes: true,
+                    childList: true,
+                    subtree: true
+                  });
+                  this.logger.log("Watching for mutations");
+                };
+                ValidationService2.prototype.observed = function(mutation) {
+                  var _a, _b, _c;
+                  if (mutation.type === "childList") {
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                      var node = mutation.addedNodes[i];
+                      this.logger.log("Added node", node);
+                      if (node instanceof HTMLElement) {
+                        this.scan(node);
+                      }
+                    }
+                    for (var i = 0; i < mutation.removedNodes.length; i++) {
+                      var node = mutation.removedNodes[i];
+                      this.logger.log("Removed node", node);
+                      if (node instanceof HTMLElement) {
+                        this.remove(node);
+                      }
+                    }
+                  } else if (mutation.type === "attributes") {
+                    if (mutation.target instanceof HTMLElement) {
+                      var attributeName = mutation.attributeName;
+                      if (attributeName === "disabled") {
+                        var target = mutation.target;
+                        this.reset(target);
+                      } else {
+                        var oldValue = (_a = mutation.oldValue) !== null && _a !== void 0 ? _a : "";
+                        var newValue = (_c = (_b = mutation.target.attributes[mutation.attributeName]) === null || _b === void 0 ? void 0 : _b.value) !== null && _c !== void 0 ? _c : "";
+                        this.logger.log("Attribute '%s' changed from '%s' to '%s'", mutation.attributeName, oldValue, newValue, mutation.target);
+                        if (oldValue !== newValue) {
+                          this.scan(mutation.target);
+                        }
+                      }
+                    }
+                  }
+                };
+                ValidationService2.prototype.highlight = function(input, errorClass, validClass) {
+                  this.swapClasses(input, errorClass, validClass);
+                };
+                ValidationService2.prototype.unhighlight = function(input, errorClass, validClass) {
+                  this.swapClasses(input, validClass, errorClass);
+                };
+                return ValidationService2;
+              }()
+            );
+            return __webpack_exports__;
+          })()
+        );
+      });
+    })(aspnetValidation);
+    return aspnetValidation.exports;
+  }
+  var aspnetValidationExports = requireAspnetValidation();
+  if (!document.body.attributes.__htmx_antiforgery) {
+    document.addEventListener("htmx:configRequest", (evt) => {
+      const { verb, parameters, headers } = evt.detail;
+      if (verb?.toUpperCase() === "GET") return;
+      const antiforgery = htmx.config?.antiforgery;
+      if (!antiforgery) return;
+      const { headerName, requestToken, formFieldName } = antiforgery;
+      if (!headerName && !formFieldName) {
+        console.warn("Antiforgery configuration is missing both headerName and formFieldName. Token not added.");
+        return;
+      }
+      if (formFieldName && parameters[formFieldName]) return;
+      if (headerName) {
+        headers[headerName] = requestToken;
+      } else {
+        parameters[formFieldName] = requestToken;
+      }
+    });
+    document.addEventListener("htmx:afterOnLoad", (evt) => {
+      if (evt.detail.boosted) {
+        const responseText = evt.detail.xhr.responseText;
+        const selector = "meta[name=htmx-config]";
+        const startIndex = responseText.indexOf(`<meta name="htmx-config"`);
+        const endIndex = responseText.indexOf(">", startIndex) + 1;
+        const closingTagIndex = responseText.indexOf("</meta>", endIndex);
+        if (startIndex > -1) {
+          let metaTagString = "";
+          if (closingTagIndex > -1) {
+            const closingSlashIndex = responseText.indexOf("/", startIndex);
+            if (closingSlashIndex > -1 && closingSlashIndex < endIndex) {
+              metaTagString = responseText.substring(startIndex, endIndex);
+            } else {
+              metaTagString = responseText.substring(startIndex, responseText.indexOf("</meta>") + 7);
+            }
+          } else {
+            metaTagString = responseText.substring(startIndex, endIndex);
+          }
+          const contentAttributeRegex = /content="([^"]*)"/;
+          const contentMatch = metaTagString.match(contentAttributeRegex);
+          if (contentMatch && contentMatch[1]) {
+            const contentValue = contentMatch[1];
+            const current = document.querySelector(selector);
+            const key = "antiforgery";
+            try {
+              htmx.config[key] = JSON.parse(contentValue)[key];
+            } catch (e) {
+              console.error("Error parsing htmx-config JSON:", e);
+              return;
+            }
+            const newMeta = document.createElement("meta");
+            newMeta.setAttribute("name", "htmx-config");
+            newMeta.setAttribute("content", contentValue);
+            current.replaceWith(newMeta);
+          }
+        }
+      }
+    });
+    document.body.attributes.__htmx_antiforgery = true;
+  }
+  let validation = new aspnetValidationExports.ValidationService();
+  validation.bootstrap({ watch: true });
+  const Rizzy = {
+    validation
+  };
+  window.Rizzy = { ...window.Rizzy || {}, ...Rizzy };
+  return Rizzy;
+});
+//# sourceMappingURL=rizzy.js.map
