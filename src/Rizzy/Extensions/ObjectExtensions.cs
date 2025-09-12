@@ -46,7 +46,7 @@ public static class ObjectExtensions
         var options = new JsonSerializerOptions
         {
             Converters = { new SingleQuoteStringConverter() },
-            DefaultIgnoreCondition = ignoreNullValues ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
+            DefaultIgnoreCondition = ignoreNullValues ? JsonIgnoreCondition.WhenWritingNull : JsonIgnoreCondition.Never 
         };
 
         return JsonSerializer.Serialize(value, options);
