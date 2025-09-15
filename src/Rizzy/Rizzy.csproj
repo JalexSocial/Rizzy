@@ -117,7 +117,7 @@
             AfterTargets="Build"
             DependsOnTargets="BuildClientAssets"
             Condition="'$(TargetFramework)' == '' and '$(DesignTimeBuild)' != 'true'">
-        <Exec Command="npm run llm" WorkingDirectory="$(ClientPackageDir)/rizzy" />
+        <Exec Command="npm run llm"/>
     </Target>
     
 </Project>
