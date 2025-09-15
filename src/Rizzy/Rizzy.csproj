@@ -78,35 +78,46 @@
     <PropertyGroup>
         <IncludeAnalyzerInPackage>true</IncludeAnalyzerInPackage>
     </PropertyGroup>
-    
+
+    <!-- Run these only once in the outer build (no specific TargetFramework) -->
+    <PropertyGroup Condition="'$(TargetFramework)' == ''">
+        <!-- Hook our client pipeline into the outer Build -->
+        <BuildDependsOn>EnsureClientAssets;$(BuildDependsOn)</BuildDependsOn>
+    </PropertyGroup>
+
     <PropertyGroup>
         <!-- Define the directory path once -->
         <ClientPackageDir>$(MSBuildProjectDirectory)/../../packages</ClientPackageDir>
-        <!-- Define a stamp file to track installation -->
-        <NodeModulesStampFile>/node_modules/.install-stamp</NodeModulesStampFile>
+        <!-- Stamp file to track installation -->
+        <NodeModulesStampFile>$(ClientPackageDir)/rizzy/node_modules/.install-stamp</NodeModulesStampFile>
     </PropertyGroup>
 
+    <!-- High-level orchestration that runs in the outer build -->
+    <Target Name="EnsureClientAssets"
+            DependsOnTargets="InstallClientPackages;BuildClientAssets" />
+
+    <!-- Install only if package-lock.json changed, create node_modules if missing -->
     <Target Name="InstallClientPackages"
-            BeforeTargets="BuildClientAssets"
-            Inputs="$(ClientPackageDir)/rizzy/package.json;$(ClientPackageDir)/rizzy/package-lock.json"
-            Outputs="$(ClientPackageDir)/rizzy$(NodeModulesStampFile)">
-
-        <Message Text="Ensuring npm packages are installed in $(ClientPackageDir)..." Importance="high" />
-        <!-- WorkingDirectory uses the property defined above -->
-        <Exec Command="npm install" WorkingDirectory="$(ClientPackageDir)/rizzy" />
-        <!-- Create or update the stamp file after install succeeds -->
-        <Touch Files="$(ClientPackageDir)/rizzy$(NodeModulesStampFile)" AlwaysCreate="true" />
-
+            Inputs="$(ClientPackageDir)/rizzy/package-lock.json"
+            Outputs="$(NodeModulesStampFile)">
+        <Message Text="Ensuring npm packages are installed in $(ClientPackageDir)/rizzy ..." Importance="high" />
+        <MakeDir Directories="$(ClientPackageDir)/rizzy/node_modules" />
+        <!-- Use CI-friendly install -->
+        <Exec Command="npm ci" WorkingDirectory="$(ClientPackageDir)/rizzy" />
+        <Touch Files="$(NodeModulesStampFile)" AlwaysCreate="true" />
     </Target>
 
-    <Target Name="BuildClientAssets" BeforeTargets="Build">
-        <!-- This target now implicitly depends on InstallClientPackages running first if needed -->
-        <Message Text="Building client assets in $(ClientPackageDir)/rizzy..." Importance="high" />
+    <!-- Build the client bundle once, after install -->
+    <Target Name="BuildClientAssets" DependsOnTargets="InstallClientPackages">
+        <Message Text="Building client assets in $(ClientPackageDir)/rizzy ..." Importance="high" />
         <Exec Command="npm run build" WorkingDirectory="$(ClientPackageDir)/rizzy" />
     </Target>
 
-    <Target Name="LLM" AfterTargets="Build">
-        <Exec Command="npm run llm" />
+    <Target Name="LLM"
+            AfterTargets="Build"
+            DependsOnTargets="BuildClientAssets"
+            Condition="'$(TargetFramework)' == '' and '$(DesignTimeBuild)' != 'true'">
+        <Exec Command="npm run llm" WorkingDirectory="$(ClientPackageDir)/rizzy" />
     </Target>
     
 </Project>

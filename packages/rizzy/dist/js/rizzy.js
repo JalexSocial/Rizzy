@@ -1,6 +1,6 @@
 (function(global, factory) {
   typeof exports === "object" && typeof module !== "undefined" ? module.exports = factory() : typeof define === "function" && define.amd ? define(factory) : (global = typeof globalThis !== "undefined" ? globalThis : global || self, global.Rizzy = factory());
-})(this, function() {
+})(this, (function() {
   "use strict";
   (function() {
     htmx.defineExtension(
@@ -408,14 +408,14 @@
               }
             };
             var nullLogger = new /** @class */
-            (function() {
+            ((function() {
               function class_1() {
                 this.warn = globalThis.console.warn;
               }
               class_1.prototype.log = function(_) {
               };
               return class_1;
-            }())();
+            })())();
             var isValidatable = function(element) {
               return element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement;
             };
@@ -442,7 +442,7 @@
             }
             var MvcValidationProviders = (
               /** @class */
-              /* @__PURE__ */ function() {
+              /* @__PURE__ */ (function() {
                 function MvcValidationProviders2() {
                   this.required = function(value, element, params) {
                     var elementType = element.type.toLowerCase();
@@ -635,11 +635,11 @@
                   };
                 }
                 return MvcValidationProviders2;
-              }()
+              })()
             );
             var ValidationService = (
               /** @class */
-              function() {
+              (function() {
                 function ValidationService2(logger) {
                   var _this = this;
                   this.providers = {};
@@ -1441,7 +1441,7 @@
                   this.swapClasses(input, validClass, errorClass);
                 };
                 return ValidationService2;
-              }()
+              })()
             );
             return __webpack_exports__;
           })()
@@ -1517,5 +1517,5 @@
   };
   window.Rizzy = { ...window.Rizzy || {}, ...Rizzy };
   return Rizzy;
-});
+}));
 //# sourceMappingURL=rizzy.js.map
