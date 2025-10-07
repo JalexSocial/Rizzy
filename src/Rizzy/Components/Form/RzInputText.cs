@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
+
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rizzy;
 
@@ -38,33 +40,38 @@ public partial class RzInputText : InputText
     /// <summary>
     /// Called when the component's parameters are set.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown if the component is not enclosed within an EditForm.</exception>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
 
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputText)} must be enclosed within an {nameof(EditForm)}.");
-
-        // Store the FieldIdentifier locally
-        _fieldIdentifier = FieldIdentifier;
-        
-        // If id doesn't exist then attempt to create one
-        if (string.IsNullOrEmpty(Id) && AdditionalAttributes != null)
+        if (string.IsNullOrEmpty(Id))
         {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
+            // NameAttributeValue might be empty without an EditContext, so provide a fallback.
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzinput");
         }
 
-        // Get and store the fieldMapping dictionary instance
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-
-        // Add mapping for this field (use FieldIdentifier from the base class).
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+        if (EditContext is not null)
         {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
-        }
+            // Store the FieldIdentifier locally
+            _fieldIdentifier = FieldIdentifier;
 
-        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
+            // Get and store the fieldMapping dictionary instance
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+
+            // Add mapping for this field (use FieldIdentifier from the base class).
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
+
+            AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
+        }
+        else
+        {
+            var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attrib.TryAdd("id", Id);
+            AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        }
     }
 
     /// <summary>

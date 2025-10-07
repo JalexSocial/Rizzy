@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
@@ -45,24 +46,25 @@ public partial class RzInputCheckbox : InputCheckbox
     {
         base.OnParametersSet();
 
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputCheckbox)} must be enclosed within an {nameof(EditForm)}.");
-
-        // Store the FieldIdentifier locally
-        _fieldIdentifier = FieldIdentifier;
-
         if (string.IsNullOrEmpty(Id))
         {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
+            // NameAttributeValue might be empty without an EditContext, so provide a fallback.
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzcheckbox");
         }
 
-        // Get and store the fieldMapping dictionary instance
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-
-        // Use the local variable for the add operation
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+        if (EditContext is not null)
         {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            // Store the FieldIdentifier locally
+            _fieldIdentifier = FieldIdentifier;
+
+            // Get and store the fieldMapping dictionary instance
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+
+            // Use the local variable for the add operation
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
         }
 
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);

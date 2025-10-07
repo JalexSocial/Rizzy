@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Components;
+
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace Rizzy;
 
@@ -20,7 +22,7 @@ public partial class RzInputFile : InputFile
     /// Gets or sets the cascading parameter for the EditContext.
     /// </summary>
     [CascadingParameter] 
-    public EditContext EditContext { get; set; } = default!;
+    public EditContext? EditContext { get; set; }
 
     /// <summary>
     /// Method invoked when the component has received parameters from its parent in the render tree.
@@ -28,11 +30,6 @@ public partial class RzInputFile : InputFile
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputFile)} must be enclosed within an {nameof(EditForm)}.");
-
-        // No validation
 
         if (!string.IsNullOrEmpty(Id))
         {
