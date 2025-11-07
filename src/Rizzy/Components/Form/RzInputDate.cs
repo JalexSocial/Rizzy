@@ -53,7 +53,7 @@ public partial class RzInputDate<TValue> : InputDate<TValue>
                 _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
             }
 
-            AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id);
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
         else
         {

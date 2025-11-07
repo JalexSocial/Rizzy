@@ -67,7 +67,7 @@ public partial class RzInputNumber<TValue> : InputNumber<TValue>
                 _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
             }
 
-            AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id);
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
         else
         {

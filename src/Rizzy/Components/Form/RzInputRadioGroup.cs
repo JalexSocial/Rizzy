@@ -51,7 +51,7 @@ public partial class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
             Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzradiogroup");
         }
 
-        if (EditContext is not null)
+        if (EditContext != null)
         {
             // Store the FieldIdentifier locally
             _fieldIdentifier = FieldIdentifier;
@@ -62,7 +62,7 @@ public partial class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
             // Add mapping for this field (use FieldIdentifier from the base class).
             if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
             {
-                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue!, Id = Id };
             }
         }
 
@@ -83,7 +83,7 @@ public partial class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
         if (disposing && _fieldMapping != null)
         {
             _fieldMapping.Remove(_fieldIdentifier);
-            _fieldMapping = null; // Optional: Clear the reference
+            _fieldMapping = null; 
         }
 
         base.Dispose(disposing);

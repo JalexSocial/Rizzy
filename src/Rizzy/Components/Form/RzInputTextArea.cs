@@ -64,7 +64,7 @@ public partial class RzInputTextArea : InputTextArea
                 _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
             }
 
-            AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
         else
         {
