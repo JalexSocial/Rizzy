@@ -10,10 +10,10 @@ using System.Collections.ObjectModel;
 namespace Rizzy;
 
 /// <summary>
-/// A custom input text area component that extends the Blazor InputTextArea component.
+/// A custom input text component that extends the Blazor InputText component.
 /// </summary>
 [RizzyParameterize] 
-public partial class RzInputTextArea : InputTextArea
+public partial class RzInputTextBase : InputText
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
@@ -32,13 +32,13 @@ public partial class RzInputTextArea : InputTextArea
     public HttpContext? HttpContext { get; set; }
 
     /// <summary>
-    /// Gets or sets the ID of the text area.
+    /// Gets or sets the ID of the input element.
     /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
-    
+
     /// <summary>
-    /// Method invoked when the component has received parameters from its parent in the render tree.
+    /// Called when the component's parameters are set.
     /// </summary>
     protected override void OnParametersSet()
     {
@@ -47,14 +47,14 @@ public partial class RzInputTextArea : InputTextArea
         if (string.IsNullOrEmpty(Id))
         {
             // NameAttributeValue might be empty without an EditContext, so provide a fallback.
-            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rztextarea");
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzinput");
         }
 
         if (EditContext is not null)
         {
             // Store the FieldIdentifier locally
             _fieldIdentifier = FieldIdentifier;
-            
+
             // Get and store the fieldMapping dictionary instance
             _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
@@ -64,7 +64,7 @@ public partial class RzInputTextArea : InputTextArea
                 _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
             }
 
-            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputTextBase), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
         else
         {
@@ -75,9 +75,9 @@ public partial class RzInputTextArea : InputTextArea
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the component and optionally releases the managed resources.
+    /// Disposes the component and removes the field mapping.
     /// </summary>
-    /// <param name="disposing">A boolean value indicating whether the method has been called directly or indirectly by a user's code.</param>
+    /// <param name="disposing">A boolean value indicating whether the component is being disposed.</param>
     protected override void Dispose(bool disposing)
     {
         // Use the locally stored fieldMapping and fieldIdentifier for removal

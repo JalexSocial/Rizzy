@@ -57,17 +57,18 @@ Components/Form/DataAnnotationsProcessor.cs
 Components/Form/Helpers/ExpressionFormatter.cs
 Components/Form/Helpers/ReverseStringBuilder.cs
 Components/Form/RzInitialValidator.cs
-Components/Form/RzInputCheckbox.cs
-Components/Form/RzInputDate.cs
-Components/Form/RzInputFile.cs
-Components/Form/RzInputNumber.cs
-Components/Form/RzInputRadio.cs
-Components/Form/RzInputRadioGroup.cs
-Components/Form/RzInputSelect.cs
-Components/Form/RzInputText.cs
-Components/Form/RzInputTextArea.cs
-Components/Form/RzValidationMessage.cs
-Components/Form/RzValidationSummary.cs
+Components/Form/RzInputCheckboxBase.cs
+Components/Form/RzInputDateBase.cs
+Components/Form/RzInputFileBase.cs
+Components/Form/RzInputNumberBase.cs
+Components/Form/RzInputRadioBase.cs
+Components/Form/RzInputRadioGroupBase.cs
+Components/Form/RzInputSelectBase.cs
+Components/Form/RzInputTextAreaBase.cs
+Components/Form/RzInputTextBase.cs
+Components/Form/RzModelStateProvider.cs
+Components/Form/RzValidationMessageBase.cs
+Components/Form/RzValidationSummaryBase.cs
 Components/Head/RzHeadContent.cs
 Components/Head/RzHeadOutlet.cs
 Components/Head/RzPageTitle.cs
@@ -980,29 +981,14 @@ public class RzInitialValidator : ComponentBase
 {
     [CascadingParameter]
     public EditContext? EditContext { get; set; }
-    [CascadingParameter]
-    public ModelStateDictionary? ModelState { get; set; }
-    [Inject] private IServiceProvider ServiceProvider { get; set; } = default!;
     protected override void OnParametersSet()
     {
-        if (ModelState != null && EditContext != null)
-        {
-            var messages = new ValidationMessageStore(EditContext);
-            foreach (var error in ModelState.SelectMany(s => s.Value?.Errors.Select(e => (s.Key, e.ErrorMessage)) ?? Enumerable.Empty<(string, string)>()))
-            {
-                messages.Add(EditContext.Field(error.Item1), error.Item2);
-            }
-            EditContext.NotifyValidationStateChanged();
-        }
-        else
-        {
-            EditContext?.Validate();
-        }
+        EditContext?.Validate();
     }
 }
 </file>
 
-<file path="Components/Form/RzInputCheckbox.cs">
+<file path="Components/Form/RzInputCheckboxBase.cs">
 using System;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
@@ -1013,7 +999,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 namespace Rizzy;
 [RizzyParameterize]
-public partial class RzInputCheckbox : InputCheckbox
+public partial class RzInputCheckboxBase : InputCheckbox
 {
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
     private FieldIdentifier _fieldIdentifier;
@@ -1026,17 +1012,18 @@ public partial class RzInputCheckbox : InputCheckbox
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputCheckbox)} must be enclosed within an {nameof(EditForm)}.");
-        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzcheckbox");
         }
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+        if (EditContext is not null)
         {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldIdentifier = FieldIdentifier;
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
         }
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
@@ -1054,16 +1041,17 @@ public partial class RzInputCheckbox : InputCheckbox
 }
 </file>
 
-<file path="Components/Form/RzInputDate.cs">
+<file path="Components/Form/RzInputDateBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 namespace Rizzy;
 [RizzyParameterize]
-public partial class RzInputDate<TValue> : InputDate<TValue>
+public partial class RzInputDateBase<TValue> : InputDate<TValue>
 {
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
     private FieldIdentifier _fieldIdentifier;
@@ -1076,19 +1064,26 @@ public partial class RzInputDate<TValue> : InputDate<TValue>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputDate<TValue>)} must be enclosed within an {nameof(EditForm)}.");
-        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzdate");
         }
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+        if (EditContext is not null)
         {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldIdentifier = FieldIdentifier;
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputDateBase<TValue>), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
-        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputDate<TValue>), ValueExpression, AdditionalAttributes, Id);
+        else
+        {
+            var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attrib.TryAdd("id", Id);
+            AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        }
     }
     protected override void Dispose(bool disposing)
     {
@@ -1102,23 +1097,22 @@ public partial class RzInputDate<TValue> : InputDate<TValue>
 }
 </file>
 
-<file path="Components/Form/RzInputFile.cs">
+<file path="Components/Form/RzInputFileBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 namespace Rizzy;
 [RizzyParameterize]
-public partial class RzInputFile : InputFile
+public partial class RzInputFileBase : InputFile
 {
     [Parameter]
     public string Id { get; set; } = string.Empty;
     [CascadingParameter]
-    public EditContext EditContext { get; set; } = default!;
+    public EditContext? EditContext { get; set; }
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputFile)} must be enclosed within an {nameof(EditForm)}.");
         if (!string.IsNullOrEmpty(Id))
         {
             var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
@@ -1129,16 +1123,17 @@ public partial class RzInputFile : InputFile
 }
 </file>
 
-<file path="Components/Form/RzInputNumber.cs">
+<file path="Components/Form/RzInputNumberBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 namespace Rizzy;
 [RizzyParameterize]
-public partial class RzInputNumber<TValue> : InputNumber<TValue>
+public partial class RzInputNumberBase<TValue> : InputNumber<TValue>
 {
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
     private FieldIdentifier _fieldIdentifier;
@@ -1151,19 +1146,26 @@ public partial class RzInputNumber<TValue> : InputNumber<TValue>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputNumber<TValue>)} must be enclosed within an {nameof(EditForm)}.");
-        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rznumber");
         }
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+        if (EditContext is not null)
         {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldIdentifier = FieldIdentifier;
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputNumberBase<TValue>), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
-        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputNumber<TValue>), ValueExpression, AdditionalAttributes, Id);
+        else
+        {
+            var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attrib.TryAdd("id", Id);
+            AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        }
     }
     protected override void Dispose(bool disposing)
     {
@@ -1177,13 +1179,13 @@ public partial class RzInputNumber<TValue> : InputNumber<TValue>
 }
 </file>
 
-<file path="Components/Form/RzInputRadio.cs">
+<file path="Components/Form/RzInputRadioBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.ObjectModel;
 namespace Rizzy;
 [RizzyParameterize]
-public partial class RzInputRadio<TValue> : InputRadio<TValue>
+public partial class RzInputRadioBase<TValue> : InputRadio<TValue>
 {
     [Parameter]
     public string Id { get; set; } = string.Empty;
@@ -1197,7 +1199,7 @@ public partial class RzInputRadio<TValue> : InputRadio<TValue>
 }
 </file>
 
-<file path="Components/Form/RzInputRadioGroup.cs">
+<file path="Components/Form/RzInputRadioGroupBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
@@ -1207,7 +1209,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 namespace Rizzy;
 [RizzyParameterize]
-public partial class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
+public partial class RzInputRadioGroupBase<TValue> : InputRadioGroup<TValue>
 {
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
     private FieldIdentifier _fieldIdentifier;
@@ -1220,68 +1222,18 @@ public partial class RzInputRadioGroup<TValue> : InputRadioGroup<TValue>
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputRadioGroup<TValue>)} must be enclosed within an {nameof(EditForm)}.");
-        _fieldIdentifier = FieldIdentifier;
         if (string.IsNullOrEmpty(Id))
         {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzradiogroup");
         }
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+        if (EditContext != null)
         {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
-        }
-        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
-        attrib.TryAdd("id", Id);
-        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
-    }
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing && _fieldMapping != null)
-        {
-            _fieldMapping.Remove(_fieldIdentifier);
-            _fieldMapping = null;
-        }
-        base.Dispose(disposing);
-    }
-}
-</file>
-
-<file path="Components/Form/RzInputSelect.cs">
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
-using Rizzy.Htmx;
-using Rizzy.Utility;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-namespace Rizzy;
-[RizzyParameterize]
-public partial class RzInputSelect<TValue> : InputSelect<TValue>
-{
-    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
-    private FieldIdentifier _fieldIdentifier;
-    [Inject]
-    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
-    [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
-    [Parameter]
-    public string Id { get; set; } = string.Empty;
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputSelect<TValue>)} must be enclosed within an {nameof(EditForm)}.");
-        _fieldIdentifier = FieldIdentifier;
-        if (string.IsNullOrEmpty(Id))
-        {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
-        }
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
-        {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldIdentifier = FieldIdentifier;
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue!, Id = Id };
+            }
         }
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         attrib.TryAdd("id", Id);
@@ -1299,16 +1251,17 @@ public partial class RzInputSelect<TValue> : InputSelect<TValue>
 }
 </file>
 
-<file path="Components/Form/RzInputText.cs">
+<file path="Components/Form/RzInputSelectBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 namespace Rizzy;
 [RizzyParameterize]
-public partial class RzInputText : InputText
+public partial class RzInputSelectBase<TValue> : InputSelect<TValue>
 {
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
     private FieldIdentifier _fieldIdentifier;
@@ -1321,70 +1274,22 @@ public partial class RzInputText : InputText
     protected override void OnParametersSet()
     {
         base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputText)} must be enclosed within an {nameof(EditForm)}.");
-        _fieldIdentifier = FieldIdentifier;
-        if (string.IsNullOrEmpty(Id) && AdditionalAttributes != null)
-        {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
-        }
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
-        {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
-        }
-        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputText), ValueExpression, AdditionalAttributes, Id);
-    }
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing && _fieldMapping != null)
-        {
-            _fieldMapping.Remove(_fieldIdentifier);
-            _fieldMapping = null;
-        }
-        base.Dispose(disposing);
-    }
-}
-</file>
-
-<file path="Components/Form/RzInputTextArea.cs">
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
-using Rizzy.Htmx;
-using Rizzy.Utility;
-using System.Collections.Generic;
-namespace Rizzy;
-[RizzyParameterize]
-public partial class RzInputTextArea : InputTextArea
-{
-    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
-    private FieldIdentifier _fieldIdentifier;
-    [Inject]
-    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
-    [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
-    [Parameter]
-    public string Id { get; set; } = string.Empty;
-    private bool _initialized;
-    protected override void OnParametersSet()
-    {
-        base.OnParametersSet();
-        if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzInputTextArea)} must be enclosed within an {nameof(EditForm)}.");
-        _fieldIdentifier = FieldIdentifier;
-        _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-        if (_initialized) return;
         if (string.IsNullOrEmpty(Id))
         {
-            Id = IdGenerator.UniqueId(NameAttributeValue);
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzselect");
         }
-        if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+        if (EditContext is not null)
         {
-            _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            _fieldIdentifier = FieldIdentifier;
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
         }
-        AdditionalAttributes = DataAnnotationsProcessor.MergeAttributes(nameof(RzInputTextArea), ValueExpression, AdditionalAttributes, Id);
-        _initialized = true;
+        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+        attrib.TryAdd("id", Id);
+        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }
     protected override void Dispose(bool disposing)
     {
@@ -1398,7 +1303,145 @@ public partial class RzInputTextArea : InputTextArea
 }
 </file>
 
-<file path="Components/Form/RzValidationMessage.cs">
+<file path="Components/Form/RzInputTextAreaBase.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+namespace Rizzy;
+[RizzyParameterize]
+public partial class RzInputTextAreaBase : InputTextArea
+{
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rztextarea");
+        }
+        if (EditContext is not null)
+        {
+            _fieldIdentifier = FieldIdentifier;
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputTextAreaBase), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
+        }
+        else
+        {
+            var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attrib.TryAdd("id", Id);
+            AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        }
+    }
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzInputTextBase.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Http;
+using Rizzy.Htmx;
+using Rizzy.Utility;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+namespace Rizzy;
+[RizzyParameterize]
+public partial class RzInputTextBase : InputText
+{
+    private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
+    private FieldIdentifier _fieldIdentifier;
+    [Inject]
+    public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
+    [CascadingParameter]
+    public HttpContext? HttpContext { get; set; }
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        if (string.IsNullOrEmpty(Id))
+        {
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzinput");
+        }
+        if (EditContext is not null)
+        {
+            _fieldIdentifier = FieldIdentifier;
+            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
+            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
+            {
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+            }
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputTextBase), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
+        }
+        else
+        {
+            var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attrib.TryAdd("id", Id);
+            AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        }
+    }
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && _fieldMapping != null)
+        {
+            _fieldMapping.Remove(_fieldIdentifier);
+            _fieldMapping = null;
+        }
+        base.Dispose(disposing);
+    }
+}
+</file>
+
+<file path="Components/Form/RzModelStateProvider.cs">
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+namespace Rizzy;
+public class RzModelStateProvider : ComponentBase
+{
+    [CascadingParameter]
+    public EditContext? EditContext { get; set; }
+    [CascadingParameter]
+    public ModelStateDictionary? ModelState { get; set; }
+    protected override void OnParametersSet()
+    {
+        if (ModelState != null && EditContext != null && !ModelState.IsValid)
+        {
+            var messages = new ValidationMessageStore(EditContext);
+            foreach (var error in ModelState.SelectMany(s => s.Value?.Errors.Select(e => (s.Key, e.ErrorMessage)) ?? Enumerable.Empty<(string, string)>()))
+            {
+                messages.Add(EditContext.Field(error.Item1), error.Item2);
+            }
+            EditContext.NotifyValidationStateChanged();
+        }
+    }
+}
+</file>
+
+<file path="Components/Form/RzValidationMessageBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
@@ -1408,7 +1451,7 @@ using Rizzy.Htmx;
 using System.Collections.ObjectModel;
 using System.Globalization;
 namespace Rizzy;
-public class RzValidationMessage<TValue> : ValidationMessage<TValue>
+public class RzValidationMessageBase<TValue> : ValidationMessage<TValue>
 {
     private IDictionary<string, object> _mergedAttributes = default!;
     private string? _formattedValueExpression;
@@ -1420,11 +1463,11 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     {
         base.OnParametersSet();
         if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+            throw new InvalidOperationException($"{nameof(RzValidationMessageBase<TValue>)} must be enclosed within an {nameof(EditForm)}.");
         _mergedAttributes = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
         _shouldGenerateFieldNames = EditContext.ShouldUseFieldIdentifiers;
         if (For is null)
-            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
+            throw new InvalidOperationException($"{nameof(RzValidationMessageBase<TValue>)} requires a 'For' parameter.");
         var field = FieldIdentifier.Create(For);
         var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
         string fieldName;
@@ -1443,7 +1486,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (For is null)
-            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
+            throw new InvalidOperationException($"{nameof(RzValidationMessageBase<TValue>)} requires a 'For' parameter.");
         var field = FieldIdentifier.Create(For);
         var messages = EditContext.GetValidationMessages(field);
         if (messages.Any())
@@ -1488,12 +1531,12 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
 }
 </file>
 
-<file path="Components/Form/RzValidationSummary.cs">
+<file path="Components/Form/RzValidationSummaryBase.cs">
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 namespace Rizzy;
-public class RzValidationSummary : ValidationSummary
+public class RzValidationSummaryBase : ValidationSummary
 {
     [CascadingParameter] EditContext EditContext { get; set; } = default!;
     protected override void BuildRenderTree(RenderTreeBuilder builder)

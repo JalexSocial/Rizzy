@@ -14,7 +14,7 @@ namespace Rizzy;
 /// An input component for editing Boolean values.
 /// </summary>
 [RizzyParameterize] 
-public partial class RzInputCheckbox : InputCheckbox
+public partial class RzInputCheckboxBase : InputCheckbox
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;

@@ -13,7 +13,7 @@ namespace Rizzy;
 /// Represents a custom validation message component with extended capabilities for Blazor forms.
 /// </summary>
 /// <typeparam name="TValue">The type of the bound value.</typeparam>
-public class RzValidationMessage<TValue> : ValidationMessage<TValue>
+public class RzValidationMessageBase<TValue> : ValidationMessage<TValue>
 {
     private IDictionary<string, object> _mergedAttributes = default!;
     private string? _formattedValueExpression;
@@ -38,7 +38,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
         base.OnParametersSet();
 
         if (EditContext is null)
-            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} must be enclosed within an {nameof(EditForm)}.");
+            throw new InvalidOperationException($"{nameof(RzValidationMessageBase<TValue>)} must be enclosed within an {nameof(EditForm)}.");
 
         // Initialize or clear the merged attributes dictionary
         _mergedAttributes = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
@@ -46,7 +46,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
 
         // Check if the "For" attribute is provided and extract the field name
         if (For is null)
-            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
+            throw new InvalidOperationException($"{nameof(RzValidationMessageBase<TValue>)} requires a 'For' parameter.");
 
         var field = FieldIdentifier.Create(For);
 
@@ -78,7 +78,7 @@ public class RzValidationMessage<TValue> : ValidationMessage<TValue>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
         if (For is null)
-            throw new InvalidOperationException($"{nameof(RzValidationMessage<TValue>)} requires a 'For' parameter.");
+            throw new InvalidOperationException($"{nameof(RzValidationMessageBase<TValue>)} requires a 'For' parameter.");
 
         var field = FieldIdentifier.Create(For);
 

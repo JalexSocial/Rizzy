@@ -9,7 +9,7 @@ namespace Rizzy;
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
 [RizzyParameterize] 
-public partial class RzInputRadio<TValue> : InputRadio<TValue>
+public partial class RzInputRadioBase<TValue> : InputRadio<TValue>
 {
     /// <summary>
     /// Gets or sets the Id of the input radio.

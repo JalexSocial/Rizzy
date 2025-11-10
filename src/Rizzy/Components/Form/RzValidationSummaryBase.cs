@@ -7,7 +7,7 @@ namespace Rizzy;
 /// <summary>
 /// A custom validation summary component that displays validation messages.
 /// </summary>
-public class RzValidationSummary : ValidationSummary
+public class RzValidationSummaryBase : ValidationSummary
 {
     /// <summary>
     /// Gets or sets the <see cref="EditContext"/> for the form.

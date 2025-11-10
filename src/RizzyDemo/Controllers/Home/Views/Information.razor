@@ -11,15 +11,15 @@
 
     <EditForm Model="Person" FormName="PersonEdit" hx-post="/home/information" hx-target="#information">
         <RzInitialValidator/>
-        <RzValidationSummary/>
+        <RzValidationSummaryBase/>
 
         <div class="form-group">
             <label for="name">Name:</label>
-            <RzInputText class="form-control" @bind-Value="Person.Name"/>
-            <RzValidationMessage For="@(() => Person.Name)"/>
+            <RzInputTextBase class="form-control" @bind-Value="Person.Name"/>
+            <RzValidationMessageBase For="@(() => Person.Name)"/>
         </div>
 
-        <RzValidationSummary/>
+        <RzValidationSummaryBase/>
 
         <button type="submit" class="btn btn-primary">Submit</button>
     </EditForm>

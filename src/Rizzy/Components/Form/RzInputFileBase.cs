@@ -10,7 +10,7 @@ namespace Rizzy;
 /// A component that wraps the HTML file input element and supplies a Stream for each file's contents.
 /// </summary>
 [RizzyParameterize]
-public partial class RzInputFile : InputFile
+public partial class RzInputFileBase : InputFile
 {
     /// <summary>
     /// Gets or sets the ID of the input element.

@@ -4,42 +4,44 @@ using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
 using Rizzy.Utility;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rizzy;
 
 /// <summary>
-/// A dropdown selection component.
+/// An input component for editing numeric values. Supported numeric types are
+/// Int32, Int64, Int16, Single, Double, Decimal.
 /// </summary>
-/// <typeparam name="TValue">The type of the value.</typeparam>
+/// <typeparam name="TValue">The type of the value being edited.</typeparam>
 [RizzyParameterize] 
-public partial class RzInputSelect<TValue> : InputSelect<TValue>
+public partial class RzInputNumberBase<TValue> : InputNumber<TValue>
 {
     // Store the specific field mapping dictionary and identifier
     private IDictionary<FieldIdentifier, RzFormFieldMap>? _fieldMapping;
     private FieldIdentifier _fieldIdentifier;
     
     /// <summary>
-    /// Gets or sets the DataAnnotationsProcessor.
+    /// Gets or sets the <see cref="DataAnnotationsProcessor"/> used to process data annotations.
     /// </summary>
     [Inject]
     public DataAnnotationsProcessor DataAnnotationsProcessor { get; set; } = default!;
 
     /// <summary>
-    /// Gets or sets the HttpContext.
+    /// Gets or sets the <see cref="HttpContext"/> for the current request.
     /// </summary>
     [CascadingParameter]
     public HttpContext? HttpContext { get; set; }
 
     /// <summary>
-    /// Gets or sets the Id of the component.
+    /// Gets or sets the ID of the input element.
     /// </summary>
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
     /// <summary>
-    /// Method invoked when the component has received parameters from its parent in the render tree.
+    /// Method invoked when the component has received parameters from its parent in the render tree,
+    /// and the incoming values have been assigned to properties.
     /// </summary>
     protected override void OnParametersSet()
     {
@@ -48,7 +50,7 @@ public partial class RzInputSelect<TValue> : InputSelect<TValue>
         if (string.IsNullOrEmpty(Id))
         {
             // NameAttributeValue might be empty without an EditContext, so provide a fallback.
-            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzselect");
+            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rznumber");
         }
 
         if (EditContext is not null)
@@ -64,18 +66,21 @@ public partial class RzInputSelect<TValue> : InputSelect<TValue>
             {
                 _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
             }
+
+            AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputNumberBase<TValue>), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
-
-        var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
-        attrib.TryAdd("id", Id);
-
-        AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        else
+        {
+            var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
+            attrib.TryAdd("id", Id);
+            AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
+        }
     }
 
     /// <summary>
     /// Releases the unmanaged resources used by the component and optionally releases the managed resources.
     /// </summary>
-    /// <param name="disposing">A boolean value indicating whether the method is being called due to a call to Dispose.</param>
+    /// <param name="disposing">A boolean value indicating whether the method has been called directly or indirectly by a user's code.</param>
     protected override void Dispose(bool disposing)
     {
         // Use the locally stored fieldMapping and fieldIdentifier for removal
