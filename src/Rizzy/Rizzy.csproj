@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
 	<IsPackable>true</IsPackable>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -26,7 +26,7 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>5.2.0</Version>
+    <Version>5.3.0</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
@@ -38,7 +38,7 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="DefaultDocumentation" Version="0.8.2" PrivateAssets="all" />
+		<PackageReference Include="DefaultDocumentation" Version="1.2.2" PrivateAssets="all" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -47,12 +47,11 @@
 
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.7" />
-    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.25">
+    <PackageReference Include="DotNet.ReproducibleBuilds" Version="1.2.39">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Sqids" Version="3.1.0" />
+    <PackageReference Include="Sqids" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,9 +64,7 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="$(AssemblyName).Tests" />
 		<ProjectReference Include="..\Rizzy.Htmx\Rizzy.Htmx.csproj" />
-		<ProjectReference Include="..\Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj"
-                          OutputItemType="Analyzer"
-                          ReferenceOutputAssembly="false"/>
+		<ProjectReference Include="..\Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 		<Using Include="System.Diagnostics.CodeAnalysis" />
 	</ItemGroup>
 
@@ -93,13 +90,10 @@
     </PropertyGroup>
 
     <!-- High-level orchestration that runs in the outer build -->
-    <Target Name="EnsureClientAssets"
-            DependsOnTargets="InstallClientPackages;BuildClientAssets" />
+    <Target Name="EnsureClientAssets" DependsOnTargets="InstallClientPackages;BuildClientAssets" />
 
     <!-- Install only if package-lock.json changed, create node_modules if missing -->
-    <Target Name="InstallClientPackages"
-            Inputs="$(ClientPackageDir)/rizzy/package-lock.json"
-            Outputs="$(NodeModulesStampFile)">
+    <Target Name="InstallClientPackages" Inputs="$(ClientPackageDir)/rizzy/package-lock.json" Outputs="$(NodeModulesStampFile)">
         <Message Text="Ensuring npm packages are installed in $(ClientPackageDir)/rizzy ..." Importance="high" />
         <MakeDir Directories="$(ClientPackageDir)/rizzy/node_modules" />
         <!-- Use CI-friendly install -->
@@ -113,11 +107,8 @@
         <Exec Command="npm run build" WorkingDirectory="$(ClientPackageDir)/rizzy" />
     </Target>
 
-    <Target Name="LLM"
-            AfterTargets="Build"
-            DependsOnTargets="BuildClientAssets"
-            Condition="'$(TargetFramework)' == '' and '$(DesignTimeBuild)' != 'true'">
-        <Exec Command="npm run llm"/>
+    <Target Name="LLM" AfterTargets="Build" DependsOnTargets="BuildClientAssets" Condition="'$(TargetFramework)' == '' and '$(DesignTimeBuild)' != 'true'">
+        <Exec Command="npm run llm" />
     </Target>
     
 </Project>

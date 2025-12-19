@@ -9,7 +9,7 @@ using Rizzy.Htmx;
 
 namespace Rizzy.Http;
 
-public class HtmxResponseTests : TestContext
+public class HtmxResponseTests : BunitContext
 {
     private static HttpContext CreateHttpContext()
     {

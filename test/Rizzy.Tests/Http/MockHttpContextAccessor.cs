@@ -7,7 +7,7 @@ internal class MockHttpContextAccessor : IHttpContextAccessor
 {
     private readonly HttpContext _context;
 
-    public MockHttpContextAccessor(TestServiceProvider services)
+    public MockHttpContextAccessor(BunitServiceProvider services)
     {
         _context = new DefaultHttpContext()
         {

@@ -9,7 +9,7 @@ using Rizzy.Http;
 
 namespace Rizzy.Configuration;
 
-public class HtmxConfigHeadOutletTest : TestContext
+public class HtmxConfigHeadOutletTest : BunitContext
 {
     [Fact]
     public void HtmxConfig_serializer()
@@ -65,7 +65,7 @@ public class HtmxConfigHeadOutletTest : TestContext
         var accessor = new MockHttpContextAccessor(Services);
         Services.AddSingleton<IHttpContextAccessor>(accessor);
 
-        var cut = RenderComponent<HtmxConfigHeadOutlet>(p => p.AddCascadingValue(accessor.HttpContext!));
+        var cut = Render<HtmxConfigHeadOutlet>(p => p.AddCascadingValue(accessor.HttpContext!));
 
         var meta = cut.Find("meta");
         meta.GetAttribute("name").Should().Be("htmx-config");

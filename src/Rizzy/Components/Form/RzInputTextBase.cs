@@ -61,7 +61,7 @@ public partial class RzInputTextBase : InputText
             // Add mapping for this field (use FieldIdentifier from the base class).
             if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
             {
-                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue, Id = Id };
+                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue!, Id = Id };
             }
 
             AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputTextBase), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
