@@ -1,4 +1,5 @@
 ﻿using Bunit;
+using FluentAssertions.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ public class HtmxConfigHeadOutletTest : BunitContext
         {
             config.AntiforgeryStrategy = AntiforgeryStrategy.None;
         });
+        Services.AddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
 
         Services.Configure<HtmxConfig>(config =>
         {
@@ -82,6 +84,7 @@ public class HtmxConfigHeadOutletTest : BunitContext
                 "defaultSwapStyle": "beforebegin",
                 "defaultSwapDelay": 60000,
                 "defaultSettleDelay": 3600000,
+                "documentNonce": accessor.HttpContext!.GetRizzyNonceProvider().GetNonce(),
                 "disableSelector": "disable-selector",
                 "getCacheBusterParam": true,
                 "globalViewTransitions": true,
