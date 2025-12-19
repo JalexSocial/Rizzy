@@ -62,7 +62,7 @@ jobs:
 
       # Pack + push NuGet packages for net10.0 only
       - name: Pack Rizzy (net10.0 only)
-        run: dotnet pack --no-build -c Release --framework net10.0 -o ./nupkgs
+        run: dotnet pack --no-build -c Release -o ./nupkgs
         working-directory: src/Rizzy
 
       - name: Push Rizzy package to NuGet
@@ -70,7 +70,7 @@ jobs:
         working-directory: src/Rizzy
 
       - name: Pack Rizzy.Htmx (net10.0 only)
-        run: dotnet pack --no-build -c Release --framework net10.0 -o ./nupkgs
+        run: dotnet pack --no-build -c Release -o ./nupkgs
         working-directory: src/Rizzy.Htmx
 
       - name: Push Rizzy.Htmx package to NuGet
