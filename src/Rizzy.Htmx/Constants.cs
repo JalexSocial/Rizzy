@@ -41,10 +41,15 @@ internal static class Constants
         public const string HxPut = "hx-put";
         public const string HxDelete = "hx-delete";
         public const string HxPatch = "hx-patch";
+        public const string HxAction = "hx-action";
+        public const string HxMethod = "hx-method";
         public const string HxTrigger = "hx-trigger";
         public const string HxTarget = "hx-target";
         public const string HxSwap = "hx-swap";
         public const string HxHeaders = "hx-headers";
+        public const string HxConfig = "hx-config";
+        public const string HxDisable = "hx-disable";
+        public const string HxIgnore = "hx-ignore";
     }
 
     /// <summary>

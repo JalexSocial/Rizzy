@@ -22,11 +22,6 @@ public static class HtmxRequestHeaderNames
     public const string HistoryRestoreRequest = "HX-History-Restore-Request";
 
     /// <summary>
-    /// The user response to an hx-prompt.
-    /// </summary>
-    public const string Prompt = "HX-Prompt";
-
-    /// <summary>
     /// Always <see langword="true" />.
     /// </summary>
     public const string HtmxRequest = "HX-Request";
@@ -37,14 +32,14 @@ public static class HtmxRequestHeaderNames
     public const string Target = "HX-Target";
 
     /// <summary>
-    /// The `name` of the triggered element if it exists.
+    /// The element that triggered the request if it exists.
     /// </summary>
-    public const string TriggerName = "HX-Trigger-Name";
+    public const string Source = "HX-Source";
 
     /// <summary>
-    /// The `id` of the triggered element if it exists.
+    /// Indicates if this is a full or partial request.
     /// </summary>
-    public const string Trigger = "HX-Trigger";
+    public const string RequestType = "HX-Request-Type";
 
     /// <summary>
     /// Collection of all HTMX request headers
@@ -54,10 +49,9 @@ public static class HtmxRequestHeaderNames
         Boosted,
         CurrentURL,
         HistoryRestoreRequest,
-        Prompt,
         HtmxRequest,
         Target,
-        TriggerName,
-        Trigger
+        Source,
+        RequestType
     };
 }

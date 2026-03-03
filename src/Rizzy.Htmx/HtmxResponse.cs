@@ -283,20 +283,12 @@ public sealed class HtmxResponse(HttpContext context)
     /// Allows you to trigger client-side events.
     /// </summary>
     /// <param name="eventName">The name of client side event to trigger.</param>
-    /// <param name="timing">When the event should be triggered.</param>
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
-    public HtmxResponse Trigger(string eventName, TriggerTiming timing = TriggerTiming.Default)
+    public HtmxResponse Trigger(string eventName)
     {
         AssertIsHtmxRequest();
 
-        var headerKey = timing switch
-        {
-            TriggerTiming.AfterSwap => HtmxResponseHeaderNames.TriggerAfterSwap,
-            TriggerTiming.AfterSettle => HtmxResponseHeaderNames.TriggerAfterSettle,
-            _ => HtmxResponseHeaderNames.Trigger
-        };
-
-        MergeTrigger(headerKey, eventName, default(object), null);
+        MergeTrigger(eventName, default(object), null);
 
         return this;
     }
@@ -306,29 +298,22 @@ public sealed class HtmxResponse(HttpContext context)
     /// </summary>
     /// <param name="eventName">The name of client side event to trigger.</param>
     /// <param name="detail">The details to pass the client side event.</param>
-    /// <param name="timing">When the event should be triggered.</param>
     /// <param name="jsonSerializerOptions">The <see cref="JsonSerializerOptions"/> to use to convert the <paramref name="detail"/> into JSON. 
     /// If not specified, a <see cref="JsonOptions.SerializerOptions"/> is retrieved <see cref="HttpContext.RequestServices"/> and used if available.</param>
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
-    public HtmxResponse Trigger<TEventDetail>(string eventName, TEventDetail detail, TriggerTiming timing = TriggerTiming.Default, JsonSerializerOptions? jsonSerializerOptions = null)
+    public HtmxResponse Trigger<TEventDetail>(string eventName, TEventDetail detail, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         AssertIsHtmxRequest();
 
-        var headerKey = timing switch
-        {
-            TriggerTiming.AfterSwap => HtmxResponseHeaderNames.TriggerAfterSwap,
-            TriggerTiming.AfterSettle => HtmxResponseHeaderNames.TriggerAfterSettle,
-            _ => HtmxResponseHeaderNames.Trigger
-        };
-
-        MergeTrigger(headerKey, eventName, detail, jsonSerializerOptions);
+        MergeTrigger(eventName, detail, jsonSerializerOptions);
 
         return this;
     }
 
-    private void MergeTrigger<TEventDetail>(string headerKey, string eventName, TEventDetail? detail, JsonSerializerOptions? jsonSerializerOptions)
+    private void MergeTrigger<TEventDetail>(string eventName, TEventDetail? detail, JsonSerializerOptions? jsonSerializerOptions)
     {
         jsonSerializerOptions ??= context.RequestServices.GetService<JsonOptions>()?.SerializerOptions;
+        var headerKey = HtmxResponseHeaderNames.Trigger;
         var itemsKey = ItemsKeyPrefix + headerKey;
         if (!context.Items.TryGetValue(itemsKey, out var current) || current is not List<TriggerHeaderEventSet> headerValueSet)
         {
