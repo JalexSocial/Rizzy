@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rizzy.Tests", "..\test\Rizz
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rizzy.Htmx", "Rizzy.Htmx\Rizzy.Htmx.csproj", "{A63A9003-CC36-474E-8333-118DC0AFAD54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RizzyBoilerplate", "RizzyBoilerplate\RizzyBoilerplate.csproj", "{483780E3-70B2-4A13-B3CF-D1999BAF24DD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rizzy.SourceGenerators", "Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj", "{5F1ACC23-710E-4117-9814-45836B481D65}"
 EndProject
 Global
