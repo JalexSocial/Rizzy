@@ -66,10 +66,11 @@ public sealed class RizzyService : IRizzyService
         {
             { "ComponentType", typeof(TComponent) },
             { "ComponentParameters", data },
-            { "ModelState", modelState }
+            { "ModelState", modelState },
+            { "Mode", RzViewMode.Page  }
         };
 
-        return new RazorComponentResult<RzPage>(parameters)
+        return new RazorComponentResult<RzView>(parameters)
         {
             // Streaming is generally desirable for full page views.
             PreventStreamingRendering = false
@@ -106,9 +107,10 @@ public sealed class RizzyService : IRizzyService
         {
             { "ComponentType", typeof(TComponent) },
             { "ComponentParameters", data },
-            { "ModelState", modelState }
+            { "ModelState", modelState },
+            { "Mode", RzViewMode.Partial  }
         };
-        return new RazorComponentResult<RzPartial>(parameters)
+        return new RazorComponentResult<RzView>(parameters)
         {
             // Partials are often small; streaming might be less critical or even undesirable
             // depending on HTMX swap strategies. Consider making this configurable if needed.

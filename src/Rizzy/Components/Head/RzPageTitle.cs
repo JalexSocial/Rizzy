@@ -28,21 +28,15 @@ public sealed partial class RzPageTitle : ComponentBase
     {
         if (HttpContext?.Request.IsHtmx() == true)
         {
-            BuildTitleRenderTree(builder);
+            builder.OpenElement(0, "title");
+            builder.AddContent(1, ChildContent);
+            builder.CloseElement();
         }
         else
         {
-            builder.OpenComponent<SectionContent>(0);
-            builder.AddComponentParameter(1, nameof(SectionContent.SectionId), RzHeadOutlet.TitleSectionId);
-            builder.AddComponentParameter(2, nameof(SectionContent.ChildContent), (RenderFragment)BuildTitleRenderTree);
+            builder.OpenComponent<PageTitle>(0);
+            builder.AddComponentParameter(1, nameof(PageTitle.ChildContent), ChildContent);
             builder.CloseComponent();
         }
-    }
-
-    private void BuildTitleRenderTree(RenderTreeBuilder builder)
-    {
-        builder.OpenElement(0, "title");
-        builder.AddContent(1, ChildContent);
-        builder.CloseElement();
     }
 }

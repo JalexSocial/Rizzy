@@ -7,7 +7,6 @@ namespace Rizzy;
 /// <summary>
 /// Component that encapsulates one or more <see cref="RenderFragment"/> instances for use as partial or child components.
 /// </summary>
-[RizzyParameterize]
 public partial class FragmentComponent : ComponentBase
 {
     /// <summary>
