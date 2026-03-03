@@ -43,19 +43,14 @@ public class HtmxRequest
     public string? Target { get; }
 
     /// <summary>
-    /// Gets the `name` of the triggered element if it exists.
+    /// Gets the element that triggered the request if it exists.
     /// </summary>
-    public string? TriggerName { get; }
+    public string? Source { get; }
 
     /// <summary>
-    /// Gets the `id` of the triggered element if it exists.
+    /// Gets the htmx request type (`full` or `partial`) if available.
     /// </summary>
-    public string? Trigger { get; }
-
-    /// <summary>
-    /// Gets the user response to an hx-prompt, if any.
-    /// </summary>
-    public string? Prompt { get; }
+    public string? RequestType { get; }
 
     /// <summary>
     /// Creates a new instance of <see cref="HtmxRequest"/>.
@@ -71,9 +66,8 @@ public class HtmxRequest
         IsHistoryRestore = context.Request.Headers.ContainsKey(HtmxRequestHeaderNames.HistoryRestoreRequest);
         CurrentURL = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.CurrentURL, static value => Uri.TryCreate(value, UriKind.RelativeOrAbsolute, out var uri) ? uri : null);
         Target = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.Target);
-        TriggerName = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.TriggerName);
-        Trigger = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.Trigger);
-        Prompt = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.Prompt);
+        Source = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.Source);
+        RequestType = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.RequestType);
     }
 
     private static string? GetHxValueOrDefault(IHeaderDictionary headers, string key)

@@ -1,5 +1,5 @@
 if (!document.body.attributes.__htmx_antiforgery) {
-    document.addEventListener("htmx:configRequest", evt => {
+    document.addEventListener("htmx:config:request", evt => {
         // Safely destructure detail properties with optional chaining
         const { verb, parameters, headers } = evt.detail;
         if (verb?.toUpperCase() === 'GET') return;
@@ -25,9 +25,9 @@ if (!document.body.attributes.__htmx_antiforgery) {
             parameters[formFieldName] = requestToken;
         }
     });
-    document.addEventListener("htmx:afterOnLoad", evt => {
+    document.addEventListener("htmx:after:request", evt => {
         if (evt.detail.boosted) {
-            const responseText = evt.detail.xhr.responseText;
+            const responseText = evt.detail.ctx.text;
             const selector = 'meta[name=htmx-config]';
 
             // Find the index of the opening and closing tag for the meta element.
