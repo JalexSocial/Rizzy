@@ -1395,8 +1395,8 @@ function requireAspnetValidation() {
 var aspnetValidationExports = requireAspnetValidation();
 if (!document.body.attributes.__htmx_antiforgery) {
   document.addEventListener("htmx:config:request", (evt) => {
-    const { verb, parameters, headers } = evt.detail;
-    if (verb?.toUpperCase() === "GET") return;
+    const request = evt.detail?.ctx?.request;
+    if (!request || request.method?.toUpperCase() === "GET") return;
     const antiforgery = htmx.config?.antiforgery;
     if (!antiforgery) return;
     const { headerName, requestToken, formFieldName } = antiforgery;
@@ -1404,11 +1404,11 @@ if (!document.body.attributes.__htmx_antiforgery) {
       console.warn("Antiforgery configuration is missing both headerName and formFieldName. Token not added.");
       return;
     }
-    if (formFieldName && parameters[formFieldName]) return;
+    if (formFieldName && request.body && typeof request.body.has === "function" && request.body.has(formFieldName)) return;
     if (headerName) {
-      headers[headerName] = requestToken;
-    } else {
-      parameters[formFieldName] = requestToken;
+      request.headers[headerName] = requestToken;
+    } else if (formFieldName && request.body && typeof request.body.append === "function") {
+      request.body.append(formFieldName, requestToken);
     }
   });
   document.addEventListener("htmx:after:request", (evt) => {

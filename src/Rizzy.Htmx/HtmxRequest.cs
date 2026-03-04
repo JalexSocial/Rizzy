@@ -48,6 +48,16 @@ public class HtmxRequest
     public string? Source { get; }
 
     /// <summary>
+    /// Extracts the ID from the HTMX 4 'tag#id' format for the Target header.
+    /// </summary>
+    public string? TargetId => Target?.Split('#').LastOrDefault();
+
+    /// <summary>
+    /// Extracts the ID from the HTMX 4 'tag#id' format for the Source header.
+    /// </summary>
+    public string? SourceId => Source?.Split('#').LastOrDefault();
+
+    /// <summary>
     /// Gets the htmx request type (`full` or `partial`) if available.
     /// </summary>
     public string? RequestType { get; }

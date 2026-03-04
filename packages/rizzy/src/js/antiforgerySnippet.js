@@ -1,8 +1,7 @@
 if (!document.body.attributes.__htmx_antiforgery) {
     document.addEventListener("htmx:config:request", evt => {
-        // Safely destructure detail properties with optional chaining
-        const { verb, parameters, headers } = evt.detail;
-        if (verb?.toUpperCase() === 'GET') return;
+        const request = evt.detail?.ctx?.request;
+        if (!request || request.method?.toUpperCase() === 'GET') return;
 
         const antiforgery = htmx.config?.antiforgery;
         if (!antiforgery) return;
@@ -16,13 +15,13 @@ if (!document.body.attributes.__htmx_antiforgery) {
         }
 
         // If formFieldName exists and token is already set, avoid overriding it
-        if (formFieldName && parameters[formFieldName]) return;
+        if (formFieldName && request.body && typeof request.body.has === 'function' && request.body.has(formFieldName)) return;
 
         // Apply the token either to headers or parameters based on configuration
         if (headerName) {
-            headers[headerName] = requestToken;
-        } else {
-            parameters[formFieldName] = requestToken;
+            request.headers[headerName] = requestToken;
+        } else if (formFieldName && request.body && typeof request.body.append === 'function') {
+            request.body.append(formFieldName, requestToken);
         }
     });
     document.addEventListener("htmx:after:request", evt => {
