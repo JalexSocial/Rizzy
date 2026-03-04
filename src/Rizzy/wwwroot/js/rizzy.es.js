@@ -1,63 +1,54 @@
 (function() {
-  htmx.defineExtension(
-    "rizzy-nonce",
-    {
-      transformResponse: function(text, xhr, elt) {
-        let documentNonce = htmx.config.documentNonce ?? htmx.config.inlineScriptNonce;
-        if (!documentNonce) {
-          console.warn("rizzy-nonce extension loaded but no no nonce found for document. Inline scripts may be blocked.");
-          documentNonce = "";
-        }
-        htmx.config.refreshOnHistoryMiss = true;
-        let nonce = xhr?.getResponseHeader("HX-Nonce");
-        if (!nonce) {
-          const csp = xhr?.getResponseHeader("content-security-policy");
-          if (csp) {
-            const cspMatch = csp.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);
-            if (cspMatch) {
-              nonce = cspMatch[2];
-            }
-          }
-        }
-        if (xhr && window.location.hostname) {
-          const responseURL = new URL(xhr.responseURL);
-          if (responseURL.hostname !== window.location.hostname) {
-            nonce = "";
-          }
-        }
-        nonce ?? (nonce = "");
-        return this.processUnsafeHtml(text, documentNonce, nonce);
-      },
-      processUnsafeHtml: function(text, documentNonce, newScriptNonce) {
-        if (documentNonce && newScriptNonce)
-          text = text.replaceAll(newScriptNonce, documentNonce);
-        const parser = new DOMParser();
-        try {
-          let doc = parser.parseFromString(text, "text/html");
-          if (doc) {
-            Array.from(doc.querySelectorAll('[hx-ext*="ignore:rizzy-nonce"], [data-hx-ext*="ignore:rizzy-nonce"]')).forEach((elt) => {
-              elt.remove();
-            });
-            const elements = doc.querySelectorAll("script, style, link");
-            elements.forEach((elt) => {
-              const nonce = elt.getAttribute("nonce");
-              if (nonce !== documentNonce) {
-                elt.remove();
-              }
-            });
-            return doc.documentElement.outerHTML;
-          }
-        } catch (_) {
-        }
-        return "";
-      }
+  function processUnsafeHtml(text, documentNonce, newScriptNonce) {
+    if (documentNonce && newScriptNonce) {
+      text = text.replaceAll(newScriptNonce, documentNonce);
     }
-  );
+    const parser = new DOMParser();
+    try {
+      const doc = parser.parseFromString(text, "text/html");
+      if (doc) {
+        const elements = doc.querySelectorAll("script, style, link");
+        elements.forEach((elt) => {
+          const nonce = elt.getAttribute("nonce");
+          if (nonce !== documentNonce) {
+            elt.remove();
+          }
+        });
+        return doc.documentElement.outerHTML;
+      }
+    } catch (_) {
+    }
+    return "";
+  }
+  htmx.registerExtension("rizzy-nonce", {
+    htmx_after_request: function(_elt, detail) {
+      let documentNonce = htmx.config.documentNonce ?? htmx.config.inlineScriptNonce;
+      if (!documentNonce) {
+        console.warn("rizzy-nonce extension loaded but no nonce found for document. Inline scripts may be blocked.");
+        documentNonce = "";
+      }
+      let nonce = detail?.ctx?.response?.headers?.get("HX-Nonce");
+      if (!nonce) {
+        const csp = detail?.ctx?.response?.headers?.get("content-security-policy");
+        if (csp) {
+          const cspMatch = csp.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);
+          if (cspMatch) {
+            nonce = cspMatch[2];
+          }
+        }
+      }
+      nonce ?? (nonce = "");
+      if (typeof detail?.ctx?.text === "string") {
+        detail.ctx.text = processUnsafeHtml(detail.ctx.text, documentNonce, nonce);
+      }
+      return true;
+    }
+  });
 })();
 (function() {
-  var api;
-  var enableDomPreservation = true;
-  class blazorStreamingUpdate extends HTMLElement {
+  let api;
+  let enableDomPreservation = true;
+  class BlazorStreamingUpdate extends HTMLElement {
     connectedCallback() {
       const blazorSsrElement = this.parentNode;
       blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
@@ -72,68 +63,56 @@
       htmx?.process(document.body);
     }
   }
-  htmx.defineExtension(
-    "rizzy-streaming",
-    {
-      /**
-       * Init saves the provided reference to the internal HTMX API.
-       *
-       * @param {import("../htmx").HtmxInternalApi} api
-       * @returns void
-       */
-      init: function(apiRef) {
-        api = apiRef;
-        if (htmx.blazorSwapSsr == void 0) {
-          if (customElements.get("blazor-ssr-end") === void 0) {
-            customElements.define("blazor-ssr-end", blazorStreamingUpdate);
-          }
-          htmx.blazorSwapSsr = blazorSwapSsr;
+  htmx.registerExtension("rizzy-streaming", {
+    init: function(apiRef) {
+      api = apiRef;
+      if (htmx.blazorSwapSsr == null) {
+        if (customElements.get("blazor-ssr-end") === void 0) {
+          customElements.define("blazor-ssr-end", BlazorStreamingUpdate);
         }
-      },
-      onEvent: function(name2, evt) {
-        if (name2 === "htmx:afterOnLoad") {
-          htmx?.process(document.body);
-        } else if (name2 === "htmx:beforeRequest") {
-          var element = evt.detail.elt;
-          if (evt.detail.requestConfig.target) {
-            evt.detail.requestConfig.target.addEventListener(
-              "htmx:beforeSwap",
-              (e) => {
-              },
-              { once: true }
-            );
-          }
-          var last = 0;
-          var swapSpec = api.getSwapSpecification(element);
-          var xhr = evt.detail.xhr;
-          var cid = "ctr" + crypto.randomUUID();
-          xhr.addEventListener("readystatechange", () => {
-            if (xhr.readyState === 4) {
-              var container = document.getElementById(cid);
-              if (container != null)
-                unwrap(container);
-            }
-          });
-          xhr.addEventListener("progress", (e) => {
-            var container = document.getElementById(cid);
-            if (container == null) {
-              container = document.createElement("div");
-              container.id = cid;
-              swap(element, container.outerHTML, swapSpec, xhr);
-              swapSpec.swapStyle = "innerHTML";
-              container = document.getElementById(cid) ?? container;
-            }
-            let diff = e.currentTarget.response.substring(last);
-            swap(container, diff, swapSpec, xhr);
-            swapSpec.settleDelay = 0;
-            swapSpec.swapStyle = "beforeend";
-            last = e.loaded;
-          });
-        }
-        return true;
+        htmx.blazorSwapSsr = blazorSwapSsr;
       }
+    },
+    htmx_after_init: function() {
+      htmx?.process(document.body);
+      return true;
+    },
+    htmx_before_request: function(elt, detail) {
+      const swapSpec = api.getSwapSpecification(elt);
+      const originalFetch = detail.ctx.fetch || window.fetch;
+      detail.ctx.fetch = async function(url, options) {
+        const response = await originalFetch(url, options);
+        if (!response.body) {
+          return response;
+        }
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let container = null;
+        const cid = "ctr" + crypto.randomUUID();
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            if (container) {
+              unwrap(container);
+            }
+            break;
+          }
+          const chunk = decoder.decode(value, { stream: true });
+          if (!container) {
+            container = document.createElement("div");
+            container.id = cid;
+            swap(elt, container.outerHTML, swapSpec);
+            container = document.getElementById(cid) ?? container;
+          }
+          swap(container, chunk, { ...swapSpec, swapStyle: "beforeend", settleDelay: 0 });
+        }
+        detail.ctx.swap = "none";
+        detail.ctx.text = "";
+        return new Response("", { status: response.status, statusText: response.statusText, headers: response.headers });
+      };
+      return true;
     }
-  );
+  });
   function isCommentNodeInHead(commentNode) {
     if (commentNode && commentNode.nodeType === Node.COMMENT_NODE) {
       let currentNode = commentNode.parentNode;
@@ -143,22 +122,21 @@
         }
         currentNode = currentNode.parentNode;
       }
-    } else {
       return false;
     }
     return false;
   }
-  function blazorSwapSsr(start, end, docFrag, xhr) {
-    var newDiv = wrap(start, end, "ssr" + crypto.randomUUID());
-    var container = document.createElement("div");
+  function blazorSwapSsr(start, end, docFrag) {
+    const newDiv = wrap(start, end, "ssr" + crypto.randomUUID());
+    const container = document.createElement("div");
     container.appendChild(docFrag);
-    swap(newDiv, container.innerHTML, xhr);
+    swap(newDiv, container.innerHTML);
     unwrap(newDiv);
   }
   function wrap(start, end, id) {
-    var newDiv = document.createElement("div");
+    const newDiv = document.createElement("div");
     newDiv.id = id;
-    var currentNode = start.nextSibling;
+    let currentNode = start.nextSibling;
     while (currentNode && currentNode !== end) {
       newDiv.appendChild(currentNode);
       currentNode = start.nextSibling;
@@ -174,38 +152,9 @@
       element.parentNode.removeChild(element);
     }
   }
-  function swap(elt, content, swapSpec, xhr) {
-    api.withExtensions(elt, function(extension) {
-      content = extension.transformResponse(content, xhr, elt);
-    });
-    swapSpec ?? (swapSpec = api.getSwapSpecification(elt));
-    var target = api.getTarget(elt);
-    var settleInfo = api.makeSettleInfo(elt);
-    api.swap(target, content, swapSpec);
-    settleInfo.elts.forEach(function(elt2) {
-      if (elt2.classList) {
-        elt2.classList.add(htmx.config.settlingClass);
-      }
-      api.triggerEvent(elt2, "htmx:beforeSettle");
-    });
-    if (swapSpec.settleDelay > 0) {
-      setTimeout(doSettle(settleInfo), swapSpec.settleDelay);
-    } else {
-      doSettle(settleInfo)();
-    }
-  }
-  function doSettle(settleInfo) {
-    return function() {
-      settleInfo.tasks.forEach(function(task) {
-        task.call();
-      });
-      settleInfo.elts.forEach(function(elt) {
-        if (elt.classList) {
-          elt.classList.remove(htmx.config.settlingClass);
-        }
-        api.triggerEvent(elt, "htmx:afterSettle");
-      });
-    };
+  function swap(elt, content, swapSpec) {
+    const target = api.getTarget(elt);
+    api.swap(target, content, swapSpec ?? api.getSwapSpecification(elt));
   }
   function insertStreamingContentIntoDocument(componentIdAsString, docFrag) {
     const markers = findStreamingMarkers(componentIdAsString);
@@ -228,10 +177,7 @@
   }
   function findStreamingMarkers(componentIdAsString) {
     const expectedStartText = `bl:${componentIdAsString}`;
-    const iterator = document.createNodeIterator(
-      document,
-      NodeFilter.SHOW_COMMENT
-    );
+    const iterator = document.createNodeIterator(document, NodeFilter.SHOW_COMMENT);
     let startMarker = null;
     while (startMarker = iterator.nextNode()) {
       if (startMarker.textContent === expectedStartText) {
@@ -1448,7 +1394,7 @@ function requireAspnetValidation() {
 }
 var aspnetValidationExports = requireAspnetValidation();
 if (!document.body.attributes.__htmx_antiforgery) {
-  document.addEventListener("htmx:configRequest", (evt) => {
+  document.addEventListener("htmx:config:request", (evt) => {
     const { verb, parameters, headers } = evt.detail;
     if (verb?.toUpperCase() === "GET") return;
     const antiforgery = htmx.config?.antiforgery;
@@ -1465,9 +1411,9 @@ if (!document.body.attributes.__htmx_antiforgery) {
       parameters[formFieldName] = requestToken;
     }
   });
-  document.addEventListener("htmx:afterOnLoad", (evt) => {
+  document.addEventListener("htmx:after:request", (evt) => {
     if (evt.detail.boosted) {
-      const responseText = evt.detail.xhr.responseText;
+      const responseText = evt.detail.ctx.text;
       const selector = "meta[name=htmx-config]";
       const startIndex = responseText.indexOf(`<meta name="htmx-config"`);
       const endIndex = responseText.indexOf(">", startIndex) + 1;
