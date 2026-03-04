@@ -84,51 +84,34 @@ public class HtmxRequestTests
     }
 
     [Fact]
-    public void TriggerName_ReturnsTriggerName_WhenTriggerNameHeaderIsPresent()
+    public void Source_ReturnsSource_WhenSourceHeaderIsPresent()
     {
         // Arrange
-        var expectedTriggerName = "submitButton";
+        var expectedSource = "button#submit";
         _context.Request.Headers[HtmxRequestHeaderNames.HtmxRequest] = "true";
-        _context.Request.Headers[HtmxRequestHeaderNames.TriggerName] = expectedTriggerName;
+        _context.Request.Headers[HtmxRequestHeaderNames.Source] = expectedSource;
         var htmxRequest = new HtmxRequest(_context);
 
         // Act
-        var triggerName = htmxRequest.TriggerName;
+        var source = htmxRequest.Source;
 
         // Assert
-        Assert.Equal(expectedTriggerName, triggerName);
+        Assert.Equal(expectedSource, source);
     }
 
     [Fact]
-    public void Trigger_ReturnsTriggerId_WhenTriggerHeaderIsPresent()
+    public void RequestType_ReturnsRequestType_WhenRequestTypeHeaderIsPresent()
     {
         // Arrange
-        var expectedTrigger = "submit-button";
+        var expectedRequestType = "partial";
         _context.Request.Headers[HtmxRequestHeaderNames.HtmxRequest] = "true";
-        _context.Request.Headers[HtmxRequestHeaderNames.Trigger] = expectedTrigger;
+        _context.Request.Headers[HtmxRequestHeaderNames.RequestType] = expectedRequestType;
         var htmxRequest = new HtmxRequest(_context);
 
         // Act
-        var trigger = htmxRequest.Trigger;
+        var requestType = htmxRequest.RequestType;
 
         // Assert
-        Assert.Equal(expectedTrigger, trigger);
-    }
-
-    [Fact]
-    public void Prompt_ReturnsPromptValue_WhenPromptHeaderIsPresent()
-    {
-        // Arrange
-        var expectedPrompt = "Are you sure?";
-        _context.Request.Headers[HtmxRequestHeaderNames.HtmxRequest] = "true";
-        _context.Request.Headers[HtmxRequestHeaderNames.Prompt] = expectedPrompt;
-        var htmxRequest = new HtmxRequest(_context);
-
-        // Act
-        var prompt = htmxRequest.Prompt;
-
-        // Assert
-        Assert.Equal(expectedPrompt, prompt);
+        Assert.Equal(expectedRequestType, requestType);
     }
 }
-
