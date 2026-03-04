@@ -1583,7 +1583,9 @@
     return aspnetValidation.exports;
   }
   var aspnetValidationExports = requireAspnetValidation();
-  if (!document.body.attributes.__htmx_antiforgery) {
+  const INIT_KEY = "__rizzy_htmx_antiforgery_initialized";
+  if (!document[INIT_KEY]) {
+    document[INIT_KEY] = true;
     document.addEventListener("htmx:config:request", (evt) => {
       const request = evt.detail?.ctx?.request;
       if (!request || request.method?.toUpperCase() === "GET") return;
@@ -1640,7 +1642,6 @@
         }
       }
     });
-    document.body.attributes.__htmx_antiforgery = true;
   }
   let validation = new aspnetValidationExports.ValidationService();
   validation.bootstrap({ watch: true });
