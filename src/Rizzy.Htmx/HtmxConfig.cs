@@ -160,4 +160,18 @@ public record class HtmxConfig
     [JsonIgnore]
     public bool GenerateStyleNonce { get; set; } = false;
 
+    /// <summary>
+    /// Whitelist of allowed extensions (empty = allow all).
+    /// Required in HTMX 4 to restrict extension loading.
+    /// </summary>
+    [JsonPropertyName("extensions")]
+    public string? Extensions { get; set; }
+
+    /// <summary>
+    /// Custom attribute prefix. HTMX 4 no longer supports <c>data-hx-</c> implicitly.
+    /// If you wish to use <c>data-hx-</c>, set this to <c>"data-hx-"</c>.
+    /// </summary>
+    [JsonPropertyName("prefix")]
+    public string? Prefix { get; set; }
+
 }

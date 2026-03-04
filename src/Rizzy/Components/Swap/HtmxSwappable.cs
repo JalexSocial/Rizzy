@@ -45,12 +45,7 @@ public partial class HtmxSwappable : ComponentBase
     /// </summary>
     protected override void OnParametersSet()
     {
-        var style = SwapStyle.ToHtmxString();
-
-        if (!string.IsNullOrEmpty(Selector))
-            _swapParam = $"{style}:{Selector}";
-        else
-            _swapParam = style;
+        _swapParam = SwapStyle.ToHtmxString();
     }
 
     /// <summary>
@@ -60,9 +55,12 @@ public partial class HtmxSwappable : ComponentBase
     /// <param name="builder">The <see cref="RenderTreeBuilder"/> used to construct the component's render tree.</param>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        builder.OpenElement(0, "div");
-        builder.AddAttribute(1, "id", TargetId);
-        builder.AddAttribute(2, "hx-swap-oob", _swapParam);
+        builder.OpenElement(0, "hx-partial");
+
+        var target = !string.IsNullOrEmpty(Selector) ? Selector : $"#{TargetId}";
+
+        builder.AddAttribute(1, "hx-target", target);
+        builder.AddAttribute(2, "hx-swap", _swapParam);
         builder.AddContent(3, ChildContent);
         builder.CloseElement();
     }

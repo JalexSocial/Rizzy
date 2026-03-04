@@ -53,6 +53,24 @@ internal static class Constants
         public const string HxConfig = "hx-config";
         public const string HxDisable = "hx-disable";
         public const string HxIgnore = "hx-ignore";
+        public const string HxInclude = "hx-include";
+        public const string HxVals = "hx-vals";
+        public const string HxConfirm = "hx-confirm";
+        public const string HxSelect = "hx-select";
+        public const string HxSelectOob = "hx-select-oob";
+        public const string HxPushUrl = "hx-push-url";
+        public const string HxReplaceUrl = "hx-replace-url";
+        public const string HxPreserve = "hx-preserve";
+        public const string HxIndicator = "hx-indicator";
+        public const string HxSync = "hx-sync";
+        public const string HxBoost = "hx-boost";
+        public const string HxEncoding = "hx-encoding";
+        public const string HxValidate = "hx-validate";
+
+        /// <summary>
+        /// Generates a dynamic <c>hx-status</c> attribute name for a specific status code or wildcard.
+        /// </summary>
+        public static string HxStatus(string statusCodeOrWildcard) => $"hx-status:{statusCodeOrWildcard}";
     }
 
     /// <summary>

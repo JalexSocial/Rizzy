@@ -53,11 +53,10 @@ public sealed class TriggerBuilder
     }
 
     /// <summary>
-    /// Specifies a Server-Sent Event (SSE) as the trigger by setting the event name and SSE event <c>hx-trigger="sse: <paramref name="sseEventName"/>"</c>.
+    /// [Obsolete for HTMX 4]
+    /// HTMX 4's SSE extension triggers native DOM events based on the payload event name.
+    /// Use <see cref="OnEvent(string)"/> instead.
     /// </summary>
-    /// <remarks>
-    /// This method sets the SSE trigger for an AJAX request. For example, specifying "message" will trigger the request on the message event.
-    /// </remarks>
     /// <param name="sseEventName">The name of the SSE event.</param>
     /// <returns>A <see cref="TriggerModifierBuilder"/> instance to allow further configuration of the trigger.</returns>
     /// <example>
@@ -66,6 +65,7 @@ public sealed class TriggerBuilder
     /// // Resulting hx-trigger: <![CDATA[<div hx-get="/updates" hx-trigger="sse:message">Update Me</div>]]>
     /// </code>
     /// </example>
+    [Obsolete("In HTMX 4, the SSE extension fires native events directly. Use OnEvent(eventName) instead.")]
     public TriggerModifierBuilder Sse(string sseEventName)
     {
         var spec = new HtmxTriggerSpecification { Trigger = Constants.Triggers.Sse, SseEvent = sseEventName };
