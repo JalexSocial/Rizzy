@@ -1,3 +1,5 @@
+using System;
+
 namespace Rizzy.Htmx;
 
 /// <summary>
@@ -22,11 +24,10 @@ public static class Trigger
     public static TriggerModifierBuilder OnEvent(string eventName) => new TriggerBuilder().OnEvent(eventName);
 
     /// <summary>
-    /// Specifies a Server-Sent Event (SSE) as the trigger by setting the event name and SSE event <c>hx-trigger="sse: <paramref name="sseEventName"/>"</c>.
+    /// [Obsolete for HTMX 4]
+    /// HTMX 4's SSE extension triggers native DOM events based on the payload event name.
+    /// Use <see cref="OnEvent(string)"/> instead.
     /// </summary>
-    /// <remarks>
-    /// This method sets the SSE trigger for an AJAX request. For example, specifying "message" will trigger the request on the message event.
-    /// </remarks>
     /// <param name="sseEventName">The name of the SSE event.</param>
     /// <returns>A <see cref="TriggerModifierBuilder"/> instance to allow further configuration of the trigger.</returns>
     /// <example>
@@ -35,6 +36,7 @@ public static class Trigger
     /// // Resulting hx-trigger: <![CDATA[<div hx-get="/updates" hx-trigger="sse:message">Update Me</div>]]>
     /// </code>
     /// </example>
+    [Obsolete("In HTMX 4, the SSE extension fires native events directly. Use Trigger.OnEvent(eventName) instead.")]
     public static TriggerModifierBuilder Sse(string sseEventName) => new TriggerBuilder().Sse(sseEventName);
 
     /// <summary>
