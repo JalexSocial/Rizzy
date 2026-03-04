@@ -32,7 +32,7 @@ public record class HtmxConfig
     public SwapStyle? DefaultSwap { get; set; }
 
     /// <summary>
-    /// Defaults to <see langword="20"/> if this property is null.
+    /// Defaults to <see langword="1"/> if this property is null.
     /// </summary>
     [JsonPropertyName("defaultSettleDelay")]
     public TimeSpan? DefaultSettleDelay { get; set; }
@@ -82,7 +82,7 @@ public record class HtmxConfig
 
 
     /// <summary>
-    /// Defaults to <see langword="0" /> if this property is null.
+    /// Defaults to <see langword="60000" /> if this property is null.
     /// The number of milliseconds a request can take before automatically being terminated
     /// </summary>
     [JsonPropertyName("defaultTimeout")]
