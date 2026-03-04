@@ -50,37 +50,26 @@
     });
   })();
   (function() {
-    let enableDomPreservation = true;
     const STREAM_STATE_KEY = "_rizzyStreaming";
     const STREAM_SINK_ATTR = "data-rizzy-stream-sink";
-    const BLAZOR_SSR_START_RE = /<blazor-ssr(?=[\s>])/i;
-    const BLAZOR_SSR_CLOSE = "</blazor-ssr>";
-    const BLAZOR_SSR_END_CLOSE = "</blazor-ssr-end>";
+    const HTML_CLOSE = "</html>";
+    const SSR_OPEN = "<blazor-ssr";
+    const SSR_CLOSE = "</blazor-ssr>";
     ensureBlazorSsrEndElement();
     htmx.registerExtension("rizzy-streaming", {
-      init(apiRef) {
-      },
-      // If the same element issues a new request, cancel any active stream for it.
       htmx_before_request(elt, detail) {
         const source = detail?.ctx?.sourceElement || elt;
         cancelStream(source, "superseded");
         return true;
       },
-      // htmx 4 hook: response exists, body has not been consumed yet.
       htmx_before_response(elt, detail) {
         const ctx = detail?.ctx;
         const response = ctx?.response?.raw;
-        if (!ctx || !response?.body) {
-          return true;
-        }
+        if (!ctx || !response?.body) return true;
         const contentType = response.headers.get("Content-Type") || "";
-        if (!/text\/html/i.test(contentType)) {
-          return true;
-        }
+        if (!/text\/html/i.test(contentType)) return true;
         applySimpleResponseOverrides(ctx);
-        if (handleImmediateResponseActions(ctx)) {
-          return false;
-        }
+        if (handleImmediateResponseActions(ctx)) return false;
         startStreamingHandler(ctx).catch((error) => {
           cancelStream(ctx.sourceElement, "error");
           htmx.trigger(ctx.sourceElement, "htmx:error", { ctx, error });
@@ -93,27 +82,21 @@
       }
     });
     function ensureBlazorSsrEndElement() {
-      if (customElements.get("blazor-ssr-end")) {
-        return;
-      }
+      if (customElements.get("blazor-ssr-end")) return;
       customElements.define("blazor-ssr-end", class BlazorStreamingUpdate extends HTMLElement {
         connectedCallback() {
           const blazorSsrElement = this.parentNode;
-          if (!blazorSsrElement || blazorSsrElement.nodeType !== Node.ELEMENT_NODE) {
-            return;
-          }
+          if (!blazorSsrElement || blazorSsrElement.nodeType !== Node.ELEMENT_NODE) return;
           blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
-          const childNodes = Array.from(blazorSsrElement.childNodes);
-          for (const node of childNodes) {
-            if (!(node instanceof HTMLTemplateElement)) {
-              continue;
-            }
+          const children = Array.from(blazorSsrElement.childNodes);
+          for (const node of children) {
+            if (!(node instanceof HTMLTemplateElement)) continue;
             const componentId = node.getAttribute("blazor-component-id");
             if (componentId) {
               insertStreamingContentIntoDocument(componentId, node.content);
-              continue;
+            } else {
+              handleControlTemplate(node);
             }
-            handleControlTemplate(node);
           }
         }
       });
@@ -127,10 +110,10 @@
         sourceElement: source,
         reader,
         cancelled: false,
+        cleanedUp: false,
         abortHandler: null,
         sink: null,
         buffer: "",
-        sawStreamingBlock: false,
         didPrimarySwap: false
       };
       state.abortHandler = () => cancelStream(source, "abort");
@@ -140,125 +123,111 @@
       try {
         while (!state.cancelled) {
           const { done, value } = await reader.read();
-          if (done) {
-            break;
-          }
+          if (done) break;
           state.buffer += decoder.decode(value, { stream: true });
-          await drainProcessableBuffer(ctx, state, false);
+          await drain(ctx, state, false);
         }
         state.buffer += decoder.decode();
-        await drainProcessableBuffer(ctx, state, true);
+        await drain(ctx, state, true);
       } finally {
         cleanupStreamState(state, "ended");
       }
     }
-    async function drainProcessableBuffer(ctx, state, isFinal) {
+    async function drain(ctx, state, isFinal) {
       while (!state.cancelled) {
-        state.buffer = stripLeadingStandaloneSsrClosers(state.buffer);
-        const startIndex = findFirstBlazorBlockStart(state.buffer);
-        if (startIndex < 0) {
-          if (isFinal && state.buffer) {
-            await flushHtmlSegment(ctx, state, state.buffer);
-            state.buffer = "";
+        if (!state.didPrimarySwap) {
+          const split = findPrimarySplitPoint(state.buffer);
+          if (split === -1) {
+            if (isFinal && state.buffer) {
+              await doPrimarySwap(ctx, state, state.buffer);
+              state.buffer = "";
+            }
+            return;
           }
-          return;
-        }
-        if (startIndex > 0) {
-          const plainHtml = state.buffer.slice(0, startIndex);
-          await flushHtmlSegment(ctx, state, plainHtml);
-          state.buffer = state.buffer.slice(startIndex);
+          const initialHtml = state.buffer.slice(0, split);
+          await doPrimarySwap(ctx, state, initialHtml);
+          state.buffer = state.buffer.slice(split);
           continue;
         }
-        const unit = extractNextSafeStreamingUnit(state.buffer, isFinal);
-        if (!unit) {
+        const next = findNextCompleteSsrBlock(state.buffer);
+        if (!next) {
           if (isFinal) {
-            await flushHtmlSegment(ctx, state, state.buffer);
+            const tail = state.buffer.trim();
+            if (tail) {
+              await htmx.swap({
+                sourceElement: ctx.sourceElement,
+                target: ctx.target,
+                text: state.buffer,
+                swap: "beforeend",
+                transition: false,
+                response: ctx.response,
+                hx: ctx.hx,
+                push: ctx.push,
+                replace: ctx.replace
+              });
+            }
             state.buffer = "";
           }
           return;
         }
-        state.sawStreamingBlock = true;
-        appendStreamingBlockToSink(state, unit.htmlForSink);
-        state.buffer = state.buffer.slice(unit.consumed);
-        htmx.trigger(ctx.sourceElement, "htmx:rizzy:stream:block", {
-          syntheticClose: unit.syntheticClose
-        });
-      }
-    }
-    async function flushHtmlSegment(ctx, state, html) {
-      if (!html) {
-        return;
-      }
-      if (!state.didPrimarySwap && !state.sawStreamingBlock) {
-        ctx.text = html;
-        await htmx.swap(ctx);
-        state.didPrimarySwap = true;
-        fireSimpleTriggerHeader(ctx.hx?.triggerafterswap, ctx.sourceElement);
-        return;
-      }
-      await htmx.swap({
-        sourceElement: ctx.sourceElement,
-        target: ctx.target,
-        text: html,
-        swap: "beforeend",
-        transition: false,
-        response: ctx.response,
-        hx: ctx.hx
-      });
-      fireSimpleTriggerHeader(ctx.hx?.triggerafterswap, ctx.sourceElement);
-    }
-    function findFirstBlazorBlockStart(html) {
-      const match = BLAZOR_SSR_START_RE.exec(html);
-      return match ? match.index : -1;
-    }
-    function extractNextSafeStreamingUnit(buffer, isFinal) {
-      if (findFirstBlazorBlockStart(buffer) !== 0) {
-        return null;
-      }
-      const lower = buffer.toLowerCase();
-      const sentinelStart = lower.indexOf(BLAZOR_SSR_END_CLOSE);
-      if (sentinelStart < 0) {
-        return null;
-      }
-      const sentinelEnd = sentinelStart + BLAZOR_SSR_END_CLOSE.length;
-      let consumed = sentinelEnd;
-      const afterSentinel = buffer.slice(consumed);
-      const wsMatch = afterSentinel.match(/^\s*/);
-      consumed += wsMatch ? wsMatch[0].length : 0;
-      let htmlForSink = buffer.slice(0, consumed);
-      const remainder = buffer.slice(consumed);
-      const remainderLower = remainder.toLowerCase();
-      const closeLower = BLAZOR_SSR_CLOSE.toLowerCase();
-      if (remainderLower.startsWith(closeLower)) {
-        htmlForSink += buffer.slice(consumed, consumed + BLAZOR_SSR_CLOSE.length);
-        consumed += BLAZOR_SSR_CLOSE.length;
-        return { htmlForSink, consumed, syntheticClose: false };
-      }
-      if (!isFinal && remainder.length > 0 && closeLower.startsWith(remainderLower)) {
-        return null;
-      }
-      htmlForSink += BLAZOR_SSR_CLOSE;
-      return { htmlForSink, consumed, syntheticClose: true };
-    }
-    function stripLeadingStandaloneSsrClosers(buffer) {
-      let value = buffer;
-      while (true) {
-        const match = value.match(/^\s*<\/blazor-ssr>/i);
-        if (!match) {
-          break;
+        if (next.start > 0) {
+          const prefix = state.buffer.slice(0, next.start);
+          if (/\S/.test(prefix)) {
+            await htmx.swap({
+              sourceElement: ctx.sourceElement,
+              target: ctx.target,
+              text: prefix,
+              swap: "beforeend",
+              transition: false,
+              response: ctx.response,
+              hx: ctx.hx,
+              push: ctx.push,
+              replace: ctx.replace
+            });
+          }
+          state.buffer = state.buffer.slice(next.start);
+          continue;
         }
-        value = value.slice(match[0].length);
+        const blockHtml = state.buffer.slice(next.start, next.end);
+        state.buffer = state.buffer.slice(next.end);
+        appendStreamingBlockToSink(state, blockHtml);
+        await Promise.resolve();
+        htmx.trigger(ctx.sourceElement, "htmx:rizzy:stream:block", {});
       }
-      return value;
+    }
+    function findPrimarySplitPoint(buffer) {
+      const lower = buffer.toLowerCase();
+      const htmlEnd = lower.indexOf(HTML_CLOSE);
+      if (htmlEnd >= 0) return htmlEnd + HTML_CLOSE.length;
+      const ssrStart = lower.indexOf(SSR_OPEN);
+      if (ssrStart >= 0) return ssrStart;
+      return -1;
+    }
+    function findNextCompleteSsrBlock(buffer) {
+      const lower = buffer.toLowerCase();
+      const start = lower.indexOf(SSR_OPEN);
+      if (start < 0) return null;
+      const endStart = lower.indexOf(SSR_CLOSE, start);
+      if (endStart < 0) return null;
+      const end = endStart + SSR_CLOSE.length;
+      return { start, end };
+    }
+    async function doPrimarySwap(ctx, state, html) {
+      if (!html) {
+        state.didPrimarySwap = true;
+        return;
+      }
+      ctx.text = html;
+      await htmx.swap(ctx);
+      state.didPrimarySwap = true;
+      fireDeferredTriggerHeaders(ctx);
     }
     function appendStreamingBlockToSink(state, blockHtml) {
       const sink = getOrCreateSink(state);
       sink.insertAdjacentHTML("beforeend", blockHtml);
     }
     function getOrCreateSink(state) {
-      if (state.sink && state.sink.isConnected) {
-        return state.sink;
-      }
+      if (state.sink && state.sink.isConnected) return state.sink;
       const sink = document.createElement("div");
       sink.hidden = true;
       sink.style.display = "none";
@@ -274,29 +243,20 @@
         return;
       }
       const { startMarker, endMarker } = markers;
-      enableDomPreservation = !isCommentNodeInHead(startMarker);
-      if (enableDomPreservation) {
-        replaceMarkerRange(startMarker, endMarker, docFrag);
-      } else {
-        replaceMarkerRange(startMarker, endMarker, docFrag);
-      }
+      replaceMarkerRange(startMarker, endMarker, docFrag);
     }
     function replaceMarkerRange(startMarker, endMarker, docFrag) {
       const destinationRoot = endMarker.parentNode;
-      if (!destinationRoot) {
-        return;
-      }
-      const existingContent = new Range();
-      existingContent.setStart(startMarker, startMarker.textContent?.length || 0);
-      existingContent.setEnd(endMarker, 0);
-      existingContent.deleteContents();
+      if (!destinationRoot) return;
+      const existing = new Range();
+      existing.setStart(startMarker, startMarker.textContent?.length || 0);
+      existing.setEnd(endMarker, 0);
+      existing.deleteContents();
       const insertedElements = [];
-      while (docFrag.childNodes[0]) {
-        const node = docFrag.childNodes[0];
+      while (docFrag.firstChild) {
+        const node = docFrag.firstChild;
         destinationRoot.insertBefore(node, endMarker);
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          insertedElements.push(node);
-        }
+        if (node.nodeType === Node.ELEMENT_NODE) insertedElements.push(node);
       }
       for (const el of insertedElements) {
         htmx.process(el);
@@ -307,34 +267,15 @@
       const iterator = document.createNodeIterator(document, NodeFilter.SHOW_COMMENT);
       let startMarker = null;
       while (startMarker = iterator.nextNode()) {
-        if (startMarker.textContent === expectedStartText) {
-          break;
-        }
+        if (startMarker.textContent === expectedStartText) break;
       }
-      if (!startMarker) {
-        return null;
-      }
+      if (!startMarker) return null;
       const expectedEndText = `/bl:${componentIdAsString}`;
       let endMarker = null;
       while (endMarker = iterator.nextNode()) {
-        if (endMarker.textContent === expectedEndText) {
-          break;
-        }
+        if (endMarker.textContent === expectedEndText) break;
       }
       return endMarker ? { startMarker, endMarker } : null;
-    }
-    function isCommentNodeInHead(commentNode) {
-      if (!commentNode || commentNode.nodeType !== Node.COMMENT_NODE) {
-        return false;
-      }
-      let currentNode = commentNode.parentNode;
-      while (currentNode) {
-        if (currentNode === document.head) {
-          return true;
-        }
-        currentNode = currentNode.parentNode;
-      }
-      return false;
     }
     function handleControlTemplate(node) {
       const type = node.getAttribute("type");
@@ -342,9 +283,7 @@
       switch (type) {
         case "redirection":
         case "not-found":
-          if (text) {
-            location.replace(text);
-          }
+          if (text) location.replace(text);
           break;
         case "error":
           document.body.textContent = text || "Error";
@@ -352,24 +291,14 @@
       }
     }
     function applySimpleResponseOverrides(ctx) {
-      if (!ctx?.hx) {
-        return;
-      }
-      if (ctx.hx.retarget) {
-        ctx.target = ctx.hx.retarget;
-      }
-      if (ctx.hx.reswap) {
-        ctx.swap = ctx.hx.reswap;
-      }
-      if (ctx.hx.reselect) {
-        ctx.select = ctx.hx.reselect;
-      }
+      if (!ctx?.hx) return;
+      if (ctx.hx.retarget) ctx.target = ctx.hx.retarget;
+      if (ctx.hx.reswap) ctx.swap = ctx.hx.reswap;
+      if (ctx.hx.reselect) ctx.select = ctx.hx.reselect;
       fireSimpleTriggerHeader(ctx.hx.trigger, ctx.sourceElement);
     }
     function handleImmediateResponseActions(ctx) {
-      if (!ctx?.hx) {
-        return false;
-      }
+      if (!ctx?.hx) return false;
       if (ctx.hx.refresh === "true") {
         location.reload();
         return true;
@@ -387,18 +316,17 @@
           }
         } catch {
         }
-        htmx.ajax("GET", path, {
-          source: ctx.sourceElement,
-          target: ctx.target
-        });
+        htmx.ajax("GET", path, { source: ctx.sourceElement, target: ctx.target });
         return true;
       }
       return false;
     }
+    function fireDeferredTriggerHeaders(ctx) {
+      fireSimpleTriggerHeader(ctx?.hx?.triggerafterswap, ctx?.sourceElement);
+      fireSimpleTriggerHeader(ctx?.hx?.triggeraftersettle, ctx?.sourceElement);
+    }
     function fireSimpleTriggerHeader(rawValue, defaultTarget) {
-      if (!rawValue) {
-        return;
-      }
+      if (!rawValue) return;
       try {
         if (rawValue.trim().startsWith("{")) {
           const obj = JSON.parse(rawValue);
@@ -415,9 +343,7 @@
       }
       rawValue.split(",").forEach((name2) => {
         const evt = name2.trim();
-        if (evt) {
-          htmx.trigger(defaultTarget, evt, {});
-        }
+        if (evt) htmx.trigger(defaultTarget, evt, {});
       });
     }
     function setStreamState(elt, state) {
@@ -444,6 +370,8 @@
       cleanupStreamState(state, reason || "cancelled");
     }
     function cleanupStreamState(state, reason) {
+      if (!state || state.cleanedUp) return;
+      state.cleanedUp = true;
       state.cancelled = true;
       try {
         state.reader?.cancel?.();
