@@ -1,8 +1,8 @@
 ﻿using Bunit;
-using FluentAssertions.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Rizzy;
 using Rizzy.Components;
 using Rizzy.FluentAssertions;
 using Rizzy.Htmx;
@@ -12,6 +12,11 @@ namespace Rizzy.Configuration;
 
 public class HtmxConfigHeadOutletTest : BunitContext
 {
+    private sealed class TestNonceProvider(string nonce) : IRizzyNonceProvider
+    {
+        public string GetNonce() => nonce;
+    }
+
     [Fact]
     public void HtmxConfig_serializer()
     {
@@ -27,41 +32,24 @@ public class HtmxConfigHeadOutletTest : BunitContext
         {
             config.AntiforgeryStrategy = AntiforgeryStrategy.None;
         });
-        Services.AddScoped<IRizzyNonceProvider, RizzyNonceProvider>();
+        Services.AddScoped<IRizzyNonceProvider>(_ => new TestNonceProvider("test-nonce"));
 
         Services.Configure<HtmxConfig>(config =>
         {
-            config.AddedClass = "added-class";
-            config.AllowEval = true;
-            config.AllowScriptTags = true;
-            config.AttributesToSettle = ["attr1", "attr2"];
             config.DefaultFocusScroll = true;
             config.DefaultSettleDelay = TimeSpan.FromHours(1);
-            config.DefaultSwapDelay = TimeSpan.FromMinutes(1);
-            config.DefaultSwapStyle = SwapStyle.beforebegin;
-            config.DisableSelector = "disable-selector";
-            config.GetCacheBusterParam = true;
-            config.GlobalViewTransitions = true;
-            config.HistoryCacheSize = 1234;
-            config.HistoryEnabled = true;
-            config.IgnoreTitle = true;
-            config.IncludeIndicatorStyles = true;
+            config.DefaultSwap = SwapStyle.beforebegin;
+            config.DefaultTimeout = TimeSpan.FromSeconds(30);
+            config.History = true;
+            config.ImplicitInheritance = true;
+            config.IncludeIndicatorCSS = true;
             config.IndicatorClass = "indicator-class";
             config.InlineScriptNonce = "inline-script-nonce";
             config.InlineStyleNonce = "inline-style-nonce";
-            config.MethodsThatUseUrlParams = ["GET", "POST", "DELETE"];
-            config.RefreshOnHistoryMiss = true;
+            config.Mode = "same-origin";
+            config.NoSwap = ["204", "4xx", "5xx"];
             config.RequestClass = "request-class";
-            config.ScrollBehavior = ScrollBehavior.smooth;
-            config.ScrollIntoViewOnBoost = true;
-            config.SelfRequestsOnly = true;
-            config.SettlingClass = "settling-class";
-            config.SwappingClass = "swapping-class";
-            config.Timeout = TimeSpan.FromSeconds(30);
-            config.UseTemplateFragments = true;
-            config.WithCredentials = true;
-            config.WsBinaryType = "ws-binary-type";
-            config.WsReconnectDelay = "full-jitter";
+            config.Transitions = true;
         });
 
         var accessor = new MockHttpContextAccessor(Services);
@@ -71,48 +59,31 @@ public class HtmxConfigHeadOutletTest : BunitContext
 
         var meta = cut.Find("meta");
         meta.GetAttribute("name").Should().Be("htmx-config");
-        meta.GetAttribute("content").Should().BeJsonSemanticallyEqualTo("""
+
+        var expectedContent = $$"""
             {
-                "addedClass": "added-class",
-                "allowEval": true,
-                "allowScriptTags": true,
-                "attributesToSettle": [
-                    "attr1",
-                    "attr2"
-                ],
                 "defaultFocusScroll": true,
-                "defaultSwapStyle": "beforebegin",
-                "defaultSwapDelay": 60000,
+                "defaultSwap": "beforebegin",
                 "defaultSettleDelay": 3600000,
-                "documentNonce": accessor.HttpContext!.GetRizzyNonceProvider().GetNonce(),
-                "disableSelector": "disable-selector",
-                "getCacheBusterParam": true,
-                "globalViewTransitions": true,
-                "historyCacheSize": 1234,
-                "historyEnabled": true,
-                "ignoreTitle": true,
-                "includeIndicatorStyles": true,
+                "defaultTimeout": 30000,
+                "documentNonce": "test-nonce",
+                "history": true,
+                "implicitInheritance": true,
+                "includeIndicatorCSS": true,
                 "indicatorClass": "indicator-class",
                 "inlineScriptNonce": "inline-script-nonce",
                 "inlineStyleNonce": "inline-style-nonce",
-                "methodsThatUseUrlParams": [
-                    "GET",
-                    "POST",
-                    "DELETE"
+                "mode": "same-origin",
+                "noSwap": [
+                    "204",
+                    "4xx",
+                    "5xx"
                 ],
-                "refreshOnHistoryMiss": true,
                 "requestClass": "request-class",
-                "scrollBehavior": "smooth",
-                "scrollIntoViewOnBoost": true,
-                "selfRequestsOnly": true,
-                "settlingClass": "settling-class",
-                "swappingClass": "swapping-class",
-                "timeout": 30000,
-                "useTemplateFragments": true,
-                "withCredentials": true,
-                "wsBinaryType": "ws-binary-type",
-                "wsReconnectDelay": "full-jitter"
+                "transitions": true
             }
-            """);
+            """;
+
+        meta.GetAttribute("content").Should().BeJsonSemanticallyEqualTo(expectedContent);
     }
 }
