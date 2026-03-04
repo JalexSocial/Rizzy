@@ -121,6 +121,30 @@ public record class HtmxConfig
     public object[]? NoSwap { get; set; }
 
 
+    /// <summary>
+    /// Attributes to ignore when morphing. Defaults to["data-htmx-powered"].
+    /// </summary>
+    [JsonPropertyName("morphIgnore")]
+    public string[]? MorphIgnore { get; set; }
+
+    /// <summary>
+    /// Sibling scan limit during morphing. Defaults to 10.
+    /// </summary>
+    [JsonPropertyName("morphScanLimit")]
+    public int? MorphScanLimit { get; set; }
+
+    /// <summary>
+    /// CSS selector for elements to skip morphing.
+    /// </summary>
+    [JsonPropertyName("morphSkip")]
+    public string? MorphSkip { get; set; }
+
+    /// <summary>
+    /// CSS selector for elements whose children skip morphing.
+    /// </summary>
+    [JsonPropertyName("morphSkipChildren")]
+    public string? MorphSkipChildren { get; set; }
+
     [JsonInclude, JsonPropertyName("antiforgery")]
     internal AntiForgeryConfiguration? Antiforgery { get; set; } = null;
 

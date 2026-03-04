@@ -40,7 +40,7 @@ public sealed class HtmxRequestAttribute : ActionFilterAttribute, IActionConstra
 
         // Check if the request is from HTMX and, if a Target is specified, ensure it matches.
         bool isHtmxRequest = htmxRequest.IsHtmx;
-        bool isTargetMatch = Target == null || htmxRequest.Target == Target;
+        bool isTargetMatch = Target == null || htmxRequest.TargetId == Target;
 
         return isHtmxRequest && isTargetMatch;
     }

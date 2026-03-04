@@ -20,6 +20,13 @@ public static class SwapStyleExtensions
             SwapStyle.afterend => Constants.SwapStyles.AfterEnd,
             SwapStyle.delete => Constants.SwapStyles.Delete,
             SwapStyle.none => Constants.SwapStyles.None,
+            SwapStyle.innerMorph => Constants.SwapStyles.InnerMorph,
+            SwapStyle.outerMorph => Constants.SwapStyles.OuterMorph,
+            SwapStyle.textContent => Constants.SwapStyles.TextContent,
+            SwapStyle.before => Constants.SwapStyles.Before,
+            SwapStyle.after => Constants.SwapStyles.After,
+            SwapStyle.prepend => Constants.SwapStyles.Prepend,
+            SwapStyle.append => Constants.SwapStyles.Append,
             SwapStyle.Default => Constants.SwapStyles.Default,
             _ => throw new SwitchExpressionException(swapStyle),
         };

@@ -34,6 +34,9 @@ internal static class Constants
     {
         internal const string Prefix = "hx-";
 
+        public const string InheritedModifier = ":inherited";
+        public const string AppendModifier = ":append";
+
         public const string Id = "id";
 
         public const string HxGet = "hx-get";
@@ -85,6 +88,15 @@ internal static class Constants
     /// <summary>
     /// Htmx swap style values.
     /// </summary>
+
+    public static class Elements
+    {
+        /// <summary>
+        /// HTMX 4 explicit tag for Out-of-Band swaps
+        /// </summary>
+        public const string HxPartial = "hx-partial";
+    }
+
     public static class SwapStyles
     {
         public const string InnerHTML = "innerHTML";
@@ -95,6 +107,13 @@ internal static class Constants
         public const string AfterEnd = "afterend";
         public const string Delete = "delete";
         public const string None = "none";
+        public const string InnerMorph = "innerMorph";
+        public const string OuterMorph = "outerMorph";
+        public const string TextContent = "textContent";
+        public const string Before = "before";
+        public const string After = "after";
+        public const string Prepend = "prepend";
+        public const string Append = "append";
         public const string Default = "";
     }
 }
