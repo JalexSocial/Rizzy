@@ -2,7 +2,23 @@
   "name": "@jalexsocial/rizzy",
   "version": "5.0.0",
   "description": "Client library for Asp.net Rizzy",
-  "main": "dist/js/rizzy.js",
+  "main": "./dist/js/rizzy.js",
+  "module": "./dist/js/rizzy.es.mjs",
+
+  "exports": {
+    ".": {
+      "import": "./dist/js/rizzy.es.mjs",
+      "require": "./dist/js/rizzy.js"
+    },
+    "./min": "./dist/js/rizzy.min.js"
+  },
+
+  "unpkg": "./dist/js/rizzy.min.js",
+  "jsdelivr": "./dist/js/rizzy.min.js",
+
+  "files": ["dist/"],
+  "sideEffects": true,
+  "publishConfig": { "access": "public" },
   "scripts": {
     "build": "npm run build:dev && npm run build:prod",
     "build:dev": "vite build --mode development",

@@ -31,7 +31,7 @@
         htmx_after_request: function (_elt, detail) {
             let documentNonce = htmx.config.documentNonce ?? htmx.config.inlineScriptNonce;
             if (!documentNonce) {
-                console.warn("rizzy-nonce extension loaded but no nonce found for document. Inline scripts may be blocked.");
+                // console.warn("rizzy-nonce extension loaded but no nonce found for document. Inline scripts may be blocked.");
                 documentNonce = "";
             }
 
