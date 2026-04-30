@@ -24,22 +24,6 @@ public static class Trigger
     public static TriggerModifierBuilder OnEvent(string eventName) => new TriggerBuilder().OnEvent(eventName);
 
     /// <summary>
-    /// [Obsolete for HTMX 4]
-    /// HTMX 4's SSE extension triggers native DOM events based on the payload event name.
-    /// Use <see cref="OnEvent(string)"/> instead.
-    /// </summary>
-    /// <param name="sseEventName">The name of the SSE event.</param>
-    /// <returns>A <see cref="TriggerModifierBuilder"/> instance to allow further configuration of the trigger.</returns>
-    /// <example>
-    /// <code>
-    /// Trigger.Sse("message")
-    /// // Resulting hx-trigger: <![CDATA[<div hx-get="/updates" hx-trigger="sse:message">Update Me</div>]]>
-    /// </code>
-    /// </example>
-    [Obsolete("In HTMX 4, the SSE extension fires native events directly. Use Trigger.OnEvent(eventName) instead.")]
-    public static TriggerModifierBuilder Sse(string sseEventName) => new TriggerBuilder().Sse(sseEventName);
-
-    /// <summary>
     /// Specifies that the trigger occurs on page load by setting the event name <c>hx-trigger="load"</c>.
     /// </summary>
     /// <remarks>

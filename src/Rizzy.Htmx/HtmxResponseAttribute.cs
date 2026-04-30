@@ -54,10 +54,6 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     /// </summary>
     public string? Retarget { get; set; }
 
-    /// <summary>
-    /// Sets return status code to stop an ongoing polling request
-    /// </summary>
-    public bool StopPolling { get; set; }
 
     /// <summary>
     /// Chooses which part of the response is used for the swap, using a CSS selector.
@@ -87,8 +83,6 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
         if (Reswap != null) htmxResponse.Reswap((SwapStyle)Reswap, null);
         if (!string.IsNullOrEmpty(Retarget)) htmxResponse.Retarget(Retarget);
         if (!string.IsNullOrEmpty(Reselect)) htmxResponse.Reselect(Reselect);
-        if (StopPolling)
-            context.HttpContext.Response.StatusCode = HtmxStatusCodes.StopPolling;
     }
 
     /// <summary>

@@ -114,4 +114,12 @@ public class HtmxRequestTests
         // Assert
         Assert.Equal(expectedRequestType, requestType);
     }
+    [Fact]
+    public void Target_TagId_ParsesTargetId()
+    {
+        _context.Request.Headers[HtmxRequestHeaderNames.Target] = "div#panel";
+        var req = new HtmxRequest(_context);
+        req.Target.Should().Be("div#panel");
+        req.TargetId.Should().Be("panel");
+    }
 }

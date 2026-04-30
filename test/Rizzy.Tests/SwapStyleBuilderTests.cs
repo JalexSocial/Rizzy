@@ -2,7 +2,7 @@ using Rizzy.Htmx;
 
 namespace Rizzy.Tests;
 
-public class SwapStyleBuilderTests
+public partial class SwapStyleBuilderTests
 {
     [Fact]
     public void SwapStyleBuilder_InitializeAndBuild_ReturnsCorrectValues()
@@ -83,7 +83,7 @@ public class SwapStyleBuilderTests
 
         var modifiers = sut.ShowOn(ScrollDirection.top, selector).Build();
 
-        modifiers.Should().Be("show:#dynamic-area:top");
+        modifiers.Should().Be("show:top showTarget:#dynamic-area");
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class SwapStyleBuilderTests
 
         var modifiers = sut.ShowWindow(ScrollDirection.top).Build();
 
-        modifiers.Should().Be("show:window:top");
+        modifiers.Should().Be("show:top showTarget:window");
     }
 
     [Fact]
@@ -129,7 +129,7 @@ public class SwapStyleBuilderTests
 
         var modifiers = sut.ShowOn(ScrollDirection.bottom, selector).Build();
 
-        modifiers.Should().Be("show:#element-id:bottom");
+        modifiers.Should().Be("show:bottom showTarget:#element-id");
     }
 
     [Fact]
@@ -139,7 +139,7 @@ public class SwapStyleBuilderTests
 
         var modifiers = sut.ShowWindow(ScrollDirection.bottom).Build();
 
-        modifiers.Should().Be("show:window:bottom");
+        modifiers.Should().Be("show:bottom showTarget:window");
     }
 
     [Fact]
@@ -195,4 +195,11 @@ public class SwapStyleBuilderTests
 
         modifiers.Should().Be("settle:250ms show:bottom");
     }
+}
+
+
+public partial class SwapStyleBuilderTests
+{
+    [Fact] public void Scroll_WithSelector() => new SwapStyleBuilder(SwapStyle.innerHTML).Scroll(ScrollDirection.top, ".item").Build().Should().Be("innerHTML scroll:top scrollTarget:.item");
+    [Fact] public void ShowWindow_Bottom() => new SwapStyleBuilder(SwapStyle.innerHTML).ShowWindow(ScrollDirection.bottom).Build().Should().Be("innerHTML show:bottom showTarget:window");
 }

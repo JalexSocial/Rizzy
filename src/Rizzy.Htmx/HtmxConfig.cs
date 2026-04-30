@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Rizzy.Htmx.Serialization;
 
 namespace Rizzy.Htmx;
 
@@ -23,7 +24,8 @@ public record class HtmxConfig
     /// Defaults to <see langword="true" /> if this property is null. really only useful for testing
     /// </summary>
     [JsonPropertyName("history")]
-    public bool? History { get; set; }
+    [JsonConverter(typeof(HtmxHistoryModeJsonConverter))]
+    public HtmxHistoryMode? History { get; set; }
 
     /// <summary>
     /// Defaults to <see cref="SwapStyle.innerHTML"/> if this property is null.
@@ -173,5 +175,12 @@ public record class HtmxConfig
     /// </summary>
     [JsonPropertyName("prefix")]
     public string? Prefix { get; set; }
+
+    /// <summary>
+    /// Enables logging of all htmx lifecycle events to the browser console.
+    /// Useful for debugging htmx behavior.
+    /// </summary>
+    [JsonPropertyName("logAll")]
+    public bool? LogAll { get; set; }
 
 }

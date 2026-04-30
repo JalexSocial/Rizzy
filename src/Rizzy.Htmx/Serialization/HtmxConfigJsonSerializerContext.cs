@@ -12,6 +12,7 @@ namespace Rizzy.Htmx.Serialization;
         typeof(TimespanMillisecondJsonConverter),
         typeof(SwapStyleEnumConverter),
         typeof(JsonCamelCaseStringEnumConverter<ScrollBehavior>),
+        typeof(HtmxHistoryModeJsonConverter),
     ])]
 [JsonSerializable(typeof(HtmxConfig))]
 [JsonSerializable(typeof(LocationTarget))]

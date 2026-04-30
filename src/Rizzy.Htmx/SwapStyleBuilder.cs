@@ -78,10 +78,12 @@ public sealed class SwapStyleBuilder
         switch (direction)
         {
             case ScrollDirection.top:
-                specification.Scroll = cssSelector is null ? "top" : $"{cssSelector}:top";
+                specification.Scroll = "top";
+                specification.ScrollTarget = cssSelector;
                 break;
             case ScrollDirection.bottom:
-                specification.Scroll = cssSelector is null ? "bottom" : $"{cssSelector}:bottom";
+                specification.Scroll = "bottom";
+                specification.ScrollTarget = cssSelector;
                 break;
         }
 
@@ -126,7 +128,7 @@ public sealed class SwapStyleBuilder
     public SwapStyleBuilder IgnoreTitle(bool ignore = true)
     {
         // ignoreTitle
-        specification.IgnoreTitle = ignore ? "true" : "false";
+        specification.IgnoreTitle = ignore;
 
         return this;
     }
@@ -153,7 +155,7 @@ public sealed class SwapStyleBuilder
     public SwapStyleBuilder Transition(bool show)
     {
         // transition
-        specification.Transition = show ? "true" : "false";
+        specification.Transition = show;
 
         return this;
     }
@@ -191,7 +193,7 @@ public sealed class SwapStyleBuilder
     public SwapStyleBuilder ScrollFocus(bool scroll = true)
     {
         // focus-scroll
-        specification.FocusScroll = scroll ? "true" : "false";
+        specification.FocusScroll = scroll;
 
         return this;
     }
@@ -223,10 +225,12 @@ public sealed class SwapStyleBuilder
         switch (direction)
         {
             case ScrollDirection.top:
-                specification.Show = cssSelector is null ? "top" : $"{cssSelector}:top";
+                specification.Show = "top";
+                specification.ShowTarget = cssSelector;
                 break;
             case ScrollDirection.bottom:
-                specification.Show = cssSelector is null ? "bottom" : $"{cssSelector}:bottom";
+                specification.Show = "bottom";
+                specification.ShowTarget = cssSelector;
                 break;
         }
 
@@ -269,10 +273,12 @@ public sealed class SwapStyleBuilder
         switch (direction)
         {
             case ScrollDirection.top:
-                specification.Show = "window:top";
+                specification.Show = "top";
+                specification.ShowTarget = "window";
                 break;
             case ScrollDirection.bottom:
-                specification.Show = "window:bottom";
+                specification.Show = "bottom";
+                specification.ShowTarget = "window";
                 break;
         }
 
@@ -313,6 +319,7 @@ public sealed class SwapStyleBuilder
     public SwapStyleBuilder ShowNone()
     {
         specification.Show = "none";
+        specification.ShowTarget = null;
 
         return this;
     }
@@ -339,14 +346,18 @@ public sealed class SwapStyleBuilder
             value += " settle:" + specification.SettleDelay;
         if (specification.Scroll != null)
             value += " scroll:" + specification.Scroll;
-        if (specification.IgnoreTitle != null)
-            value += " ignoreTitle:" + specification.IgnoreTitle;
-        if (specification.Transition != null)
-            value += " transition:" + specification.Transition;
-        if (specification.FocusScroll != null)
-            value += " focus-scroll:" + specification.FocusScroll;
+        if (specification.ScrollTarget != null)
+            value += " scrollTarget:" + specification.ScrollTarget;
+        if (specification.IgnoreTitle.HasValue)
+            value += " ignoreTitle:" + specification.IgnoreTitle.Value.ToString().ToLowerInvariant();
+        if (specification.Transition.HasValue)
+            value += " transition:" + specification.Transition.Value.ToString().ToLowerInvariant();
+        if (specification.FocusScroll.HasValue)
+            value += " focus-scroll:" + specification.FocusScroll.Value.ToString().ToLowerInvariant();
         if (specification.Show != null)
             value += " show:" + specification.Show;
+        if (specification.ShowTarget != null)
+            value += " showTarget:" + specification.ShowTarget;
 
         return value.TrimStart();
     }
