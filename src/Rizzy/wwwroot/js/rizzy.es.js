@@ -1,254 +1,386 @@
 (function() {
-  htmx.defineExtension(
-    "rizzy-nonce",
-    {
-      transformResponse: function(text, xhr, elt) {
-        let documentNonce = htmx.config.documentNonce ?? htmx.config.inlineScriptNonce;
-        if (!documentNonce) {
-          console.warn("rizzy-nonce extension loaded but no no nonce found for document. Inline scripts may be blocked.");
-          documentNonce = "";
-        }
-        htmx.config.refreshOnHistoryMiss = true;
-        let nonce = xhr?.getResponseHeader("HX-Nonce");
-        if (!nonce) {
-          const csp = xhr?.getResponseHeader("content-security-policy");
-          if (csp) {
-            const cspMatch = csp.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);
-            if (cspMatch) {
-              nonce = cspMatch[2];
-            }
-          }
-        }
-        if (xhr && window.location.hostname) {
-          const responseURL = new URL(xhr.responseURL);
-          if (responseURL.hostname !== window.location.hostname) {
-            nonce = "";
-          }
-        }
-        nonce ?? (nonce = "");
-        return this.processUnsafeHtml(text, documentNonce, nonce);
-      },
-      processUnsafeHtml: function(text, documentNonce, newScriptNonce) {
-        if (documentNonce && newScriptNonce)
-          text = text.replaceAll(newScriptNonce, documentNonce);
-        const parser = new DOMParser();
-        try {
-          let doc = parser.parseFromString(text, "text/html");
-          if (doc) {
-            Array.from(doc.querySelectorAll('[hx-ext*="ignore:rizzy-nonce"], [data-hx-ext*="ignore:rizzy-nonce"]')).forEach((elt) => {
-              elt.remove();
-            });
-            const elements = doc.querySelectorAll("script, style, link");
-            elements.forEach((elt) => {
-              const nonce = elt.getAttribute("nonce");
-              if (nonce !== documentNonce) {
-                elt.remove();
-              }
-            });
-            return doc.documentElement.outerHTML;
-          }
-        } catch (_) {
-        }
-        return "";
-      }
+  function processUnsafeHtml(text, documentNonce, newScriptNonce) {
+    if (documentNonce && newScriptNonce) {
+      text = text.replaceAll(newScriptNonce, documentNonce);
     }
-  );
+    const parser = new DOMParser();
+    try {
+      const doc = parser.parseFromString(text, "text/html");
+      if (doc) {
+        const elements = doc.querySelectorAll("script, style, link");
+        elements.forEach((elt) => {
+          const nonce = elt.getAttribute("nonce");
+          if (nonce !== documentNonce) {
+            elt.remove();
+          }
+        });
+        return doc.documentElement.outerHTML;
+      }
+    } catch (_) {
+    }
+    return "";
+  }
+  htmx.registerExtension("rizzy-nonce", {
+    htmx_after_request: function(_elt, detail) {
+      let documentNonce = htmx.config.documentNonce ?? htmx.config.inlineScriptNonce;
+      if (!documentNonce) {
+        console.warn("rizzy-nonce extension loaded but no nonce found for document. Inline scripts may be blocked.");
+        documentNonce = "";
+      }
+      let nonce = detail?.ctx?.response?.headers?.get("HX-Nonce");
+      if (!nonce) {
+        const csp = detail?.ctx?.response?.headers?.get("content-security-policy");
+        if (csp) {
+          const cspMatch = csp.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);
+          if (cspMatch) {
+            nonce = cspMatch[2];
+          }
+        }
+      }
+      nonce ?? (nonce = "");
+      if (typeof detail?.ctx?.text === "string") {
+        detail.ctx.text = processUnsafeHtml(detail.ctx.text, documentNonce, nonce);
+      }
+      return true;
+    }
+  });
 })();
 (function() {
-  var api;
-  var enableDomPreservation = true;
-  class blazorStreamingUpdate extends HTMLElement {
-    connectedCallback() {
-      const blazorSsrElement = this.parentNode;
-      blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
-      blazorSsrElement.childNodes.forEach((node) => {
-        if (node instanceof HTMLTemplateElement) {
+  const STREAM_STATE_KEY = "_rizzyStreaming";
+  const STREAM_SINK_ATTR = "data-rizzy-stream-sink";
+  const HTML_CLOSE = "</html>";
+  const SSR_OPEN = "<blazor-ssr";
+  const SSR_CLOSE = "</blazor-ssr>";
+  ensureBlazorSsrEndElement();
+  htmx.registerExtension("rizzy-streaming", {
+    htmx_before_request(elt, detail) {
+      const source = detail?.ctx?.sourceElement || elt;
+      cancelStream(source, "superseded");
+      return true;
+    },
+    htmx_before_response(elt, detail) {
+      const ctx = detail?.ctx;
+      const response = ctx?.response?.raw;
+      if (!ctx || !response?.body) return true;
+      const contentType = response.headers.get("Content-Type") || "";
+      if (!/text\/html/i.test(contentType)) return true;
+      applySimpleResponseOverrides(ctx);
+      if (handleImmediateResponseActions(ctx)) return false;
+      startStreamingHandler(ctx).catch((error) => {
+        cancelStream(ctx.sourceElement, "error");
+        htmx.trigger(ctx.sourceElement, "htmx:error", { ctx, error });
+      });
+      return false;
+    },
+    htmx_before_cleanup(elt) {
+      cancelStream(elt, "cleanup");
+      return true;
+    }
+  });
+  function ensureBlazorSsrEndElement() {
+    if (customElements.get("blazor-ssr-end")) return;
+    customElements.define("blazor-ssr-end", class BlazorStreamingUpdate extends HTMLElement {
+      connectedCallback() {
+        const blazorSsrElement = this.parentNode;
+        if (!blazorSsrElement || blazorSsrElement.nodeType !== Node.ELEMENT_NODE) return;
+        blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
+        const children = Array.from(blazorSsrElement.childNodes);
+        for (const node of children) {
+          if (!(node instanceof HTMLTemplateElement)) continue;
           const componentId = node.getAttribute("blazor-component-id");
           if (componentId) {
             insertStreamingContentIntoDocument(componentId, node.content);
+          } else {
+            handleControlTemplate(node);
           }
         }
-      });
-      htmx?.process(document.body);
-    }
-  }
-  htmx.defineExtension(
-    "rizzy-streaming",
-    {
-      /**
-       * Init saves the provided reference to the internal HTMX API.
-       *
-       * @param {import("../htmx").HtmxInternalApi} api
-       * @returns void
-       */
-      init: function(apiRef) {
-        api = apiRef;
-        if (htmx.blazorSwapSsr == void 0) {
-          if (customElements.get("blazor-ssr-end") === void 0) {
-            customElements.define("blazor-ssr-end", blazorStreamingUpdate);
-          }
-          htmx.blazorSwapSsr = blazorSwapSsr;
-        }
-      },
-      onEvent: function(name2, evt) {
-        if (name2 === "htmx:afterOnLoad") {
-          htmx?.process(document.body);
-        } else if (name2 === "htmx:beforeRequest") {
-          var element = evt.detail.elt;
-          if (evt.detail.requestConfig.target) {
-            evt.detail.requestConfig.target.addEventListener(
-              "htmx:beforeSwap",
-              (e) => {
-              },
-              { once: true }
-            );
-          }
-          var last = 0;
-          var swapSpec = api.getSwapSpecification(element);
-          var xhr = evt.detail.xhr;
-          var cid = "ctr" + crypto.randomUUID();
-          xhr.addEventListener("readystatechange", () => {
-            if (xhr.readyState === 4) {
-              var container = document.getElementById(cid);
-              if (container != null)
-                unwrap(container);
-            }
-          });
-          xhr.addEventListener("progress", (e) => {
-            var container = document.getElementById(cid);
-            if (container == null) {
-              container = document.createElement("div");
-              container.id = cid;
-              swap(element, container.outerHTML, swapSpec, xhr);
-              swapSpec.swapStyle = "innerHTML";
-              container = document.getElementById(cid) ?? container;
-            }
-            let diff = e.currentTarget.response.substring(last);
-            swap(container, diff, swapSpec, xhr);
-            swapSpec.settleDelay = 0;
-            swapSpec.swapStyle = "beforeend";
-            last = e.loaded;
-          });
-        }
-        return true;
       }
-    }
-  );
-  function isCommentNodeInHead(commentNode) {
-    if (commentNode && commentNode.nodeType === Node.COMMENT_NODE) {
-      let currentNode = commentNode.parentNode;
-      while (currentNode !== null) {
-        if (currentNode === document.head) {
-          return true;
-        }
-        currentNode = currentNode.parentNode;
-      }
-    } else {
-      return false;
-    }
-    return false;
-  }
-  function blazorSwapSsr(start, end, docFrag, xhr) {
-    var newDiv = wrap(start, end, "ssr" + crypto.randomUUID());
-    var container = document.createElement("div");
-    container.appendChild(docFrag);
-    swap(newDiv, container.innerHTML, xhr);
-    unwrap(newDiv);
-  }
-  function wrap(start, end, id) {
-    var newDiv = document.createElement("div");
-    newDiv.id = id;
-    var currentNode = start.nextSibling;
-    while (currentNode && currentNode !== end) {
-      newDiv.appendChild(currentNode);
-      currentNode = start.nextSibling;
-    }
-    start.parentNode.insertBefore(newDiv, end);
-    return newDiv;
-  }
-  function unwrap(element) {
-    if (element.parentNode) {
-      while (element.firstChild) {
-        element.parentNode.insertBefore(element.firstChild, element);
-      }
-      element.parentNode.removeChild(element);
-    }
-  }
-  function swap(elt, content, swapSpec, xhr) {
-    api.withExtensions(elt, function(extension) {
-      content = extension.transformResponse(content, xhr, elt);
     });
-    swapSpec ?? (swapSpec = api.getSwapSpecification(elt));
-    var target = api.getTarget(elt);
-    var settleInfo = api.makeSettleInfo(elt);
-    api.swap(target, content, swapSpec);
-    settleInfo.elts.forEach(function(elt2) {
-      if (elt2.classList) {
-        elt2.classList.add(htmx.config.settlingClass);
-      }
-      api.triggerEvent(elt2, "htmx:beforeSettle");
-    });
-    if (swapSpec.settleDelay > 0) {
-      setTimeout(doSettle(settleInfo), swapSpec.settleDelay);
-    } else {
-      doSettle(settleInfo)();
-    }
   }
-  function doSettle(settleInfo) {
-    return function() {
-      settleInfo.tasks.forEach(function(task) {
-        task.call();
-      });
-      settleInfo.elts.forEach(function(elt) {
-        if (elt.classList) {
-          elt.classList.remove(htmx.config.settlingClass);
-        }
-        api.triggerEvent(elt, "htmx:afterSettle");
-      });
+  async function startStreamingHandler(ctx) {
+    const source = ctx.sourceElement;
+    const response = ctx.response.raw;
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    const state = {
+      sourceElement: source,
+      reader,
+      cancelled: false,
+      cleanedUp: false,
+      abortHandler: null,
+      sink: null,
+      buffer: "",
+      didPrimarySwap: false
     };
+    state.abortHandler = () => cancelStream(source, "abort");
+    source.addEventListener("htmx:abort", state.abortHandler);
+    setStreamState(source, state);
+    htmx.trigger(source, "htmx:rizzy:stream:open", { ctx });
+    try {
+      while (!state.cancelled) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        state.buffer += decoder.decode(value, { stream: true });
+        await drain(ctx, state, false);
+      }
+      state.buffer += decoder.decode();
+      await drain(ctx, state, true);
+    } finally {
+      cleanupStreamState(state, "ended");
+    }
+  }
+  async function drain(ctx, state, isFinal) {
+    while (!state.cancelled) {
+      if (!state.didPrimarySwap) {
+        const split = findPrimarySplitPoint(state.buffer);
+        if (split === -1) {
+          if (isFinal && state.buffer) {
+            await doPrimarySwap(ctx, state, state.buffer);
+            state.buffer = "";
+          }
+          return;
+        }
+        const initialHtml = state.buffer.slice(0, split);
+        await doPrimarySwap(ctx, state, initialHtml);
+        state.buffer = state.buffer.slice(split);
+        continue;
+      }
+      const next = findNextCompleteSsrBlock(state.buffer);
+      if (!next) {
+        if (isFinal) {
+          const tail = state.buffer.trim();
+          if (tail) {
+            await htmx.swap({
+              sourceElement: ctx.sourceElement,
+              target: ctx.target,
+              text: state.buffer,
+              swap: "beforeend",
+              transition: false,
+              response: ctx.response,
+              hx: ctx.hx,
+              push: ctx.push,
+              replace: ctx.replace
+            });
+          }
+          state.buffer = "";
+        }
+        return;
+      }
+      if (next.start > 0) {
+        const prefix = state.buffer.slice(0, next.start);
+        if (/\S/.test(prefix)) {
+          await htmx.swap({
+            sourceElement: ctx.sourceElement,
+            target: ctx.target,
+            text: prefix,
+            swap: "beforeend",
+            transition: false,
+            response: ctx.response,
+            hx: ctx.hx,
+            push: ctx.push,
+            replace: ctx.replace
+          });
+        }
+        state.buffer = state.buffer.slice(next.start);
+        continue;
+      }
+      const blockHtml = state.buffer.slice(next.start, next.end);
+      state.buffer = state.buffer.slice(next.end);
+      appendStreamingBlockToSink(state, blockHtml);
+      await Promise.resolve();
+      htmx.trigger(ctx.sourceElement, "htmx:rizzy:stream:block", {});
+    }
+  }
+  function findPrimarySplitPoint(buffer) {
+    const lower = buffer.toLowerCase();
+    const htmlEnd = lower.indexOf(HTML_CLOSE);
+    if (htmlEnd >= 0) return htmlEnd + HTML_CLOSE.length;
+    const ssrStart = lower.indexOf(SSR_OPEN);
+    if (ssrStart >= 0) return ssrStart;
+    return -1;
+  }
+  function findNextCompleteSsrBlock(buffer) {
+    const lower = buffer.toLowerCase();
+    const start = lower.indexOf(SSR_OPEN);
+    if (start < 0) return null;
+    const endStart = lower.indexOf(SSR_CLOSE, start);
+    if (endStart < 0) return null;
+    const end = endStart + SSR_CLOSE.length;
+    return { start, end };
+  }
+  async function doPrimarySwap(ctx, state, html) {
+    if (!html) {
+      state.didPrimarySwap = true;
+      return;
+    }
+    ctx.text = html;
+    await htmx.swap(ctx);
+    state.didPrimarySwap = true;
+    fireDeferredTriggerHeaders(ctx);
+  }
+  function appendStreamingBlockToSink(state, blockHtml) {
+    const sink = getOrCreateSink(state);
+    sink.insertAdjacentHTML("beforeend", blockHtml);
+  }
+  function getOrCreateSink(state) {
+    if (state.sink && state.sink.isConnected) return state.sink;
+    const sink = document.createElement("div");
+    sink.hidden = true;
+    sink.style.display = "none";
+    sink.setAttribute("aria-hidden", "true");
+    sink.setAttribute(STREAM_SINK_ATTR, "true");
+    document.body.appendChild(sink);
+    state.sink = sink;
+    return sink;
   }
   function insertStreamingContentIntoDocument(componentIdAsString, docFrag) {
     const markers = findStreamingMarkers(componentIdAsString);
-    if (markers) {
-      const { startMarker, endMarker } = markers;
-      enableDomPreservation = !isCommentNodeInHead(startMarker);
-      if (enableDomPreservation) {
-        blazorSwapSsr(startMarker, endMarker, docFrag);
-      } else {
-        const destinationRoot = endMarker.parentNode;
-        const existingContent = new Range();
-        existingContent.setStart(startMarker, startMarker.textContent.length);
-        existingContent.setEnd(endMarker, 0);
-        existingContent.deleteContents();
-        while (docFrag.childNodes[0]) {
-          destinationRoot.insertBefore(docFrag.childNodes[0], endMarker);
-        }
-      }
+    if (!markers) {
+      return;
+    }
+    const { startMarker, endMarker } = markers;
+    replaceMarkerRange(startMarker, endMarker, docFrag);
+  }
+  function replaceMarkerRange(startMarker, endMarker, docFrag) {
+    const destinationRoot = endMarker.parentNode;
+    if (!destinationRoot) return;
+    const existing = new Range();
+    existing.setStart(startMarker, startMarker.textContent?.length || 0);
+    existing.setEnd(endMarker, 0);
+    existing.deleteContents();
+    const insertedElements = [];
+    while (docFrag.firstChild) {
+      const node = docFrag.firstChild;
+      destinationRoot.insertBefore(node, endMarker);
+      if (node.nodeType === Node.ELEMENT_NODE) insertedElements.push(node);
+    }
+    for (const el of insertedElements) {
+      htmx.process(el);
     }
   }
   function findStreamingMarkers(componentIdAsString) {
     const expectedStartText = `bl:${componentIdAsString}`;
-    const iterator = document.createNodeIterator(
-      document,
-      NodeFilter.SHOW_COMMENT
-    );
+    const iterator = document.createNodeIterator(document, NodeFilter.SHOW_COMMENT);
     let startMarker = null;
     while (startMarker = iterator.nextNode()) {
-      if (startMarker.textContent === expectedStartText) {
-        break;
-      }
+      if (startMarker.textContent === expectedStartText) break;
     }
-    if (!startMarker) {
-      return null;
-    }
+    if (!startMarker) return null;
     const expectedEndText = `/bl:${componentIdAsString}`;
     let endMarker = null;
     while (endMarker = iterator.nextNode()) {
-      if (endMarker.textContent === expectedEndText) {
-        break;
-      }
+      if (endMarker.textContent === expectedEndText) break;
     }
     return endMarker ? { startMarker, endMarker } : null;
+  }
+  function handleControlTemplate(node) {
+    const type = node.getAttribute("type");
+    const text = (node.content.textContent || "").trim();
+    switch (type) {
+      case "redirection":
+      case "not-found":
+        if (text) location.replace(text);
+        break;
+      case "error":
+        document.body.textContent = text || "Error";
+        break;
+    }
+  }
+  function applySimpleResponseOverrides(ctx) {
+    if (!ctx?.hx) return;
+    if (ctx.hx.retarget) ctx.target = ctx.hx.retarget;
+    if (ctx.hx.reswap) ctx.swap = ctx.hx.reswap;
+    if (ctx.hx.reselect) ctx.select = ctx.hx.reselect;
+    fireSimpleTriggerHeader(ctx.hx.trigger, ctx.sourceElement);
+  }
+  function handleImmediateResponseActions(ctx) {
+    if (!ctx?.hx) return false;
+    if (ctx.hx.refresh === "true") {
+      location.reload();
+      return true;
+    }
+    if (ctx.hx.redirect) {
+      location.href = ctx.hx.redirect;
+      return true;
+    }
+    if (ctx.hx.location) {
+      let path = ctx.hx.location;
+      try {
+        if (path.trim().startsWith("{")) {
+          const obj = JSON.parse(path);
+          path = obj.path || path;
+        }
+      } catch {
+      }
+      htmx.ajax("GET", path, { source: ctx.sourceElement, target: ctx.target });
+      return true;
+    }
+    return false;
+  }
+  function fireDeferredTriggerHeaders(ctx) {
+    fireSimpleTriggerHeader(ctx?.hx?.triggerafterswap, ctx?.sourceElement);
+    fireSimpleTriggerHeader(ctx?.hx?.triggeraftersettle, ctx?.sourceElement);
+  }
+  function fireSimpleTriggerHeader(rawValue, defaultTarget) {
+    if (!rawValue) return;
+    try {
+      if (rawValue.trim().startsWith("{")) {
+        const obj = JSON.parse(rawValue);
+        for (const [name2, detail] of Object.entries(obj)) {
+          let target = defaultTarget;
+          if (detail && typeof detail === "object" && detail.target) {
+            target = htmx.find(detail.target) || defaultTarget;
+          }
+          htmx.trigger(target, name2, typeof detail === "object" ? detail : { value: detail });
+        }
+        return;
+      }
+    } catch {
+    }
+    rawValue.split(",").forEach((name2) => {
+      const evt = name2.trim();
+      if (evt) htmx.trigger(defaultTarget, evt, {});
+    });
+  }
+  function setStreamState(elt, state) {
+    if (!elt) return;
+    elt._htmx || (elt._htmx = {});
+    elt._htmx[STREAM_STATE_KEY] = state;
+  }
+  function getStreamState(elt) {
+    return elt?._htmx?.[STREAM_STATE_KEY] || null;
+  }
+  function clearStreamState(elt) {
+    if (elt?._htmx?.[STREAM_STATE_KEY]) {
+      delete elt._htmx[STREAM_STATE_KEY];
+    }
+  }
+  function cancelStream(elt, reason) {
+    const state = getStreamState(elt);
+    if (!state) return;
+    state.cancelled = true;
+    try {
+      state.reader?.cancel?.();
+    } catch {
+    }
+    cleanupStreamState(state, reason || "cancelled");
+  }
+  function cleanupStreamState(state, reason) {
+    if (!state || state.cleanedUp) return;
+    state.cleanedUp = true;
+    state.cancelled = true;
+    try {
+      state.reader?.cancel?.();
+    } catch {
+    }
+    if (state.abortHandler) {
+      state.sourceElement?.removeEventListener("htmx:abort", state.abortHandler);
+    }
+    if (state.sink?.isConnected) {
+      state.sink.remove();
+    }
+    clearStreamState(state.sourceElement);
+    htmx.trigger(state.sourceElement, "htmx:rizzy:stream:close", { reason });
   }
 })();
 var aspnetValidation = { exports: {} };
@@ -1447,10 +1579,12 @@ function requireAspnetValidation() {
   return aspnetValidation.exports;
 }
 var aspnetValidationExports = requireAspnetValidation();
-if (!document.body.attributes.__htmx_antiforgery) {
-  document.addEventListener("htmx:configRequest", (evt) => {
-    const { verb, parameters, headers } = evt.detail;
-    if (verb?.toUpperCase() === "GET") return;
+const INIT_KEY = "__rizzy_htmx_antiforgery_initialized";
+if (!document[INIT_KEY]) {
+  document[INIT_KEY] = true;
+  document.addEventListener("htmx:config:request", (evt) => {
+    const request = evt.detail?.ctx?.request;
+    if (!request || request.method?.toUpperCase() === "GET") return;
     const antiforgery = htmx.config?.antiforgery;
     if (!antiforgery) return;
     const { headerName, requestToken, formFieldName } = antiforgery;
@@ -1458,16 +1592,16 @@ if (!document.body.attributes.__htmx_antiforgery) {
       console.warn("Antiforgery configuration is missing both headerName and formFieldName. Token not added.");
       return;
     }
-    if (formFieldName && parameters[formFieldName]) return;
+    if (formFieldName && request.body && typeof request.body.has === "function" && request.body.has(formFieldName)) return;
     if (headerName) {
-      headers[headerName] = requestToken;
-    } else {
-      parameters[formFieldName] = requestToken;
+      request.headers[headerName] = requestToken;
+    } else if (formFieldName && request.body && typeof request.body.append === "function") {
+      request.body.append(formFieldName, requestToken);
     }
   });
-  document.addEventListener("htmx:afterOnLoad", (evt) => {
+  document.addEventListener("htmx:after:request", (evt) => {
     if (evt.detail.boosted) {
-      const responseText = evt.detail.xhr.responseText;
+      const responseText = evt.detail.ctx.text;
       const selector = "meta[name=htmx-config]";
       const startIndex = responseText.indexOf(`<meta name="htmx-config"`);
       const endIndex = responseText.indexOf(">", startIndex) + 1;
@@ -1504,7 +1638,6 @@ if (!document.body.attributes.__htmx_antiforgery) {
       }
     }
   });
-  document.body.attributes.__htmx_antiforgery = true;
 }
 let validation = new aspnetValidationExports.ValidationService();
 validation.bootstrap({ watch: true });

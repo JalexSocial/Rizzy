@@ -195,21 +195,18 @@ public class HtmxResponseTests : BunitContext
         context.Response.Headers[HtmxResponseHeaderNames.Reselect].Should().Equal([".new-selection"]);
     }
 
-    [Theory]
-    [InlineData(TriggerTiming.Default, HtmxResponseHeaderNames.Trigger)]
-    [InlineData(TriggerTiming.AfterSwap, HtmxResponseHeaderNames.TriggerAfterSwap)]
-    [InlineData(TriggerTiming.AfterSettle, HtmxResponseHeaderNames.TriggerAfterSettle)]
-    public void Trigger_without_details(TriggerTiming triggerTiming, string expectedHeaderKey)
+    [Fact]
+    public void Trigger_without_details()
     {
         // Arrange
         var context = CreateHttpContext();
         var response = context.Response.Htmx();
 
         // Act
-        response.Trigger("event1", timing: triggerTiming);
+        response.Trigger("event1");
 
         // Assert
-        context.Response.Headers[expectedHeaderKey]
+        context.Response.Headers[HtmxResponseHeaderNames.Trigger]
             .Should()
             .ContainSingle()
             .Which
@@ -217,22 +214,19 @@ public class HtmxResponseTests : BunitContext
             .Be("event1");
     }
 
-    [Theory]
-    [InlineData(TriggerTiming.Default, HtmxResponseHeaderNames.Trigger)]
-    [InlineData(TriggerTiming.AfterSwap, HtmxResponseHeaderNames.TriggerAfterSwap)]
-    [InlineData(TriggerTiming.AfterSettle, HtmxResponseHeaderNames.TriggerAfterSettle)]
-    public void Multiple_trigger_events_without_details(TriggerTiming triggerTiming, string expectedHeaderKey)
+    [Fact]
+    public void Multiple_trigger_events_without_details()
     {
         // Arrange
         var context = CreateHttpContext();
         var response = context.Response.Htmx();
 
         // Act
-        response.Trigger("event1", timing: triggerTiming);
-        response.Trigger("event2", timing: triggerTiming);
+        response.Trigger("event1");
+        response.Trigger("event2");
 
         // Assert
-        context.Response.Headers[expectedHeaderKey]
+        context.Response.Headers[HtmxResponseHeaderNames.Trigger]
             .Should()
             .ContainSingle()
             .Which
@@ -240,22 +234,19 @@ public class HtmxResponseTests : BunitContext
             .Be("event1,event2");
     }
 
-    [Theory]
-    [InlineData(TriggerTiming.Default, HtmxResponseHeaderNames.Trigger)]
-    [InlineData(TriggerTiming.AfterSwap, HtmxResponseHeaderNames.TriggerAfterSwap)]
-    [InlineData(TriggerTiming.AfterSettle, HtmxResponseHeaderNames.TriggerAfterSettle)]
-    public void Same_trigger_event_twice_without_details(TriggerTiming triggerTiming, string expectedHeaderKey)
+    [Fact]
+    public void Same_trigger_event_twice_without_details()
     {
         // Arrange
         var context = CreateHttpContext();
         var response = context.Response.Htmx();
 
         // Act
-        response.Trigger("event1", timing: triggerTiming);
-        response.Trigger("event1", timing: triggerTiming);
+        response.Trigger("event1");
+        response.Trigger("event1");
 
         // Assert
-        context.Response.Headers[expectedHeaderKey]
+        context.Response.Headers[HtmxResponseHeaderNames.Trigger]
             .Should()
             .ContainSingle()
             .Which
@@ -263,11 +254,8 @@ public class HtmxResponseTests : BunitContext
             .Be("event1");
     }
 
-    [Theory]
-    [InlineData(TriggerTiming.Default, HtmxResponseHeaderNames.Trigger)]
-    [InlineData(TriggerTiming.AfterSwap, HtmxResponseHeaderNames.TriggerAfterSwap)]
-    [InlineData(TriggerTiming.AfterSettle, HtmxResponseHeaderNames.TriggerAfterSettle)]
-    public void Trigger_DefaultObject_AddsTriggerHeaderWithJsonString(TriggerTiming triggerTiming, string expectedHeaderKey)
+    [Fact]
+    public void Trigger_DefaultObject_AddsTriggerHeaderWithJsonString()
     {
         // Arrange
         var context = CreateHttpContext();
@@ -275,10 +263,10 @@ public class HtmxResponseTests : BunitContext
         var triggerObject = new { level = "info", message = "Here Is A Message" };
 
         // Act
-        response.Trigger("showMessage", triggerObject, triggerTiming);
+        response.Trigger("showMessage", triggerObject);
 
         // Assert
-        context.Response.Headers[expectedHeaderKey]
+        context.Response.Headers[HtmxResponseHeaderNames.Trigger]
             .Should()
             .ContainSingle()
             .Which
@@ -288,23 +276,20 @@ public class HtmxResponseTests : BunitContext
                 """);
     }
 
-    [Theory]
-    [InlineData(TriggerTiming.Default, HtmxResponseHeaderNames.Trigger)]
-    [InlineData(TriggerTiming.AfterSwap, HtmxResponseHeaderNames.TriggerAfterSwap)]
-    [InlineData(TriggerTiming.AfterSettle, HtmxResponseHeaderNames.TriggerAfterSettle)]
-    public void Trigger_CanUseExistingTriggerWithMultipleTriggersWithDetail_AddsCorrectTriggerHeader(TriggerTiming triggerTiming, string expectedHeaderKey)
+    [Fact]
+    public void Trigger_CanUseExistingTriggerWithMultipleTriggersWithDetail_AddsCorrectTriggerHeader()
     {
         // Arrange
         var context = CreateHttpContext();
         var response = context.Response.Htmx();
 
         // Act
-        response.Trigger("event1", triggerTiming);
-        response.Trigger("event2", new { magic = "something" }, triggerTiming);
-        response.Trigger("event3", new { moremagic = false }, triggerTiming);
+        response.Trigger("event1");
+        response.Trigger("event2", new { magic = "something" });
+        response.Trigger("event3", new { moremagic = false });
 
         // Assert
-        context.Response.Headers[expectedHeaderKey]
+        context.Response.Headers[HtmxResponseHeaderNames.Trigger]
             .Should()
             .ContainSingle()
             .Which

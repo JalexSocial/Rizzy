@@ -30,9 +30,6 @@ public sealed record HtmxTriggerSpecification
     [JsonPropertyName("trigger")]
     public string Trigger { get; set; } = string.Empty;
 
-    /// <summary>Gets or sets the name of the Server‑Sent Event (SSE) to trigger on. Modifier: sseEvent:&lt;event_name&gt;</summary>
-    [JsonPropertyName("sseEvent")]
-    public string? SseEvent { get; set; }
 
     /// <summary>Gets or sets a JavaScript expression to filter events (e.g., "event.key == 'Enter'").</summary>
     [JsonPropertyName("eventFilter")]
@@ -119,11 +116,6 @@ public sealed record HtmxTriggerSpecification
         // ---------------------------------------------------------------------------
 
         // --- Modifiers -------------------------------------------------------------
-        if (!string.IsNullOrEmpty(SseEvent))
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.SseEvent).Append(':').Append(SseEvent);
-        }
 
         if (Once == true)
         {

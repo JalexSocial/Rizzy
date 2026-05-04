@@ -17,7 +17,8 @@ builder.Services.AddRizzy(config =>
 
 builder.Services.AddHtmx(config =>
 {
-	config.SelfRequestsOnly = true;
+	config.Mode = "same-origin";
+	config.NoSwap = [204, 304, "4xx", "5xx"];
 });
 
 // Add services to the container.

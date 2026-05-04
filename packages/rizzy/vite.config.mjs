@@ -14,7 +14,7 @@ function copyToWwwRoot() {
             fs.copySync(path.resolve(__dirname, 'dist'),
                 wwwrootDest,
                 { overwrite: true, dereference: true });
-            console.log(`✔  Copied build artefacts to ${wwwrootDest}`);
+            console.log(`✔  Copied build artifacts to ${wwwrootDest}`);
         }
     };
 }
@@ -43,12 +43,8 @@ export default defineConfig(({ mode }) => {
             lib: {
                 entry:   path.resolve(__dirname, 'src/js/rizzy.js'),
                 name:    'Rizzy',          // global var for UMD build
-                formats: ['es', 'umd'],    
-                /* Custom file names: keep legacy ‘rizzy(.min).js’ for UMD,
-                   add  ‘rizzy.es(.min).js’ for the module build              */
+                formats: ['umd'],    
                 fileName: (format) => {
-                    if (format === 'es')  return `rizzy.es${isProd ? '.min' : ''}.js`;
-                    /* UMD */
                     return `rizzy${isProd ? '.min' : ''}.js`;
                 }
             },

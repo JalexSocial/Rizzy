@@ -21,6 +21,13 @@ internal sealed class SwapStyleEnumConverter : JsonConverter<SwapStyle>
             Constants.SwapStyles.AfterEnd => SwapStyle.afterend,
             Constants.SwapStyles.Delete => SwapStyle.delete,
             Constants.SwapStyles.None => SwapStyle.none,
+            Constants.SwapStyles.InnerMorph => SwapStyle.innerMorph,
+            Constants.SwapStyles.OuterMorph => SwapStyle.outerMorph,
+            Constants.SwapStyles.TextContent => SwapStyle.textContent,
+            Constants.SwapStyles.Before => SwapStyle.before,
+            Constants.SwapStyles.After => SwapStyle.after,
+            Constants.SwapStyles.Prepend => SwapStyle.prepend,
+            Constants.SwapStyles.Append => SwapStyle.append,
             _ => throw new SwitchExpressionException(value)
         };
 

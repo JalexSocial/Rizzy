@@ -8,7 +8,7 @@ namespace Rizzy.Htmx;
 /// </summary>
 /// <remarks>
 /// The <see cref="TriggerBuilder"/> class offers a fluent API to specify various triggers for htmx requests. 
-/// It allows the combination of standard events, server-sent events, and custom triggers, as well as modifiers 
+/// It allows the combination of standard events and custom triggers, as well as modifiers 
 /// to control the behavior of these triggers.
 /// </remarks>
 /// <example>
@@ -49,26 +49,6 @@ public sealed class TriggerBuilder
     public TriggerModifierBuilder OnEvent(string eventName)
     {
         var spec = new HtmxTriggerSpecification { Trigger = eventName };
-        return new TriggerModifierBuilder(spec, this);
-    }
-
-    /// <summary>
-    /// Specifies a Server-Sent Event (SSE) as the trigger by setting the event name and SSE event <c>hx-trigger="sse: <paramref name="sseEventName"/>"</c>.
-    /// </summary>
-    /// <remarks>
-    /// This method sets the SSE trigger for an AJAX request. For example, specifying "message" will trigger the request on the message event.
-    /// </remarks>
-    /// <param name="sseEventName">The name of the SSE event.</param>
-    /// <returns>A <see cref="TriggerModifierBuilder"/> instance to allow further configuration of the trigger.</returns>
-    /// <example>
-    /// <code>
-    /// Trigger.Sse("message")
-    /// // Resulting hx-trigger: <![CDATA[<div hx-get="/updates" hx-trigger="sse:message">Update Me</div>]]>
-    /// </code>
-    /// </example>
-    public TriggerModifierBuilder Sse(string sseEventName)
-    {
-        var spec = new HtmxTriggerSpecification { Trigger = Constants.Triggers.Sse, SseEvent = sseEventName };
         return new TriggerModifierBuilder(spec, this);
     }
 

@@ -34,6 +34,9 @@ internal static class Constants
     {
         internal const string Prefix = "hx-";
 
+        public const string InheritedModifier = ":inherited";
+        public const string AppendModifier = ":append";
+
         public const string Id = "id";
 
         public const string HxGet = "hx-get";
@@ -41,10 +44,35 @@ internal static class Constants
         public const string HxPut = "hx-put";
         public const string HxDelete = "hx-delete";
         public const string HxPatch = "hx-patch";
+        public const string HxAction = "hx-action";
+        public const string HxMethod = "hx-method";
         public const string HxTrigger = "hx-trigger";
         public const string HxTarget = "hx-target";
         public const string HxSwap = "hx-swap";
         public const string HxHeaders = "hx-headers";
+        public const string HxConfig = "hx-config";
+        public const string HxDisable = "hx-disable";
+        public const string HxIgnore = "hx-ignore";
+        public const string HxInclude = "hx-include";
+        public const string HxVals = "hx-vals";
+        public const string HxConfirm = "hx-confirm";
+        public const string HxSelect = "hx-select";
+        public const string HxSelectOob = "hx-select-oob";
+        public const string HxPushUrl = "hx-push-url";
+        public const string HxReplaceUrl = "hx-replace-url";
+        public const string HxPreserve = "hx-preserve";
+        public const string HxIndicator = "hx-indicator";
+        public const string HxSync = "hx-sync";
+        public const string HxBoost = "hx-boost";
+        public const string HxEncoding = "hx-encoding";
+        public const string HxValidate = "hx-validate";
+        public const string HxSseConnect = "hx-sse:connect";
+        public const string HxSseClose = "hx-sse:close";
+
+        /// <summary>
+        /// Generates a dynamic <c>hx-status</c> attribute name for a specific status code or wildcard.
+        /// </summary>
+        public static string HxStatus(string statusCodeOrWildcard) => $"hx-status:{statusCodeOrWildcard}";
     }
 
     /// <summary>
@@ -56,7 +84,6 @@ internal static class Constants
         public const string Intersect = "intersect";
         public const string Load = "load";
         public const string Revealed = "revealed";
-        public const string Sse = "sse";
     }
 
     /// <summary>
@@ -64,7 +91,6 @@ internal static class Constants
     /// </summary>
     public static class TriggerModifiers
     {
-        public const string SseEvent = "sseEvent";
         public const string Once = "once";
         public const string Changed = "changed";
         public const string Delay = "delay";
@@ -80,6 +106,15 @@ internal static class Constants
     /// <summary>
     /// Htmx swap style values.
     /// </summary>
+
+    public static class Elements
+    {
+        /// <summary>
+        /// HTMX 4 explicit tag for Out-of-Band swaps
+        /// </summary>
+        public const string HxPartial = "hx-partial";
+    }
+
     public static class SwapStyles
     {
         public const string InnerHTML = "innerHTML";
@@ -90,6 +125,13 @@ internal static class Constants
         public const string AfterEnd = "afterend";
         public const string Delete = "delete";
         public const string None = "none";
+        public const string InnerMorph = "innerMorph";
+        public const string OuterMorph = "outerMorph";
+        public const string TextContent = "textContent";
+        public const string Before = "before";
+        public const string After = "after";
+        public const string Prepend = "prepend";
+        public const string Append = "append";
         public const string Default = "";
     }
 }

@@ -1,319 +1,491 @@
-﻿/*
- * Blazor Stream Rendering HTMX Extension
- * Author: Michael Tanczos
- * Credits to SSE extension and Microsoft aspnetcore
- * at https://github.com/dotnet/aspnetcore/blob/main/src/Components/Web.JS/src/Rendering/StreamingRendering.ts
+/*
+ * Rizzy Blazor Streaming Rendering - htmx 4, no opt-in
+ *
+ * Fix vs prior versions:
+ * - Do NOT try to slice a <blazor-ssr> block at <blazor-ssr-end>. In real network traces,
+ *   Blazor emits complete <blazor-ssr>...</blazor-ssr> blocks over time on the same connection.
+ * - This implementation:
+ *    1) swaps the initial HTML as soon as it is safely delimited (</html> OR before first <blazor-ssr>)
+ *    2) then incrementally processes EACH complete <blazor-ssr>...</blazor-ssr> block as it arrives
+ * - Each processed block is appended into a hidden DOM sink so the native <blazor-ssr-end>
+ *   custom element connectedCallback fires exactly like Blazor expects.
+ *
+ * Notes:
+ * - Marker patching uses safe Range replacement (correctness-first).
+ * - Optional DEBUG toggle is included.
  */
-//import htmx from 'htmx.org';
 
 (function () {
+    const DEBUG = false;
 
-    var api;
-    var enableDomPreservation = true;
-    var componentLoaded = false;
+    const STREAM_STATE_KEY = "_rizzyStreaming";
+    const STREAM_SINK_ATTR = "data-rizzy-stream-sink";
 
-    class blazorStreamingUpdate extends HTMLElement {
-        connectedCallback() {
-            const blazorSsrElement = this.parentNode;
+    const HTML_CLOSE = "</html>";
+    const SSR_OPEN = "<blazor-ssr";
+    const SSR_CLOSE = "</blazor-ssr>";
 
-            // Synchronously remove this from the DOM to minimize our chance of affecting anything else
-            blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
+    ensureBlazorSsrEndElement();
 
-            // When this element receives content, if it's <template blazor-component-id="...">...</template>,
-            // insert the template content into the DOM
-            blazorSsrElement.childNodes.forEach(node => {
-                if (node instanceof HTMLTemplateElement) {
+    htmx.registerExtension("rizzy-streaming", {
+        htmx_before_request(elt, detail) {
+            const source = detail?.ctx?.sourceElement || elt;
+            cancelStream(source, "superseded");
+            return true;
+        },
+
+        htmx_before_response(elt, detail) {
+            const ctx = detail?.ctx;
+            const response = ctx?.response?.raw;
+
+            if (!ctx || !response?.body) return true;
+
+            const contentType = response.headers.get("Content-Type") || "";
+            if (!/text\/html/i.test(contentType)) return true;
+
+            // Apply basic HX-* overrides that core would otherwise apply later.
+            applySimpleResponseOverrides(ctx);
+
+            // Handle immediate actions and stop.
+            if (handleImmediateResponseActions(ctx)) return false;
+
+            startStreamingHandler(ctx).catch(error => {
+                cancelStream(ctx.sourceElement, "error");
+                htmx.trigger(ctx.sourceElement, "htmx:error", { ctx, error });
+                if (DEBUG) console.error("[rizzy-streaming] stream error", error);
+            });
+
+            // Prevent htmx core from consuming response.text().
+            return false;
+        },
+
+        htmx_before_cleanup(elt) {
+            cancelStream(elt, "cleanup");
+            return true;
+        }
+    });
+
+    // --------------------------------------------------------------------------------------------
+    // Custom element: blazor-ssr-end
+    // --------------------------------------------------------------------------------------------
+
+    function ensureBlazorSsrEndElement() {
+        if (customElements.get("blazor-ssr-end")) return;
+
+        customElements.define("blazor-ssr-end", class BlazorStreamingUpdate extends HTMLElement {
+            connectedCallback() {
+                const blazorSsrElement = this.parentNode;
+
+                if (!blazorSsrElement || blazorSsrElement.nodeType !== Node.ELEMENT_NODE) return;
+
+                // Remove wrapper immediately (Blazor pattern)
+                blazorSsrElement.parentNode?.removeChild(blazorSsrElement);
+
+                const children = Array.from(blazorSsrElement.childNodes);
+                for (const node of children) {
+                    if (!(node instanceof HTMLTemplateElement)) continue;
+
                     const componentId = node.getAttribute("blazor-component-id");
                     if (componentId) {
                         insertStreamingContentIntoDocument(componentId, node.content);
+                    } else {
+                        handleControlTemplate(node);
                     }
                 }
-            });
+            }
+        });
+    }
 
-            htmx?.process(document.body);
+    // --------------------------------------------------------------------------------------------
+    // Streaming handler
+    // --------------------------------------------------------------------------------------------
+
+    async function startStreamingHandler(ctx) {
+        const source = ctx.sourceElement;
+        const response = ctx.response.raw;
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        const state = {
+            sourceElement: source,
+            reader,
+            cancelled: false,
+            cleanedUp: false,
+            abortHandler: null,
+            sink: null,
+            buffer: "",
+            didPrimarySwap: false
+        };
+
+        state.abortHandler = () => cancelStream(source, "abort");
+        source.addEventListener("htmx:abort", state.abortHandler);
+
+        setStreamState(source, state);
+
+        if (DEBUG) console.log("[rizzy-streaming] open", ctx.request?.action);
+        htmx.trigger(source, "htmx:rizzy:stream:open", { ctx });
+
+        try {
+            while (!state.cancelled) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                state.buffer += decoder.decode(value, { stream: true });
+                await drain(ctx, state, false);
+            }
+
+            state.buffer += decoder.decode();
+            await drain(ctx, state, true);
+        } finally {
+            cleanupStreamState(state, "ended");
         }
     }
 
-    htmx.defineExtension("rizzy-streaming",
-        {
-            /**
-             * Init saves the provided reference to the internal HTMX API.
-             *
-             * @param {import("../htmx").HtmxInternalApi} api
-             * @returns void
-             */
-            init: function (apiRef) {
-                // store a reference to the internal API.
-                api = apiRef;
+    async function drain(ctx, state, isFinal) {
+        while (!state.cancelled) {
+            // 1) Primary swap: do it as soon as we can, BEFORE processing any streamed blocks.
+            if (!state.didPrimarySwap) {
+                const split = findPrimarySplitPoint(state.buffer);
 
-                // set a function in the public API for creating new EventSource objects
-                if (htmx.blazorSwapSsr == undefined) {
-                    if (customElements.get('blazor-ssr-end') === undefined) {
-                        customElements.define('blazor-ssr-end', blazorStreamingUpdate);
+                if (split === -1) {
+                    // Not enough info yet to safely primary-swap.
+                    if (isFinal && state.buffer) {
+                        await doPrimarySwap(ctx, state, state.buffer);
+                        state.buffer = "";
                     }
-                    htmx.blazorSwapSsr = blazorSwapSsr;
+                    return;
                 }
-            },
-            onEvent: function (name, evt) {
-                if (name === "htmx:afterOnLoad") {
-                    htmx?.process(document.body);
-                }
-                else if (name === "htmx:beforeRequest") {
-                    var element = evt.detail.elt;
-                    if (evt.detail.requestConfig.target) {
-                        evt.detail.requestConfig.target.addEventListener("htmx:beforeSwap",
-                            e => {
-                                // Any html that was already streamed in could have been updated with
-                                // blazor ssr content so the final xhr response can be thrown away
-                                //e.detail.shouldSwap = false;
-                            }, { once: true });
+
+                const initialHtml = state.buffer.slice(0, split);
+                await doPrimarySwap(ctx, state, initialHtml);
+                state.buffer = state.buffer.slice(split);
+                continue;
+            }
+
+            // 2) After primary swap, process complete <blazor-ssr>...</blazor-ssr> blocks incrementally.
+            const next = findNextCompleteSsrBlock(state.buffer);
+
+            if (!next) {
+                // No complete block yet
+                if (isFinal) {
+                    // Any tail content gets appended conservatively
+                    const tail = state.buffer.trim();
+                    if (tail) {
+                        await htmx.swap({
+                            sourceElement: ctx.sourceElement,
+                            target: ctx.target,
+                            text: state.buffer,
+                            swap: "beforeend",
+                            transition: false,
+                            response: ctx.response,
+                            hx: ctx.hx,
+                            push: ctx.push,
+                            replace: ctx.replace
+                        });
                     }
+                    state.buffer = "";
+                }
+                return;
+            }
 
-                    var last = 0;
-                    var swapSpec = api.getSwapSpecification(element);
-                    var xhr = evt.detail.xhr;
-
-                    // Create a container id for a temporary div container. All streamed html will be placed 
-                    // inside the container so that htmx swap methods work correctly
-                    var cid = 'ctr' + crypto.randomUUID();
-
-                    xhr.addEventListener("readystatechange", () => {
-
-                        // If finished we can unwrap the container all html was stored into
-                        if (xhr.readyState === 4) {
-                            var container = document.getElementById(cid);
-
-                            if (container != null)
-                                unwrap(container);
-                        }
+            // If there is any non-SSR text before the next SSR block, drop whitespace or append tail.
+            if (next.start > 0) {
+                const prefix = state.buffer.slice(0, next.start);
+                // Usually this is just newlines. If not, append it.
+                if (/\S/.test(prefix)) {
+                    await htmx.swap({
+                        sourceElement: ctx.sourceElement,
+                        target: ctx.target,
+                        text: prefix,
+                        swap: "beforeend",
+                        transition: false,
+                        response: ctx.response,
+                        hx: ctx.hx,
+                        push: ctx.push,
+                        replace: ctx.replace
                     });
-
-                    xhr.addEventListener("progress", e => {
-
-                        var container = document.getElementById(cid);
-
-                        // If the container doesn't exist we need to create it and swap it into the element
-                        // target space. From here on we can stream responses into the container directly.
-                        if (container == null) {
-                            container = document.createElement('div');
-                            container.id = cid;
-
-                            // Swap in a container div to hold the streaming html
-                            swap(element, container.outerHTML, swapSpec, xhr);
-
-                            // The very first swap into the container can be a replacement swap
-                            swapSpec.swapStyle = "innerHTML";
-
-                            // Ensure there is always a container even if not added to the dom
-                            container = document.getElementById(cid) ?? container;
-                        }
-
-                        // Compute any new html in this chunk
-                        let diff = e.currentTarget.response.substring(last);
-                        swap(container, diff, swapSpec, xhr);
-
-                        swapSpec.settleDelay = 0;
-                        swapSpec.swapStyle = "beforeend";
-                        last = e.loaded;
-                    });
-
                 }
-
-                return true;
-            }
-        });
-
-    function isCommentNodeInHead(commentNode) {
-        // Ensure that the provided node is indeed a comment node
-        if (commentNode && commentNode.nodeType === Node.COMMENT_NODE) {
-            let currentNode = commentNode.parentNode;
-            // Traverse up the DOM tree
-            while (currentNode !== null) {
-                if (currentNode === document.head) {
-                    // The comment node is within the <head>
-                    return true;
-                }
-                currentNode = currentNode.parentNode;
-            }
-        } else {
-            return false;
-        }
-        // The traversal reached the root without finding <head>, or <head> does not exist
-        return false;
-    }
-
-    function blazorSwapSsr(start, end, docFrag, xhr) {
-        var newDiv = wrap(start, end, 'ssr' + crypto.randomUUID());
-
-        var container = document.createElement('div');
-        container.appendChild(docFrag);
-
-        swap(newDiv, container.innerHTML, xhr);
-
-        unwrap(newDiv);
-    }
-
-    function wrap(start, end, id) {
-
-        var newDiv = document.createElement('div');
-        newDiv.id = id;
-
-        // Iterate through nodes between start and end
-        var currentNode = start.nextSibling;
-        while (currentNode && currentNode !== end) {
-            newDiv.appendChild(currentNode);
-            currentNode = start.nextSibling;
-        }
-
-        start.parentNode.insertBefore(newDiv, end);
-
-        return newDiv;
-    }
-
-    function unwrap(element) {
-        // Ensure that the element has a parent
-        if (element.parentNode) {
-            // Move all child nodes out of the element
-            while (element.firstChild) {
-                element.parentNode.insertBefore(element.firstChild, element);
+                state.buffer = state.buffer.slice(next.start);
+                continue;
             }
 
-            // Remove the empty element
-            element.parentNode.removeChild(element);
+            const blockHtml = state.buffer.slice(next.start, next.end);
+            state.buffer = state.buffer.slice(next.end);
+
+            appendStreamingBlockToSink(state, blockHtml);
+
+            // Yield so custom-element reactions + paint aren’t starved.
+            await Promise.resolve();
+
+            if (DEBUG) console.log("[rizzy-streaming] processed SSR block");
+            htmx.trigger(ctx.sourceElement, "htmx:rizzy:stream:block", {});
         }
     }
 
-    function handleOutOfBandSwaps(elt, fragment, settleInfo) {
-        var oobSelects = api.getClosestAttributeValue(elt, "hx-select-oob");
-        if (oobSelects) {
-            var oobSelectValues = oobSelects.split(",");
-            for (var i = 0; i < oobSelectValues.length; i++) {
-                var oobSelectValue = oobSelectValues[i].split(":", 2);
-                var id = oobSelectValue[0].trim();
-                if (id.indexOf("#") === 0) {
-                    id = id.substring(1);
-                }
-                var oobValue = oobSelectValue[1] || "true";
-                var oobElement = fragment.querySelector("#" + id);
-                if (oobElement) {
-                    api.oobSwap(oobValue, oobElement, settleInfo);
-                }
-            }
-        }
-        forEach(findAll(fragment, '[hx-swap-oob], [data-hx-swap-oob]'), function (oobElement) {
-            var oobValue = getAttributeValue(oobElement, "hx-swap-oob");
-            if (oobValue != null) {
-                api.oobSwap(oobValue, oobElement, settleInfo);
-            }
-        });
+    function findPrimarySplitPoint(buffer) {
+        const lower = buffer.toLowerCase();
+
+        // Full document boundary (best case)
+        const htmlEnd = lower.indexOf(HTML_CLOSE);
+        if (htmlEnd >= 0) return htmlEnd + HTML_CLOSE.length;
+
+        // Otherwise, if we see the first <blazor-ssr>, the initial HTML is everything before it.
+        const ssrStart = lower.indexOf(SSR_OPEN);
+        if (ssrStart >= 0) return ssrStart;
+
+        return -1;
     }
 
-    /**
-     * @param {HTMLElement} elt
-     * @param {string} content
-     */
-    function swap(elt, content, swapSpec, xhr) {
+    function findNextCompleteSsrBlock(buffer) {
+        const lower = buffer.toLowerCase();
 
-        api.withExtensions(elt, function (extension) {
-            content = extension.transformResponse(content, xhr, elt);
-        });
+        const start = lower.indexOf(SSR_OPEN);
+        if (start < 0) return null;
 
-        swapSpec ??= api.getSwapSpecification(elt);
-        var target = api.getTarget(elt);
-        var settleInfo = api.makeSettleInfo(elt);
+        const endStart = lower.indexOf(SSR_CLOSE, start);
+        if (endStart < 0) return null;
 
-        // htmx 2.0
-        api.swap(target, content, swapSpec);
-
-        //api.selectAndSwap(swapSpec.swapStyle, target, elt, content, settleInfo);
-
-        settleInfo.elts.forEach(function (elt) {
-            if (elt.classList) {
-                elt.classList.add(htmx.config.settlingClass);
-            }
-            api.triggerEvent(elt, 'htmx:beforeSettle');
-        });
-
-        // Handle settle tasks (with delay if requested)
-        if (swapSpec.settleDelay > 0) {
-            setTimeout(doSettle(settleInfo), swapSpec.settleDelay);
-        } else {
-            doSettle(settleInfo)();
-        }
+        const end = endStart + SSR_CLOSE.length;
+        return { start, end };
     }
 
-    /**
-     * doSettle mirrors much of the functionality in htmx that
-     * settles elements after their content has been swapped.
-     * TODO: this should be published by htmx, and not duplicated here
-     * @param {import("../htmx").HtmxSettleInfo} settleInfo
-     * @returns () => void
-     */
-    function doSettle(settleInfo) {
-
-        return function () {
-            settleInfo.tasks.forEach(function (task) {
-                task.call();
-            });
-
-            settleInfo.elts.forEach(function (elt) {
-                if (elt.classList) {
-                    elt.classList.remove(htmx.config.settlingClass);
-                }
-                api.triggerEvent(elt, 'htmx:afterSettle');
-            });
+    async function doPrimarySwap(ctx, state, html) {
+        if (!html) {
+            // Nothing to swap, but mark as done so streaming can proceed.
+            state.didPrimarySwap = true;
+            return;
         }
+
+        ctx.text = html;
+        await htmx.swap(ctx);
+        state.didPrimarySwap = true;
+
+        fireDeferredTriggerHeaders(ctx);
+
+        if (DEBUG) console.log("[rizzy-streaming] primary swap done");
     }
+
+    // --------------------------------------------------------------------------------------------
+    // DOM sink
+    // --------------------------------------------------------------------------------------------
+
+    function appendStreamingBlockToSink(state, blockHtml) {
+        const sink = getOrCreateSink(state);
+        sink.insertAdjacentHTML("beforeend", blockHtml);
+    }
+
+    function getOrCreateSink(state) {
+        if (state.sink && state.sink.isConnected) return state.sink;
+
+        const sink = document.createElement("div");
+        sink.hidden = true;
+        sink.style.display = "none";
+        sink.setAttribute("aria-hidden", "true");
+        sink.setAttribute(STREAM_SINK_ATTR, "true");
+        document.body.appendChild(sink);
+
+        state.sink = sink;
+        return sink;
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Marker patching (safe default)
+    // --------------------------------------------------------------------------------------------
 
     function insertStreamingContentIntoDocument(componentIdAsString, docFrag) {
-        const markers = findStreamingMarkers(componentIdAsString)
-        if (markers) {
-            const { startMarker, endMarker } = markers
-            enableDomPreservation = !isCommentNodeInHead(startMarker);
-            if (enableDomPreservation) {
-                blazorSwapSsr(startMarker, endMarker, docFrag);
-            } else {
-                // In this mode we completely delete the old content before inserting the new content
-                const destinationRoot = endMarker.parentNode
-                const existingContent = new Range()
-                existingContent.setStart(startMarker, startMarker.textContent.length)
-                existingContent.setEnd(endMarker, 0)
-                existingContent.deleteContents()
+        const markers = findStreamingMarkers(componentIdAsString);
+        if (!markers) {
+            if (DEBUG) console.warn("[rizzy-streaming] markers not found for", componentIdAsString);
+            return;
+        }
 
-                while (docFrag.childNodes[0]) {
-                    destinationRoot.insertBefore(docFrag.childNodes[0], endMarker)
-                }
-            }
+        const { startMarker, endMarker } = markers;
+        replaceMarkerRange(startMarker, endMarker, docFrag);
+    }
+
+    function replaceMarkerRange(startMarker, endMarker, docFrag) {
+        const destinationRoot = endMarker.parentNode;
+        if (!destinationRoot) return;
+
+        const existing = new Range();
+        existing.setStart(startMarker, startMarker.textContent?.length || 0);
+        existing.setEnd(endMarker, 0);
+        existing.deleteContents();
+
+        const insertedElements = [];
+
+        while (docFrag.firstChild) {
+            const node = docFrag.firstChild;
+            destinationRoot.insertBefore(node, endMarker);
+            if (node.nodeType === Node.ELEMENT_NODE) insertedElements.push(node);
+        }
+
+        // We bypassed htmx.swap(), so explicitly process inserted subtrees.
+        for (const el of insertedElements) {
+            htmx.process(el);
         }
     }
 
     function findStreamingMarkers(componentIdAsString) {
-        // Find start marker
-        const expectedStartText = `bl:${componentIdAsString}`
-        const iterator = document.createNodeIterator(
-            document,
-            NodeFilter.SHOW_COMMENT
-        )
-        let startMarker = null
+        const expectedStartText = `bl:${componentIdAsString}`;
+        const iterator = document.createNodeIterator(document, NodeFilter.SHOW_COMMENT);
+
+        let startMarker = null;
         while ((startMarker = iterator.nextNode())) {
-            if (startMarker.textContent === expectedStartText) {
-                break
-            }
+            if (startMarker.textContent === expectedStartText) break;
         }
+        if (!startMarker) return null;
 
-        if (!startMarker) {
-            return null
-        }
-
-        // Find end marker
-        const expectedEndText = `/bl:${componentIdAsString}`
-        let endMarker = null
+        const expectedEndText = `/bl:${componentIdAsString}`;
+        let endMarker = null;
         while ((endMarker = iterator.nextNode())) {
-            if (endMarker.textContent === expectedEndText) {
-                break
-            }
+            if (endMarker.textContent === expectedEndText) break;
         }
 
-        return endMarker ? { startMarker, endMarker } : null
+        return endMarker ? { startMarker, endMarker } : null;
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Control templates
+    // --------------------------------------------------------------------------------------------
+
+    function handleControlTemplate(node) {
+        const type = node.getAttribute("type");
+        const text = (node.content.textContent || "").trim();
+
+        switch (type) {
+            case "redirection":
+            case "not-found":
+                if (text) location.replace(text);
+                break;
+            case "error":
+                document.body.textContent = text || "Error";
+                break;
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // HX-* response handling (minimal but important)
+    // --------------------------------------------------------------------------------------------
+
+    function applySimpleResponseOverrides(ctx) {
+        if (!ctx?.hx) return;
+
+        if (ctx.hx.retarget) ctx.target = ctx.hx.retarget;
+        if (ctx.hx.reswap) ctx.swap = ctx.hx.reswap;
+        if (ctx.hx.reselect) ctx.select = ctx.hx.reselect;
+
+        fireSimpleTriggerHeader(ctx.hx.trigger, ctx.sourceElement);
+    }
+
+    function handleImmediateResponseActions(ctx) {
+        if (!ctx?.hx) return false;
+
+        if (ctx.hx.refresh === "true") {
+            location.reload();
+            return true;
+        }
+
+        if (ctx.hx.redirect) {
+            location.href = ctx.hx.redirect;
+            return true;
+        }
+
+        if (ctx.hx.location) {
+            let path = ctx.hx.location;
+            try {
+                if (path.trim().startsWith("{")) {
+                    const obj = JSON.parse(path);
+                    path = obj.path || path;
+                }
+            } catch { /* ignore */ }
+
+            htmx.ajax("GET", path, { source: ctx.sourceElement, target: ctx.target });
+            return true;
+        }
+
+        return false;
+    }
+
+    function fireDeferredTriggerHeaders(ctx) {
+        fireSimpleTriggerHeader(ctx?.hx?.triggerafterswap, ctx?.sourceElement);
+        fireSimpleTriggerHeader(ctx?.hx?.triggeraftersettle, ctx?.sourceElement);
+    }
+
+    function fireSimpleTriggerHeader(rawValue, defaultTarget) {
+        if (!rawValue) return;
+
+        try {
+            if (rawValue.trim().startsWith("{")) {
+                const obj = JSON.parse(rawValue);
+                for (const [name, detail] of Object.entries(obj)) {
+                    let target = defaultTarget;
+                    if (detail && typeof detail === "object" && detail.target) {
+                        target = htmx.find(detail.target) || defaultTarget;
+                    }
+                    htmx.trigger(target, name, typeof detail === "object" ? detail : { value: detail });
+                }
+                return;
+            }
+        } catch {
+            // fall through
+        }
+
+        rawValue.split(",").forEach(name => {
+            const evt = name.trim();
+            if (evt) htmx.trigger(defaultTarget, evt, {});
+        });
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Stream state / cleanup
+    // --------------------------------------------------------------------------------------------
+
+    function setStreamState(elt, state) {
+        if (!elt) return;
+        elt._htmx ||= {};
+        elt._htmx[STREAM_STATE_KEY] = state;
+    }
+
+    function getStreamState(elt) {
+        return elt?._htmx?.[STREAM_STATE_KEY] || null;
+    }
+
+    function clearStreamState(elt) {
+        if (elt?._htmx?.[STREAM_STATE_KEY]) {
+            delete elt._htmx[STREAM_STATE_KEY];
+        }
+    }
+
+    function cancelStream(elt, reason) {
+        const state = getStreamState(elt);
+        if (!state) return;
+
+        state.cancelled = true;
+        try { state.reader?.cancel?.(); } catch { /* ignore */ }
+
+        cleanupStreamState(state, reason || "cancelled");
+    }
+
+    function cleanupStreamState(state, reason) {
+        if (!state || state.cleanedUp) return;
+
+        state.cleanedUp = true;
+        state.cancelled = true;
+
+        try { state.reader?.cancel?.(); } catch { /* ignore */ }
+
+        if (state.abortHandler) {
+            state.sourceElement?.removeEventListener("htmx:abort", state.abortHandler);
+        }
+
+        if (state.sink?.isConnected) {
+            state.sink.remove();
+        }
+
+        clearStreamState(state.sourceElement);
+
+        if (DEBUG) console.log("[rizzy-streaming] close:", reason);
+        htmx.trigger(state.sourceElement, "htmx:rizzy:stream:close", { reason });
     }
 })();

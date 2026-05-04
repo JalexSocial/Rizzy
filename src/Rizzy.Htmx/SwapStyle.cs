@@ -56,5 +56,19 @@ public enum SwapStyle
     /// Does not append content from response (out of band items will still be processed).
     /// </summary>
     none,
+
+    innerMorph,
+
+    outerMorph,
+
+    textContent,
+
+    before,
+
+    after,
+
+    prepend,
+
+    append,
 }
 
