@@ -1,57 +1,60 @@
 (function () {
-    function processUnsafeHtml(text, documentNonce, newScriptNonce) {
-        if (documentNonce && newScriptNonce) {
-            text = text.replaceAll(newScriptNonce, documentNonce);
-        }
+    const root = window.Rizzy = window.Rizzy || {};
+    const nonceApi = root.nonce = root.nonce || {};
 
-        const parser = new DOMParser();
+    nonceApi.getDocumentNonce = function getDocumentNonce() {
+        return htmx.config.documentNonce ?? htmx.config.inlineScriptNonce ?? "";
+    };
 
-        try {
-            const doc = parser.parseFromString(text, "text/html");
+    nonceApi.getResponseNonce = function getResponseNonce(responseOrHeaders) {
+        const headers = responseOrHeaders?.headers?.get ? responseOrHeaders.headers : responseOrHeaders;
+        let nonce = headers?.get?.("HX-Nonce") || "";
+        if (nonce) return nonce;
 
-            if (doc) {
-                const elements = doc.querySelectorAll("script, style, link");
-
-                elements.forEach((elt) => {
-                    const nonce = elt.getAttribute("nonce");
-                    if (nonce !== documentNonce) {
-                        elt.remove();
-                    }
-                });
-
-                return doc.documentElement.outerHTML;
-            }
-        } catch (_) {
+        const csp = headers?.get?.("content-security-policy") || "";
+        if (csp) {
+            const cspMatch = csp.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);
+            if (cspMatch) return cspMatch[2];
         }
 
         return "";
-    }
+    };
+
+    nonceApi.processUnsafeHtml = function processUnsafeHtml(text, documentNonce, responseNonce) {
+        if (typeof text !== "string") return "";
+
+        if (documentNonce && responseNonce) {
+            text = text.replaceAll(responseNonce, documentNonce);
+        }
+
+        try {
+            const doc = new DOMParser().parseFromString(text, "text/html");
+            const elements = doc.querySelectorAll("script, style, link");
+
+            elements.forEach((elt) => {
+                const nonce = elt.getAttribute("nonce");
+                if (nonce !== documentNonce) {
+                    elt.remove();
+                }
+            });
+
+            return doc.documentElement.outerHTML;
+        } catch (_) {
+            return "";
+        }
+    };
+
+    nonceApi.processResponseHtml = function processResponseHtml(text, responseOrHeaders) {
+        const documentNonce = nonceApi.getDocumentNonce();
+        const responseNonce = nonceApi.getResponseNonce(responseOrHeaders);
+        return nonceApi.processUnsafeHtml(text, documentNonce, responseNonce);
+    };
 
     htmx.registerExtension("rizzy-nonce", {
         htmx_after_request: function (_elt, detail) {
-            let documentNonce = htmx.config.documentNonce ?? htmx.config.inlineScriptNonce;
-            if (!documentNonce) {
-                // console.warn("rizzy-nonce extension loaded but no nonce found for document. Inline scripts may be blocked.");
-                documentNonce = "";
-            }
-
-            let nonce = detail?.ctx?.response?.headers?.get("HX-Nonce");
-            if (!nonce) {
-                const csp = detail?.ctx?.response?.headers?.get("content-security-policy");
-                if (csp) {
-                    const cspMatch = csp.match(/(style|script)-src[^;]*'nonce-([^']*)'/i);
-                    if (cspMatch) {
-                        nonce = cspMatch[2];
-                    }
-                }
-            }
-
-            nonce ??= "";
-
             if (typeof detail?.ctx?.text === "string") {
-                detail.ctx.text = processUnsafeHtml(detail.ctx.text, documentNonce, nonce);
+                detail.ctx.text = nonceApi.processResponseHtml(detail.ctx.text, detail?.ctx?.response);
             }
-
             return true;
         }
     });
