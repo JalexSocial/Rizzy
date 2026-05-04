@@ -40,7 +40,8 @@ public class HtmxConfigHeadOutletTest : BunitContext
             config.DefaultSettleDelay = TimeSpan.FromHours(1);
             config.DefaultSwap = SwapStyle.beforebegin;
             config.DefaultTimeout = TimeSpan.FromSeconds(30);
-            config.History = true;
+            config.History = HtmxHistoryMode.Enabled;
+            config.LogAll = true;
             config.ImplicitInheritance = true;
             config.IncludeIndicatorCSS = true;
             config.IndicatorClass = "indicator-class";
@@ -80,7 +81,8 @@ public class HtmxConfigHeadOutletTest : BunitContext
                     "5xx"
                 ],
                 "requestClass": "request-class",
-                "transitions": true
+                "transitions": true,
+                "logAll": true
             }
             """;
 

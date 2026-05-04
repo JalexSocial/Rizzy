@@ -66,6 +66,8 @@ internal static class Constants
         public const string HxBoost = "hx-boost";
         public const string HxEncoding = "hx-encoding";
         public const string HxValidate = "hx-validate";
+        public const string HxSseConnect = "hx-sse:connect";
+        public const string HxSseClose = "hx-sse:close";
 
         /// <summary>
         /// Generates a dynamic <c>hx-status</c> attribute name for a specific status code or wildcard.
@@ -82,7 +84,6 @@ internal static class Constants
         public const string Intersect = "intersect";
         public const string Load = "load";
         public const string Revealed = "revealed";
-        public const string Sse = "sse";
     }
 
     /// <summary>
@@ -90,7 +91,6 @@ internal static class Constants
     /// </summary>
     public static class TriggerModifiers
     {
-        public const string SseEvent = "sseEvent";
         public const string Once = "once";
         public const string Changed = "changed";
         public const string Delay = "delay";
