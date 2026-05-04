@@ -46,6 +46,12 @@
             // Apply basic HX-* overrides that core would otherwise apply later.
             applySimpleResponseOverrides(ctx);
 
+            if (!shouldSwapResponse(ctx)) {
+                fireDeferredTriggerHeaders(ctx);
+                htmx.trigger(ctx.sourceElement, "htmx:finally:request", { ctx });
+                return false;
+            }
+
             // Handle immediate actions and stop.
             if (handleImmediateResponseActions(ctx)) return false;
 
@@ -174,7 +180,7 @@
                         await htmx.swap({
                             sourceElement: ctx.sourceElement,
                             target: ctx.target,
-                            text: state.buffer,
+                            text: sanitizeHtmlOrFailClosed(ctx, state.buffer),
                             swap: "beforeend",
                             transition: false,
                             response: ctx.response,
@@ -212,7 +218,7 @@
             const blockHtml = state.buffer.slice(next.start, next.end);
             state.buffer = state.buffer.slice(next.end);
 
-            appendStreamingBlockToSink(state, blockHtml);
+            appendStreamingBlockToSink(ctx, state, blockHtml);
 
             // Yield so custom-element reactions + paint aren’t starved.
             await Promise.resolve();
@@ -249,6 +255,13 @@
         return { start, end };
     }
 
+    function sanitizeHtmlOrFailClosed(ctx, html) {
+        const nonceApi = window.Rizzy?.nonce;
+        if (typeof html !== "string" || !html) return "";
+        if (!nonceApi?.processResponseHtml) return "";
+        return nonceApi.processResponseHtml(html, ctx?.response?.raw || ctx?.response) || "";
+    }
+
     async function doPrimarySwap(ctx, state, html) {
         if (!html) {
             // Nothing to swap, but mark as done so streaming can proceed.
@@ -256,7 +269,11 @@
             return;
         }
 
-        ctx.text = html;
+        ctx.text = sanitizeHtmlOrFailClosed(ctx, html);
+        if (!ctx.text) {
+            state.didPrimarySwap = true;
+            return;
+        }
         await htmx.swap(ctx);
         state.didPrimarySwap = true;
 
@@ -269,9 +286,11 @@
     // DOM sink
     // --------------------------------------------------------------------------------------------
 
-    function appendStreamingBlockToSink(state, blockHtml) {
+    function appendStreamingBlockToSink(ctx, state, blockHtml) {
         const sink = getOrCreateSink(state);
-        sink.insertAdjacentHTML("beforeend", blockHtml);
+        const sanitized = sanitizeHtmlOrFailClosed(ctx, blockHtml);
+        if (!sanitized) return;
+        sink.insertAdjacentHTML("beforeend", sanitized);
     }
 
     function getOrCreateSink(state) {
@@ -378,6 +397,20 @@
         fireSimpleTriggerHeader(ctx.hx.trigger, ctx.sourceElement);
     }
 
+
+    function shouldSwapResponse(ctx) {
+        const status = Number(ctx?.response?.status || 0);
+        const noSwap = htmx.config?.noSwap;
+
+        if (Array.isArray(noSwap)) {
+            if (noSwap.includes(status)) return false;
+            if (status >= 400 && status <= 499 && noSwap.includes("4xx")) return false;
+            if (status >= 500 && status <= 599 && noSwap.includes("5xx")) return false;
+        }
+
+        if (status === 204 || status === 304) return false;
+        return true;
+    }
     function handleImmediateResponseActions(ctx) {
         if (!ctx?.hx) return false;
 
