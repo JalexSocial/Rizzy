@@ -27,7 +27,7 @@ This package is intended to be used alongside the server-side Rizzy components. 
 
     ```html
     <!-- Make sure HTMX is loaded first -->
-    <script src="https://unpkg.com/htmx.org@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-alpha7/dist/htmx.js"></script>
 
     <!-- Include the Rizzy client script -->
     <script src="/_content/Rizzy/js/rizzy.js" type="module"></script>
@@ -39,19 +39,14 @@ This package is intended to be used alongside the server-side Rizzy components. 
     *   Rizzy Form Components (e.g., `<RzInputText>`, `<RzValidationMessage>`): These work with the validation setup included in this package.
 
 3.  **HTMX Extension Activation:**
-    *   The HTMX extensions (`rizzy-nonce`, `rizzy-streaming`) are defined when the script loads. You typically activate them on relevant elements using the `hx-ext` attribute:
-        ```html
-        <div hx-get="/some/content" hx-ext="rizzy-streaming, rizzy-nonce">
-          <!-- Content that might use streaming rendering or have scripts/styles -->
-        </div>
-        ```
+    *   The HTMX extensions (`rizzy-nonce`, `rizzy-streaming`) are defined when the script loads. You typically activate them on relevant elements through htmx config extension registration from Rizzy configuration (Rizzy does not recommend `hx-ext` for htmx 4).
     *   Refer to the main Rizzy documentation for specific usage scenarios.
 
 4.  **Antiforgery & Validation:** These features generally work automatically once the script is loaded, provided the server-side components (`HtmxConfigHeadOutlet`, `HtmxAntiforgeryScript`, and Rizzy Form Components) are correctly configured and rendered.
 
 ## Dependencies
 
-*   **HTMX:** This library requires HTMX (version 1.9+ recommended) to be loaded on the page *before* this script.
+*   **HTMX:** This library requires HTMX (version 4-compatible) to be loaded on the page *before* this script.
 *   **aspnet-client-validation:** This library is used for client-side validation integration. The necessary setup (`ValidationService().bootstrap()`) is included in this package's bundle.
 
 ## Browser Support

@@ -2,7 +2,7 @@
 
 [![Documentation](https://img.shields.io/badge/docs-Rizzy.Htmx-blue)](https://jalexsocial.github.io/rizzy.docs/docs/htmx/overview/)
 
-**Rizzy.Htmx** is a lightweight .NET library designed to integrate [htmx](https://htmx.org/) (version 2.0 or greater) functionality into your Rizzy-powered web applications. It centralizes all htmx-specific logic in one place, making it easier to manage dynamic client interactions, HTML swapping, and related response operations from your server-side code.
+**Rizzy.Htmx** is a lightweight .NET library designed to integrate [htmx](https://htmx.org/) (htmx 4) functionality into your Rizzy-powered web applications. It centralizes all htmx-specific logic in one place, making it easier to manage dynamic client interactions, HTML swapping, and related response operations from your server-side code.
 
 ## Features
 
@@ -42,9 +42,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHtmx(options =>
 {
     // Enable browser history, define default swap delays, and more:
-    options.HistoryEnabled = true;
-    options.RefreshOnHistoryMiss = true;
-    options.DefaultSwapDelay = TimeSpan.FromMilliseconds(250);
+    options.History = HtmxHistoryMode.Enabled;
+    options.LogAll = true;
+    options.DefaultSettleDelay = TimeSpan.FromMilliseconds(250);
     // Additional configuration properties...
 });
 ```
@@ -81,10 +81,10 @@ public class HomeController : RzController
 
 ### 3. Client-Side Integration
 
-Ensure you are using **htmx version 2.0 or greater**. In your HTML pages, include the htmx client script via a CDN or serve it locally:
+Ensure you are using **htmx 4-compatible client assets**. In your HTML pages, include the htmx client script via a CDN or serve it locally:
 
 ```html
-<script src="https://unpkg.com/htmx.org@2.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-alpha7/dist/htmx.js"></script>
 ```
 
 When you use Rizzy.Htmx alongside other Rizzy components, required assets may be automatically loaded.
