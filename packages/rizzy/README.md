@@ -27,7 +27,7 @@ This package is intended to be used alongside the server-side Rizzy components. 
 
     ```html
     <!-- Make sure HTMX is loaded first -->
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-alpha7/dist/htmx.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-beta2/dist/htmx.js"></script>
 
     <!-- Include the Rizzy client script -->
     <script src="/_content/Rizzy/js/rizzy.js" type="module"></script>

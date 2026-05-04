@@ -84,7 +84,7 @@ public class HomeController : RzController
 Ensure you are using **htmx 4-compatible client assets**. In your HTML pages, include the htmx client script via a CDN or serve it locally:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-alpha7/dist/htmx.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-beta2/dist/htmx.js"></script>
 ```
 
 When you use Rizzy.Htmx alongside other Rizzy components, required assets may be automatically loaded.
