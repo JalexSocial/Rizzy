@@ -4,7 +4,6 @@
   "description": "Client library for Asp.net Rizzy",
   "main": "./dist/js/rizzy.js",
   "module": "./dist/js/rizzy.es.mjs",
-
   "exports": {
     ".": {
       "import": "./dist/js/rizzy.es.mjs",
@@ -12,20 +11,25 @@
     },
     "./min": "./dist/js/rizzy.min.js"
   },
-
   "unpkg": "./dist/js/rizzy.min.js",
   "jsdelivr": "./dist/js/rizzy.min.js",
-
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "sideEffects": true,
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "npm run build:dev && npm run build:prod",
     "build:dev": "vite build --mode development",
     "build:prod": "vite build --mode production",
     "watch": "vite build --mode development --watch",
     "analyze": "vite build --mode analyze",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "test": "node --test ./tests/*.test.mjs",
+    "validate:htmx4": "node ./scripts/validate-htmx4.js",
+    "build:check": "npm run build && npm run validate:htmx4"
   },
   "repository": {
     "type": "git",
@@ -51,6 +55,7 @@
   "devDependencies": {
     "fs-extra": "^11.3.0",
     "rollup-plugin-visualizer": "^6.0.0",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "jsdom": "^26.1.0"
   }
 }

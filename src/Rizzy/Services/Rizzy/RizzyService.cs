@@ -126,7 +126,10 @@ public sealed class RizzyService : IRizzyService
         if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
             return Results.NoContent();
 
-        return new RazorComponentResult<FragmentComponent>(new { Fragment = fragment });
+        return PartialView<FragmentComponent>(new
+        {
+            Fragment = fragment
+        });
     }
 
     /// <inheritdoc/>
@@ -137,6 +140,9 @@ public sealed class RizzyService : IRizzyService
         if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
             return Results.NoContent();
 
-        return new RazorComponentResult<FragmentComponent>(new { Fragments = fragments });
+        return PartialView<FragmentComponent>(new
+        {
+            Fragments = fragments
+        });
     }
 }
