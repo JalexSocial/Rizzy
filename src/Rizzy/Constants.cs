@@ -9,11 +9,6 @@ internal class Constants
 
     //--- Javascript Event Names ---
     
-    /// <summary>
-    /// Toast broadcast event 
-    /// </summary>
-    public const string ToastBroadcastEventName = "rz:toast-broadcast";
-
     internal static class HttpContextKeys
     {
         /// <summary>
