@@ -26,19 +26,17 @@
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    <Version>5.4.0</Version>
     <EnablePackageValidation>true</EnablePackageValidation>
     <GenerateCompatibilitySuppressionFile>true</GenerateCompatibilitySuppressionFile>
 	<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
-    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- Ship XML docs so consumers get IntelliSense. Version comes from ../../Directory.Build.props. -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 	<ItemGroup>
-	  <Content Remove="DefaultDocumentation.json" />
-	</ItemGroup>
-	
-	<ItemGroup>
-		<PackageReference Include="DefaultDocumentation" Version="1.2.2" PrivateAssets="all" />
+	  <!-- Tooling files that must never be packed into consumer projects (RIZZY-021). -->
+	  <Content Remove="package.json;package-lock.json;publish/**" />
+	  <None Remove="llmquery.txt;publish/**" />
 	</ItemGroup>
 	
 	<ItemGroup>
@@ -58,7 +56,6 @@
     <None Include="..\..\LICENSE.md" Pack="true" PackagePath="\" />
     <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     <None Include="..\..\docs\media\rizzy.png" Pack="true" PackagePath="\" />
-    <None Include="DefaultDocumentation.json" />
   </ItemGroup>
 
 	<ItemGroup>
@@ -76,39 +73,9 @@
         <IncludeAnalyzerInPackage>true</IncludeAnalyzerInPackage>
     </PropertyGroup>
 
-    <!-- Run these only once in the outer build (no specific TargetFramework) -->
-    <PropertyGroup Condition="'$(TargetFramework)' == ''">
-        <!-- Hook our client pipeline into the outer Build -->
-        <BuildDependsOn>EnsureClientAssets;$(BuildDependsOn)</BuildDependsOn>
-    </PropertyGroup>
+    <!--
+      Client assets are built by `npm run build` in packages/rizzy, which copies the bundle into
+      wwwroot/js. CI verifies that the committed wwwroot/js matches a fresh build (RIZZY-023).
+    -->
 
-    <PropertyGroup>
-        <!-- Define the directory path once -->
-        <ClientPackageDir>$(MSBuildProjectDirectory)/../../packages</ClientPackageDir>
-        <!-- Stamp file to track installation -->
-        <NodeModulesStampFile>$(ClientPackageDir)/rizzy/node_modules/.install-stamp</NodeModulesStampFile>
-    </PropertyGroup>
-
-    <!-- High-level orchestration that runs in the outer build -->
-    <Target Name="EnsureClientAssets" DependsOnTargets="InstallClientPackages;BuildClientAssets" />
-
-    <!-- Install only if package-lock.json changed, create node_modules if missing -->
-    <Target Name="InstallClientPackages" Inputs="$(ClientPackageDir)/rizzy/package-lock.json" Outputs="$(NodeModulesStampFile)">
-        <Message Text="Ensuring npm packages are installed in $(ClientPackageDir)/rizzy ..." Importance="high" />
-        <MakeDir Directories="$(ClientPackageDir)/rizzy/node_modules" />
-        <!-- Use CI-friendly install -->
-        <Exec Command="npm ci" WorkingDirectory="$(ClientPackageDir)/rizzy" />
-        <Touch Files="$(NodeModulesStampFile)" AlwaysCreate="true" />
-    </Target>
-
-    <!-- Build the client bundle once, after install -->
-    <Target Name="BuildClientAssets" DependsOnTargets="InstallClientPackages">
-        <Message Text="Building client assets in $(ClientPackageDir)/rizzy ..." Importance="high" />
-        <Exec Command="npm run build" WorkingDirectory="$(ClientPackageDir)/rizzy" />
-    </Target>
-
-    <Target Name="LLM" AfterTargets="Build" DependsOnTargets="BuildClientAssets" Condition="'$(TargetFramework)' == '' and '$(DesignTimeBuild)' != 'true'">
-        <Exec Command="npm run llm" />
-    </Target>
-    
 </Project>

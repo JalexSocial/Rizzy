@@ -29,7 +29,8 @@ public class DataAnnotationsProcessor
 
     // Handlers take a ValidationAttribute, the attributes dictionary, and a localized error message.
     private readonly Dictionary<Type, Action<ValidationAttribute, IDictionary<string, object>, string>> _attributeHandlers;
-    private static readonly ConcurrentDictionary<Type, PropertyCacheEntry> _propertyCache = new();
+    // Keyed by (model type, field name): every field of a model has its own validation attributes.
+    private static readonly ConcurrentDictionary<(Type ModelType, string FieldName), PropertyCacheEntry> _propertyCache = new();
 
     private class PropertyCacheEntry
     {
@@ -165,16 +166,36 @@ public class DataAnnotationsProcessor
 
     private PropertyCacheEntry GetCachedProperty(FieldIdentifier fieldIdentifier)
     {
-        return _propertyCache.GetOrAdd(fieldIdentifier.Model.GetType(), type =>
+        var key = (fieldIdentifier.Model.GetType(), fieldIdentifier.FieldName);
+
+        return _propertyCache.GetOrAdd(key, static k =>
         {
-            var propInfo = type.GetProperty(fieldIdentifier.FieldName);
+            var propInfo = FindProperty(k.ModelType, k.FieldName);
             if (propInfo == null)
             {
                 throw new InvalidOperationException(
-                    $"The property {fieldIdentifier.FieldName} was not found on the model of type {fieldIdentifier.Model.GetType().FullName}.");
+                    $"The property {k.FieldName} was not found on the model of type {k.ModelType.FullName}.");
             }
             return new PropertyCacheEntry(propInfo);
         });
+    }
+
+    /// <summary>
+    /// Finds a public instance property, preferring the most-derived declaration so that
+    /// properties hidden with <c>new</c> do not throw <see cref="AmbiguousMatchException"/>.
+    /// </summary>
+    private static PropertyInfo? FindProperty(Type modelType, string fieldName)
+    {
+        for (var type = modelType; type != null; type = type.BaseType)
+        {
+            var property = type.GetProperty(fieldName,
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+            if (property != null)
+                return property;
+        }
+
+        return null;
     }
 
     private string? GetLocalizedErrorMessage(

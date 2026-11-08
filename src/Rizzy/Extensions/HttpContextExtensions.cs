@@ -23,7 +23,7 @@ public static class HttpContextExtensions
 
     /// <summary>
     /// Initializes the form mapping for the current HTTP request by extracting form values
-    /// and files from <see cref="HttpContext.Request.Form"/> and invoking the internal
+    /// and files from <see cref="HttpRequest.Form"/> and invoking the internal
     /// <c>HttpContextFormDataProvider.SetFormData</c> method via reflection.
     /// </summary>
     /// <remarks>

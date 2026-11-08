@@ -1,0 +1,12 @@
+<Project>
+  <!--
+    Single source of truth for the Rizzy version (RIZZY-001).
+    Rizzy, Rizzy.Htmx and the @jalexsocial/rizzy npm package are always released together
+    with the same version. The release workflow overrides this value with the version taken
+    from the git tag (dotnet pack -p:Version=...), so the value here only applies to local
+    and CI builds.
+  -->
+  <PropertyGroup>
+    <Version>6.0.0-dev</Version>
+  </PropertyGroup>
+</Project>

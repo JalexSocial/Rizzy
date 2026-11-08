@@ -9,7 +9,7 @@
 public enum SwapStyle
 {
     /// <summary>
-    /// Default style is what is specified in <see cref="HtmxConfig.DefaultSwapStyle"/> for the application
+    /// Default style is what is specified in <see cref="HtmxConfig.DefaultSwap"/> for the application
     /// or htmx's default, which is <see cref="innerHTML"/>.
     /// </summary>
     /// <remarks>

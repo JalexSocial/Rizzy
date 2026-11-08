@@ -1,0 +1,98 @@
+name: CI
+
+# Validates every pull request and every push. This workflow never publishes anything;
+# releases are produced by release.yml from a version tag (RIZZY-010).
+on:
+  pull_request:
+  push:
+    branches: [ main, dev ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dotnet:
+    name: .NET build, test and pack
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore src/Rizzy.sln
+
+      - name: Build
+        run: dotnet build src/Rizzy.sln -c Release --no-restore
+
+      - name: Test
+        run: >
+          dotnet test test/Rizzy.Tests/Rizzy.Tests.csproj -c Release --no-build
+          --logger "trx;LogFileName=test-results.trx"
+          --collect:"XPlat Code Coverage"
+          --results-directory ./artifacts/test-results
+
+      - name: Pack
+        run: |
+          dotnet pack src/Rizzy.Htmx/Rizzy.Htmx.csproj -c Release --no-build -o ./artifacts/nupkgs
+          dotnet pack src/Rizzy/Rizzy.csproj -c Release --no-build -o ./artifacts/nupkgs
+
+      - name: Check package contents
+        run: python3 eng/check-package-contents.py ./artifacts/nupkgs
+
+      - name: Consumer smoke test
+        run: |
+          version=$(ls ./artifacts/nupkgs/Rizzy.Htmx.*.nupkg | sed -E 's/.*Rizzy\.Htmx\.(.+)\.nupkg/\1/')
+          bash eng/consumer-smoke-test.sh ./artifacts/nupkgs "$version"
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-artifacts
+          path: artifacts/
+          if-no-files-found: warn
+
+  client:
+    name: JS test, build and drift check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/rizzy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: packages/rizzy/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Build and validate
+        run: npm run build:check
+
+      # The committed bundle must match a fresh build, otherwise a JS change was merged
+      # without rebuilding (RIZZY-023) or stale files were left behind (RIZZY-021).
+      - name: Check committed bundle is up to date
+        working-directory: .
+        run: |
+          git add -N packages/rizzy/dist src/Rizzy/wwwroot/js
+          if ! git diff --exit-code --stat -- packages/rizzy/dist src/Rizzy/wwwroot/js; then
+            echo "::error::Committed client bundle is out of date. Run 'npm run build' in packages/rizzy and commit the result."
+            exit 1
+          fi
