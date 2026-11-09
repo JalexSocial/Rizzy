@@ -115,6 +115,11 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 - **Empty bodies.** `EmptyBody()`, `Redirect()` and `Refresh()` turn any Rizzy view into a 204, even when called after `View()` returned.
 - **Raw HTML is explicit.** APIs that insert HTML as-is now take `MarkupString`. Write `AddRawContent((MarkupString)html)`, which marks the spot for review. Use the new `AddSwappableText`/`AddChildText` for text, which is HTML-encoded. Swap target ids are CSS-escaped, so ids like `item:1` work.
 
+### Client diagnostics (RIZZY-026, RIZZY-028)
+
+- When rizzy.js loads, it logs one console warning if the page has no `<meta name="htmx-config">` (the root component does not render `<HeadOutlet />`), if that tag is not valid JSON, or if the server's Rizzy major version differs from the script's (for example a stale CDN copy). Set `HtmxConfig.RizzyDiagnostics = false` to silence these warnings.
+- Errors in Rizzy's extensions, such as a streaming connection that breaks mid-response, are now logged the way htmx 4 logs its own errors (`htmx: htmx:error: ...`) and then dispatched as events. Previously a broken stream raised `htmx:error` without logging anything.
+
 ## Breaking API changes in Rizzy 6
 
 | Before (5.x) | Rizzy 6 | Finding |
@@ -152,6 +157,7 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 - `HtmxStatus.Attribute(...)`, `UseHtmxErrorHandling(...)`, `CookieAuthenticationEvents.UseHtmxRedirects()`.
 - `HtmxConfig.AllowEmptySwapAfterOOB`, `MetaCharacter`.
 - Client: `window.Rizzy.confirm(props)`, `htmx.config.rizzyConfirmDialog`.
+- Client: `window.Rizzy.diagnostics.report(elt, eventName, detail)`, `window.Rizzy.diagnostics.checkPage()`, the `htmx:rizzy:config:warn` event; server: `HtmxConfig.RizzyDiagnostics`.
 - `HtmxResponse.LocalRedirect(...)`, `LocalLocation(...)`, `HtmxResponse.IsLocalUrl(...)` (open-redirect safe).
 - `CssSelector.Escape(...)`, `CssSelector.Id(...)`.
 - `IHtmxSwapService.AddSwappableText(...)`, `RizzyComponentParameterBuilder.AddChildText(...)`.

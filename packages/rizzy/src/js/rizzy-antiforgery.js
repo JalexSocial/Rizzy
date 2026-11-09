@@ -122,7 +122,12 @@
 
                 htmx.config.antiforgery = newAnti;
             } catch (e) {
-                console.error("[rizzy-antiforgery] Error parsing htmx-config JSON:", e);
+                const error = new Error(`invalid htmx-config JSON in the boosted response: ${e.message}`);
+                if (window.Rizzy?.diagnostics?.report) {
+                    window.Rizzy.diagnostics.report(elt, "htmx:rizzy:antiforgery:error", { error });
+                } else {
+                    console.error("[rizzy-antiforgery]", error);
+                }
                 return;
             }
 

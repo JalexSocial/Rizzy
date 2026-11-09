@@ -4,6 +4,61 @@
   "use strict";
   (function() {
     const root = window.Rizzy = window.Rizzy || {};
+    const diagnostics = root.diagnostics = root.diagnostics || {};
+    const CLIENT_MAJOR = 6;
+    diagnostics.clientMajor = CLIENT_MAJOR;
+    diagnostics.report = function report(elt, eventName, detail = {}) {
+      if (detail.error) {
+        const message = detail.error.message ?? detail.error;
+        console.error(`htmx: ${eventName}: ${message}`, detail.error, { elt, detail });
+      } else if (detail.warn) {
+        console.warn(`htmx: ${eventName}: ${detail.warn}`, { elt, detail });
+      }
+      if (typeof htmx === "undefined") return true;
+      return htmx.trigger(elt && elt.isConnected ? elt : document, eventName, detail);
+    };
+    function majorOf(version) {
+      const match = /^(\d+)\./.exec(String(version ?? "").trim());
+      return match ? Number(match[1]) : null;
+    }
+    diagnostics.checkPage = function checkPage(doc = document) {
+      const warnings = [];
+      const meta = doc.querySelector('meta[name="htmx-config"]');
+      if (!meta) {
+        warnings.push(
+          `Rizzy: no <meta name="htmx-config"> on this page. The root component must render <HeadOutlet /> (Rizzy's HtmxApp<TLayout> does), otherwise the antiforgery token and Rizzy settings are not sent to the client.`
+        );
+      } else {
+        let config = null;
+        try {
+          config = JSON.parse(meta.getAttribute("content") || "");
+        } catch {
+          warnings.push('Rizzy: <meta name="htmx-config"> does not contain valid JSON; htmx ignores it.');
+        }
+        if (config?.rizzyDiagnostics === false) return [];
+        const serverMajor = majorOf(config?.rizzyVersion);
+        if (serverMajor !== null && serverMajor !== CLIENT_MAJOR) {
+          warnings.push(
+            `Rizzy: the server runs Rizzy ${config.rizzyVersion} but rizzy.js is for Rizzy ${CLIENT_MAJOR}.x. Load the rizzy.js shipped with the Rizzy package (_content/Rizzy/js/rizzy.js) or the matching @jalexsocial/rizzy version.`
+          );
+        }
+      }
+      for (const warn of warnings) {
+        diagnostics.report(doc, "htmx:rizzy:config:warn", { warn });
+      }
+      return warnings;
+    };
+    if (typeof document !== "undefined" && !diagnostics.pageChecked) {
+      diagnostics.pageChecked = true;
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", () => diagnostics.checkPage(document), { once: true });
+      } else {
+        diagnostics.checkPage(document);
+      }
+    }
+  })();
+  (function() {
+    const root = window.Rizzy = window.Rizzy || {};
     const nonceApi = root.nonce = root.nonce || {};
     let cachedPageNonce;
     function escapeRegex(value) {
@@ -47,6 +102,7 @@
     });
   })();
   (function() {
+    const report = (elt, name, detail) => window.Rizzy?.diagnostics?.report ? window.Rizzy.diagnostics.report(elt, name, detail) : htmx.trigger(elt, name, detail);
     const STREAM_SINK_ATTR = "data-rizzy-stream-sink";
     const HTML_CLOSE = "</html>";
     const SSR_OPEN = "<blazor-ssr";
@@ -125,7 +181,7 @@
       streams.set(ctx, state);
       ctx.extensionPromise = readRemainder(state, decoder).catch((error) => {
         if (error?.name !== "AbortError") {
-          htmx.trigger(ctx.sourceElement, "htmx:error", { ctx, error });
+          report(ctx.sourceElement, "htmx:error", { ctx, error });
         }
       }).finally(() => closeStream(state));
     }
@@ -325,7 +381,12 @@
           if (!newAnti) return;
           htmx.config.antiforgery = newAnti;
         } catch (e) {
-          console.error("[rizzy-antiforgery] Error parsing htmx-config JSON:", e);
+          const error = new Error(`invalid htmx-config JSON in the boosted response: ${e.message}`);
+          if (window.Rizzy?.diagnostics?.report) {
+            window.Rizzy.diagnostics.report(elt, "htmx:rizzy:antiforgery:error", { error });
+          } else {
+            console.error("[rizzy-antiforgery]", error);
+          }
           return;
         }
         const current = document.querySelector('meta[name="htmx-config"]');

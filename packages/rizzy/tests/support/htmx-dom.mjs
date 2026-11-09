@@ -95,6 +95,7 @@ export function controlledStream() {
         body,
         push: (text) => controller.enqueue(encoder.encode(text)),
         end: () => controller.close(),
+        fail: (error) => controller.error(error),
     };
 }
 

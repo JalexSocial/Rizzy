@@ -1,3 +1,4 @@
+import "./rizzy-diagnostics";
 import "./rizzy-nonce"
 import "./rizzy-streaming"
 import "./rizzy-antiforgery";
