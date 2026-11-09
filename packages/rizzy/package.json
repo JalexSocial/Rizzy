@@ -44,9 +44,6 @@
     "url": "https://github.com/jalexsocial/rizzy/issues"
   },
   "homepage": "https://github.com/jalexsocial/rizzy#readme",
-  "dependencies": {
-    "aspnet-client-validation": "^0.11.1"
-  },
   "peerDependencies": {
     "htmx.org": "^4.0.1"
   },
@@ -55,6 +52,6 @@
     "htmx.org": "^4.0.1",
     "jsdom": "^26.1.0",
     "rollup-plugin-visualizer": "^6.0.0",
-    "vite": "^6.3.5"
+    "vite": "^6.4.6"
   }
 }

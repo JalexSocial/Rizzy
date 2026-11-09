@@ -45,10 +45,24 @@ public class HomeController : RzController
     [HttpPost, ValidateAntiForgeryToken]
     public IResult Information([FromForm] Person person)
     {
-	    ModelState.AddModelError("Person.Name", "Name should be more conflagulated");
+        // A server-side rule on top of the [Required]/[StringLength] attributes.
+        if (string.Equals(person.Name, "admin", StringComparison.OrdinalIgnoreCase))
+            ModelState.AddModelError("Person.Name", "That name is reserved.");
 
-//        return View<Information>(new { Person = person });
-	    return View<Information>();
+        if (!ModelState.IsValid)
+        {
+            // 422 + the re-rendered form with its errors. htmx 4 swaps it into the target.
+            if (Request.IsHtmx())
+                Response.Htmx().ValidationFailed();
+            else
+                Response.StatusCode = StatusCodes.Status422UnprocessableEntity;
+
+            // RzController passes its ModelState to the view, where <RzModelStateProvider/>
+            // shows each error next to its field.
+            return View<Information>();
+        }
+
+        return View<Information>(new { Saved = person.Name });
     }
 
     public IResult Counter()
@@ -115,6 +129,32 @@ public class HomeController : RzController
 
         return PartialView(HomeFragments.RenderServerTime);
     }
+
+    [Microsoft.AspNetCore.Mvc.Route("/home/examples")]
+    public IResult Examples() => View<Examples>();
+
+    [HtmxRequest]
+    [Microsoft.AspNetCore.Mvc.Route("/home/examples/rows")]
+    public IResult ExampleRows(int page = 2)
+    {
+        page = Math.Clamp(page, 1, 100);
+        // The button replaces itself (out of band) so the next click asks for the next page.
+        _swapService.AddSwappableFragment("load-more", Views.Examples.LoadMoreButton(page + 1));
+        return PartialView(Views.Examples.Rows(page));
+    }
+
+    [HtmxRequest]
+    [HttpDelete("/home/examples/item"), ValidateAntiForgeryToken]
+    public IResult ExampleDeleteItem()
+        => PartialView(Views.Examples.Message("Item 42 was deleted. The antiforgery token was checked."));
+
+    [HtmxRequest]
+    [Microsoft.AspNetCore.Mvc.Route("/home/examples/scripts")]
+    public IResult ExampleScripts() => PartialView<CspScripts>();
+
+    [HtmxRequest]
+    [Microsoft.AspNetCore.Mvc.Route("/home/examples/error")]
+    public IResult ExampleError() => throw new InvalidOperationException("Demo: this action always fails.");
 
     public IResult Blog() => View<BlogArticle>();
 

@@ -1,0 +1,91 @@
+@using Rizzy
+@using Rizzy.Htmx
+@inject IRizzyNonceProvider NonceProvider
+
+<RzPageTitle>Examples</RzPageTitle>
+
+<h3>Examples</h3>
+<p>
+    Small htmx 4 patterns served by <code>HomeController</code>. Streaming rendering is shown on the
+    <a href="/home/weather" hx-boost="true" hx-target="article" hx-push-url="true">Weather</a> page,
+    and 422 validation on the <a href="/home/information" hx-boost="true" hx-target="article" hx-push-url="true">Validation</a> page.
+</p>
+
+<section class="mb-4">
+    <h4>Table rows</h4>
+    <p>
+        The response is a bare list of <code>&lt;tr&gt;</code> elements appended to the table body
+        (<code>hx-swap="beforeend"</code>). The button replaces itself out of band with
+        <code>IHtmxSwapService</code>, so it always asks for the next page.
+    </p>
+    <table class="table table-sm">
+        <thead><tr><th>#</th><th>Item</th></tr></thead>
+        <tbody id="rows">@Rows(1)</tbody>
+    </table>
+    @LoadMoreButton(2)
+</section>
+
+<section class="mb-4">
+    <h4>Confirm and antiforgery</h4>
+    <p>
+        <code>hx-confirm</code> shows the browser's confirm dialog. The DELETE carries the
+        antiforgery token in a header (added by rizzy.js from the page's htmx config), and the
+        action is protected by <code>[ValidateAntiForgeryToken]</code>.
+    </p>
+    <div id="confirm-result" class="mb-2">Item 42 exists.</div>
+    <button class="btn btn-danger" hx-delete="/home/examples/item" hx-confirm="Delete item 42?" hx-target="#confirm-result">Delete item 42</button>
+</section>
+
+<section class="mb-4">
+    <h4>Content Security Policy</h4>
+    <p>
+        This app sends <code>script-src 'nonce-…'</code>. The fragment loaded below contains two
+        scripts: one rendered by the server with the response nonce, and one injected without a
+        nonce, the way an XSS payload would arrive. rizzy.js promotes the server's nonce to the
+        page's, so only the first one runs.
+    </p>
+    <div id="csp-result" class="mb-2"></div>
+    <button class="btn btn-secondary" hx-get="/home/examples/scripts" hx-target="#csp-result">Load the fragment</button>
+</section>
+
+<section class="mb-4">
+    <h4>Server errors</h4>
+    <p>
+        The action below throws. <code>app.UseHtmxErrorHandling()</code> keeps the error page out of
+        the target and raises an <code>rz:server-error</code> event, which this page listens for.
+    </p>
+    <div id="error-result" class="mb-2">Nothing has failed yet.</div>
+    <button class="btn btn-secondary" hx-get="/home/examples/error" hx-target="#error-result">Trigger a server error</button>
+</section>
+
+<script nonce="@NonceProvider.GetNonce()">
+    document.body.addEventListener("rz:server-error", (e) => {
+        const el = document.getElementById("error-result");
+        if (el) el.textContent = `The server answered ${e.detail?.status ?? "an error"}; the error page was not swapped in.`;
+    });
+</script>
+
+@code {
+    public const int PageSize = 5;
+
+    public static RenderFragment Rows(int page) => builder =>
+    {
+        var seq = 0;
+        for (var i = (page - 1) * PageSize + 1; i <= page * PageSize; i++)
+        {
+            builder.OpenElement(seq++, "tr");
+            builder.OpenElement(seq++, "td");
+            builder.AddContent(seq++, i);
+            builder.CloseElement();
+            builder.OpenElement(seq++, "td");
+            builder.AddContent(seq++, $"Item {i}");
+            builder.CloseElement();
+            builder.CloseElement();
+        }
+    };
+
+    public static RenderFragment LoadMoreButton(int nextPage) =>
+        @<button id="load-more" class="btn btn-secondary" hx-get="/home/examples/rows?page=@nextPage" hx-target="#rows" hx-swap="beforeend">Load page @nextPage</button>;
+
+    public static RenderFragment Message(string text) => @<span>@text</span>;
+}

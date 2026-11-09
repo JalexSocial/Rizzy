@@ -33,34 +33,34 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     /// </summary>
     /// <typeparam name="TComponent">The type of the Razor component to render. Must implement <see cref="IComponent"/>.</typeparam>
     /// <param name="parameterBuilderAction">An action to configure the parameters for the component using a <see cref="RizzyComponentParameterBuilder{TComponent}"/>.</param>
-    /// <param name="modelState">Optional <see cref="ModelStateDictionary"/> to provide validation state to the component.</param>
+    /// <param name="modelState">Validation state for the component. Defaults to the controller's <see cref="ControllerBase.ModelState"/>, so model-binding and validation errors reach <c>&lt;RzModelStateProvider /&gt;</c>.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a view.</returns>
     [NonAction]
     public virtual IResult View<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
         where TComponent : IComponent
-        => Rizzy.View<TComponent>(parameterBuilderAction, modelState);
+        => Rizzy.View<TComponent>(parameterBuilderAction, modelState ?? ModelState);
 
     /// <summary>
     /// Renders a view using the specified Razor component, optionally accepting dynamic data to pass to the component.
     /// </summary>
     /// <typeparam name="TComponent">The type of the Razor component to render. Must implement <see cref="IComponent"/>.</typeparam>
     /// <param name="data">Optional dynamic data to pass to the component (e.g., an anonymous object or a dictionary). Defaults to <see langword="null"/> if not provided.</param>
-    /// <param name="modelState">Optional <see cref="ModelStateDictionary"/> to provide validation state to the component.</param>
+    /// <param name="modelState">Validation state for the component. Defaults to the controller's <see cref="ControllerBase.ModelState"/>, so model-binding and validation errors reach <c>&lt;RzModelStateProvider /&gt;</c>.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a view.</returns>
     [NonAction]
     public virtual IResult View<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent
-        => Rizzy.View<TComponent>(data, modelState);
+        => Rizzy.View<TComponent>(data, modelState ?? ModelState);
 
     /// <summary>
     /// Renders a view using the specified Razor component with explicitly provided data in the form of a dictionary.
     /// </summary>
     /// <typeparam name="TComponent">The type of the Razor component to render. Must implement <see cref="IComponent"/>.</typeparam>
     /// <param name="data">A dictionary containing the data to pass to the component.</param>
-    /// <param name="modelState">Optional <see cref="ModelStateDictionary"/> to provide validation state to the component.</param>
+    /// <param name="modelState">Validation state for the component. Defaults to the controller's <see cref="ControllerBase.ModelState"/>, so model-binding and validation errors reach <c>&lt;RzModelStateProvider /&gt;</c>.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a view.</returns>
     [NonAction]
     public virtual IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
-        => Rizzy.View<TComponent>(data, modelState);
+        => Rizzy.View<TComponent>(data, modelState ?? ModelState);
 
     /// <summary>
     /// Renders a partial view using the specified Razor component, with parameters configured via a fluent builder.
@@ -68,12 +68,12 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     /// </summary>
     /// <typeparam name="TComponent">The type of the Razor component to render. Must implement <see cref="IComponent"/>.</typeparam>
     /// <param name="parameterBuilderAction">An action to configure the parameters for the component using a <see cref="RizzyComponentParameterBuilder{TComponent}"/>.</param>
-    /// <param name="modelState">Optional <see cref="ModelStateDictionary"/> to provide validation state to the component.</param>
+    /// <param name="modelState">Validation state for the component. Defaults to the controller's <see cref="ControllerBase.ModelState"/>, so model-binding and validation errors reach <c>&lt;RzModelStateProvider /&gt;</c>.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a partial view.</returns>
     [NonAction]
     public virtual IResult PartialView<TComponent>(Action<RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, ModelStateDictionary? modelState = null)
         where TComponent : IComponent
-        => Rizzy.PartialView<TComponent>(parameterBuilderAction, modelState);
+        => Rizzy.PartialView<TComponent>(parameterBuilderAction, modelState ?? ModelState);
 
     /// <summary>
     /// Renders a partial view using the specified Razor component, optionally accepting dynamic data to pass to the component.
@@ -81,11 +81,11 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     /// </summary>
     /// <typeparam name="TComponent">The type of the Razor component to render. Must implement <see cref="IComponent"/>.</typeparam>
     /// <param name="data">Optional dynamic data to pass to the component (e.g., an anonymous object or a dictionary). Defaults to <see langword="null"/> if not provided.</param>
-    /// <param name="modelState">Optional <see cref="ModelStateDictionary"/> to provide validation state to the component.</param>
+    /// <param name="modelState">Validation state for the component. Defaults to the controller's <see cref="ControllerBase.ModelState"/>, so model-binding and validation errors reach <c>&lt;RzModelStateProvider /&gt;</c>.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a partial view.</returns>
     [NonAction]
     public virtual IResult PartialView<TComponent>(object? data = null, ModelStateDictionary? modelState = null) where TComponent : IComponent
-        => Rizzy.PartialView<TComponent>(data, modelState);
+        => Rizzy.PartialView<TComponent>(data, modelState ?? ModelState);
 
     /// <summary>
     /// Renders a partial view using the specified Razor component with explicitly provided data in the form of a dictionary.
@@ -93,11 +93,11 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     /// </summary>
     /// <typeparam name="TComponent">The type of the Razor component to render. Must implement <see cref="IComponent"/>.</typeparam>
     /// <param name="data">A dictionary containing the data to pass to the component.</param>
-    /// <param name="modelState">Optional <see cref="ModelStateDictionary"/> to provide validation state to the component.</param>
+    /// <param name="modelState">Validation state for the component. Defaults to the controller's <see cref="ControllerBase.ModelState"/>, so model-binding and validation errors reach <c>&lt;RzModelStateProvider /&gt;</c>.</param>
     /// <returns>An <see cref="IResult"/> that can render the specified component as a partial view.</returns>
     [NonAction]
     public virtual IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
-        => Rizzy.PartialView<TComponent>(data, modelState);
+        => Rizzy.PartialView<TComponent>(data, modelState ?? ModelState);
 
     /// <summary>
     /// Renders a Razor component without a layout from a <see cref="RenderFragment"/>.

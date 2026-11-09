@@ -1,4 +1,4 @@
-﻿# Rizzy.Htmx
+# Rizzy.Htmx
 
 [![Documentation](https://img.shields.io/badge/docs-Rizzy.Htmx-blue)](https://jalexsocial.github.io/rizzy.docs/docs/htmx/overview/)
 
@@ -87,7 +87,7 @@ Ensure you are using **htmx 4-compatible client assets**. In your HTML pages, in
 <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js" integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn" crossorigin="anonymous"></script>
 ```
 
-When you use Rizzy.Htmx alongside other Rizzy components, required assets may be automatically loaded.
+If you also use the Rizzy package, load its client script after htmx (`_content/Rizzy/js/rizzy.js`) and render `<RzHeadOutlet />` before both scripts; see the [Rizzy quick start](https://github.com/jalexsocial/rizzy#quick-start).
 
 ## API Overview
 
@@ -120,7 +120,3 @@ This project is licensed under the [MIT License](LICENSE).
 
 - [htmx](https://htmx.org/) for a robust client-side interaction framework.
 - The Rizzy community for their feedback and contributions.
-
----
-
-This README provides an overview of the **Rizzy.Htmx** library along with installation, configuration, and usage examples. Feel free to modify or extend it based on the needs of your project.

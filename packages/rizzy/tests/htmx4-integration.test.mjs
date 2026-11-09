@@ -347,3 +347,29 @@ test('a broken stream logs htmx:error and dispatches it', async () => {
     assert.ok(env.errors.some((e) => e.startsWith('htmx: htmx:error: connection reset')), 'the error is logged');
     await env.close();
 });
+
+// PartialView<T> streams a bare fragment (no <html> wrapper), so the extension cannot tell where the
+// initial HTML ends: it waits for the whole stream and swaps everything at once. The update block
+// must still patch the component and leave no <blazor-ssr> elements behind.
+test('PartialView streaming (no </html>) is applied when the stream ends', async () => {
+    const stream = controlledStream();
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0' },
+        body: '<button id="go" hx-get="/stream" hx-target="#target">go</button><div id="target"></div>',
+        respond: () => ({ body: stream.body }),
+    });
+
+    env.document.getElementById('go').click();
+    stream.push('<!--bl:8--><div id="loading">loading</div><!--/bl:8-->');
+    await delay(100);
+    assert.equal(env.document.getElementById('loading'), null, 'nothing is swapped until the stream ends');
+
+    stream.push('<blazor-ssr><template blazor-component-id="8"><div id="loaded">loaded</div></template><blazor-ssr-end></blazor-ssr-end></blazor-ssr>');
+    stream.end();
+
+    assert.ok(await waitFor(() => env.document.getElementById('loaded')), 'the streamed update is applied');
+    assert.equal(env.document.getElementById('loading'), null, 'the placeholder is replaced');
+    assert.equal(env.document.querySelectorAll('#target blazor-ssr, #target template').length, 0, 'no streaming markup is left in the target');
+    assert.deepEqual(env.errors, []);
+    await env.close();
+});

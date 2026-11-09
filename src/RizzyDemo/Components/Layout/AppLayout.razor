@@ -1,6 +1,7 @@
-﻿@using Rizzy
+@using Rizzy
 
 @inherits LayoutComponentBase
+@inject Rizzy.Htmx.IRizzyNonceProvider NonceProvider
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,11 +17,22 @@
     <link rel="icon" type="image/png" href="favicon.png"/>
     <RzHeadOutlet/>
 
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js" integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn" crossorigin="anonymous"></script>
-    <script src="_content/Rizzy/js/rizzy.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js" integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn" crossorigin="anonymous" nonce="@Nonce"></script>
+    <script src="_content/Rizzy/js/rizzy.js" nonce="@Nonce"></script>
 </head>
 <body>
 @Body
 
+<script nonce="@Nonce">
+    // Collapse the mobile menu after a navigation click (was an inline onclick, which the CSP blocks).
+    document.addEventListener("click", (e) => {
+        if (e.target.closest(".nav-scrollable")) document.querySelector(".navbar-toggler")?.click();
+    });
+</script>
+
 </body>
 </html>
+
+@code {
+    private string Nonce => NonceProvider.GetNonce();
+}

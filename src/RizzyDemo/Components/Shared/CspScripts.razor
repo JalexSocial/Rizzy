@@ -1,0 +1,15 @@
+@using Rizzy.Htmx
+@inject IRizzyNonceProvider NonceProvider
+
+@* Rendered into an htmx fragment by HomeController.ExampleScripts (Examples page, CSP section). *@
+<ul class="mb-0">
+    <li id="csp-server">Server-rendered script with the response nonce: <strong>blocked</strong></li>
+    <li id="csp-injected">Injected script without a nonce: <strong>blocked</strong></li>
+</ul>
+
+<script nonce="@NonceProvider.GetNonce()">
+    document.querySelector("#csp-server strong").textContent = "ran";
+</script>
+
+@* Simulates markup an attacker managed to inject. It has no nonce, so the CSP blocks it. *@
+@((MarkupString)"<script>document.querySelector('#csp-injected strong').textContent = 'RAN: the CSP is not enforced';</script>")

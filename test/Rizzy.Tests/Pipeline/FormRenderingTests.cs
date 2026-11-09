@@ -68,4 +68,25 @@ public class FormRenderingTests(RizzyTestHost host) : IClassFixture<RizzyTestHos
 
         html.Should().Contain("Server says the name is taken.");
     }
+
+    [Fact]
+    public async Task Model_state_keys_with_the_binding_prefix_reach_the_field()
+    {
+        var html = await RenderFormAsync("/form-invalid-prefixed");
+
+        // The field's own message element (not just the summary) shows the error, and the input
+        // is marked invalid.
+        Regex.IsMatch(html, @"<div[^>]*data-valmsg-for=""Person\.Name""[^>]*>Prefixed: the name is taken\.</div>")
+            .Should().BeTrue("the error should be shown next to the Name field");
+        InputFor(html, "Name").Should().Contain("invalid");
+    }
+
+    [Fact]
+    public async Task Controller_views_receive_the_controller_ModelState_by_default()
+    {
+        var html = await RenderFormAsync("/ctrl/invalid");
+
+        Regex.IsMatch(html, @"<div[^>]*data-valmsg-for=""Person\.Name""[^>]*>Controller says the name is taken\.</div>")
+            .Should().BeTrue("RzController passes its ModelState when none is given");
+    }
 }
