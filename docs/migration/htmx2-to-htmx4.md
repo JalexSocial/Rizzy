@@ -152,6 +152,7 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 
 ## New APIs
 
+- **Full htmx 4 coverage:** `Hx`/`HxAttributes` (every core and extension attribute), `HtmxEvents` (every event), `HtmxExtension` + `HtmxConfig.UseExtensions(...)`/`RestrictExtensions`/`Set(...)`, and `<RzScripts />` (htmx, rizzy.js and enabled extensions, with SRI and the CSP nonce). Replace hand-written htmx and rizzy.js script tags with `<RzScripts />` after `<RzHeadOutlet />`.
 - `HtmxRequest.Type` (`HtmxRequestType`), `IsPartial`, `IsFullPage`.
 - Trigger modifiers: `Prevent()`, `Stop()`, `Halt()`, `Capture()`, `Passive()`, `FromSelf()`, `FromOutside()`, `RootMargin()`.
 - Swap modifiers: `Strip()`, `Target()`, `SwapEmpty()`; `SwapStyle.outerSync`.

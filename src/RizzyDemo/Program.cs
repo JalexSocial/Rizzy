@@ -14,7 +14,14 @@ builder.Services.AddRizzy(config =>
 });
 
 // htmx 4 defaults: error responses swap, which the validation example relies on (422).
-builder.Services.AddHtmx(config => config.Mode = "same-origin");
+builder.Services.AddHtmx(config =>
+{
+    config.Mode = "same-origin";
+    // Preload boosted navigation links on hover. <RzScripts /> loads the extension, and with
+    // RestrictExtensions htmx accepts only Rizzy's own extensions plus the ones enabled here.
+    config.UseExtensions(HtmxExtension.Preload);
+    config.RestrictExtensions = true;
+});
 
 // Add services to the container.
 // AddControllersWithViews registers the MVC antiforgery filters used by [ValidateAntiForgeryToken].

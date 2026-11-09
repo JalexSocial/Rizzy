@@ -65,6 +65,24 @@ public class HtmxRequest
     public string? SourceId => ExtractId(Source);
 
     /// <summary>
+    /// The user's answer to <c>hx-prompt</c> (URI-decoded), sent as <c>HX-Prompt</c> by the
+    /// hx-prompt extension (<see cref="HtmxExtension.Prompt"/>).
+    /// </summary>
+    public string? Prompt { get; }
+
+    /// <summary>
+    /// The element's current polling tag, sent as <c>HX-PTag</c> by the hx-ptag extension
+    /// (<see cref="HtmxExtension.PTag"/>). Answer 304 when the content has not changed.
+    /// </summary>
+    public string? PTag { get; }
+
+    /// <summary>
+    /// The id of the last part received before a reconnect, sent as <c>HX-Last-Part-ID</c> by the
+    /// hx-multipart extension (<see cref="HtmxExtension.Multipart"/>).
+    /// </summary>
+    public string? LastPartId { get; }
+
+    /// <summary>
     /// Gets the htmx request type (`full` or `partial`) if available.
     /// </summary>
     public string? RequestType { get; }
@@ -107,6 +125,13 @@ public class HtmxRequest
         Target = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.Target);
         Source = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.Source);
         RequestType = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.RequestType);
+        Prompt = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.Prompt, static value =>
+        {
+            try { return Uri.UnescapeDataString(value); }
+            catch (UriFormatException) { return value; }
+        });
+        PTag = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.PTag);
+        LastPartId = GetHxValueOrDefault(context.Request.Headers, HtmxRequestHeaderNames.LastPartId);
         Type = RequestType switch
         {
             null => HtmxRequestType.None,

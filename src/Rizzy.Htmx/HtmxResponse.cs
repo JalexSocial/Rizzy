@@ -260,6 +260,34 @@ public sealed class HtmxResponse(HttpContext context)
     }
 
     /// <summary>
+    /// Sends a new polling tag (<c>HX-PTag</c>) for the hx-ptag extension
+    /// (<see cref="HtmxExtension.PTag"/>). The browser sends it back on the next poll
+    /// (<see cref="HtmxRequest.PTag"/>); answer 304 when nothing changed.
+    /// </summary>
+    /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
+    public HtmxResponse PTag(string tag)
+    {
+        AssertIsHtmxRequest();
+        ArgumentException.ThrowIfNullOrWhiteSpace(tag);
+        _headers[HtmxResponseHeaderNames.PTag] = tag;
+        return this;
+    }
+
+    /// <summary>
+    /// Tells the hx-download extension (<see cref="HtmxExtension.Download"/>) to fetch
+    /// <paramref name="url"/> as a file download (<c>HX-Download</c>), for when the file cannot be
+    /// streamed as the htmx response itself.
+    /// </summary>
+    /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
+    public HtmxResponse Download(string url)
+    {
+        AssertIsHtmxRequest();
+        ArgumentException.ThrowIfNullOrWhiteSpace(url);
+        _headers[HtmxResponseHeaderNames.Download] = url;
+        return this;
+    }
+
+    /// <summary>
     /// A CSS selector that updates the target of the content update to a different element on the page.
     /// </summary>
     /// <param name="selector"></param>

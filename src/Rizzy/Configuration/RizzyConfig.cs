@@ -11,6 +11,12 @@ public class RizzyConfig
     public AntiforgeryStrategy AntiforgeryStrategy { get; set; } = AntiforgeryStrategy.GenerateTokensPerPage;
 
     /// <summary>
+    /// The URL of the Rizzy client script that <c>&lt;RzScripts /&gt;</c> loads after htmx.
+    /// Default <c>_content/Rizzy/js/rizzy.js</c> (the copy in the Rizzy package).
+    /// </summary>
+    public string ClientScriptUrl { get; set; } = "_content/Rizzy/js/rizzy.js";
+
+    /// <summary>
     /// Layout that is applied to all pages without a layout attribute 
     /// </summary>
     public Type? DefaultLayout

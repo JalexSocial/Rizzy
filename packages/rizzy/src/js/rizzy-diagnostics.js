@@ -11,7 +11,13 @@
 //      <RzHeadOutlet />, so the antiforgery token and Rizzy settings are missing), or
 //    - the meta tag is not valid JSON, or
 //    - the server's Rizzy major version (rizzyVersion in the meta tag) differs from the major
-//      version this script was built for (for example a cached or CDN copy of rizzy.js).
+//      version this script was built for (for example a cached or CDN copy of rizzy.js), or
+//    - htmx rejected an extension because the htmx.config.extensions allow-list does not name it,
+//      or an extension enabled on the server (rizzyExtensions in the meta tag) never registered.
+//
+// For the extension check, this script wraps htmx.registerExtension before Rizzy's own
+// extensions register. <RzScripts /> loads rizzy.js before the extension scripts, so every
+// registration is seen.
 //
 // Set htmx.config.rizzyDiagnostics = false (in the meta config) to silence the page check.
 
@@ -40,6 +46,26 @@
         return htmx.trigger(elt && elt.isConnected ? elt : document, eventName, detail);
     };
 
+    // ---- Extension registration tracking --------------------------------------------------------
+    const registered = diagnostics.registeredExtensions = diagnostics.registeredExtensions || new Set();
+    const rejected = diagnostics.rejectedExtensions = diagnostics.rejectedExtensions || new Set();
+
+    if (typeof htmx !== "undefined" && typeof htmx.registerExtension === "function" && !htmx.registerExtension._rizzyTracked) {
+        const original = htmx.registerExtension.bind(htmx);
+        const tracked = function registerExtension(name, extension) {
+            const result = original(name, extension);
+            if (result === false) {
+                if (!registered.has(name)) rejected.add(name);   // not a duplicate: blocked by the allow-list
+            } else {
+                registered.add(name);
+                rejected.delete(name);
+            }
+            return result;
+        };
+        tracked._rizzyTracked = true;
+        htmx.registerExtension = tracked;
+    }
+
     function majorOf(version) {
         const match = /^(\d+)\./.exec(String(version ?? "").trim());
         return match ? Number(match[1]) : null;
@@ -67,6 +93,24 @@
             }
 
             if (config?.rizzyDiagnostics === false) return [];
+
+            for (const name of rejected) {
+                warnings.push(
+                    `Rizzy: htmx rejected the "${name}" extension because htmx.config.extensions ` +
+                    `("${config?.extensions ?? ""}") does not list it. Enable extensions with ` +
+                    `HtmxConfig.UseExtensions(...), which keeps the allow-list in step, or add the name ` +
+                    `to HtmxConfig.Extensions.`);
+            }
+            for (const name of config?.rizzyExtensions ?? []) {
+                if (!registered.has(name) && !rejected.has(name)) {
+                    warnings.push(
+                        `Rizzy: the "${name}" extension is enabled on the server but rizzy.js did not see ` +
+                        `it register. Render <RzScripts /> in the root layout (after <RzHeadOutlet />). ` +
+                        `If you load the scripts yourself, load the extension after htmx and after ` +
+                        `rizzy.js: an extension registered before rizzy.js is not tracked and is ` +
+                        `reported here even though it works.`);
+                }
+            }
 
             const serverMajor = majorOf(config?.rizzyVersion);
             if (serverMajor !== null && serverMajor !== CLIENT_MAJOR) {

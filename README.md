@@ -57,8 +57,9 @@ app.Run();
 @using Rizzy
 ```
 
-**4. Create the root layout.** It must render `<RzHeadOutlet />` (Blazor's `HeadOutlet` plus Rizzy's
-htmx config and antiforgery token) before the htmx script:
+**4. Create the root layout.** `<RzHeadOutlet />` renders Blazor's `HeadOutlet` plus Rizzy's htmx
+config and antiforgery token; `<RzScripts />` then loads htmx (pinned, with SRI), the Rizzy script
+and any htmx extensions you enable:
 
 ```razor
 @* AppLayout.razor *@
@@ -70,10 +71,7 @@ htmx config and antiforgery token) before the htmx script:
     <meta charset="utf-8" />
     <base href="/" />
     <RzHeadOutlet />
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js"
-            integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn"
-            crossorigin="anonymous"></script>
-    <script src="_content/Rizzy/js/rizzy.js"></script>
+    <RzScripts />
 </head>
 <body>
     @Body
@@ -88,7 +86,8 @@ htmx config and antiforgery token) before the htmx script:
 <main>@Body</main>
 ```
 
-**5. Write components** and let htmx swap them:
+**5. Write components** and let htmx swap them. Plain `hx-*` attributes work; so does the typed
+`Hx` builder (`<button @attributes="@(Hx.Post("/greet").Target("#greeting"))">`):
 
 ```razor
 @* Home.razor *@
@@ -109,6 +108,10 @@ htmx config and antiforgery token) before the htmx script:
 The POST carries the antiforgery token automatically, and `View<T>` renders a full page for a normal
 request but only the fragment (no layouts) for an htmx request that targets an element. Open the
 browser console while you work: Rizzy and htmx 4 log configuration problems and errors there.
+
+**htmx extensions** are one line: `builder.Services.AddHtmx(o => o.UseExtensions(HtmxExtension.Sse, HtmxExtension.Preload))`.
+`<RzScripts />` loads them and Rizzy keeps htmx's extension allow-list in step. Event names are in
+`HtmxEvents` (`Trigger.OnEvent(HtmxEvents.AfterSwap)`).
 
 `src/RizzyDemo` in this repository shows the rest: MVC controllers, 422 validation, out-of-band
 swaps, streaming rendering, confirm dialogs and a nonce-based Content Security Policy.

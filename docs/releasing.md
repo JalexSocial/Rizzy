@@ -15,14 +15,15 @@ See `CHANGELOG.md` for the SemVer policy.
 3. **Version.** `Directory.Build.props` holds the development version. Bump it to the next
    version after a release. For a new major version, also update `CLIENT_MAJOR` in
    `packages/rizzy/src/js/rizzy-diagnostics.js` (a test fails until they match) and rebuild the bundle.
-4. **Merge** the release PR to `main` and wait for CI to pass.
-5. **Tag** the merge commit and push the tag:
+4. **htmx version.** If htmx was upgraded, check that `npm run generate:htmx-assets` was run and the drift tests pass (see CONTRIBUTING).
+5. **Merge** the release PR to `main` and wait for CI to pass.
+6. **Tag** the merge commit and push the tag:
    ```bash
    git tag -a vX.Y.Z -m "Rizzy X.Y.Z" && git push origin vX.Y.Z
    ```
    Versions with a pre-release suffix (`6.0.0-preview.1`) are published to npm under the `next`
    tag and marked as pre-releases on GitHub.
-6. **Check** the GitHub release (its notes are generated from merged PRs; paste the changelog
+7. **Check** the GitHub release (its notes are generated from merged PRs; paste the changelog
    section in as well), nuget.org and npm.
 
 ## One-time setup (maintainers)

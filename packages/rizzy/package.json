@@ -25,7 +25,8 @@
     "prepublishOnly": "npm run build",
     "test": "node --test ./tests/*.test.mjs",
     "validate:htmx4": "node ./scripts/validate-htmx4.js",
-    "build:check": "npm run build && npm run validate:htmx4"
+    "build:check": "npm run build && npm run validate:htmx4",
+    "generate:htmx-assets": "node ./scripts/generate-htmx-assets.mjs"
   },
   "repository": {
     "type": "git",

@@ -15,12 +15,16 @@ as `_content/Rizzy/js/rizzy.js`, so most apps don't need this npm package at all
 | `rizzy-nonce` | Lets server-rendered `<script>`/`<style>` in htmx responses run under a nonce-based Content Security Policy, while injected ones stay blocked. Does nothing on pages without a nonce. |
 | `rizzy-streaming` | Makes Blazor streaming rendering (`[StreamRendering]`) work with htmx: the initial HTML is swapped normally and `<blazor-ssr>` updates are applied as they arrive. |
 | `rizzy-confirm` | `hx-confirm` uses the browser's `confirm()`, or a custom dialog that handles the `rz:confirm-dialog` event (`window.Rizzy.confirm`). |
-| diagnostics | One console warning when the page is missing Rizzy's config meta tag or the server runs another Rizzy major version; extension errors are logged the way htmx logs its own. |
+| diagnostics | Console warnings when the page is missing Rizzy's config meta tag, the server runs another Rizzy major version, htmx rejected an extension (not in `htmx.config.extensions`), or an extension enabled on the server never registered. Extension errors are logged the way htmx logs its own. |
 
 ## Usage
 
-Load htmx 4 first, then Rizzy. The bundle is a classic (UMD) script, so don't add `type="module"`.
-In a Rizzy app, the root layout's `<head>` looks like this:
+In a Rizzy app, render `<RzHeadOutlet />` and then `<RzScripts />` in the root layout's `<head>`:
+`<RzScripts />` loads htmx (pinned, with SRI), this script and the htmx extensions enabled with
+`HtmxConfig.UseExtensions(...)`, in the right order and with the CSP nonce.
+
+Loading the scripts by hand instead: htmx 4 first, then Rizzy, then any extensions. The bundle is a
+classic (UMD) script, so don't add `type="module"`:
 
 ```html
 <RzHeadOutlet />  <!-- Blazor's HeadOutlet + Rizzy's htmx-config meta tag; must come before htmx -->

@@ -108,3 +108,23 @@ The streaming extension (RIZZY-003) is now checked end to end:
 
   Each test also fails on unexpected console errors or Rizzy configuration warnings.
 - **Coverage (2026-11-09):** line coverage is Rizzy 60.1%, Rizzy.Htmx 72.6% and Rizzy.SourceGenerators 83.6% (branch: 45.5%, 64.9% and 61.9%). This meets the RM-A7 target of at least 50% for the Rizzy package.
+
+## htmx 4 surface coverage
+
+An audit of htmx 4.0.1's source against Rizzy found complete typed coverage of headers, config, swap and trigger syntax, but typed builders for only 3 of 34 attributes, no event constants and no extension loading support. Rizzy now has:
+
+- `Hx`/`HxAttributes` for every core and extension attribute
+- `HtmxEvents` for every event
+- the `HtmxExtension` catalog with allow-list sync
+- `<RzScripts />`
+
+Drift tests in `packages/rizzy/tests/htmx4-coverage.test.mjs` compare all of these with the installed htmx package. They found one attribute the first pass missed: `hx-history`, read by the history-cache extension.
+
+### RIZZY-038: streaming switched off when another extension replaced `ctx.fetch`
+
+| | |
+|---|---|
+| Category / Severity | Functional defect / **P2** |
+| Evidence | `rizzy-streaming` wrapped `ctx.fetch` in its `htmx:before:request` hook. hx-preload's hook runs later and assigns `ctx.fetch = () => prefetchedResponse`, which dropped the wrapper. With Preload enabled, every boosted click (preloaded on `mousedown`) lost streaming: no placeholder first, and no stream events. Found by the Playwright suite after the demo enabled Preload. |
+| Resolution | Fixed. `ctx.fetch` becomes an accessor: reads return the streaming wrapper, and each assignment adds a layer. Extensions that *wrap* the fetch (`const prev = ctx.fetch; ctx.fetch = ...prev(...)`) capture the wrapper, so it is re-entered from the layer above and calls the next layer down, reproducing the plain-assignment chain; streaming is applied once to the final response. A first version that only stored the latest assignment sent wrapping extensions into infinite recursion; it was caught in review before commit. Covered by JS integration tests for both patterns (replace, and two wrapping extensions) and the browser streaming tests with Preload on. |
+| Status / Confidence | Confirmed (browser) / High |

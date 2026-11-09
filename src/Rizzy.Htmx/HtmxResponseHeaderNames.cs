@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Htmx;
+namespace Rizzy.Htmx;
 
 /// <summary>
 /// The HTMX response header names.
@@ -50,6 +50,12 @@ public static class HtmxResponseHeaderNames
     /// Allows you to trigger client-side events.
     /// </summary>
     public const string Trigger = "HX-Trigger";
+
+    /// <summary>A new polling tag for the element (read by the hx-ptag extension; not in <see cref="All"/>).</summary>
+    public const string PTag = "HX-PTag";
+
+    /// <summary>A URL the hx-download extension fetches as a file download (not in <see cref="All"/>).</summary>
+    public const string Download = "HX-Download";
 
 
     /// <summary>

@@ -41,7 +41,15 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-        var config = Options.Value;
+        // Work on a copy: the options instance is shared by every request.
+        var config = Options.Value with { };
+
+        // Keep the htmx.config.extensions allow-list in step with the enabled extensions, so htmx
+        // never silently rejects Rizzy's own extensions or one enabled with UseExtensions.
+        config.Extensions = config.ResolveExtensionAllowList(HtmxExtension.Rizzy.Select(e => e.Name));
+        config.ExpectedExtensions = config.EnabledExtensions.Count > 0
+            ? config.EnabledExtensions.Select(e => e.Name).ToArray()
+            : null;
 
         if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
         {

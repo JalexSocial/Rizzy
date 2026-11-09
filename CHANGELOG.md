@@ -77,6 +77,26 @@ The 6.0.0 release: htmx 4 support. Upgrading from 5.x is covered step by step in
   - Extension errors are logged the way htmx logs its own (RIZZY-026, RIZZY-028).
 - **Client API.** `window.Rizzy.confirm()`, `htmx.config.rizzyConfirmDialog` and `window.Rizzy.diagnostics`.
 
+- **Full htmx 4 surface.**
+  - `Hx` / `HxAttributes`: a typed attribute builder for Blazor attribute splatting
+    (`@attributes="@(Hx.Post(url).Target(...).Swap(...))"`), with a method for every attribute
+    htmx 4.0.1 and its official extensions read, plus `HxTarget` (extended selectors),
+    `HxSyncStrategy`, `HxHeadStrategy` and `HxConfirm`. It applies `:inherited`/`:append` and the
+    configured `MetaCharacter`.
+  - `HtmxEvents`: constants for every htmx 4 core and extension event, and Rizzy's own.
+  - `HtmxExtension`: a catalog of the 17 official extensions with their registered names, plus
+    `HtmxExtension.Custom(...)`. Enable them with `HtmxConfig.UseExtensions(...)`; Rizzy keeps
+    `htmx.config.extensions` in step (`RestrictExtensions` for a strict allow-list). `HtmxConfig.Set(...)`
+    writes extension settings (`sse`, `historyCache`, ...) and rejects keys a property already writes.
+  - `<RzScripts />`: loads htmx (pinned, with SRI, from jsDelivr or your own `BaseUrl`), rizzy.js and
+    the enabled extensions, all with the CSP nonce (`HtmxConfig.Scripts`, `HtmxAssets`,
+    `RizzyConfig.ClientScriptUrl`). Integrity hashes apply automatically only to the jsDelivr URL.
+  - Extension headers: `HtmxRequest.Prompt`, `PTag`, `LastPartId`; `HtmxResponse.PTag(...)`, `Download(...)`.
+  - rizzy.js warns when htmx rejected an extension (not in the allow-list) or an extension enabled on
+    the server never registered.
+  - Drift tests fail CI when an htmx upgrade adds an attribute, event or extension that Rizzy does
+    not cover, or when the SRI table is stale.
+
 ### Fixed
 
 - **Security.**
@@ -84,6 +104,9 @@ The 6.0.0 release: htmx 4 support. Upgrading from 5.x is covered step by step in
   - The CSP nonce extension no longer re-parses responses, so table rows and other fragments survive.
     Injected scripts stay blocked (RIZZY-004, RIZZY-027).
   - Pages with their own `<HeadContent>` lost the antiforgery token (RIZZY-036).
+- **Streaming survives other extensions.** An extension that replaces `ctx.fetch` after Rizzy's hook
+  (hx-preload does) switched streaming off. Rizzy now keeps every fetch other extensions install,
+  whether they replace or wrap it, and applies streaming to the final response (RIZZY-038).
 - **Streaming rendering cooperates with htmx 4.** Swaps, `hx-status`, `HX-*` headers, triggers and
   `hx-sync` all work while blocks stream in. A broken stream is now logged (RIZZY-003).
 - **Layouts and history.** Back/forward, boosted navigation and full-page htmx requests get the

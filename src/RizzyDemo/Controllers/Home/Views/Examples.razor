@@ -33,7 +33,9 @@
         action is protected by <code>[ValidateAntiForgeryToken]</code>.
     </p>
     <div id="confirm-result" class="mb-2">Item 42 exists.</div>
-    <button class="btn btn-danger" hx-delete="/home/examples/item" hx-confirm="Delete item 42?" hx-target="#confirm-result">Delete item 42</button>
+    @* Built with the typed Hx attribute builder instead of hand-written hx-* attributes. *@
+    <button class="btn btn-danger"
+            @attributes="@(Hx.Delete("/home/examples/item").Confirm("Delete item 42?").Target(HxTarget.Id("confirm-result")))">Delete item 42</button>
 </section>
 
 <section class="mb-4">
@@ -85,7 +87,8 @@
     };
 
     public static RenderFragment LoadMoreButton(int nextPage) =>
-        @<button id="load-more" class="btn btn-secondary" hx-get="/home/examples/rows?page=@nextPage" hx-target="#rows" hx-swap="beforeend">Load page @nextPage</button>;
+        @<button id="load-more" class="btn btn-secondary"
+                 @attributes="@(Hx.Get($"/home/examples/rows?page={nextPage}").Target(HxTarget.Id("rows")).Swap(SwapStyle.beforeend))">Load page @nextPage</button>;
 
     public static RenderFragment Message(string text) => @<span>@text</span>;
 }

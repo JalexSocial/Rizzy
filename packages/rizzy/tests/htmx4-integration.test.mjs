@@ -373,3 +373,129 @@ test('PartialView streaming (no </html>) is applied when the stream ends', async
     assert.deepEqual(env.errors, []);
     await env.close();
 });
+
+// ---- Extension loading diagnostics ------------------------------------------------------------
+
+test('an allow-list without Rizzy\'s extensions is reported, naming each rejected extension', async () => {
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0', extensions: 'rizzy-antiforgery' },
+        body: '<div></div>',
+        respond: () => ({ body: '' }),
+    });
+    const warnings = env.window.Rizzy.diagnostics.checkPage(env.document);
+    for (const name of ['rizzy-nonce', 'rizzy-streaming', 'rizzy-confirm']) {
+        assert.ok(warnings.some((w) => w.includes(`rejected the "${name}" extension`)), `${name} reported`);
+    }
+    assert.ok(!warnings.some((w) => w.includes('rejected the "rizzy-antiforgery"')), 'an allowed extension is not reported');
+    await env.close();
+});
+
+test('an extension loaded after Rizzy but missing from the allow-list is reported', async () => {
+    const env = await bootHtmx({
+        config: {
+            rizzyVersion: '6.0.0',
+            extensions: 'rizzy-antiforgery, rizzy-nonce, rizzy-streaming, rizzy-confirm',
+            rizzyExtensions: ['ptag'],
+        },
+        body: '<div></div>',
+        respond: () => ({ body: '' }),
+        extensions: ['hx-ptag'],
+    });
+    const warnings = env.window.Rizzy.diagnostics.checkPage(env.document);
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /rejected the "ptag" extension/);
+    await env.close();
+});
+
+test('an enabled extension whose script never loaded is reported; a loaded one is not', async () => {
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0', rizzyExtensions: ['ptag', 'preload'] },
+        body: '<div></div>',
+        respond: () => ({ body: '' }),
+        extensions: ['hx-ptag'],
+    });
+    const warnings = env.window.Rizzy.diagnostics.checkPage(env.document);
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /"preload" extension is enabled on the server but rizzy.js did not see it register/);
+    assert.ok(env.window.Rizzy.diagnostics.registeredExtensions.has('ptag'));
+    await env.close();
+});
+
+test('with a matching allow-list, Rizzy and an enabled extension register without warnings', async () => {
+    const env = await bootHtmx({
+        config: {
+            rizzyVersion: '6.0.0',
+            extensions: 'rizzy-antiforgery, rizzy-nonce, rizzy-streaming, rizzy-confirm, ptag',
+            rizzyExtensions: ['ptag'],
+        },
+        body: '<div></div>',
+        respond: () => ({ body: '' }),
+        extensions: ['hx-ptag'],
+    });
+    assert.equal(env.window.Rizzy.diagnostics.checkPage(env.document).length, 0);
+    for (const name of ['rizzy-antiforgery', 'rizzy-nonce', 'rizzy-streaming', 'rizzy-confirm', 'ptag'])
+        assert.ok(env.window.Rizzy.diagnostics.registeredExtensions.has(name), name);
+    await env.close();
+});
+
+// An extension that replaces ctx.fetch after Rizzy's hook (as hx-preload does with a prefetched
+// response) must not switch streaming off.
+test('streaming still works when another extension replaces ctx.fetch later', async () => {
+    const stream = controlledStream();
+    let fetches = 0;
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0' },
+        body: '<button id="go" hx-get="/stream" hx-target="#target">go</button><div id="target"></div>',
+        respond: () => { fetches++; return { body: stream.body }; },
+    });
+    // Registered after Rizzy, so its before:request hook runs after rizzy-streaming's.
+    env.htmx.registerExtension('test-prefetch', {
+        htmx_before_request(_elt, { ctx }) {
+            const prefetched = env.window.fetch('/stream');
+            ctx.fetch = () => prefetched;
+        },
+    });
+
+    env.document.getElementById('go').click();
+    stream.push(streamingInitial);
+    assert.ok(await waitFor(() => env.document.getElementById('loading')), 'initial HTML swapped while streaming');
+    stream.push(streamingBlock);
+    assert.ok(await waitFor(() => env.document.getElementById('loaded')), 'streamed block applied');
+    stream.end();
+    assert.equal(fetches, 1, 'the replacement fetch was used');
+    await env.close();
+});
+
+// Extensions that WRAP ctx.fetch after Rizzy's hook (the usual pattern) must each run once, in
+// assignment order, and the request must complete with streaming applied to the final response.
+test('extensions that wrap ctx.fetch after rizzy-streaming all run once and streaming still works', async () => {
+    const stream = controlledStream();
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0' },
+        body: '<button id="go" hx-get="/stream" hx-target="#target">go</button><div id="target"></div>',
+        respond: () => ({ body: stream.body }),
+    });
+    const calls = [];
+    for (const name of ['wrap-a', 'wrap-b']) {
+        env.htmx.registerExtension(name, {
+            htmx_before_request(_elt, { ctx }) {
+                const previous = ctx.fetch;
+                ctx.fetch = (url, init) => {
+                    calls.push(name);
+                    if (calls.length > 10) throw new Error('recursion');
+                    return previous(url, init);
+                };
+            },
+        });
+    }
+
+    env.document.getElementById('go').click();
+    stream.push(streamingInitial);
+    assert.ok(await waitFor(() => env.document.getElementById('loading')), 'initial HTML swapped while streaming');
+    stream.push(streamingBlock);
+    assert.ok(await waitFor(() => env.document.getElementById('loaded')), 'streamed block applied');
+    stream.end();
+    assert.deepEqual([...calls], ['wrap-b', 'wrap-a'], 'newest wrapper first, each once');
+    assert.equal(env.errors.length, 0);
+    await env.close();
+});
