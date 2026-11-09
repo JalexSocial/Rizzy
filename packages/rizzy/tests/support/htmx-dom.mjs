@@ -23,12 +23,13 @@ export const htmxVersion = JSON.parse(
  * @param {(request: {url: string, method: string, headers: Record<string,string>, body: any}) =>
  *         {status?: number, headers?: Record<string,string>, body?: string}} options.respond
  * @param {boolean} [options.rizzy=true]  Load the Rizzy bundle after htmx.
+ * @param {string} [options.head]         Extra <head> markup (e.g. a nonced script).
  */
-export async function bootHtmx({ body, config, respond, rizzy = true }) {
+export async function bootHtmx({ body, config, respond, rizzy = true, head = '' }) {
     const meta = config
         ? `<meta name="htmx-config" content='${JSON.stringify(config).replace(/'/g, '&#39;')}'>`
         : '';
-    const dom = new JSDOM(`<!doctype html><html><head>${meta}</head><body>${body}</body></html>`, {
+    const dom = new JSDOM(`<!doctype html><html><head>${meta}${head}</head><body>${body}</body></html>`, {
         url: 'http://localhost/',
         runScripts: 'outside-only',
         pretendToBeVisual: true,
@@ -83,6 +84,18 @@ export async function bootHtmx({ body, config, respond, rizzy = true }) {
     };
 
     return { window, document: window.document, htmx: window.htmx, requests, errors, close };
+}
+
+/** A response body the test writes to chunk by chunk. */
+export function controlledStream() {
+    const encoder = new TextEncoder();
+    let controller;
+    const body = new ReadableStream({ start(c) { controller = c; } });
+    return {
+        body,
+        push: (text) => controller.enqueue(encoder.encode(text)),
+        end: () => controller.close(),
+    };
 }
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));

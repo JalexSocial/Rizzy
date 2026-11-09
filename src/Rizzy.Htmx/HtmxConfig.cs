@@ -60,27 +60,12 @@ public record class HtmxConfig
 
 
     /// <summary>
-    /// Defaults to <c>''</c> (empty string) if this property is null,
-    /// meaning that no nonce will be added to inline scripts
+    /// A nonce htmx stamps on <em>every</em> script it inserts from a response. Leave this unset when
+    /// using Rizzy's nonce extension, which promotes only scripts the server rendered with the
+    /// response nonce; setting it also trusts any script injected into a response.
     /// </summary>
     [JsonPropertyName("inlineScriptNonce")]
     public string? InlineScriptNonce { get; set; }
-
-    /// <summary>
-    /// Defaults to <c>''</c> (empty string) if this property is null,
-    /// meaning that no nonce will be added to inline styles
-    /// </summary>
-    [JsonPropertyName("inlineStyleNonce")]
-    public string? InlineStyleNonce { get; set; }
-
-    /// <summary>
-    /// Defaults to <c>''</c> (empty string) if this property is null,
-    /// meaning that no nonce has been defined for this document.  This is a Rizzy-specific setting
-    /// intended to allow a nonce to verify against without deliberately injecting it into all
-    /// htmx server responses
-    /// </summary>
-    [JsonInclude, JsonPropertyName("documentNonce")]
-    internal string? DocumentNonce { get; set; }
 
 
     /// <summary>
@@ -151,16 +136,17 @@ public record class HtmxConfig
     internal AntiForgeryConfiguration? Antiforgery { get; set; } = null;
 
     /// <summary>
-    /// If set to true, will utilize an IRizzyNonceProvider instance to generate script nonces
+    /// When true, sets <see cref="InlineScriptNonce"/> to the page's <c>IRizzyNonceProvider</c>
+    /// nonce, so htmx stamps it on every script in every response.
     /// </summary>
+    /// <remarks>
+    /// Not recommended. Rizzy's nonce extension already promotes scripts rendered with the response
+    /// nonce (the <c>HX-Nonce</c> header) to the page nonce, while injected scripts stay blocked
+    /// by the CSP. This option trusts all response scripts and writes the nonce into the
+    /// <c>htmx-config</c> meta tag, where CSS attribute selectors can read it.
+    /// </remarks>
     [JsonIgnore]
     public bool GenerateScriptNonce { get; set; } = false;
-
-    /// <summary>
-    /// If set to true, will utilize an IRizzyNonceProvider instance to generate script nonces
-    /// </summary>
-    [JsonIgnore]
-    public bool GenerateStyleNonce { get; set; } = false;
 
     /// <summary>
     /// Whitelist of allowed extensions (empty = allow all).
@@ -170,8 +156,10 @@ public record class HtmxConfig
     public string? Extensions { get; set; }
 
     /// <summary>
-    /// Custom attribute prefix. HTMX 4 no longer supports <c>data-hx-</c> implicitly.
-    /// If you wish to use <c>data-hx-</c>, set this to <c>"data-hx-"</c>.
+    /// An additional attribute prefix that htmx accepts alongside <c>hx-</c>. htmx 4 defaults to
+    /// <c>"data-hx-"</c>, so both <c>hx-get</c> and <c>data-hx-get</c> work out of the box. Set a
+    /// different value (for example <c>"x-hx-"</c>) to accept that prefix instead of
+    /// <c>data-hx-</c>, or an empty string to accept only <c>hx-</c>.
     /// </summary>
     [JsonPropertyName("prefix")]
     public string? Prefix { get; set; }
@@ -182,5 +170,27 @@ public record class HtmxConfig
     /// </summary>
     [JsonPropertyName("logAll")]
     public bool? LogAll { get; set; }
+
+    /// <summary>
+    /// When true, an empty main response is still swapped after out-of-band or partial content was
+    /// processed. htmx 4 defaults to <c>false</c>.
+    /// </summary>
+    [JsonPropertyName("allowEmptySwapAfterOOB")]
+    public bool? AllowEmptySwapAfterOOB { get; set; }
+
+    /// <summary>
+    /// A character htmx uses instead of <c>:</c> in attribute and event names (for example
+    /// <c>"-"</c> to write <c>hx-on-click</c> and <c>hx-status-422</c>), for templating systems that
+    /// do not allow colons in attribute names. htmx 4 defaults to <c>:</c>.
+    /// </summary>
+    [JsonPropertyName("metaCharacter")]
+    public string? MetaCharacter { get; set; }
+
+    /// <summary>
+    /// The Rizzy server version, emitted so the client bundle can detect a server/client mismatch.
+    /// Set automatically by <c>HtmxConfigHeadOutlet</c>; not read by htmx itself.
+    /// </summary>
+    [JsonInclude, JsonPropertyName("rizzyVersion")]
+    internal string? RizzyVersion { get; set; }
 
 }

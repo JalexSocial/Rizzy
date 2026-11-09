@@ -26,7 +26,7 @@ public class RenderingPipelineTests(RizzyTestHost host) : IClassFixture<RizzyTes
     }
 
     [Fact]
-    public async Task Htmx_config_meta_contains_antiforgery_token_and_document_nonce()
+    public async Task Htmx_config_meta_contains_antiforgery_token_but_not_the_page_nonce()
     {
         var html = await (await host.GetAsync("/page")).Content.ReadAsStringAsync();
 
@@ -35,7 +35,7 @@ public class RenderingPipelineTests(RizzyTestHost host) : IClassFixture<RizzyTes
         meta.Groups[1].Value.Should().Contain("\"antiforgery\":{")
             .And.Contain("\"headerName\":\"RequestVerificationToken\"")
             .And.Contain("\"requestToken\":\"")
-            .And.Contain("\"documentNonce\":\"");
+            .And.NotContain("Nonce");
     }
 
     [Fact]
@@ -58,15 +58,23 @@ public class RenderingPipelineTests(RizzyTestHost host) : IClassFixture<RizzyTes
         response.Headers.Vary.Should().Contain("HX-Request");
     }
 
-    [Fact(Skip = KnownDefect + " RIZZY-018: Vary: HX-Request is only sent on htmx responses")]
-    public async Task Full_page_responses_also_vary_on_HX_Request()
+    [Fact]
+    public async Task Full_page_responses_also_vary_on_htmx_headers()
     {
         var response = await host.GetAsync("/page");
 
-        response.Headers.Vary.Should().Contain("HX-Request");
+        response.Headers.Vary.Should().Contain(["HX-Request", "HX-Request-Type", "HX-History-Restore-Request"]);
     }
 
-    [Fact(Skip = KnownDefect + " RIZZY-006: history restore must render the full layout")]
+    [Fact]
+    public async Task Partial_responses_vary_on_htmx_headers()
+    {
+        var response = await host.GetAsync("/page", RizzyTestHost.PartialHtmxHeaders);
+
+        response.Headers.Vary.Should().Contain(["HX-Request", "HX-Request-Type", "HX-History-Restore-Request"]);
+    }
+
+    [Fact]
     public async Task History_restore_request_renders_full_layout()
     {
         var html = await (await host.GetAsync("/page", RizzyTestHost.HistoryRestoreHeaders)).Content.ReadAsStringAsync();
@@ -74,7 +82,16 @@ public class RenderingPipelineTests(RizzyTestHost host) : IClassFixture<RizzyTes
         html.Should().Contain("id=\"main-layout\"");
     }
 
-    [Fact(Skip = KnownDefect + " RIZZY-006: HX-Request-Type: full must render the full layout")]
+    [Fact]
+    public async Task History_restore_without_HX_Request_renders_full_layout()
+    {
+        // htmx 4.0.1 replaces the request headers on restore, so HX-Request is not sent.
+        var html = await (await host.GetAsync("/page", RizzyTestHost.HistoryRestoreHeadersAsSent)).Content.ReadAsStringAsync();
+
+        html.Should().Contain("id=\"main-layout\"");
+    }
+
+    [Fact]
     public async Task Full_page_htmx_request_renders_full_layout()
     {
         var html = await (await host.GetAsync("/page", RizzyTestHost.FullPageHtmxHeaders)).Content.ReadAsStringAsync();

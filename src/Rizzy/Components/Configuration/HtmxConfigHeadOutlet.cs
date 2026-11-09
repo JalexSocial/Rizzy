@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
@@ -15,6 +15,14 @@ namespace Rizzy;
 /// </summary>
 public class HtmxConfigHeadOutlet : ComponentBase
 {
+    private static readonly string RizzyVersion =
+        typeof(HtmxConfigHeadOutlet).Assembly
+            .GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
+            .OfType<System.Reflection.AssemblyInformationalVersionAttribute>()
+            .FirstOrDefault()?.InformationalVersion.Split('+')[0]
+        ?? typeof(HtmxConfigHeadOutlet).Assembly.GetName().Version?.ToString()
+        ?? "unknown";
+
     private string _jsonConfig = string.Empty;
     [Inject] private IRizzyNonceProvider? NonceProvider { get; set; }
     [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
@@ -52,14 +60,12 @@ public class HtmxConfigHeadOutlet : ComponentBase
             config.Antiforgery.RequestToken = HttpUtility.HtmlAttributeEncode(tokens.RequestToken)!;
         }
 
-        // The document nonce is utilized by Rizzy to safely inject into htmx responses
-        config.DocumentNonce = NonceProvider?.GetNonce() ?? string.Empty;
-
+        // The page nonce is not written into the meta tag: the client reads it from the nonce
+        // property of the page's <script nonce> elements, which CSS selectors cannot read.
         if (config.GenerateScriptNonce)
-            config.InlineScriptNonce = config.DocumentNonce;
+            config.InlineScriptNonce = NonceProvider?.GetNonce() ?? string.Empty;
 
-        if (config.GenerateStyleNonce)
-            config.InlineStyleNonce = config.DocumentNonce;
+        config.RizzyVersion = RizzyVersion;
 
         _jsonConfig = config.Serialize();
 

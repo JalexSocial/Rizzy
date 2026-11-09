@@ -19,4 +19,5 @@ internal sealed record HtmxSwapSpecification
 
     public bool? Strip { get; set; }
     public string? Target { get; set; }
+    public bool? SwapEmpty { get; set; }
 }

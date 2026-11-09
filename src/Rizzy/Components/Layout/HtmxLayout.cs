@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Http;
 using Rizzy.Htmx;
@@ -15,10 +15,13 @@ public sealed class HtmxLayout<T> : LayoutComponentBase where T : LayoutComponen
 
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (HttpContext?.Request.IsHtmx() == true)
-        {
-            HttpContext?.Response.Headers.TryAdd("Vary", HtmxRequestHeaderNames.HtmxRequest);
+        // Full pages and fragments share URLs, so every response must vary on the htmx headers.
+        HttpContext?.Response.VaryByHtmxHeaders();
 
+        // Only partial htmx requests get a fragment. HX-Request-Type: full (boosted body swaps,
+        // hx-select) and history restores re-fetch the whole page and need the real layout.
+        if (HttpContext?.Request.Htmx().IsPartial == true)
+        {
             // If streaming is in use then content needs to be wrapped in a minimal layout
             if (IsRootComponent)
             {

@@ -100,6 +100,16 @@ public sealed class RizzyTestHost : IAsyncLifetime
         ("HX-History-Restore-Request", "true"),
     ];
 
+    /// <summary>
+    /// Headers htmx 4.0.1 actually sends on history restore: its <c>htmx.ajax</c> call replaces the
+    /// request object, so only the restore header and the request type survive.
+    /// </summary>
+    public static readonly (string, string)[] HistoryRestoreHeadersAsSent =
+    [
+        ("HX-Request-Type", "full"),
+        ("HX-History-Restore-Request", "true"),
+    ];
+
     /// <summary>Headers sent by htmx 4 for a boosted link that targets the body.</summary>
     public static readonly (string, string)[] FullPageHtmxHeaders =
     [

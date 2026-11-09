@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Htmx;
+namespace Rizzy.Htmx;
 
 /// <summary>
 /// How to swap the response into the target element.
@@ -70,5 +70,11 @@ public enum SwapStyle
     prepend,
 
     append,
+
+    /// <summary>
+    /// Replaces the target element while preserving the existing element's identity where possible
+    /// (htmx 4 <c>outerSync</c>; used by htmx for history and boosted body swaps).
+    /// </summary>
+    outerSync,
 }
 

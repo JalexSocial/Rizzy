@@ -25,29 +25,38 @@ test('antiforgery injects by method and header types', () => {
   const hs=new Headers(); run('DELETE', hs); assert.equal(hs.get('X-CSRF'),'abc');
 });
 
-test('nonce helper sanitizes and rewrites response nonce', () => {
+test('nonce rewriting promotes the response nonce and strips a stolen page nonce', () => {
   bootDom();
   let ext;
   const htmx = { config:{documentNonce:'docnonce'}, registerExtension:(_n,e)=>ext=e };
   load('src/js/rizzy-nonce.js', htmx);
   const headers = new Headers([['HX-Nonce','resnonce']]);
-  const dirty = '<html><body><script nonce="resnonce"></script><script nonce="bad"></script><style nonce="resnonce"></style><link nonce="bad"></body></html>';
+  const dirty = '<script nonce="resnonce">ok()</script><script nonce="docnonce">stolen()</script><script>injected()</script><style nonce=resnonce></style>';
   const clean = window.Rizzy.nonce.processResponseHtml(dirty,{headers});
-  assert.match(clean,/nonce="docnonce"/);
-  assert.ok(!clean.includes('nonce="bad"'));
-  const d={ctx:{text:dirty,response:{headers}}}; ext.htmx_after_request(null,d); assert.ok(d.ctx.text.includes('docnonce'));
+  assert.equal(clean, '<script nonce="docnonce">ok()</script><script>stolen()</script><script>injected()</script><style nonce=docnonce></style>');
+  const d={ctx:{text:dirty,response:{headers}}}; ext.htmx_after_request(null,d); assert.equal(d.ctx.text, clean);
 });
 
-test('streaming uses nonce sanitizer before sink insertion', () => {
-  const dom=bootDom();
-  const events=[];
-  let streaming;
-  const htmx = { config:{documentNonce:'docnonce'}, registerExtension:(n,e)=>{ if(n==='rizzy-streaming') streaming=e; }, trigger:(elt,name)=>events.push(name), swap: async()=>{}, process:()=>{}, find:()=>null, ajax:()=>{} };
+test('nonce rewriting never re-parses markup', () => {
+  bootDom();
+  const htmx = { config:{documentNonce:'docnonce'}, registerExtension:()=>{} };
   load('src/js/rizzy-nonce.js', htmx);
-  load('src/js/rizzy-streaming.js', htmx);
-  const src=document.createElement('button');
-  const ctx={sourceElement:src,target:document.getElementById('target'),response:{raw:{body:{getReader(){ return {read: async()=>({done:true}), cancel(){} };}},headers:new Headers([['Content-Type','text/html'],['HX-Nonce','resnonce']]),status:200}},hx:{},request:{action:'/x'}};
-  streaming.htmx_before_response(src,{ctx});
-  const sanitized=window.Rizzy.nonce.processResponseHtml('<blazor-ssr><script nonce="bad"></script><blazor-ssr-end></blazor-ssr-end></blazor-ssr>',ctx.response.raw);
-  assert.ok(!sanitized.includes('nonce="bad"'));
+  const rows = '<tr id="r"><td nonce="x">Cell</td></tr><link rel="stylesheet" href="/a.css">';
+  assert.equal(window.Rizzy.nonce.processResponseHtml(rows, { headers: new Headers() }), rows);
+});
+
+test('nonce rewriting is a no-op when the page has no nonce', () => {
+  bootDom();
+  const htmx = { config:{}, registerExtension:()=>{} };
+  load('src/js/rizzy-nonce.js', htmx);
+  const html = '<script nonce="resnonce"></script><style></style>';
+  assert.equal(window.Rizzy.nonce.processResponseHtml(html, { headers: new Headers([['HX-Nonce','resnonce']]) }), html);
+});
+
+test('page nonce is read from the script nonce property', () => {
+  const dom = new JSDOM('<!doctype html><html><head><script nonce="fromscript"></script></head><body></body></html>', { url: 'http://localhost' });
+  global.window = dom.window; global.document = dom.window.document; global.Headers = dom.window.Headers;
+  const htmx = { config:{documentNonce:'fromconfig'}, registerExtension:()=>{} };
+  load('src/js/rizzy-nonce.js', htmx);
+  assert.equal(window.Rizzy.nonce.getDocumentNonce(), 'fromscript');
 });

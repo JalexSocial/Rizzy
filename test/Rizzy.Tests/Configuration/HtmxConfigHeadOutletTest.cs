@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,7 +46,7 @@ public class HtmxConfigHeadOutletTest : BunitContext
             config.IncludeIndicatorCSS = true;
             config.IndicatorClass = "indicator-class";
             config.InlineScriptNonce = "inline-script-nonce";
-            config.InlineStyleNonce = "inline-style-nonce";
+            config.AllowEmptySwapAfterOOB = true;
             config.Mode = "same-origin";
             config.NoSwap = ["204", "4xx", "5xx"];
             config.RequestClass = "request-class";
@@ -61,19 +61,22 @@ public class HtmxConfigHeadOutletTest : BunitContext
         var meta = cut.Find("meta");
         meta.GetAttribute("name").Should().Be("htmx-config");
 
+        var rizzyVersion = typeof(HtmxConfigHeadOutlet).Assembly
+            .GetCustomAttributes(typeof(System.Reflection.AssemblyInformationalVersionAttribute), false)
+            .OfType<System.Reflection.AssemblyInformationalVersionAttribute>()
+            .Single().InformationalVersion.Split('+')[0];
+
         var expectedContent = $$"""
             {
                 "defaultFocusScroll": true,
                 "defaultSwap": "beforebegin",
                 "defaultSettleDelay": 3600000,
                 "defaultTimeout": 30000,
-                "documentNonce": "test-nonce",
                 "history": true,
                 "implicitInheritance": true,
                 "includeIndicatorCSS": true,
                 "indicatorClass": "indicator-class",
                 "inlineScriptNonce": "inline-script-nonce",
-                "inlineStyleNonce": "inline-style-nonce",
                 "mode": "same-origin",
                 "noSwap": [
                     "204",
@@ -82,7 +85,9 @@ public class HtmxConfigHeadOutletTest : BunitContext
                 ],
                 "requestClass": "request-class",
                 "transitions": true,
-                "logAll": true
+                "logAll": true,
+                "allowEmptySwapAfterOOB": true,
+                "rizzyVersion": "{{rizzyVersion}}"
             }
             """;
 

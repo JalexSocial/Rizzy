@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Rizzy.Htmx;
 
 /// <summary>
-/// An action filter attribute that implements <see cref="IActionConstraint"/> to ensure
+/// An action constraint (<see cref="IActionConstraint"/>) that ensures
 /// an action method is executed only for HTMX requests.
 /// </summary>
 /// <remarks>
@@ -13,7 +12,7 @@ namespace Rizzy.Htmx;
 /// uses the <see cref="HtmxRequest"/> class to check these headers in the incoming request.
 /// </remarks>
 [AttributeUsage(AttributeTargets.Method)]
-public sealed class HtmxRequestAttribute : ActionFilterAttribute, IActionConstraint
+public sealed class HtmxRequestAttribute : Attribute, IActionConstraint
 {
     /// <inheritdoc />
     int IActionConstraint.Order => 0;
@@ -35,8 +34,7 @@ public sealed class HtmxRequestAttribute : ActionFilterAttribute, IActionConstra
     /// </remarks>
     bool IActionConstraint.Accept(ActionConstraintContext context)
     {
-        // Initialize the HtmxRequest object using the current HttpContext
-        var htmxRequest = new HtmxRequest(context.RouteContext.HttpContext);
+        var htmxRequest = context.RouteContext.HttpContext.Request.Htmx();
 
         // Check if the request is from HTMX and, if a Target is specified, ensure it matches.
         bool isHtmxRequest = htmxRequest.IsHtmx;

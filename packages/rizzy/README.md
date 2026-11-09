@@ -27,14 +27,14 @@ This package is intended to be used alongside the server-side Rizzy components. 
 
     ```html
     <!-- Make sure HTMX is loaded first -->
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.0-beta2/dist/htmx.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js" integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn" crossorigin="anonymous"></script>
 
     <!-- Include the Rizzy client script -->
     <script src="/_content/Rizzy/js/rizzy.js" type="module"></script>
     ```
 
 2.  **Ensure Rizzy Server Components:** Your Blazor application should include the necessary Rizzy components, primarily:
-    *   `<HtmxConfigHeadOutlet />`: Renders HTMX configuration, including nonce and antiforgery settings, into a `<meta>` tag.
+    *   `<HtmxConfigHeadOutlet />`: Renders the htmx configuration (including antiforgery settings) into a `<meta>` tag. The CSP nonce is not written there; the client reads it from your nonced `<script>` tags.
     *   `<HtmxAntiforgeryScript />`: (If using `AntiforgeryStrategy.GenerateTokensPerPage`) Provides the initial antiforgery token.
     *   Rizzy Form Components (e.g., `<RzInputText>`, `<RzValidationMessage>`): These work with the validation setup included in this package.
 

@@ -27,3 +27,13 @@ These tests are marked `todo` (they run but don't fail the build) until roadmap 
 ## Clarification
 
 - **RIZZY-026**: `AddRizzy()` also requires `AddRazorComponents()`, because `AddSupplyValueFromFormProvider` needs `IFormValueMapper`. Without it, the first render throws `InvalidOperationException: No service for type 'IFormValueMapper'`. The consumer smoke test surfaced this. Add it to the setup documentation (RM-E1) and consider registering it from `AddRizzy` (RM-C3).
+
+## Corrections found during roadmap Phase B
+
+Verified against the htmx 4.0.1 source (`node_modules/htmx.org/dist/htmx.js`) while implementing Phase B.
+
+- **History restore requests (RIZZY-006):** htmx 4.0.1 restores history with `htmx.ajax('GET', path, { request: { headers: { 'HX-History-Restore-Request': 'true' } } })`. `htmx.ajax` copies its options onto the request context with `Object.assign`, which replaces the whole request object. The restore request therefore carries `HX-History-Restore-Request: true` and `HX-Request-Type: full` but **not** `HX-Request`. Layout selection must not depend on `HX-Request` alone. Rizzy 6 uses `HX-Request-Type` and the restore header.
+- **`HX-Request-Type: full`** is sent when the target is `body` **or** the request uses `hx-select`, not only for boosted navigation.
+- **Config keys (RIZZY-028):** `inlineScriptNonce` and `metaCharacter` are absent from the 4.0.1 default config object, but both are still honored (`#processScripts`, `#maybeAdjustMetaCharacter`). The roadmap's B10 item to add `MetaCharacter` stands. `inlineStyleNonce` is gone.
+- **`inlineScriptNonce` (RIZZY-004, RM-B2):** core stamps this nonce on *every* script it recreates during a swap, including scripts injected into a response. The audit's suggested "rely on `htmx.config.inlineScriptNonce`" would trust injected scripts, so Rizzy 6 does not set it by default. It rewrites the response nonce to the page nonce in the raw text instead, and lets the browser's CSP block un-nonced scripts.
+- **Deprecation policy (RM-B5, RM-B10):** the roadmap suggested obsoleting htmx 2 APIs. The repository's `PublicApiTests` (added with the htmx 4 migration) forbids `[Obsolete]` members in Rizzy.Htmx, so Phase B removes them outright. Every removal is listed in [docs/migration/htmx2-to-htmx4.md](../../migration/htmx2-to-htmx4.md).

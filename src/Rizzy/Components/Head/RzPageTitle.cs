@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Sections;
 using Microsoft.AspNetCore.Components.Web;
@@ -26,7 +26,7 @@ public sealed partial class RzPageTitle : ComponentBase
     /// <inheritdoc/>
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        if (HttpContext?.Request.IsHtmx() == true)
+        if (HttpContext?.Request.Htmx().IsPartial == true)
         {
             builder.OpenElement(0, "title");
             builder.AddContent(1, ChildContent);

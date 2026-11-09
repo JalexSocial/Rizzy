@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Rizzy.Htmx;
 
@@ -98,9 +98,16 @@ internal static class Constants
         public const string From = "from";
         public const string Target = "target";
         public const string Consume = "consume";
-        public const string Queue = "queue";
+        public const string Prevent = "prevent";
+        public const string Stop = "stop";
+        public const string Halt = "halt";
+        public const string Capture = "capture";
+        public const string Passive = "passive";
         public const string Root = "root";
+        public const string RootMargin = "rootMargin";
         public const string Threshold = "threshold";
+        public const string FromSelf = "self";
+        public const string FromOutside = "outside";
     }
 
     /// <summary>
@@ -132,6 +139,7 @@ internal static class Constants
         public const string After = "after";
         public const string Prepend = "prepend";
         public const string Append = "append";
+        public const string OuterSync = "outerSync";
         public const string Default = "";
     }
 }

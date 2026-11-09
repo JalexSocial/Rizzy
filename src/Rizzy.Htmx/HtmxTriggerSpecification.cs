@@ -1,35 +1,30 @@
-using System;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading;
 
 namespace Rizzy.Htmx;
 
 /// <summary>
 /// Represents a single htmx trigger definition, including the event and any modifiers.
-/// See: https://htmx.org/attributes/hx-trigger/
+/// See: https://four.htmx.org/attributes/hx-trigger/
 /// </summary>
 /// <remarks>
+/// <para>
 /// This record allows for building complex htmx trigger specifications programmatically,
 /// often using a fluent pattern. Properties use <c>set</c> accessors allowing modification
 /// after initial construction.
-/// The <see cref="ToString()"/> method generates the string representation expected by htmx.
+/// </para>
+/// <para>
+/// <see cref="ToString()"/> generates the htmx 4 syntax on every call, so later changes and
+/// <c>with</c>-copies always render their current values. Selectors containing whitespace or
+/// commas are quoted (<c>from:'closest form'</c>) and times are formatted with the invariant
+/// culture (<c>delay:1500ms</c>).
+/// </para>
 /// </remarks>
 public sealed record HtmxTriggerSpecification
 {
-    // Use Lazy<T> to ensure thread‑safe, one‑time calculation and caching of the string representation.
-    // PublicationOnly mode is suitable here: if multiple threads race to initialize,
-    // one wins, its result is cached and used by all subsequent calls.
-    // This relies on the assumption that the object's state is stable before the first call to ToString().
-    private readonly Lazy<string> _lazyToString;
-
-    private static readonly string[] s_extendedSelectorKeywords =
-        ["closest", "find", "next", "previous"];
-
     /// <summary>Gets or sets the main event that triggers the request (e.g., "click", "load", "revealed", "every").</summary>
     [JsonPropertyName("trigger")]
     public string Trigger { get; set; } = string.Empty;
-
 
     /// <summary>Gets or sets a JavaScript expression to filter events (e.g., "event.key == 'Enter'").</summary>
     [JsonPropertyName("eventFilter")]
@@ -43,35 +38,58 @@ public sealed record HtmxTriggerSpecification
     [JsonPropertyName("once")]
     public bool? Once { get; set; }
 
-    /// <summary>Gets or sets whether the event should be consumed after triggering, preventing propagation. Modifier: consume</summary>
+    /// <summary>Gets or sets whether the event should stop propagating after triggering. Modifier: consume</summary>
     [JsonPropertyName("consume")]
     public bool? Consume { get; set; }
 
-    /// <summary>Gets or sets an extended CSS selector specifying a source element for the event. Modifier: from:&lt;selector&gt;</summary>
+    /// <summary>Gets or sets whether <c>preventDefault()</c> is called on the event. Modifier: prevent</summary>
+    [JsonPropertyName("prevent")]
+    public bool? Prevent { get; set; }
+
+    /// <summary>Gets or sets whether <c>stopPropagation()</c> is called on the event. Modifier: stop</summary>
+    [JsonPropertyName("stop")]
+    public bool? Stop { get; set; }
+
+    /// <summary>Gets or sets whether both <c>preventDefault()</c> and <c>stopPropagation()</c> are called. Modifier: halt</summary>
+    [JsonPropertyName("halt")]
+    public bool? Halt { get; set; }
+
+    /// <summary>Gets or sets whether the listener is registered in the capture phase. Modifier: capture</summary>
+    [JsonPropertyName("capture")]
+    public bool? Capture { get; set; }
+
+    /// <summary>Gets or sets whether the listener is registered as passive. Modifier: passive</summary>
+    [JsonPropertyName("passive")]
+    public bool? Passive { get; set; }
+
+    /// <summary>
+    /// Gets or sets an extended CSS selector specifying a source element for the event, or the
+    /// keywords <c>self</c> / <c>outside</c>. Modifier: from:&lt;selector&gt;
+    /// </summary>
     [JsonPropertyName("from")]
     public string? From { get; set; }
 
-    /// <summary>Gets or sets a CSS selector specifying a target element for the event listener. Modifier: target:&lt;selector&gt;</summary>
+    /// <summary>Gets or sets a CSS selector the event target must match. Modifier: target:&lt;selector&gt;</summary>
     [JsonPropertyName("target")]
     public string? Target { get; set; }
 
-    /// <summary>Gets or sets the throttle time in milliseconds. Modifier: throttle:&lt;time&gt;ms</summary>
+    /// <summary>Gets or sets the throttle time in milliseconds. Modifier: throttle:&lt;time&gt;</summary>
     [JsonPropertyName("throttle")]
     public int? Throttle { get; set; }
-
-    /// <summary>Gets or sets the queueing behavior ("first", "last", "all", or "none"). Modifier: queue:&lt;value&gt;</summary>
-    [JsonPropertyName("queue")]
-    public string? Queue { get; set; }
 
     /// <summary>Gets or sets a CSS selector defining the root element for intersection observers. Modifier: root:&lt;selector&gt;</summary>
     [JsonPropertyName("root")]
     public string? Root { get; set; }
 
+    /// <summary>Gets or sets the intersection observer root margin (e.g. "10px 0px"). Modifier: rootMargin:&lt;value&gt;</summary>
+    [JsonPropertyName("rootMargin")]
+    public string? RootMargin { get; set; }
+
     /// <summary>Gets or sets the intersection threshold for the "revealed" trigger. Modifier: threshold:&lt;value&gt;</summary>
     [JsonPropertyName("threshold")]
     public string? Threshold { get; set; }
 
-    /// <summary>Gets or sets the delay time in milliseconds before the request is triggered. Modifier: delay:&lt;time&gt;ms</summary>
+    /// <summary>Gets or sets the delay time in milliseconds before the request is triggered. Modifier: delay:&lt;time&gt;</summary>
     [JsonPropertyName("delay")]
     public int? Delay { get; set; }
 
@@ -79,163 +97,59 @@ public sealed record HtmxTriggerSpecification
     [JsonPropertyName("pollInterval")]
     public int? PollInterval { get; set; }
 
-    /// <summary>Initializes a new instance of the <see cref="HtmxTriggerSpecification"/> class.</summary>
-    public HtmxTriggerSpecification()
-    {
-        _lazyToString = new Lazy<string>(BuildTriggerString, LazyThreadSafetyMode.PublicationOnly);
-    }
-
     /// <inheritdoc/>
-    public override string ToString() => _lazyToString.Value;
-
-    /// <summary>Builds the trigger string once per instance.</summary>
-    private string BuildTriggerString()
+    public override string ToString()
     {
         var sb = new StringBuilder(128);
-        var needsSpace = false;
 
-        void AppendSpaceIfNeeded()
-        {
-            if (needsSpace) sb.Append(' ');
-            else needsSpace = true;
-        }
-
-        // --- Core trigger / filter --------------------------------------------------
         sb.Append(Trigger);
 
         if (Trigger == Constants.Triggers.Every)
-        {
-            sb.Append(' ')
-              .Append(FormatTimeSpan(TimeSpan.FromMilliseconds(PollInterval ?? 0)));
-        }
+            sb.Append(' ').Append(HconFormat.Interval(PollInterval ?? 0));
 
         if (!string.IsNullOrEmpty(EventFilter))
             sb.Append('[').Append(EventFilter).Append(']');
 
-        needsSpace = true;               
-        // ---------------------------------------------------------------------------
-
-        // --- Modifiers -------------------------------------------------------------
-
-        if (Once == true)
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Once);
-        }
-
-        if (Changed == true)
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Changed);
-        }
+        AppendFlag(sb, Constants.TriggerModifiers.Once, Once);
+        AppendFlag(sb, Constants.TriggerModifiers.Changed, Changed);
 
         if (Delay.HasValue)
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Delay).Append(':')
-              .Append(FormatTimeSpan(TimeSpan.FromMilliseconds(Delay.Value)));
-        }
+            Append(sb, Constants.TriggerModifiers.Delay, HconFormat.Interval(Delay.Value));
 
         if (Throttle.HasValue)
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Throttle).Append(':')
-              .Append(FormatTimeSpan(TimeSpan.FromMilliseconds(Throttle.Value)));
-        }
+            Append(sb, Constants.TriggerModifiers.Throttle, HconFormat.Interval(Throttle.Value));
 
-        if (!string.IsNullOrEmpty(From))
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.From).Append(':')
-              .Append(FormatExtendedCssSelector(From));
-        }
+        if (!string.IsNullOrWhiteSpace(From))
+            Append(sb, Constants.TriggerModifiers.From, HconFormat.Value(From));
 
-        if (!string.IsNullOrEmpty(Target))
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Target).Append(':')
-              .Append(FormatCssSelector(Target));
-        }
+        if (!string.IsNullOrWhiteSpace(Target))
+            Append(sb, Constants.TriggerModifiers.Target, HconFormat.Value(Target));
 
-        if (Consume == true)
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Consume);
-        }
+        AppendFlag(sb, Constants.TriggerModifiers.Consume, Consume);
+        AppendFlag(sb, Constants.TriggerModifiers.Prevent, Prevent);
+        AppendFlag(sb, Constants.TriggerModifiers.Stop, Stop);
+        AppendFlag(sb, Constants.TriggerModifiers.Halt, Halt);
+        AppendFlag(sb, Constants.TriggerModifiers.Capture, Capture);
+        AppendFlag(sb, Constants.TriggerModifiers.Passive, Passive);
 
-        if (!string.IsNullOrEmpty(Queue))
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Queue).Append(':').Append(Queue);
-        }
+        if (!string.IsNullOrWhiteSpace(Root))
+            Append(sb, Constants.TriggerModifiers.Root, HconFormat.Value(Root));
 
-        if (!string.IsNullOrEmpty(Root))
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Root).Append(':')
-              .Append(FormatCssSelector(Root));
-        }
+        if (!string.IsNullOrWhiteSpace(RootMargin))
+            Append(sb, Constants.TriggerModifiers.RootMargin, HconFormat.Value(RootMargin));
 
-        if (!string.IsNullOrEmpty(Threshold))
-        {
-            AppendSpaceIfNeeded();
-            sb.Append(Constants.TriggerModifiers.Threshold).Append(':').Append(Threshold);
-        }
+        if (!string.IsNullOrWhiteSpace(Threshold))
+            Append(sb, Constants.TriggerModifiers.Threshold, Threshold);
 
         return sb.ToString();
     }
 
-    #region Helper Methods
-
-    /// <summary>
-    /// Formats a TimeSpan into the string format expected by htmx (e.g., "500ms", "2s").
-    /// </summary>
-    private static string FormatTimeSpan(TimeSpan timing)
-        => timing.TotalSeconds < 1
-           ? $"{timing.TotalMilliseconds}ms"
-           : $"{timing.TotalSeconds}s";
-
-    /// <summary>Formats a selector for 'from' that may start with keywords (closest/find/next/previous).</summary>
-    private static string FormatExtendedCssSelector(string cssSelector)
+    private static void AppendFlag(StringBuilder sb, string name, bool? value)
     {
-        cssSelector = cssSelector.TrimStart();
-
-        foreach (var keyword in s_extendedSelectorKeywords)
-        {
-            if (cssSelector.StartsWith(keyword + " ", StringComparison.Ordinal))
-            {
-                var selector = cssSelector.Substring(keyword.Length + 1);
-                return keyword + " " + FormatCssSelector(selector);
-            }
-        }
-
-        return FormatCssSelector(cssSelector);
+        if (value == true)
+            sb.Append(' ').Append(name);
     }
 
-    /// <summary>
-    /// Formats a standard CSS selector, wrapping whitespace‑containing selectors in '{}'.
-    /// </summary>
-    private static string FormatCssSelector(string cssSelector)
-    {
-        cssSelector = cssSelector.Trim();
-
-        if (cssSelector.Length >= 2 &&
-            ((cssSelector[0] == '{' && cssSelector[^1] == '}') ||
-             (cssSelector[0] == '(' && cssSelector[^1] == ')')))
-        {
-            return cssSelector;
-        }
-
-        foreach (var ch in cssSelector)
-        {
-            if (char.IsWhiteSpace(ch))
-            {
-                return $"{{{cssSelector}}}";
-            }
-        }
-
-        return cssSelector;
-    }
-
-    #endregion // Helper Methods
+    private static void Append(StringBuilder sb, string name, string value)
+        => sb.Append(' ').Append(name).Append(':').Append(value);
 }

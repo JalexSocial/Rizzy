@@ -140,8 +140,8 @@ public static class SwapStyleBuilderExtension
     /// unwanted behavior on longer requests when the user has already scrolled away. 
     /// </summary>
     /// <remarks>
-    /// <paramref name="scroll"/> when true will be <c>focus-scroll:true</c>, otherwise when false
-    /// will be <c>focus-scroll:false</c>
+    /// <paramref name="scroll"/> when true will be <c>focusScroll:true</c>, otherwise when false
+    /// will be <c>focusScroll:false</c>
     /// </remarks>
     /// <param name="style">The swap style.</param>
     /// <param name="scroll">Whether to scroll to the focus element.</param>
@@ -153,7 +153,7 @@ public static class SwapStyleBuilderExtension
     /// scrolling.
     /// </summary>
     /// <remarks>
-    /// Adds a modifier of <c>focus-scroll:false</c>
+    /// Adds a modifier of <c>focusScroll:false</c>
     /// </remarks>
     /// <param name="style">The swap style.</param>
     /// <param name="scroll">Whether to scroll to current focus or preserve focus</param>
@@ -243,4 +243,28 @@ public static class SwapStyleBuilderExtension
     /// <param name="style">The swap style.</param>
     /// <returns>A <see cref="SwapStyleBuilder"/> object instance.</returns>
     public static SwapStyleBuilder ShowNone(this SwapStyle style) => new SwapStyleBuilder(style).ShowNone();
+
+    /// <summary>
+    /// Adds the modifier <c>strip:<paramref name="strip"/></c> to the swap style.
+    /// </summary>
+    /// <param name="style">The swap style.</param>
+    /// <param name="strip">True to swap only the children of the response's root element.</param>
+    /// <returns>A <see cref="SwapStyleBuilder"/> for further configuration.</returns>
+    public static SwapStyleBuilder Strip(this SwapStyle style, bool strip = true) => new SwapStyleBuilder(style).Strip(strip);
+
+    /// <summary>
+    /// Adds the modifier <c>target:<paramref name="cssSelector"/></c> to the swap style.
+    /// </summary>
+    /// <param name="style">The swap style.</param>
+    /// <param name="cssSelector">An (extended) CSS selector for the element to swap into.</param>
+    /// <returns>A <see cref="SwapStyleBuilder"/> for further configuration.</returns>
+    public static SwapStyleBuilder Target(this SwapStyle style, string cssSelector) => new SwapStyleBuilder(style).Target(cssSelector);
+
+    /// <summary>
+    /// Adds the modifier <c>swapEmpty:<paramref name="swapEmpty"/></c> to the swap style.
+    /// </summary>
+    /// <param name="style">The swap style.</param>
+    /// <param name="swapEmpty">True to swap even when the main content is empty.</param>
+    /// <returns>A <see cref="SwapStyleBuilder"/> for further configuration.</returns>
+    public static SwapStyleBuilder SwapEmpty(this SwapStyle style, bool swapEmpty = true) => new SwapStyleBuilder(style).SwapEmpty(swapEmpty);
 }
