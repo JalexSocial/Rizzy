@@ -74,7 +74,7 @@
       above runs it for Rizzy's own components; this packs the same assembly as an analyzer, so any
       project that references the Rizzy package can use [RizzyParameterize] too.
     -->
-    <Target Name="PackRizzySourceGenerator" BeforeTargets="_GetPackageFiles" DependsOnTargets="ResolveProjectReferences">
+    <Target Name="PackRizzySourceGenerator" BeforeTargets="_GetPackageFiles">
         <MSBuild Projects="..\Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
             <Output TaskParameter="TargetOutputs" ItemName="_RizzyGeneratorAssembly" />
         </MSBuild>
