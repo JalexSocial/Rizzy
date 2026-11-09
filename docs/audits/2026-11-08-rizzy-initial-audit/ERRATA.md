@@ -58,3 +58,19 @@ Verified against the htmx 4.0.1 source (`node_modules/htmx.org/dist/htmx.js`) wh
 - **RM-D1** was finished in Phase C (RM-C1): the form is read with `ReadFormAsync`, at most once per request, and the reflection lookup runs once per process. `FormPostTests.Multipart_form_is_read_asynchronously` posts a 200 KB multipart body to a TestServer, which disallows synchronous IO.
 - **RIZZY-028 addition:** htmx 4 applies its `detail.error` logging convention only to events that htmx core triggers itself. The public `htmx.trigger()` dispatches without logging, so the streaming extension's `htmx:error` for a broken stream was never logged. Phase D routes extension errors through `Rizzy.diagnostics.report()`, which logs per the convention and then dispatches.
 - **RIZZY-032 follow-up:** `benchmarks/Rizzy.Benchmarks` records end-to-end baselines (see its README). A full-page `View<T>` costs about 2× a plain `RazorComponentResult`; htmx requests cost about the same as the baseline.
+
+### RIZZY-036: pages with their own `<HeadContent>` lost the htmx-config meta tag and antiforgery token
+
+| | |
+|---|---|
+| Category / Severity | Functional and security-control defect / **P1** |
+| Evidence | `RzView` added `<meta name="htmx-config">` through Blazor's `<HeadContent>`. Blazor shows only the most recently rendered `<HeadContent>`, and a page's own block renders after Rizzy's, so it replaced it. In the demo, `/home/` (which declares a description meta in `<HeadContent>`) had no htmx-config tag and no antiforgery configuration. `/home/weather` and `/home/counter` had both. Found in the browser by the Phase D client diagnostics. With the tag missing, unsafe htmx requests carry no antiforgery token and fail validation, and all `HtmxConfig` settings are ignored. |
+| Resolution | Fixed. The new `RzHeadOutlet` renders `HeadOutlet` and then the config tag directly. It replaces `<HeadOutlet />` in the root layout, before the htmx script, because htmx reads the tag once at script load. `RzView` no longer uses `<HeadContent>`. Covered by `RenderingPipelineTests.Page_with_its_own_HeadContent_keeps_the_htmx_config_meta`. The client warning and the startup warning point to `RzHeadOutlet`. |
+| Status / Confidence | Confirmed (browser) / High |
+
+### Streaming verification
+
+The streaming extension (RIZZY-003) is now checked end to end:
+
+- **Server tests (`StreamingTests`):** for both partial htmx and full-page requests, the server sends the initial document (ending in `</html>`) while the component is still loading, then `<blazor-ssr>` blocks that match the component markers. This is the same shape as the client test fixture.
+- **Demo in a browser:** streaming worked for boosted navigation, Back navigation and a direct page load.

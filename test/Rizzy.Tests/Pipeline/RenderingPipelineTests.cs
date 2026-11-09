@@ -39,6 +39,21 @@ public class RenderingPipelineTests(RizzyTestHost host) : IClassFixture<RizzyTes
     }
 
     [Fact]
+    public async Task Page_with_its_own_HeadContent_keeps_the_htmx_config_meta()
+    {
+        // RIZZY-036: Blazor shows only the most recently rendered HeadContent, so the config tag
+        // must not travel through HeadContent.
+        var html = await (await host.GetAsync("/page-with-head")).Content.ReadAsStringAsync();
+
+        var head = html[..html.IndexOf("</head>", StringComparison.Ordinal)];
+        head.Should().Contain("<meta name=\"description\" content=\"page head\">");
+        Regex.Matches(head, "<meta name=\"htmx-config\"").Count.Should().Be(1);
+        head.IndexOf("<meta name=\"description\"", StringComparison.Ordinal)
+            .Should().BeLessThan(head.IndexOf("<meta name=\"htmx-config\"", StringComparison.Ordinal),
+                "RzHeadOutlet renders the page head first, then the config tag");
+    }
+
+    [Fact]
     public async Task View_for_partial_htmx_request_renders_fragment_without_layout()
     {
         var response = await host.GetAsync("/page", RizzyTestHost.PartialHtmxHeaders);

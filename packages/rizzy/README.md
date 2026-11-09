@@ -34,7 +34,7 @@ This package is intended to be used alongside the server-side Rizzy components. 
     ```
 
 2.  **Ensure Rizzy Server Components:** Your Blazor application should include the necessary Rizzy components, primarily:
-    *   `<HtmxConfigHeadOutlet />`: Renders the htmx configuration (including antiforgery settings) into a `<meta>` tag. The CSP nonce is not written there; the client reads it from your nonced `<script>` tags.
+    *   `<RzHeadOutlet />`: Use instead of `<HeadOutlet />` in your root layout's `<head>`, before the htmx script. It renders `HeadOutlet` plus the htmx configuration (including antiforgery settings) as a `<meta>` tag (`HtmxConfigHeadOutlet`). The CSP nonce is not written there; the client reads it from your nonced `<script>` tags.
     *   `<HtmxAntiforgeryScript />`: (If using `AntiforgeryStrategy.GenerateTokensPerPage`) Provides the initial antiforgery token.
     *   Rizzy Form Components (e.g., `<RzInputText>`, `<RzValidationMessage>`): These work with the validation setup included in this package.
 

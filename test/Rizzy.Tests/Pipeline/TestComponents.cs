@@ -9,7 +9,7 @@ namespace Rizzy.Tests.Pipeline;
 
 // Razor components are written in C# so the test project does not need the Razor SDK.
 
-/// <summary>Root layout: the full HTML document with a HeadOutlet for the htmx-config meta tag.</summary>
+/// <summary>Root layout: the full HTML document with an RzHeadOutlet (HeadOutlet + the htmx-config meta tag).</summary>
 public sealed class TestRootLayout : LayoutComponentBase
 {
     protected override void BuildRenderTree(RenderTreeBuilder builder)
@@ -17,7 +17,7 @@ public sealed class TestRootLayout : LayoutComponentBase
         builder.AddMarkupContent(0, "<!DOCTYPE html>");
         builder.OpenElement(1, "html");
         builder.OpenElement(2, "head");
-        builder.OpenComponent<HeadOutlet>(3);
+        builder.OpenComponent<RzHeadOutlet>(3);
         builder.CloseComponent();
         builder.CloseElement();
         builder.OpenElement(4, "body");
@@ -163,5 +163,50 @@ public sealed class TestPostedFormPage : ComponentBase
         builder.AddAttribute(1, "id", "posted");
         builder.AddContent(2, "posted:" + (Name ?? "<null>"));
         builder.CloseElement();
+    }
+}
+
+/// <summary>
+/// A streaming-rendered page: renders "loading" first, then streams "loaded" once its async work
+/// finishes. The delay is released by the test (<see cref="Release"/>) so the test can observe the
+/// initial HTML before the update exists.
+/// </summary>
+[StreamRendering]
+public sealed class TestStreamingPage : ComponentBase
+{
+    public static TaskCompletionSource Gate { get; private set; } = NewGate();
+
+    public static TaskCompletionSource NewGate()
+        => Gate = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+    public static void Release() => Gate.TrySetResult();
+
+    private bool _loaded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Gate.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        _loaded = true;
+    }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "div");
+        builder.AddAttribute(1, "id", _loaded ? "loaded" : "loading");
+        builder.AddContent(2, _loaded ? "loaded" : "loading");
+        builder.CloseElement();
+    }
+}
+
+/// <summary>A page that renders its own HeadContent, as many Blazor pages do (RIZZY-036).</summary>
+public sealed class TestHeadContentPage : ComponentBase
+{
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<HeadContent>(0);
+        builder.AddAttribute(1, "ChildContent", (RenderFragment)(head =>
+            head.AddMarkupContent(0, "<meta name=\"description\" content=\"page head\">")));
+        builder.CloseComponent();
+        builder.AddMarkupContent(2, "<p id=\"page\">with head content</p>");
     }
 }

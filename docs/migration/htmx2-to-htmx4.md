@@ -24,8 +24,9 @@ Always install Rizzy and Rizzy.Htmx with the same version. Rizzy 6 releases publ
 ## Upgrade steps
 
 1. **Update the packages.** Reference `Rizzy` 6.x; it brings the matching `Rizzy.Htmx`. If you use the npm package, install `@jalexsocial/rizzy` 6.x and `htmx.org` 4.0.1 or later. `htmx.org` is now a peer dependency, so your app chooses the exact htmx version.
-2. **Load htmx 4 before Rizzy**, for example from a CDN with subresource integrity:
+2. **Replace `<HeadOutlet />` with `<RzHeadOutlet />` in your root layout, then load htmx 4 and Rizzy after it.** `RzHeadOutlet` renders Blazor's `HeadOutlet` plus Rizzy's `<meta name="htmx-config">` tag (htmx settings and the antiforgery token). htmx reads that tag once, when its script loads, so the outlet must come first. Rizzy 5 added the tag through `<HeadContent>`, but a page with its own `<HeadContent>` silently replaced it (RIZZY-036). Load htmx from a CDN with subresource integrity, for example:
    ```html
+   <RzHeadOutlet />
    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js"
            integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn"
            crossorigin="anonymous" nonce="@nonce"></script>
@@ -35,7 +36,7 @@ Always install Rizzy and Rizzy.Htmx with the same version. Rizzy 6 releases publ
    ```csharp
    builder.Services.AddRizzy(o =>
    {
-       o.RootComponent = typeof(HtmxApp<AppLayout>);   // must render <HeadOutlet />
+       o.RootComponent = typeof(HtmxApp<AppLayout>);   // AppLayout renders <RzHeadOutlet /> in <head>
        o.DefaultLayout = typeof(HtmxLayout<MainLayout>);
    });
    builder.Services.AddHtmx(o => o.DefaultTimeout = TimeSpan.FromSeconds(30)); // optional
@@ -117,7 +118,7 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 
 ### Client diagnostics (RIZZY-026, RIZZY-028)
 
-- When rizzy.js loads, it logs one console warning if the page has no `<meta name="htmx-config">` (the root component does not render `<HeadOutlet />`), if that tag is not valid JSON, or if the server's Rizzy major version differs from the script's (for example a stale CDN copy). Set `HtmxConfig.RizzyDiagnostics = false` to silence these warnings.
+- When rizzy.js loads, it logs one console warning if the page has no `<meta name="htmx-config">` (the root layout does not render `<RzHeadOutlet />`), if that tag is not valid JSON, or if the server's Rizzy major version differs from the script's (for example a stale CDN copy). Set `HtmxConfig.RizzyDiagnostics = false` to silence these warnings.
 - Errors in Rizzy's extensions, such as a streaming connection that breaks mid-response, are now logged the way htmx 4 logs its own errors (`htmx: htmx:error: ...`) and then dispatched as events. Previously a broken stream raised `htmx:error` without logging anything.
 
 ## Breaking API changes in Rizzy 6
@@ -139,6 +140,7 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 | `ScrollBehavior`, `TriggerSpecificationCache` | Removed (unused in htmx 4) | RIZZY-028 |
 | `htmx-config` meta tag contained `documentNonce` | No longer emitted; contains `rizzyVersion` | RIZZY-027, RIZZY-028 |
 | `rizzy-confirm` always waited for a custom dialog | Native `confirm()` unless a dialog takes over | RIZZY-005 |
+| The htmx-config meta tag was added through `<HeadContent>` (and lost on pages with their own `<HeadContent>`) | Render `<RzHeadOutlet />` instead of `<HeadOutlet />` in the root layout | RIZZY-036 |
 | `AddHtmx()` registered MVC's internal antiforgery filters through reflection | Not registered; use `AddControllersWithViews()` for `[ValidateAntiForgeryToken]` | RIZZY-020 |
 | `AddRizzy()` needed `AddHtmx()` and `AddRazorComponents()` | Registers both (idempotently); registrations use `TryAdd*` | RIZZY-026 |
 | `RizzyConfig` setters threw `System.Exception` | `ArgumentException` (with the parameter name) | RIZZY-026 |
@@ -158,6 +160,7 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 - `HtmxConfig.AllowEmptySwapAfterOOB`, `MetaCharacter`.
 - Client: `window.Rizzy.confirm(props)`, `htmx.config.rizzyConfirmDialog`.
 - Client: `window.Rizzy.diagnostics.report(elt, eventName, detail)`, `window.Rizzy.diagnostics.checkPage()`, the `htmx:rizzy:config:warn` event; server: `HtmxConfig.RizzyDiagnostics`.
+- `RzHeadOutlet` (HeadOutlet plus the htmx-config meta tag).
 - `HtmxResponse.LocalRedirect(...)`, `LocalLocation(...)`, `HtmxResponse.IsLocalUrl(...)` (open-redirect safe).
 - `CssSelector.Escape(...)`, `CssSelector.Id(...)`.
 - `IHtmxSwapService.AddSwappableText(...)`, `RizzyComponentParameterBuilder.AddChildText(...)`.

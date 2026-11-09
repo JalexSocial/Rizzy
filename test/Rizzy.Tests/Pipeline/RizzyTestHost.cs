@@ -62,6 +62,8 @@ public sealed class RizzyTestHost : IAsyncLifetime
             ctx.Response.Htmx().Redirect("/elsewhere");
             return rizzy.PartialView<TestPage>(new { Message = "never rendered" });
         });
+        app.MapGet("/page-with-head", (IRizzyService rizzy) => rizzy.View<TestHeadContentPage>());
+        app.MapGet("/stream", (IRizzyService rizzy) => rizzy.View<TestStreamingPage>());
         app.MapPost("/minimal-post", (IRizzyService rizzy) => rizzy.View<TestPostedFormPage>()).DisableAntiforgery();
         app.MapControllers();
 

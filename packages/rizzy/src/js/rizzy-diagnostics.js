@@ -7,8 +7,8 @@
 //    extensions report through Rizzy.diagnostics.report() instead.
 //
 // 2. A page check when the bundle loads. It warns once, on the console, when:
-//    - the page has no <meta name="htmx-config"> (the root component does not render
-//      <HeadOutlet />, so the antiforgery token and Rizzy settings are missing), or
+//    - the page has no <meta name="htmx-config"> (the root layout does not render
+//      <RzHeadOutlet />, so the antiforgery token and Rizzy settings are missing), or
 //    - the meta tag is not valid JSON, or
 //    - the server's Rizzy major version (rizzyVersion in the meta tag) differs from the major
 //      version this script was built for (for example a cached or CDN copy of rizzy.js).
@@ -55,9 +55,9 @@
 
         if (!meta) {
             warnings.push(
-                'Rizzy: no <meta name="htmx-config"> on this page. The root component must render ' +
-                '<HeadOutlet /> (Rizzy\'s HtmxApp<TLayout> does), otherwise the antiforgery token ' +
-                'and Rizzy settings are not sent to the client.');
+                'Rizzy: no <meta name="htmx-config"> on this page, so htmx has no antiforgery token or ' +
+                'Rizzy settings. Render <RzHeadOutlet /> instead of <HeadOutlet /> in the <head> of your ' +
+                'root layout, before the htmx script (Rizzy 6 no longer adds the tag through HeadContent).');
         } else {
             let config = null;
             try {
