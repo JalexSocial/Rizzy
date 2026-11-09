@@ -23,10 +23,12 @@ public class StreamingTests(RizzyTestHost host) : IClassFixture<RizzyTestHost>
         return buffer.ToString();
     }
 
-    private async Task<(string Initial, string Full)> FetchAsync(params (string, string)[] headers)
+    private async Task<(string Initial, string Full)> FetchAsync(params (string, string)[] headers) => await FetchAsync("/stream", "</html>", headers);
+
+    private async Task<(string Initial, string Full)> FetchAsync(string url, string initialMarker, params (string, string)[] headers)
     {
         TestStreamingPage.NewGate();
-        var request = new HttpRequestMessage(HttpMethod.Get, "/stream");
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
         foreach (var (name, value) in headers)
             request.Headers.TryAddWithoutValidation(name, value);
 
@@ -35,7 +37,7 @@ public class StreamingTests(RizzyTestHost host) : IClassFixture<RizzyTestHost>
         var buffer = new StringBuilder();
 
         // The initial document must arrive while the component is still waiting.
-        var initial = await ReadUntilAsync(stream, buffer, "</html>", TimeSpan.FromSeconds(5));
+        var initial = await ReadUntilAsync(stream, buffer, initialMarker, TimeSpan.FromSeconds(5));
         TestStreamingPage.Release();
 
         var full = await ReadUntilAsync(stream, buffer, "</blazor-ssr>", TimeSpan.FromSeconds(5));
@@ -69,6 +71,15 @@ public class StreamingTests(RizzyTestHost host) : IClassFixture<RizzyTestHost>
         var (initial, full) = await FetchAsync();
 
         initial.Should().Contain("main-layout").And.Contain("id=\"loading\"").And.Contain("</html>");
+        full.Should().Contain("<blazor-ssr>").And.Contain("id=\"loaded\"");
+    }
+
+    [Fact]
+    public async Task PartialView_streams_the_fragment_then_update_blocks()
+    {
+        var (initial, full) = await FetchAsync("/stream-partial", "<!--/bl:", RizzyTestHost.PartialHtmxHeaders);
+
+        initial.Should().Contain("id=\"loading\"").And.NotContain("id=\"loaded\"");
         full.Should().Contain("<blazor-ssr>").And.Contain("id=\"loaded\"");
     }
 }

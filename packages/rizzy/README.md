@@ -1,62 +1,58 @@
-# Rizzy Client
+# @jalexsocial/rizzy
 
 [![npm version](https://img.shields.io/npm/v/@jalexsocial/rizzy.svg)](https://www.npmjs.com/package/@jalexsocial/rizzy)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Client-side JavaScript components and utilities for the [Rizzy Framework](https://github.com/jalexsocial/rizzy), designed to seamlessly integrate HTMX with Blazor Server-Side Rendering (SSR).
+The client script for [Rizzy](https://github.com/jalexsocial/rizzy): htmx 4 extensions that make
+server-rendered Razor components work with htmx. The same script ships in the Rizzy NuGet package
+as `_content/Rizzy/js/rizzy.js`, so most apps don't need this npm package at all.
 
-## Features
+## What it does
 
-*   **HTMX Extension Integration:** Includes necessary extensions for Rizzy features:
-    *   `rizzy-nonce`: Securely handles Content Security Policy (CSP) nonces for dynamically loaded scripts and styles within HTMX responses. Requires corresponding server-side setup (e.g., `HtmxConfigHeadOutlet` and `IRizzyNonceProvider`).
-    *   `rizzy-streaming`: Enables HTMX to correctly process Blazor's streaming rendering updates within swapped content.
-*   **Antiforgery Token Handling:** Automatically includes ASP.NET Core antiforgery tokens in HTMX POST/PUT/DELETE/PATCH requests based on configuration provided by the server (via `HtmxConfigHeadOutlet` and `HtmxAntiforgeryScript`).
-*   **Client-Side Validation Integration:** Sets up the `aspnet-client-validation` library for immediate use with Rizzy's form components (like `RzInputText`, `RzValidationMessage`).
-
-## Installation
-
-```bash
-npm install rizzy 
-```
+| Extension | Purpose |
+|---|---|
+| `rizzy-antiforgery` | Adds the ASP.NET Core antiforgery token (from the page's `<meta name="htmx-config">`) to every non-GET htmx request, and refreshes it after boosted navigation. |
+| `rizzy-nonce` | Lets server-rendered `<script>`/`<style>` in htmx responses run under a nonce-based Content Security Policy, while injected ones stay blocked. Does nothing on pages without a nonce. |
+| `rizzy-streaming` | Makes Blazor streaming rendering (`[StreamRendering]`) work with htmx: the initial HTML is swapped normally and `<blazor-ssr>` updates are applied as they arrive. |
+| `rizzy-confirm` | `hx-confirm` uses the browser's `confirm()`, or a custom dialog that handles the `rz:confirm-dialog` event (`window.Rizzy.confirm`). |
+| diagnostics | One console warning when the page is missing Rizzy's config meta tag or the server runs another Rizzy major version; extension errors are logged the way htmx logs its own. |
 
 ## Usage
 
-This package is intended to be used alongside the server-side Rizzy components. It typically requires minimal client-side configuration as it relies on data and configuration provided by Rizzy's .NET components rendered into the HTML.
+Load htmx 4 first, then Rizzy. The bundle is a classic (UMD) script, so don't add `type="module"`.
+In a Rizzy app, the root layout's `<head>` looks like this:
 
-1.  **Include the script:** Add the bundled script to your main layout file (e.g., `_Layout.cshtml`, `App.razor`, `index.html`). Make sure to include it *after* HTMX.
+```html
+<RzHeadOutlet />  <!-- Blazor's HeadOutlet + Rizzy's htmx-config meta tag; must come before htmx -->
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js"
+        integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn"
+        crossorigin="anonymous"></script>
+<script src="_content/Rizzy/js/rizzy.js"></script>
+```
 
-    ```html
-    <!-- Make sure HTMX is loaded first -->
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js" integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn" crossorigin="anonymous"></script>
+From npm instead of the NuGet static asset:
 
-    <!-- Include the Rizzy client script -->
-    <script src="/_content/Rizzy/js/rizzy.js" type="module"></script>
-    ```
+```bash
+npm install @jalexsocial/rizzy htmx.org@^4.0.1
+```
 
-2.  **Ensure Rizzy Server Components:** Your Blazor application should include the necessary Rizzy components, primarily:
-    *   `<RzHeadOutlet />`: Use instead of `<HeadOutlet />` in your root layout's `<head>`, before the htmx script. It renders `HeadOutlet` plus the htmx configuration (including antiforgery settings) as a `<meta>` tag (`HtmxConfigHeadOutlet`). The CSP nonce is not written there; the client reads it from your nonced `<script>` tags.
-    *   `<HtmxAntiforgeryScript />`: (If using `AntiforgeryStrategy.GenerateTokensPerPage`) Provides the initial antiforgery token.
-    *   Rizzy Form Components (e.g., `<RzInputText>`, `<RzValidationMessage>`): These work with the validation setup included in this package.
+Then serve `node_modules/@jalexsocial/rizzy/dist/js/rizzy.min.js` (or import `@jalexsocial/rizzy`
+in your bundler after htmx). Use the same version as your Rizzy NuGet packages; the diagnostics warn
+when the major versions differ.
 
-3.  **HTMX Extension Activation:**
-    *   The HTMX extensions (`rizzy-nonce`, `rizzy-streaming`) are defined when the script loads. You typically activate them on relevant elements through htmx config extension registration from Rizzy configuration (Rizzy does not recommend `hx-ext` for htmx 4).
-    *   Refer to the main Rizzy documentation for specific usage scenarios.
+The extensions register themselves when the script loads; no `hx-ext` attributes are needed. If you
+restrict extensions with `htmx.config.extensions` (`HtmxConfig.Extensions`), include
+`rizzy-nonce, rizzy-streaming, rizzy-antiforgery, rizzy-confirm`.
 
-4.  **Antiforgery & Validation:** These features generally work automatically once the script is loaded, provided the server-side components (`HtmxConfigHeadOutlet`, `HtmxAntiforgeryScript`, and Rizzy Form Components) are correctly configured and rendered.
+## Browser support
 
-## Dependencies
-
-*   **HTMX:** This library requires HTMX (version 4-compatible) to be loaded on the page *before* this script.
-*   **aspnet-client-validation:** This library is used for client-side validation integration. The necessary setup (`ValidationService().bootstrap()`) is included in this package's bundle.
-
-## Browser Support
-
-Targets modern browsers supporting ES Modules.
+Modern evergreen browsers (the bundle targets ES2020), as required by htmx 4.
 
 ## Contributing
 
-Contributions are welcome! Please refer to the main [Rizzy repository's contributing guidelines](https://github.com/jalexsocial/rizzy/blob/main/CONTRIBUTING.md).
+See the main repository's [CONTRIBUTING.md](https://github.com/jalexsocial/rizzy/blob/main/CONTRIBUTING.md).
+The source is in `packages/rizzy/src/js`; `npm test` runs the tests against the real htmx runtime.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT. See [LICENSE.md](LICENSE.md).

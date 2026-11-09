@@ -1,22 +1,31 @@
-﻿@using Rizzy.Components.Form
-@using Rizzy.Framework.Mvc
+@using Rizzy.Components.Form
 @using RizzyDemo.Controllers.Home.Models
-@using Microsoft.AspNetCore.Mvc
-@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @using Rizzy
+
+<RzPageTitle>Validation</RzPageTitle>
 
 <div id="information">
 
-    <h3>Information</h3>
+    <h3>Validation</h3>
+    <p>
+        The form posts with htmx. When validation fails, the controller re-renders the form with
+        its errors and answers with status 422 (<code>Response.Htmx().ValidationFailed()</code>).
+        htmx 4 swaps 4xx responses, so the errors replace the form. Names longer than 10
+        characters fail; so does "admin", which the server rejects.
+    </p>
 
-    <EditForm Model="Person" FormName="PersonEdit" hx-post="/home/information" hx-target="#information">
-        <RzInitialValidator/>
-        <RzValidationSummaryBase/>
+    @if (!string.IsNullOrEmpty(Saved))
+    {
+        <div class="alert alert-success" role="status">Saved "@Saved".</div>
+    }
 
-        <div class="form-group">
+    <EditForm Model="Person" FormName="PersonEdit" hx-post="/home/information" hx-target="#information" hx-swap="outerHTML">
+        <RzModelStateProvider/>
+
+        <div class="form-group mb-2">
             <label for="name">Name:</label>
-            <RzInputTextBase class="form-control" @bind-Value="Person.Name"/>
-            <RzValidationMessageBase For="@(() => Person.Name)"/>
+            <RzInputTextBase id="name" class="form-control" @bind-Value="Person!.Name"/>
+            <RzValidationMessageBase For="@(() => Person!.Name)"/>
         </div>
 
         <RzValidationSummaryBase/>
@@ -26,23 +35,14 @@
 
 </div>
 
-@* ReSharper disable once CSharpWarnings::CS8618 *@
 @code {
+    // No initializer: a property initializer on a [SupplyParameterFromForm] property can be
+    // overwritten with null during form posts (BL0008).
+    [SupplyParameterFromForm(FormName = "PersonEdit")]
+    public Person? Person { get; set; }
 
-    [SupplyParameterFromForm] 
-	public Person Person { get; set; } = new ();
+    [Parameter]
+    public string? Saved { get; set; }
 
-    [CascadingParameter]
-    public HttpContext? HttpContext { get; set; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-
-	protected override void OnParametersSet()
-	{
-		base.OnParametersSet();
-	}
-
+    protected override void OnInitialized() => Person ??= new();
 }

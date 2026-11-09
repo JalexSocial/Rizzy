@@ -20,24 +20,62 @@ We recommend the following workflow for contributions to Rizzy:
    - Use existing issues when possible. If you plan to tackle an issue, comment that you're working on it and request assignment.
 
 2. **Fork and Branch:**
-   - Fork the Rizzy repository and create a branch from the main for your work (`git checkout -b mybranch`).
+   - Fork the Rizzy repository and create a branch from `main` for your work (`git checkout -b mybranch main`). `main` is the only long-lived branch; every change reaches it through a pull request.
 
 3. **Developing:**
    - Implement your changes, adhering to the Rizzy coding standards and guidelines.
    - Write or update tests for your changes.
    - Ensure your code follows the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) style for commit messages.
 
-4. **Testing:**
-   - Build the project and run tests to ensure everything works as expected, including new and existing tests.
+4. **Testing:** run the same checks as CI (see [Building and testing](#building-and-testing) below).
 
 5. **Submitting a Pull Request (PR):**
-   - Push your changes to your fork and submit a PR to the **dev** branch of Rizzy.
+   - Push your changes to your fork and open a PR against **`main`**. CI must pass before it is merged.
    - In the PR description, reference the issue it addresses.
    - Await feedback or approval from the project maintainers.
 
 6. **After Your PR is Merged:**
    - Once approved and merged, you may delete your branch.
    - Congratulations! You've contributed to Rizzy. 🎉
+
+## Building and testing
+
+You need the .NET 10 SDK (`global.json` pins the 10.0 feature band) and Node.js 22. These are the steps CI runs, from the repository root:
+
+```bash
+dotnet build src/Rizzy.sln -c Release
+```
+
+```bash
+dotnet test test/Rizzy.Tests/Rizzy.Tests.csproj -c Release
+```
+
+The client library lives in `packages/rizzy`. Its build writes the bundle to `packages/rizzy/dist` **and** to `src/Rizzy/wwwroot/js`, which ship in the Rizzy NuGet package. Both are committed, and CI fails if they differ from a fresh build, so rebuild and commit them whenever you change `packages/rizzy/src`:
+
+```bash
+cd packages/rizzy && npm ci && npm test && npm run build:check
+```
+
+To check the NuGet packages the way a consumer sees them (pack, inspect the contents, then build a fresh app against them):
+
+```bash
+dotnet pack src/Rizzy.Htmx/Rizzy.Htmx.csproj -c Release -o ./artifacts/nupkgs
+```
+
+```bash
+dotnet pack src/Rizzy/Rizzy.csproj -c Release -o ./artifacts/nupkgs
+```
+
+```bash
+python eng/check-package-contents.py ./artifacts/nupkgs && bash eng/consumer-smoke-test.sh ./artifacts/nupkgs 6.0.0-dev
+```
+
+Other things worth knowing:
+
+- **Public API changes** fail `PublicApiBaselineTests`. If the change is intended, regenerate the baselines with `RIZZY_UPDATE_API_BASELINE=1 dotnet test test/Rizzy.Tests/Rizzy.Tests.csproj` and commit `test/Rizzy.Tests/PublicApi/*.txt`, and list breaking changes in `CHANGELOG.md`.
+- **The demo** (`src/RizzyDemo`) is part of the solution: `dotnet run --project src/RizzyDemo --launch-profile http`, then open http://localhost:5088/home/.
+- **Benchmarks:** see `benchmarks/Rizzy.Benchmarks/README.md`.
+- **Versions** are set in one place, `Directory.Build.props`. Releases are cut by the maintainers from a `vX.Y.Z` tag (see `CHANGELOG.md` and `.github/workflows/release.yml`).
 
 ### Contribution Guidelines
 

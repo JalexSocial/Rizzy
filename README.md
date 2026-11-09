@@ -10,6 +10,109 @@ For detailed documentation and examples, please visit the [Rizzy Documentation S
 
 **Upgrading from Rizzy 5 / htmx 2?** Rizzy 6 targets htmx 4.0.1+. See the [upgrade guide](docs/migration/htmx2-to-htmx4.md) for the compatibility table, required markup changes and breaking API changes.
 
+## Quick start
+
+Rizzy 6 requires .NET 10 and htmx 4.0.1 or later.
+
+**1. Install the package** (it brings the matching `Rizzy.Htmx` and the client script):
+
+```bash
+dotnet add package Rizzy
+```
+
+**2. Register Rizzy** in `Program.cs`:
+
+```csharp
+using Rizzy;
+using MyApp; // the namespace of your components (your project's root namespace)
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews(); // only for MVC controllers
+builder.Services.AddRizzy(options =>
+{
+    options.RootComponent = typeof(HtmxApp<AppLayout>);    // the HTML document
+    options.DefaultLayout = typeof(HtmxLayout<MainLayout>); // page chrome, skipped for htmx fragments
+});
+
+var app = builder.Build();
+
+app.UseStaticFiles();   // serves _content/Rizzy/js/rizzy.js
+app.UseRouting();
+app.UseAntiforgery();
+app.UseRizzy();
+
+app.MapGet("/", (IRizzyService rizzy) => rizzy.View<Home>());
+app.MapPost("/greet", (IRizzyService rizzy) => rizzy.PartialView<Greeting>(new { Name = "htmx" }));
+app.MapDefaultControllerRoute();
+
+app.Run();
+```
+
+**3. Add `_Imports.razor`** next to your components:
+
+```razor
+@* _Imports.razor *@
+@using Microsoft.AspNetCore.Components.Web
+@using Rizzy
+```
+
+**4. Create the root layout.** It must render `<RzHeadOutlet />` (Blazor's `HeadOutlet` plus Rizzy's
+htmx config and antiforgery token) before the htmx script:
+
+```razor
+@* AppLayout.razor *@
+@inherits LayoutComponentBase
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <base href="/" />
+    <RzHeadOutlet />
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@4.0.1/dist/htmx.min.js"
+            integrity="sha384-Qp9rdC8H7EqOoX+nR0P3RPG2Noji+qdwJlGpfzwQJsfOpp3sGwIdSP9xO3+UlEhn"
+            crossorigin="anonymous"></script>
+    <script src="_content/Rizzy/js/rizzy.js"></script>
+</head>
+<body>
+    @Body
+</body>
+</html>
+```
+
+```razor
+@* MainLayout.razor *@
+@inherits LayoutComponentBase
+
+<main>@Body</main>
+```
+
+**5. Write components** and let htmx swap them:
+
+```razor
+@* Home.razor *@
+<h1>Hello</h1>
+<button hx-post="/greet" hx-target="#greeting">Greet</button>
+<div id="greeting"></div>
+```
+
+```razor
+@* Greeting.razor *@
+<p>Hello, @Name!</p>
+
+@code {
+    [Parameter] public string? Name { get; set; }
+}
+```
+
+The POST carries the antiforgery token automatically, and `View<T>` renders a full page for a normal
+request but only the fragment (no layouts) for an htmx request that targets an element. Open the
+browser console while you work: Rizzy and htmx 4 log configuration problems and errors there.
+
+`src/RizzyDemo` in this repository shows the rest: MVC controllers, 422 validation, out-of-band
+swaps, streaming rendering, confirm dialogs and a nonce-based Content Security Policy.
+
 ## Leverage the Best of Both Worlds: Robust MVC Structure meets Modern Blazor UI Components
 
 Remember the power and structure of ASP.NET MVC? The clear separation of concerns, the robust routing and model binding, the mature ecosystem for handling business logic, security, and data access? It's a solid foundation many .NET developers know and trust.
@@ -36,7 +139,7 @@ Not with Rizzy. By integrating HTMX seamlessly behind the scenes, Rizzy allows t
 
 ## Contributions
 
-Contributions are welcome! If you encounter any issues, have feature requests, or would like to contribute to Rizzy, please [open an issue](https://github.com/jalexsocial/rizzy/issues) or submit a pull request.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to build and test, and [CHANGELOG.md](CHANGELOG.md) for release notes. Contributions are welcome! If you encounter any issues, have feature requests, or would like to contribute to Rizzy, please [open an issue](https://github.com/jalexsocial/rizzy/issues) or submit a pull request.
 
 ### Contributors
 
@@ -45,11 +148,6 @@ Contributions are welcome! If you encounter any issues, have feature requests, o
 - Khalid Abuhakmeh
 - Ryan Elian
 - .NET Foundation
-
-## Referenced Libraries
-
-1. Asp.net Client Validation - https://github.com/haacked/aspnet-client-validation
-
 
 ## License
 

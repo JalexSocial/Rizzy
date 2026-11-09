@@ -52,6 +52,13 @@ public sealed class RizzyTestHost : IAsyncLifetime
             modelState.AddModelError(nameof(TestPerson.Name), "Server says the name is taken.");
             return rizzy.View<TestFormPage>(new { Person = new TestPerson { Name = "Bob" } }, modelState);
         });
+        app.MapGet("/form-invalid-prefixed", (IRizzyService rizzy) =>
+        {
+            // MVC model binding names errors with the parameter prefix ("Person.Name").
+            var modelState = new ModelStateDictionary();
+            modelState.AddModelError("Person.Name", "Prefixed: the name is taken.");
+            return rizzy.View<TestFormPage>(new { Person = new TestPerson { Name = "Bob" } }, modelState);
+        });
         app.MapGet("/empty", (HttpContext ctx, IRizzyService rizzy) =>
         {
             ctx.Response.Htmx().EmptyBody();
@@ -64,6 +71,7 @@ public sealed class RizzyTestHost : IAsyncLifetime
         });
         app.MapGet("/page-with-head", (IRizzyService rizzy) => rizzy.View<TestHeadContentPage>());
         app.MapGet("/stream", (IRizzyService rizzy) => rizzy.View<TestStreamingPage>());
+        app.MapGet("/stream-partial", (IRizzyService rizzy) => rizzy.PartialView<TestStreamingPage>());
         app.MapPost("/minimal-post", (IRizzyService rizzy) => rizzy.View<TestPostedFormPage>()).DisableAntiforgery();
         app.MapControllers();
 
@@ -136,6 +144,14 @@ public sealed class TestResponseAttributeController : RzController
     [HttpPost("/ctrl/post")]
     [IgnoreAntiforgeryToken]
     public IResult Post() => View<TestPostedFormPage>();
+
+    [HttpGet("/ctrl/invalid")]
+    public IResult Invalid()
+    {
+        // No modelState argument: the controller's own ModelState reaches the view.
+        ModelState.AddModelError("Person.Name", "Controller says the name is taken.");
+        return View<TestFormPage>(new { Person = new TestPerson { Name = "Bob" } });
+    }
 
     [HttpPost("/ctrl/antiforgery-validated")]
     [ValidateAntiForgeryToken]

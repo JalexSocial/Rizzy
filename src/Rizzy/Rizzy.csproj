@@ -36,7 +36,7 @@
 	<ItemGroup>
 	  <!-- Tooling files that must never be packed into consumer projects (RIZZY-021). -->
 	  <Content Remove="package.json;package-lock.json;publish/**" />
-	  <None Remove="llmquery.txt;publish/**" />
+	  <None Remove="publish/**" />
 	</ItemGroup>
 	
 	<ItemGroup>

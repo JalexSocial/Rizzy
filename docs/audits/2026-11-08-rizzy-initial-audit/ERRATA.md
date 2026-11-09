@@ -74,3 +74,23 @@ The streaming extension (RIZZY-003) is now checked end to end:
 
 - **Server tests (`StreamingTests`):** for both partial htmx and full-page requests, the server sends the initial document (ending in `</html>`) while the component is still loading, then `<blazor-ssr>` blocks that match the component markers. This is the same shape as the client test fixture.
 - **Demo in a browser:** streaming worked for boosted navigation, Back navigation and a direct page load.
+
+## Findings from roadmap Phase E
+
+### RIZZY-037: MVC model-state errors never reached the field they belong to
+
+| | |
+|---|---|
+| Category / Severity | Functional defect / **P2** |
+| Evidence | `RzModelStateProvider` passed each `ModelStateDictionary` key straight to `EditContext.Field(key)`. MVC model binding names keys with the binding prefix and property path (`Person.Name` for `[FromForm] Person person`). Blazor identifies a field by its owning object and property name (`(person, "Name")`), so no field matched. Errors appeared only in the validation summary: the field message stayed empty and the input stayed `valid`. Found while modernizing the demo's validation page. `FormRenderingTests.Model_state_keys_with_the_binding_prefix_reach_the_field` fails without the fix. |
+| Resolution | Fixed. `RzModelStateProvider.ResolveField` treats a leading segment that is not a property of the form model as the binding prefix and walks nested paths to the owning object (`Person.Address.City` → `(address, "City")`). Keys it cannot follow (indexers, null objects) fall back to the raw key. Unit tests are in `ModelStateKeyTests`. Also fixed: since commit `c5e5342`, `RzController`/`RzControllerWithViews` passed `null` instead of the controller's `ModelState` unless one was given explicitly, although the documentation still described automatic cascading. They now default to the controller's `ModelState` again (`FormRenderingTests.Controller_views_receive_the_controller_ModelState_by_default`). |
+| Status / Confidence | Confirmed (runtime, browser) / High |
+
+### Phase E notes
+
+- **RIZZY-033:** the remaining items are done. `llmquery.txt` and `stats.html` are removed and ignored, `.serena/` stays tracked (its own `.gitignore` excludes the local cache), `global.json` and `.editorconfig` are added, and CONTRIBUTING describes the real branch model and build steps. The stale solution entry was already gone.
+- **RIZZY-024:** `npm audit` is clean (Vite 6.4.6). `aspnet-client-validation` (unused) and the unused test packages `Alba` and `System.IdentityModel.Tokens.Jwt` are removed. bUnit 2.14.0 removes the transitive AngleSharp advisory (NU1902). FluentAssertions stays on 7.x.
+- **Demo (RM-E3):**
+  - The demo sends a strict `script-src 'nonce-…'` CSP and uses `app.UseHtmxErrorHandling()`, the htmx 4 default error swapping and `hx-history-elt`.
+  - A new Examples page covers table rows with an out-of-band button, `hx-confirm` with antiforgery, CSP nonces and server errors. The Validation page returns 422 with field errors.
+  - The BL0008 warning is fixed.

@@ -4,7 +4,6 @@ using Rizzy.Htmx;
 using RizzyDemo;
 using RizzyDemo.Components.Layout;
 using RizzyDemo.Components.Shared;
-using RizzyDemo.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,22 +13,32 @@ builder.Services.AddRizzy(config =>
     config.DefaultLayout = typeof(HtmxLayout<MainLayout>);
 });
 
-builder.Services.AddHtmx(config =>
-{
-	config.Mode = "same-origin";
-	config.NoSwap = [204, 304, "4xx", "5xx"];
-});
+// htmx 4 defaults: error responses swap, which the validation example relies on (422).
+builder.Services.AddHtmx(config => config.Mode = "same-origin");
 
 // Add services to the container.
 // AddControllersWithViews registers the MVC antiforgery filters used by [ValidateAntiForgeryToken].
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddRazorComponents();
-
 builder.Services.AddSingleton<HtmxCounter.HtmxCounterState>();
 builder.Services.AddSingleton<PostRepo>();
 
 var app = builder.Build();
+
+// Content Security Policy: only scripts carrying this request's nonce may run. The layout puts
+// the nonce on its <script> tags, and rizzy.js lets server-rendered scripts in htmx responses
+// run while injected ones stay blocked (see the Examples page).
+app.Use(async (context, next) =>
+{
+    var nonce = context.RequestServices.GetRequiredService<IRizzyNonceProvider>().GetNonce();
+    context.Response.Headers.ContentSecurityPolicy =
+        $"script-src 'nonce-{nonce}'; object-src 'none'; base-uri 'self'";
+    await next();
+});
+
+// Server errors on fragment requests are not swapped into the target; the client gets an
+// rz:server-error event instead. Registered before UseExceptionHandler so it covers its output.
+app.UseHtmxErrorHandling();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
