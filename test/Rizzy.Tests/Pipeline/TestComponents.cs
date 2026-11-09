@@ -151,3 +151,17 @@ public sealed class TestFormPage : ComponentBase
     }
 #pragma warning restore ASP0006
 }
+
+/// <summary>A page that binds a value posted with a named form (Blazor SSR form mapping).</summary>
+public sealed class TestPostedFormPage : ComponentBase
+{
+    [SupplyParameterFromForm(FormName = "greet")] public string? Name { get; set; }
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "p");
+        builder.AddAttribute(1, "id", "posted");
+        builder.AddContent(2, "posted:" + (Name ?? "<null>"));
+        builder.CloseElement();
+    }
+}

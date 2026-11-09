@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Rizzy.Htmx;
 
 namespace Rizzy.Configuration;
@@ -19,7 +19,7 @@ public class RizzyConfig
         set
         {
             if (value != null && !typeof(LayoutComponentBase).IsAssignableFrom(value))
-                throw new Exception($"{nameof(value)} is not a Razor layout component");
+                throw new ArgumentException($"{value.FullName} is not a Razor layout component (it must derive from LayoutComponentBase).", nameof(DefaultLayout));
 
             _defaultLayout = value;
         }
@@ -39,7 +39,7 @@ public class RizzyConfig
                 if (!value.IsGenericType || value.GetGenericTypeDefinition() != typeof(HtmxApp<>) ||
                     !typeof(LayoutComponentBase).IsAssignableFrom(value.GetGenericArguments()[0]))
                 {
-                    throw new Exception($"{nameof(value)} must be of type HtmxApp<T> where T is a subclass of LayoutComponentBase");
+                    throw new ArgumentException($"{value.FullName} is not a valid root component. Use HtmxApp<TLayout>, where TLayout derives from LayoutComponentBase.", nameof(RootComponent));
                 }
             }
 

@@ -14,7 +14,7 @@ namespace Rizzy;
 /// </summary>
 public class HtmxSwapService : IHtmxSwapService
 {
-    private readonly HttpContext _httpContext;
+    private readonly IHttpContextAccessor _contextAccessor;
     private readonly IServiceProvider _serviceProvider;
     private List<ContentItem> _contentItems = new List<ContentItem>();
 
@@ -31,7 +31,7 @@ public class HtmxSwapService : IHtmxSwapService
 
     public HtmxSwapService(IHttpContextAccessor contextAccessor, IServiceProvider serviceProvider)
     {
-        _httpContext = contextAccessor.HttpContext!;
+        _contextAccessor = contextAccessor ?? throw new ArgumentNullException(nameof(contextAccessor));
         _serviceProvider = serviceProvider;
     }
 
@@ -99,31 +99,27 @@ public class HtmxSwapService : IHtmxSwapService
         OnContentItemsUpdated();
     }
 
-    /// <summary>
-    /// Adds string content to the service for later rendering.
-    /// </summary>
-    /// <param name="targetId">The target DOM element ID where the fragment should be rendered.</param>
-    /// <param name="content">The RenderFragment to add.</param>
-    /// <param name="swapStyle">The style of content swap to apply.</param>
-    /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-    public void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null)
+    /// <inheritdoc />
+    public void AddSwappableContent(string targetId, MarkupString markup, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null)
     {
-        var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(1, content));
-
+        var contentFragment = new RenderFragment(builder => builder.AddContent(1, markup));
         _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, contentFragment));
-
         OnContentItemsUpdated();
     }
 
-    /// <summary>
-    /// Adds raw HTML content to the service for later rendering.
-    /// </summary>
-    /// <param name="content">The raw HTML content to add.</param>
-    public void AddRawContent(string content)
+    /// <inheritdoc />
+    public void AddSwappableText(string targetId, string text, SwapStyle swapStyle = SwapStyle.innerHTML, string? selector = null)
     {
-        var contentFragment = new RenderFragment(builder => builder.AddMarkupContent(2, content));
-        _contentItems.Add(new ContentItem(RzContentType.RawHtml, string.Empty, SwapStyle.none, string.Empty, contentFragment));
+        var contentFragment = new RenderFragment(builder => builder.AddContent(1, text));
+        _contentItems.Add(new ContentItem(RzContentType.Swappable, targetId, swapStyle, selector ?? string.Empty, contentFragment));
+        OnContentItemsUpdated();
+    }
 
+    /// <inheritdoc />
+    public void AddRawContent(MarkupString markup)
+    {
+        var contentFragment = new RenderFragment(builder => builder.AddContent(2, markup));
+        _contentItems.Add(new ContentItem(RzContentType.RawHtml, string.Empty, SwapStyle.none, string.Empty, contentFragment));
         OnContentItemsUpdated();
     }
 
@@ -133,7 +129,7 @@ public class HtmxSwapService : IHtmxSwapService
     /// <returns>A RenderFragment containing all the content managed by the service.</returns>
     public RenderFragment RenderToFragment()
     {
-        var isHtmx = _httpContext.Request.Htmx().IsHtmx;
+        var isHtmx = _contextAccessor.HttpContext?.Request.Htmx().IsHtmx == true;
 
         return builder =>
         {

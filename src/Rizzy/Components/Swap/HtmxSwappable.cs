@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.Extensions.Options;
 using Rizzy.Htmx;
@@ -34,7 +34,7 @@ public partial class HtmxSwappable : ComponentBase
     {
         builder.OpenElement(0, "hx-partial");
 
-        var target = !string.IsNullOrEmpty(Selector) ? Selector : $"#{TargetId}";
+        var target = !string.IsNullOrEmpty(Selector) ? Selector : CssSelector.Id(TargetId);
         var prefix = HtmxOptions.Value.Prefix;
 
         builder.AddAttribute(1, HtmxAttributeName.Resolve("hx-target", prefix), target);

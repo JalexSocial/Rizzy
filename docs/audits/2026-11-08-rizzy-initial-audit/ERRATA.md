@@ -37,3 +37,18 @@ Verified against the htmx 4.0.1 source (`node_modules/htmx.org/dist/htmx.js`) wh
 - **Config keys (RIZZY-028):** `inlineScriptNonce` and `metaCharacter` are absent from the 4.0.1 default config object, but both are still honored (`#processScripts`, `#maybeAdjustMetaCharacter`). The roadmap's B10 item to add `MetaCharacter` stands. `inlineStyleNonce` is gone.
 - **`inlineScriptNonce` (RIZZY-004, RM-B2):** core stamps this nonce on *every* script it recreates during a swap, including scripts injected into a response. The audit's suggested "rely on `htmx.config.inlineScriptNonce`" would trust injected scripts, so Rizzy 6 does not set it by default. It rewrites the response nonce to the page nonce in the raw text instead, and lets the browser's CSP block un-nonced scripts.
 - **Deprecation policy (RM-B5, RM-B10):** the roadmap suggested obsoleting htmx 2 APIs. The repository's `PublicApiTests` (added with the htmx 4 migration) forbids `[Obsolete]` members in Rizzy.Htmx, so Phase B removes them outright. Every removal is listed in [docs/migration/htmx2-to-htmx4.md](../../migration/htmx2-to-htmx4.md).
+
+## Corrections and findings from roadmap Phase C
+
+- **Correction to the Phase B notes:** `src/RizzyDemo` still exists. It is part of `src/Rizzy.sln`, and CI builds it. The Phase B summary and PR #27 wrongly said it had been removed. Roadmap items that target the demo (RM-E3, the Playwright scenarios in RM-A7) still apply.
+- **RIZZY-020 clarification:** with `AddControllers()`, the endpoint-level `[RequireAntiforgeryToken]` plus `UseAntiforgery()` does **not** reject a forged POST to an MVC action. The middleware only records the result, and MVC does not act on it. `[ValidateAntiForgeryToken]` (which needs `AddControllersWithViews()`) remains the mechanism for MVC actions.
+- **RIZZY-020, no supported API:** in ASP.NET Core 10, `HttpContextFormDataProvider`, `EndpointHtmlRenderer+FormCollectionReadOnlyDictionary` and `RazorComponentResultExecutor` are all internal, and `RazorComponentResult` never passes form data. A reflective hook is still required. Phase C confines it to one cached, guarded lookup (`BlazorFormData`) with an upgrade canary test.
+
+### RIZZY-035 — `[SupplyParameterFromForm]` was never populated for minimal-API Rizzy views
+
+| | |
+|---|---|
+| Category / Severity | Functional defect / **P2** |
+| Evidence | Form data reached Blazor form mapping only through `RzController.OnActionExecuting`. `app.MapPost("/x", (IRizzyService r) => r.View<T>())` rendered `[SupplyParameterFromForm]` properties as null. Reproduced by `FormPostTests.Minimal_api_view_binds_named_form_values` before the fix. |
+| Resolution | Fixed in Phase C. `RizzyViewResult` supplies the form when any Rizzy view executes. |
+| Status / Confidence | Confirmed (runtime) / High |

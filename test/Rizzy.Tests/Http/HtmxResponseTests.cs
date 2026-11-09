@@ -1,4 +1,4 @@
-﻿using Bunit;
+using Bunit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -14,7 +14,7 @@ public class HtmxResponseTests : BunitContext
     private static HttpContext CreateHttpContext()
     {
         var services = new ServiceCollection();
-        services.AddSingleton<IConfigureOptions<HtmxConfig>, Rizzy.Htmx.ServiceCollectionExtensions.ConfigureHtmxSettings>();
+        services.AddHtmx();
         services.Configure<RizzyConfig>(config => { });
 
         var result = new DefaultHttpContext()

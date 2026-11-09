@@ -48,7 +48,7 @@ Put the full methodology and limitations in `00-executive-summary.md`. Other rep
 ## Finding IDs
 
 - Each substantive finding gets a unique ID: `RIZZY-NNN` (zero-padded, e.g. `RIZZY-007`).
-- IDs are **never reused**. A later audit that re-confirms an earlier finding must reference the original ID, e.g. "RIZZY-007 (from 2026-11-08) still open". New findings continue numbering from the highest ID used in any previous audit or errata file (currently RIZZY-034).
+- IDs are **never reused**. A later audit that re-confirms an earlier finding must reference the original ID, e.g. "RIZZY-007 (from 2026-11-08) still open". New findings continue numbering from the highest ID used in any previous audit or errata file (currently RIZZY-035).
 - Use the same ID everywhere the finding is mentioned: reports, roadmap tasks, commits, PRs and issues.
 - Roadmap tasks use their own IDs, `RM-<phase><n>` (e.g. `RM-A1`). These are scoped to the audit that created them. Prefix them with the audit date when cross-referencing from elsewhere.
 

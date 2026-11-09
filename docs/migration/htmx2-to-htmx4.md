@@ -31,12 +31,16 @@ Always install Rizzy and Rizzy.Htmx with the same version. Rizzy 6 releases publ
            crossorigin="anonymous" nonce="@nonce"></script>
    <script src="_content/Rizzy/js/rizzy.js" nonce="@nonce"></script>
    ```
-3. **Register Razor components.** `AddRizzy()` needs `AddRazorComponents()`:
+3. **Register Rizzy.** `AddRizzy()` now also registers htmx support and Razor components, so it is all you need. Call `AddHtmx(...)` as well only to configure `HtmxConfig`; the order does not matter and repeated calls are safe:
    ```csharp
-   builder.Services.AddRazorComponents();
-   builder.Services.AddRizzy();
-   builder.Services.AddHtmx();
+   builder.Services.AddRizzy(o =>
+   {
+       o.RootComponent = typeof(HtmxApp<AppLayout>);   // must render <HeadOutlet />
+       o.DefaultLayout = typeof(HtmxLayout<MainLayout>);
+   });
+   builder.Services.AddHtmx(o => o.DefaultTimeout = TimeSpan.FromSeconds(30)); // optional
    ```
+   If your MVC controllers use `[ValidateAntiForgeryToken]` or `[AutoValidateAntiforgeryToken]`, register MVC with `AddControllersWithViews()` (or `AddMvcCore().AddViews()`). `AddControllers()` alone does not provide the filters those attributes need, and Rizzy no longer injects them through reflection.
 4. **Run the official htmx upgrade checker** on your templates:
    ```bash
    npx -p htmx.org@4 upgrade-check --ext .razor --ext .cshtml ./
@@ -104,6 +108,13 @@ Rizzy keeps htmx 4's default (error responses swap) and adds helpers instead of 
 
 If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]`.
 
+### Setup, forms and raw markup (RIZZY-020, RIZZY-026, RIZZY-029, RIZZY-031)
+
+- **Startup checks.** Rizzy validates its configuration when the app starts. A null `RootComponent` fails startup. Leaving the default `HtmxApp<EmptyLayout>` logs a warning, because that root renders no `<head>`, so the htmx config and antiforgery token are dropped.
+- **`[SupplyParameterFromForm]` in views.** Rizzy now supplies the posted form when a Rizzy view *executes*, reading it asynchronously. This makes form binding work for minimal-API endpoints too, not only `RzController` actions. It still relies on an internal ASP.NET Core API, now resolved once and failing with a clear message if a future framework version changes it.
+- **Empty bodies.** `EmptyBody()`, `Redirect()` and `Refresh()` turn any Rizzy view into a 204, even when called after `View()` returned.
+- **Raw HTML is explicit.** APIs that insert HTML as-is now take `MarkupString`. Write `AddRawContent((MarkupString)html)`, which marks the spot for review. Use the new `AddSwappableText`/`AddChildText` for text, which is HTML-encoded. Swap target ids are CSS-escaped, so ids like `item:1` work.
+
 ## Breaking API changes in Rizzy 6
 
 | Before (5.x) | Rizzy 6 | Finding |
@@ -123,6 +134,14 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 | `ScrollBehavior`, `TriggerSpecificationCache` | Removed (unused in htmx 4) | RIZZY-028 |
 | `htmx-config` meta tag contained `documentNonce` | No longer emitted; contains `rizzyVersion` | RIZZY-027, RIZZY-028 |
 | `rizzy-confirm` always waited for a custom dialog | Native `confirm()` unless a dialog takes over | RIZZY-005 |
+| `AddHtmx()` registered MVC's internal antiforgery filters through reflection | Not registered; use `AddControllersWithViews()` for `[ValidateAntiForgeryToken]` | RIZZY-020 |
+| `AddRizzy()` needed `AddHtmx()` and `AddRazorComponents()` | Registers both (idempotently); registrations use `TryAdd*` | RIZZY-026 |
+| `RizzyConfig` setters threw `System.Exception` | `ArgumentException` (with the parameter name) | RIZZY-026 |
+| `IRizzyService`/controller `View`/`PartialView` returned `RazorComponentResult` or `NoContent` | Return `RizzyViewResult` (still `IResult`); the 204 check runs at execution | RIZZY-030 |
+| `IHtmxSwapService.AddSwappableContent(string, string)`, `AddRawContent(string)` | Take `MarkupString`; new `AddSwappableText(...)` encodes | RIZZY-029 |
+| `RizzyComponentParameterBuilder.AddChildContent(string markup)` | `AddChildContent(MarkupString)`; new `AddChildText(string)` encodes | RIZZY-029 |
+| `HtmxResponse.StatusCode(...)` required an htmx request; `Reswap(string)`/`Reswap(SwapStyleBuilder)` did not | `StatusCode` works for any request; every `HX-*` setter requires an htmx request; `Reswap(SwapStyle.Default)` no longer throws | RIZZY-030 |
+| `ServiceCollectionExtensions.ConfigureHtmxSettings`, `HtmxAntiforgeryOptions.CookieName`, `antiforgery.cookieName` in the meta tag | Removed (unused) | RIZZY-030 |
 
 ## New APIs
 
@@ -133,3 +152,7 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 - `HtmxStatus.Attribute(...)`, `UseHtmxErrorHandling(...)`, `CookieAuthenticationEvents.UseHtmxRedirects()`.
 - `HtmxConfig.AllowEmptySwapAfterOOB`, `MetaCharacter`.
 - Client: `window.Rizzy.confirm(props)`, `htmx.config.rizzyConfirmDialog`.
+- `HtmxResponse.LocalRedirect(...)`, `LocalLocation(...)`, `HtmxResponse.IsLocalUrl(...)` (open-redirect safe).
+- `CssSelector.Escape(...)`, `CssSelector.Id(...)`.
+- `IHtmxSwapService.AddSwappableText(...)`, `RizzyComponentParameterBuilder.AddChildText(...)`.
+- **`[RizzyParameterize]` for your own components.** The source generator now ships in the Rizzy package. Mark a `partial` component with `[Rizzy.RizzyParameterize]` to get a typed `Params(...)` helper. It reports `RZ0001` for non-partial classes and `RZ0002` for nested ones. It requires the .NET 10 SDK compiler.

@@ -51,9 +51,9 @@ public class ControllerAndServiceTests(RizzyTestHost host) : IClassFixture<Rizzy
         await using var _ = provider;
 
         service.AddSwappableComponent<TestPage>("a", new { Message = "component" });
-        service.AddSwappableContent("b", "<i>markup</i>", SwapStyle.innerHTML);
+        service.AddSwappableContent("b", (MarkupString)"<i>markup</i>", SwapStyle.innerHTML);
         service.AddSwappableFragment("c", b => b.AddContent(0, "fragment"), SwapStyle.beforeend, selector: ".list");
-        service.AddRawContent("<em id=\"raw\">raw</em>");
+        service.AddRawContent((MarkupString)"<em id=\"raw\">raw</em>");
 
         service.ContentAvailable.Should().BeTrue();
         var html = await service.RenderToString();
@@ -74,8 +74,8 @@ public class ControllerAndServiceTests(RizzyTestHost host) : IClassFixture<Rizzy
         var (service, provider) = CreateSwapService(htmx: false);
         await using var _ = provider;
 
-        service.AddSwappableContent("b", "<i>markup</i>");
-        service.AddRawContent("<em>raw</em>");
+        service.AddSwappableContent("b", (MarkupString)"<i>markup</i>");
+        service.AddRawContent((MarkupString)"<em>raw</em>");
 
         var html = await service.RenderToString();
         html.Should().Contain("<em>raw</em>").And.NotContain("hx-partial");

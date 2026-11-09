@@ -1,4 +1,4 @@
-﻿@using RizzyDemo.Controllers.Home.Models
+@using RizzyDemo.Controllers.Home.Models
 @using Rizzy
 @attribute [StreamRendering]
 
@@ -105,7 +105,7 @@ Content Guid: @guid
     protected override async Task OnInitializedAsync()
     {
         Posts = await Repo.GetPosts();
-        HtmxSwapService.AddRawContent("<h1>Testing</h1>");
+        HtmxSwapService.AddRawContent((MarkupString)"<h1>Testing</h1>");
     }
 
     protected override void OnParametersSet()

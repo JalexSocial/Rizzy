@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -157,14 +157,14 @@ public class RzController : ControllerBase, IActionFilter, IAsyncActionFilter, I
     }
 
     /// <summary>
-    /// Called before the action method is invoked. Initializes Blazor form data if the request has form content.
+    /// Called before the action method is invoked. Override to run code before each action. Posted form data
+    /// is supplied to Blazor form mapping when a Rizzy view executes, not here.
     /// </summary>
     /// <param name="context">The action executing context.</param>
     [NonAction]
     public virtual void OnActionExecuting(ActionExecutingContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
-        context.HttpContext.InitializeBlazorFormData();
     }
 
     /// <summary>

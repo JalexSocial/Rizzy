@@ -1,0 +1,325 @@
+Rizzy.Htmx.AjaxContext.Event : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.Headers : System.Collections.Generic.IDictionary<System.String, System.String> { get; set; }
+Rizzy.Htmx.AjaxContext.Push : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.Replace : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.Select : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.SelectOob : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.Source : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.Swap : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.Target : System.String { get; set; }
+Rizzy.Htmx.AjaxContext.Transition : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.AjaxContext.Values : System.Collections.Generic.IDictionary<System.String, System.String> { get; set; }
+Rizzy.Htmx.AjaxContext.ctor()
+Rizzy.Htmx.AntiforgeryStrategy.GenerateTokensPerPage = 2
+Rizzy.Htmx.AntiforgeryStrategy.None = 1
+Rizzy.Htmx.CssSelector.static Escape(System.String value) -> System.String
+Rizzy.Htmx.CssSelector.static Id(System.String id) -> System.String
+Rizzy.Htmx.HtmxAntiforgeryOptions.FormFieldName : System.String { get; set; }
+Rizzy.Htmx.HtmxAntiforgeryOptions.HeaderName : System.String { get; set; }
+Rizzy.Htmx.HtmxAntiforgeryOptions.ctor()
+Rizzy.Htmx.HtmxAttributeName.static Resolve(System.String canonicalName, System.String prefix) -> System.String
+Rizzy.Htmx.HtmxConfig.<Clone>$() -> Rizzy.Htmx.HtmxConfig
+Rizzy.Htmx.HtmxConfig.AllowEmptySwapAfterOOB : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.DefaultFocusScroll : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.DefaultSettleDelay : System.Nullable<System.TimeSpan> { get; set; }
+Rizzy.Htmx.HtmxConfig.DefaultSwap : System.Nullable<Rizzy.Htmx.SwapStyle> { get; set; }
+Rizzy.Htmx.HtmxConfig.DefaultTimeout : System.Nullable<System.TimeSpan> { get; set; }
+Rizzy.Htmx.HtmxConfig.Equals(Rizzy.Htmx.HtmxConfig other) -> System.Boolean
+Rizzy.Htmx.HtmxConfig.Equals(System.Object obj) -> System.Boolean
+Rizzy.Htmx.HtmxConfig.Extensions : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.GenerateScriptNonce : System.Boolean { get; set; }
+Rizzy.Htmx.HtmxConfig.GetHashCode() -> System.Int32
+Rizzy.Htmx.HtmxConfig.History : System.Nullable<Rizzy.Htmx.HtmxHistoryMode> { get; set; }
+Rizzy.Htmx.HtmxConfig.ImplicitInheritance : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.IncludeIndicatorCSS : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.IndicatorClass : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.InlineScriptNonce : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.LogAll : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.MetaCharacter : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.Mode : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.MorphIgnore : System.String[] { get; set; }
+Rizzy.Htmx.HtmxConfig.MorphScanLimit : System.Nullable<System.Int32> { get; set; }
+Rizzy.Htmx.HtmxConfig.MorphSkip : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.MorphSkipChildren : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.NoSwap : System.Object[] { get; set; }
+Rizzy.Htmx.HtmxConfig.Prefix : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.RequestClass : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.ToString() -> System.String
+Rizzy.Htmx.HtmxConfig.Transitions : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.ctor()
+Rizzy.Htmx.HtmxConfig.static op_Equality(Rizzy.Htmx.HtmxConfig left, Rizzy.Htmx.HtmxConfig right) -> System.Boolean
+Rizzy.Htmx.HtmxConfig.static op_Inequality(Rizzy.Htmx.HtmxConfig left, Rizzy.Htmx.HtmxConfig right) -> System.Boolean
+Rizzy.Htmx.HtmxConfigExtension.static Serialize(Rizzy.Htmx.HtmxConfig config) -> System.String
+Rizzy.Htmx.HtmxContext.Request : Rizzy.Htmx.HtmxRequest { get; }
+Rizzy.Htmx.HtmxContext.Response : Rizzy.Htmx.HtmxResponse { get; }
+Rizzy.Htmx.HtmxContext.ctor(Microsoft.AspNetCore.Http.HttpContext context)
+Rizzy.Htmx.HtmxErrorHandlingExtensions.static UseHtmxErrorHandling(Microsoft.AspNetCore.Builder.IApplicationBuilder app, System.Action<Rizzy.Htmx.HtmxErrorHandlingOptions> configure = null) -> Microsoft.AspNetCore.Builder.IApplicationBuilder
+Rizzy.Htmx.HtmxErrorHandlingExtensions.static UseHtmxRedirects(Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents events) -> Microsoft.AspNetCore.Authentication.Cookies.CookieAuthenticationEvents
+Rizzy.Htmx.HtmxErrorHandlingOptions.ErrorEvent : System.String { get; set; }
+Rizzy.Htmx.HtmxErrorHandlingOptions.ErrorTarget : System.String { get; set; }
+Rizzy.Htmx.HtmxErrorHandlingOptions.ctor()
+Rizzy.Htmx.HtmxHistoryMode.Disabled = 1
+Rizzy.Htmx.HtmxHistoryMode.Enabled = 0
+Rizzy.Htmx.HtmxHistoryMode.Reload = 2
+Rizzy.Htmx.HtmxRequest.CurrentURL : System.Uri { get; }
+Rizzy.Htmx.HtmxRequest.IsBoosted : System.Boolean { get; }
+Rizzy.Htmx.HtmxRequest.IsFullPage : System.Boolean { get; }
+Rizzy.Htmx.HtmxRequest.IsHistoryRestore : System.Boolean { get; }
+Rizzy.Htmx.HtmxRequest.IsHtmx : System.Boolean { get; }
+Rizzy.Htmx.HtmxRequest.IsPartial : System.Boolean { get; }
+Rizzy.Htmx.HtmxRequest.Method : System.String { get; }
+Rizzy.Htmx.HtmxRequest.Path : Microsoft.AspNetCore.Http.PathString { get; }
+Rizzy.Htmx.HtmxRequest.RequestType : System.String { get; }
+Rizzy.Htmx.HtmxRequest.Source : System.String { get; }
+Rizzy.Htmx.HtmxRequest.SourceId : System.String { get; }
+Rizzy.Htmx.HtmxRequest.Target : System.String { get; }
+Rizzy.Htmx.HtmxRequest.TargetId : System.String { get; }
+Rizzy.Htmx.HtmxRequest.Type : Rizzy.Htmx.HtmxRequestType { get; }
+Rizzy.Htmx.HtmxRequest.ctor(Microsoft.AspNetCore.Http.HttpContext context)
+Rizzy.Htmx.HtmxRequestAttribute.Target : System.String { get; set; }
+Rizzy.Htmx.HtmxRequestAttribute.ctor()
+Rizzy.Htmx.HtmxRequestHeaderNames.const Boosted : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const CurrentURL : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const HistoryRestoreRequest : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const HtmxRequest : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const RequestType : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const Source : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const Target : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.static All : System.String[]
+Rizzy.Htmx.HtmxRequestType.Full = 2
+Rizzy.Htmx.HtmxRequestType.None = 0
+Rizzy.Htmx.HtmxRequestType.Partial = 1
+Rizzy.Htmx.HtmxRequestType.Unknown = 3
+Rizzy.Htmx.HtmxResponse.EmptyBody() -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.EmptyResponseBodyRequested : System.Boolean { get; }
+Rizzy.Htmx.HtmxResponse.LocalLocation(System.String localUrl) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.LocalRedirect(System.String localUrl) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Location(Rizzy.Htmx.LocationTarget locationTarget) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Location(System.String path) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.PreventBrowserCurrentUrlUpdate() -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.PreventBrowserHistoryUpdate() -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.PushUrl(System.String url) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.PushUrl(System.Uri url) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Redirect(System.String url) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Redirect(System.Uri url) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Refresh() -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.ReplaceUrl(System.String url) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.ReplaceUrl(System.Uri url) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Reselect(System.String selector) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Reswap(Rizzy.Htmx.SwapStyle swapStyle, System.String modifier = null) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Reswap(Rizzy.Htmx.SwapStyleBuilder swapStyle) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Reswap(System.String modifier) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Retarget(System.String selector) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.StatusCode(System.Net.HttpStatusCode statusCode) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Trigger(System.String eventName) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.Trigger<TEventDetail>(System.String eventName, TEventDetail detail, System.Text.Json.JsonSerializerOptions jsonSerializerOptions = null) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.TriggerOn(System.String eventName, System.String targetSelector) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.TriggerOn<TEventDetail>(System.String eventName, System.String targetSelector, TEventDetail detail, System.Text.Json.JsonSerializerOptions jsonSerializerOptions = null) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.ValidationFailed(System.String retargetSelector = null, Rizzy.Htmx.SwapStyle reswap = Default) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.ctor(Microsoft.AspNetCore.Http.HttpContext context)
+Rizzy.Htmx.HtmxResponse.static IsLocalUrl(System.String url) -> System.Boolean
+Rizzy.Htmx.HtmxResponseAttribute.Location : System.String { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.OnResultExecuted(Microsoft.AspNetCore.Mvc.Filters.ResultExecutedContext context) -> System.Void
+Rizzy.Htmx.HtmxResponseAttribute.OnResultExecuting(Microsoft.AspNetCore.Mvc.Filters.ResultExecutingContext context) -> System.Void
+Rizzy.Htmx.HtmxResponseAttribute.PreventBrowserCurrentUrlUpdate : System.Boolean { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.PreventBrowserHistoryUpdate : System.Boolean { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.PushUrl : System.String { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.Redirect : System.String { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.Refresh : System.Boolean { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.ReplaceUrl : System.String { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.Reselect : System.String { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.Reswap : Rizzy.Htmx.SwapStyle { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.Retarget : System.String { get; set; }
+Rizzy.Htmx.HtmxResponseAttribute.ctor()
+Rizzy.Htmx.HtmxResponseHeaderNames.const Location : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const PushUrl : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const Redirect : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const Refresh : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const ReplaceUrl : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const Reselect : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const Reswap : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const Retarget : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const Trigger : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.static All : System.String[]
+Rizzy.Htmx.HtmxStatus.const ValidationFailed : System.Int32
+Rizzy.Htmx.HtmxStatus.static Attribute(System.Int32 statusCode) -> System.String
+Rizzy.Htmx.HtmxStatus.static Attribute(System.String pattern) -> System.String
+Rizzy.Htmx.HtmxTriggerSpecification.<Clone>$() -> Rizzy.Htmx.HtmxTriggerSpecification
+Rizzy.Htmx.HtmxTriggerSpecification.Capture : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Changed : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Consume : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Delay : System.Nullable<System.Int32> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Equals(Rizzy.Htmx.HtmxTriggerSpecification other) -> System.Boolean
+Rizzy.Htmx.HtmxTriggerSpecification.Equals(System.Object obj) -> System.Boolean
+Rizzy.Htmx.HtmxTriggerSpecification.EventFilter : System.String { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.From : System.String { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.GetHashCode() -> System.Int32
+Rizzy.Htmx.HtmxTriggerSpecification.Halt : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Once : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Passive : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.PollInterval : System.Nullable<System.Int32> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Prevent : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Root : System.String { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.RootMargin : System.String { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Stop : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Target : System.String { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Threshold : System.String { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.Throttle : System.Nullable<System.Int32> { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.ToString() -> System.String
+Rizzy.Htmx.HtmxTriggerSpecification.Trigger : System.String { get; set; }
+Rizzy.Htmx.HtmxTriggerSpecification.ctor()
+Rizzy.Htmx.HtmxTriggerSpecification.static op_Equality(Rizzy.Htmx.HtmxTriggerSpecification left, Rizzy.Htmx.HtmxTriggerSpecification right) -> System.Boolean
+Rizzy.Htmx.HtmxTriggerSpecification.static op_Inequality(Rizzy.Htmx.HtmxTriggerSpecification left, Rizzy.Htmx.HtmxTriggerSpecification right) -> System.Boolean
+Rizzy.Htmx.HttpContextExtensions.static GetOrAddFieldMapping(Microsoft.AspNetCore.Http.HttpContext context, Microsoft.AspNetCore.Components.Forms.EditContext editContext) -> System.Collections.Generic.Dictionary<Microsoft.AspNetCore.Components.Forms.FieldIdentifier, Rizzy.Htmx.RzFormFieldMap>
+Rizzy.Htmx.HttpContextExtensions.static Htmx(Microsoft.AspNetCore.Http.HttpRequest request) -> Rizzy.Htmx.HtmxRequest
+Rizzy.Htmx.HttpContextExtensions.static Htmx(Microsoft.AspNetCore.Http.HttpResponse response) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HttpContextExtensions.static Htmx(Microsoft.AspNetCore.Http.HttpResponse response, System.Action<Rizzy.Htmx.HtmxResponse> action) -> System.Void
+Rizzy.Htmx.HttpContextExtensions.static IsHtmx(Microsoft.AspNetCore.Http.HttpRequest request) -> System.Boolean
+Rizzy.Htmx.HttpContextExtensions.static RemoveFieldMapping(Microsoft.AspNetCore.Http.HttpContext context, Microsoft.AspNetCore.Components.Forms.EditContext editContext) -> System.Void
+Rizzy.Htmx.IRizzyNonceProvider.GetNonce() -> System.String
+Rizzy.Htmx.LocationTarget.Path : System.String { get; set; }
+Rizzy.Htmx.LocationTarget.ctor()
+Rizzy.Htmx.RzFormFieldMap.FieldName : System.String { get; set; }
+Rizzy.Htmx.RzFormFieldMap.Id : System.String { get; set; }
+Rizzy.Htmx.RzFormFieldMap.ctor()
+Rizzy.Htmx.ScrollDirection.bottom = 1
+Rizzy.Htmx.ScrollDirection.top = 0
+Rizzy.Htmx.Serialization.HtmxHistoryModeJsonConverter.Read(ref System.Text.Json.Utf8JsonReader reader, System.Type typeToConvert, System.Text.Json.JsonSerializerOptions options) -> Rizzy.Htmx.HtmxHistoryMode
+Rizzy.Htmx.Serialization.HtmxHistoryModeJsonConverter.Write(System.Text.Json.Utf8JsonWriter writer, Rizzy.Htmx.HtmxHistoryMode value, System.Text.Json.JsonSerializerOptions options) -> System.Void
+Rizzy.Htmx.Serialization.HtmxHistoryModeJsonConverter.ctor()
+Rizzy.Htmx.ServiceCollectionExtensions.static AddHtmx(Microsoft.Extensions.DependencyInjection.IServiceCollection services, System.Action<Rizzy.Htmx.HtmxConfig> configure = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+Rizzy.Htmx.SwapStyle.Default = 0
+Rizzy.Htmx.SwapStyle.after = 13
+Rizzy.Htmx.SwapStyle.afterbegin = 4
+Rizzy.Htmx.SwapStyle.afterend = 6
+Rizzy.Htmx.SwapStyle.append = 15
+Rizzy.Htmx.SwapStyle.before = 12
+Rizzy.Htmx.SwapStyle.beforebegin = 3
+Rizzy.Htmx.SwapStyle.beforeend = 5
+Rizzy.Htmx.SwapStyle.delete = 7
+Rizzy.Htmx.SwapStyle.innerHTML = 1
+Rizzy.Htmx.SwapStyle.innerMorph = 9
+Rizzy.Htmx.SwapStyle.none = 8
+Rizzy.Htmx.SwapStyle.outerHTML = 2
+Rizzy.Htmx.SwapStyle.outerMorph = 10
+Rizzy.Htmx.SwapStyle.outerSync = 16
+Rizzy.Htmx.SwapStyle.prepend = 14
+Rizzy.Htmx.SwapStyle.textContent = 11
+Rizzy.Htmx.SwapStyleBuilder.AfterSettleDelay(System.TimeSpan time) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.AfterSwapDelay(System.TimeSpan time) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.IgnoreTitle(System.Boolean ignore = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.IgnoreTransition() -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.IncludeTitle() -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.IncludeTransition() -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.PreserveFocus() -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.Scroll(Rizzy.Htmx.ScrollDirection direction, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ScrollBottom(System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ScrollFocus(System.Boolean scroll = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ScrollTop(System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ShowNone() -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ShowOn(Rizzy.Htmx.ScrollDirection direction, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ShowOnBottom(System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ShowOnTop(System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ShowWindow(Rizzy.Htmx.ScrollDirection direction) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ShowWindowBottom() -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ShowWindowTop() -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.Strip(System.Boolean strip = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.SwapEmpty(System.Boolean swapEmpty = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.Target(System.String cssSelector) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ToString() -> System.String
+Rizzy.Htmx.SwapStyleBuilder.Transition(System.Boolean show) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilder.ctor(Rizzy.Htmx.SwapStyle style = Default)
+Rizzy.Htmx.SwapStyleBuilder.static op_Implicit(Rizzy.Htmx.SwapStyleBuilder builder) -> System.String
+Rizzy.Htmx.SwapStyleBuilderExtension.static AfterSettleDelay(Rizzy.Htmx.SwapStyle style, System.TimeSpan time) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static AfterSwapDelay(Rizzy.Htmx.SwapStyle style, System.TimeSpan time) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static IgnoreTitle(Rizzy.Htmx.SwapStyle style, System.Boolean ignore = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static IgnoreTransition(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static IncludeTitle(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static IncludeTransition(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static PreserveFocus(Rizzy.Htmx.SwapStyle style, System.Boolean scroll = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static Scroll(Rizzy.Htmx.SwapStyle style, Rizzy.Htmx.ScrollDirection direction, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ScrollBottom(Rizzy.Htmx.SwapStyle style, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ScrollFocus(Rizzy.Htmx.SwapStyle style, System.Boolean scroll = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ScrollTop(Rizzy.Htmx.SwapStyle style, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ShowNone(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ShowOn(Rizzy.Htmx.SwapStyle style, Rizzy.Htmx.ScrollDirection direction, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ShowOnBottom(Rizzy.Htmx.SwapStyle style, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ShowOnTop(Rizzy.Htmx.SwapStyle style, System.String cssSelector = null) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ShowWindow(Rizzy.Htmx.SwapStyle style, Rizzy.Htmx.ScrollDirection direction) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ShowWindowBottom(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static ShowWindowTop(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static Strip(Rizzy.Htmx.SwapStyle style, System.Boolean strip = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static SwapEmpty(Rizzy.Htmx.SwapStyle style, System.Boolean swapEmpty = True) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static Target(Rizzy.Htmx.SwapStyle style, System.String cssSelector) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleBuilderExtension.static Transition(Rizzy.Htmx.SwapStyle style, System.Boolean show) -> Rizzy.Htmx.SwapStyleBuilder
+Rizzy.Htmx.SwapStyleExtensions.static ToHtmxString(Rizzy.Htmx.SwapStyle swapStyle) -> System.String
+Rizzy.Htmx.Trigger.static Custom(System.String triggerDefinition) -> Rizzy.Htmx.TriggerBuilder
+Rizzy.Htmx.Trigger.static Every(System.TimeSpan interval) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.Trigger.static Intersect(System.String root = null, System.Nullable<System.Single> threshold = null) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.Trigger.static Load() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.Trigger.static OnEvent(System.String eventName) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.Trigger.static Revealed() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerBuilder.Build() -> System.Collections.Generic.KeyValuePair<System.String, System.Collections.Generic.IReadOnlyList<Rizzy.Htmx.HtmxTriggerSpecification>>
+Rizzy.Htmx.TriggerBuilder.Custom(System.String triggerDefinition) -> Rizzy.Htmx.TriggerBuilder
+Rizzy.Htmx.TriggerBuilder.Every(System.TimeSpan interval) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerBuilder.Intersect(System.String root = null, System.Nullable<System.Single> threshold = null) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerBuilder.Load() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerBuilder.OnEvent(System.String eventName) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerBuilder.Revealed() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerBuilder.ToString() -> System.String
+Rizzy.Htmx.TriggerBuilder.ctor()
+Rizzy.Htmx.TriggerBuilder.static op_Implicit(Rizzy.Htmx.TriggerBuilder builders) -> System.Collections.Generic.KeyValuePair<System.String, System.Collections.Generic.IReadOnlyList<Rizzy.Htmx.HtmxTriggerSpecification>>
+Rizzy.Htmx.TriggerModifierBuilder.Build() -> System.Collections.Generic.KeyValuePair<System.String, System.Collections.Generic.IReadOnlyList<Rizzy.Htmx.HtmxTriggerSpecification>>
+Rizzy.Htmx.TriggerModifierBuilder.Capture() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Changed() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Consume() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Delay(System.TimeSpan timing) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.From(System.String extendedCssSelector) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.FromOutside() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.FromSelf() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Halt() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Once() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Or() -> Rizzy.Htmx.TriggerBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Passive() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Prevent() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.RootMargin(System.String margin) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Stop() -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Target(System.String cssSelector) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.Throttle(System.TimeSpan timing) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.ToString() -> System.String
+Rizzy.Htmx.TriggerModifierBuilder.WithCondition(System.String condition) -> Rizzy.Htmx.TriggerModifierBuilder
+Rizzy.Htmx.TriggerModifierBuilder.static op_Implicit(Rizzy.Htmx.TriggerModifierBuilder builders) -> System.Collections.Generic.KeyValuePair<System.String, System.Collections.Generic.IReadOnlyList<Rizzy.Htmx.HtmxTriggerSpecification>>
+class Rizzy.Htmx.AjaxContext
+class Rizzy.Htmx.HtmxConfig : System.IEquatable<Rizzy.Htmx.HtmxConfig>
+class Rizzy.Htmx.HtmxContext
+class Rizzy.Htmx.HtmxRequest
+class Rizzy.Htmx.RzFormFieldMap
+enum Rizzy.Htmx.AntiforgeryStrategy : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+enum Rizzy.Htmx.HtmxHistoryMode : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+enum Rizzy.Htmx.HtmxRequestType : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+enum Rizzy.Htmx.ScrollDirection : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+enum Rizzy.Htmx.SwapStyle : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+interface Rizzy.Htmx.IRizzyNonceProvider
+sealed class Rizzy.Htmx.HtmxAntiforgeryOptions
+sealed class Rizzy.Htmx.HtmxErrorHandlingOptions
+sealed class Rizzy.Htmx.HtmxRequestAttribute : System.Attribute, Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint, Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraintMetadata
+sealed class Rizzy.Htmx.HtmxResponse
+sealed class Rizzy.Htmx.HtmxResponseAttribute : System.Attribute, Microsoft.AspNetCore.Mvc.Filters.IFilterMetadata, Microsoft.AspNetCore.Mvc.Filters.IResultFilter
+sealed class Rizzy.Htmx.HtmxTriggerSpecification : System.IEquatable<Rizzy.Htmx.HtmxTriggerSpecification>
+sealed class Rizzy.Htmx.LocationTarget : Rizzy.Htmx.AjaxContext
+sealed class Rizzy.Htmx.Serialization.HtmxHistoryModeJsonConverter : System.Text.Json.Serialization.JsonConverter<Rizzy.Htmx.HtmxHistoryMode>
+sealed class Rizzy.Htmx.SwapStyleBuilder
+sealed class Rizzy.Htmx.TriggerBuilder
+sealed class Rizzy.Htmx.TriggerModifierBuilder
+static class Rizzy.Htmx.CssSelector
+static class Rizzy.Htmx.HtmxAttributeName
+static class Rizzy.Htmx.HtmxConfigExtension
+static class Rizzy.Htmx.HtmxErrorHandlingExtensions
+static class Rizzy.Htmx.HtmxRequestHeaderNames
+static class Rizzy.Htmx.HtmxResponseHeaderNames
+static class Rizzy.Htmx.HtmxStatus
+static class Rizzy.Htmx.HttpContextExtensions
+static class Rizzy.Htmx.ServiceCollectionExtensions
+static class Rizzy.Htmx.SwapStyleBuilderExtension
+static class Rizzy.Htmx.SwapStyleExtensions
+static class Rizzy.Htmx.Trigger

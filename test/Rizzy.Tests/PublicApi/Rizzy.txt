@@ -1,0 +1,221 @@
+Rizzy.AppBuilderExtensions.static UseRizzy(Microsoft.AspNetCore.Builder.IApplicationBuilder builder) -> Microsoft.AspNetCore.Builder.IApplicationBuilder
+Rizzy.Components.Form.Helpers.ExpressionFormatter.static ClearCache() -> System.Void
+Rizzy.Components.Form.Helpers.ExpressionFormatter.static FormatLambda(System.Linq.Expressions.LambdaExpression expression) -> System.String
+Rizzy.Components.Form.Helpers.ExpressionFormatter.static FormatLambda(System.Linq.Expressions.LambdaExpression expression, System.String prefix = null) -> System.String
+Rizzy.Configuration.RizzyConfig.AntiforgeryStrategy : Rizzy.Htmx.AntiforgeryStrategy { get; set; }
+Rizzy.Configuration.RizzyConfig.DefaultLayout : System.Type { get; set; }
+Rizzy.Configuration.RizzyConfig.RootComponent : System.Type { get; set; }
+Rizzy.Configuration.RizzyConfig.ctor()
+Rizzy.DataAnnotationsProcessor.AddAttributeHandler<TAttribute>(System.Action<TAttribute, System.Collections.Generic.IDictionary<System.String, System.Object>, System.String> handler) -> System.Void
+Rizzy.DataAnnotationsProcessor.MergeAttributes<TValue>(System.String controlName, System.Linq.Expressions.Expression<System.Func<TValue>> valueExpression, System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes, System.String id = null) -> System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object>
+Rizzy.DataAnnotationsProcessor.ctor(System.IServiceProvider provider)
+Rizzy.FragmentComponent.Fragment : Microsoft.AspNetCore.Components.RenderFragment { get; set; }
+Rizzy.FragmentComponent.Fragments : System.Collections.Generic.IEnumerable<Microsoft.AspNetCore.Components.RenderFragment> { get; set; }
+Rizzy.FragmentComponent.ctor()
+Rizzy.Framework.Mvc.RzController.CurrentActionUrl : System.String { get; }
+Rizzy.Framework.Mvc.RzController.Dispose() -> System.Void
+Rizzy.Framework.Mvc.RzController.Json(System.Object data) -> Microsoft.AspNetCore.Mvc.JsonResult
+Rizzy.Framework.Mvc.RzController.Json(System.Object data, System.Object serializerSettings) -> Microsoft.AspNetCore.Mvc.JsonResult
+Rizzy.Framework.Mvc.RzController.OnActionExecuted(Microsoft.AspNetCore.Mvc.Filters.ActionExecutedContext context) -> System.Void
+Rizzy.Framework.Mvc.RzController.OnActionExecuting(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext context) -> System.Void
+Rizzy.Framework.Mvc.RzController.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext context, Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate next) -> System.Threading.Tasks.Task
+Rizzy.Framework.Mvc.RzController.PartialView(Microsoft.AspNetCore.Components.RenderFragment fragment) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.PartialView(params Microsoft.AspNetCore.Components.RenderFragment[] fragments) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.PartialView<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.PartialView<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.PartialView<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.View<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.View<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.View<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzController.ctor()
+Rizzy.Framework.Mvc.RzControllerWithViews.CurrentActionUrl : System.String { get; }
+Rizzy.Framework.Mvc.RzControllerWithViews.PartialView(Microsoft.AspNetCore.Components.RenderFragment fragment) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.PartialView(params Microsoft.AspNetCore.Components.RenderFragment[] fragments) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.PartialView<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.PartialView<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.PartialView<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.View<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.View<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.View<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.Framework.Mvc.RzControllerWithViews.ctor()
+Rizzy.HtmxApp<T>.ChildContent : Microsoft.AspNetCore.Components.RenderFragment { get; set; }
+Rizzy.HtmxApp<T>.Context : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.HtmxApp<T>.ctor()
+Rizzy.HtmxConfigHeadOutlet.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.HtmxConfigHeadOutlet.ctor()
+Rizzy.HtmxLayout<T>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.HtmxLayout<T>.IsRootComponent : System.Boolean { get; set; }
+Rizzy.HtmxLayout<T>.ctor()
+Rizzy.HtmxSwapContent.Dispose() -> System.Void
+Rizzy.HtmxSwapContent.HtmxSwapService : Rizzy.IHtmxSwapService { get; set; }
+Rizzy.HtmxSwapContent.ctor()
+Rizzy.HtmxSwapService.AddRawContent(Microsoft.AspNetCore.Components.MarkupString markup) -> System.Void
+Rizzy.HtmxSwapService.AddSwappableComponent<TComponent>(System.String targetId, System.Collections.Generic.Dictionary<System.String, System.Object> parameters = null, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.HtmxSwapService.AddSwappableComponent<TComponent>(System.String targetId, System.Object parameters = null, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.HtmxSwapService.AddSwappableContent(System.String targetId, Microsoft.AspNetCore.Components.MarkupString markup, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.HtmxSwapService.AddSwappableFragment(System.String targetId, Microsoft.AspNetCore.Components.RenderFragment renderFragment, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.HtmxSwapService.AddSwappableText(System.String targetId, System.String text, Rizzy.Htmx.SwapStyle swapStyle = innerHTML, System.String selector = null) -> System.Void
+Rizzy.HtmxSwapService.Clear() -> System.Void
+Rizzy.HtmxSwapService.ContentAvailable : System.Boolean { get; }
+Rizzy.HtmxSwapService.RenderToFragment() -> Microsoft.AspNetCore.Components.RenderFragment
+Rizzy.HtmxSwapService.RenderToString() -> System.Threading.Tasks.Task<System.String>
+Rizzy.HtmxSwapService.ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor contextAccessor, System.IServiceProvider serviceProvider)
+Rizzy.HtmxSwapService.event ContentItemsUpdated : System.EventHandler
+Rizzy.HtmxSwappable.ChildContent : Microsoft.AspNetCore.Components.RenderFragment { get; set; }
+Rizzy.HtmxSwappable.Selector : System.String { get; set; }
+Rizzy.HtmxSwappable.SwapStyle : Rizzy.Htmx.SwapStyle { get; set; }
+Rizzy.HtmxSwappable.TargetId : System.String { get; set; }
+Rizzy.HtmxSwappable.ctor()
+Rizzy.HtmxSwappable.static Params(System.String targetId, Microsoft.AspNetCore.Components.RenderFragment childContent, System.Nullable<Rizzy.Htmx.SwapStyle> swapStyle = null, System.String selector = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.HttpContextExtensions.static GetNonce(Microsoft.AspNetCore.Http.HttpContext context) -> System.String
+Rizzy.IHtmxSwapService.AddRawContent(Microsoft.AspNetCore.Components.MarkupString markup) -> System.Void
+Rizzy.IHtmxSwapService.AddSwappableComponent<TComponent>(System.String targetId, System.Collections.Generic.Dictionary<System.String, System.Object> parameters = null, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.IHtmxSwapService.AddSwappableComponent<TComponent>(System.String targetId, System.Object parameters = null, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.IHtmxSwapService.AddSwappableContent(System.String targetId, Microsoft.AspNetCore.Components.MarkupString markup, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.IHtmxSwapService.AddSwappableFragment(System.String targetId, Microsoft.AspNetCore.Components.RenderFragment renderFragment, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
+Rizzy.IHtmxSwapService.AddSwappableText(System.String targetId, System.String text, Rizzy.Htmx.SwapStyle swapStyle = innerHTML, System.String selector = null) -> System.Void
+Rizzy.IHtmxSwapService.Clear() -> System.Void
+Rizzy.IHtmxSwapService.ContentAvailable : System.Boolean { get; }
+Rizzy.IHtmxSwapService.RenderToFragment() -> Microsoft.AspNetCore.Components.RenderFragment
+Rizzy.IHtmxSwapService.RenderToString() -> System.Threading.Tasks.Task<System.String>
+Rizzy.IHtmxSwapService.event ContentItemsUpdated : System.EventHandler
+Rizzy.IRizzyService.CurrentActionUrl : System.String { get; }
+Rizzy.IRizzyService.PartialView(Microsoft.AspNetCore.Components.RenderFragment fragment) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.IRizzyService.PartialView(params Microsoft.AspNetCore.Components.RenderFragment[] fragments) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.IRizzyService.PartialView<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.IRizzyService.PartialView<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.IRizzyService.PartialView<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.IRizzyService.View<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.IRizzyService.View<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.IRizzyService.View<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.ObjectExtensions.static SerializeAsAlpineData(System.Object value, System.Boolean ignoreNullValues = False) -> System.String
+Rizzy.ObjectExtensions.static ToDictionary(System.Object values) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.Add(System.Linq.Expressions.Expression<System.Func<TComponent, Microsoft.AspNetCore.Components.EventCallback>> selector, System.Action callback) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.Add(System.Linq.Expressions.Expression<System.Func<TComponent, Microsoft.AspNetCore.Components.EventCallback>> selector, System.Func<System.Threading.Tasks.Task> callback) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.Add<TArg>(System.Linq.Expressions.Expression<System.Func<TComponent, Microsoft.AspNetCore.Components.EventCallback<TArg>>> selector, System.Action<TArg> callback) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.Add<TArg>(System.Linq.Expressions.Expression<System.Func<TComponent, Microsoft.AspNetCore.Components.EventCallback<TArg>>> selector, System.Func<TArg, System.Threading.Tasks.Task> callback) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.Add<TValue>(System.Linq.Expressions.Expression<System.Func<TComponent, TValue>> parameterSelector, TValue value) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.AddChildContent(Microsoft.AspNetCore.Components.MarkupString markup) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.AddChildContent(Microsoft.AspNetCore.Components.RenderFragment childContentFragment) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.AddChildText(System.String text) -> Rizzy.RizzyComponentParameterBuilder<TComponent>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.Build() -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RizzyComponentParameterBuilder<TComponent>.ctor()
+Rizzy.RizzyMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext context, Rizzy.Htmx.IRizzyNonceProvider nonceProvider) -> System.Threading.Tasks.Task
+Rizzy.RizzyMiddleware.ctor(Microsoft.AspNetCore.Http.RequestDelegate next)
+Rizzy.RizzyNonceProvider.GetNonce() -> System.String
+Rizzy.RizzyNonceProvider.ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor)
+Rizzy.RizzyService.CurrentActionUrl : System.String { get; }
+Rizzy.RizzyService.PartialView(Microsoft.AspNetCore.Components.RenderFragment fragment) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.PartialView(params Microsoft.AspNetCore.Components.RenderFragment[] fragments) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.PartialView<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.PartialView<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.PartialView<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.View<TComponent>(System.Action<Rizzy.RizzyComponentParameterBuilder<TComponent>> parameterBuilderAction, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.View<TComponent>(System.Collections.Generic.Dictionary<System.String, System.Object> data, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.View<TComponent>(System.Object data = null, Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary modelState = null) -> Microsoft.AspNetCore.Http.IResult
+Rizzy.RizzyService.ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor)
+Rizzy.RizzyViewResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext httpContext) -> System.Threading.Tasks.Task
+Rizzy.RizzyViewResult.Parameters : System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> { get; }
+Rizzy.RzInitialValidator.EditContext : Microsoft.AspNetCore.Components.Forms.EditContext { get; set; }
+Rizzy.RzInitialValidator.ctor()
+Rizzy.RzInputCheckboxBase.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputCheckboxBase.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputCheckboxBase.Id : System.String { get; set; }
+Rizzy.RzInputCheckboxBase.ctor()
+Rizzy.RzInputCheckboxBase.static Params(System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.Nullable<System.Boolean> value = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<System.Boolean>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<System.Boolean>> valueExpression = null, System.String displayName = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputDateBase<TValue>.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputDateBase<TValue>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputDateBase<TValue>.Id : System.String { get; set; }
+Rizzy.RzInputDateBase<TValue>.ctor()
+Rizzy.RzInputDateBase<TValue>.static Params(TValue value, System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<TValue>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<TValue>> valueExpression = null, System.String displayName = null, System.Nullable<Microsoft.AspNetCore.Components.Forms.InputDateType> type = null, System.String parsingErrorMessage = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputFileBase.EditContext : Microsoft.AspNetCore.Components.Forms.EditContext { get; set; }
+Rizzy.RzInputFileBase.Id : System.String { get; set; }
+Rizzy.RzInputFileBase.ctor()
+Rizzy.RzInputFileBase.static Params(System.Nullable<Microsoft.AspNetCore.Components.EventCallback<Microsoft.AspNetCore.Components.Forms.InputFileChangeEventArgs>> onChange = null, System.Collections.Generic.IDictionary<System.String, System.Object> additionalAttributes = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputHidden<TValue>.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputHidden<TValue>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputHidden<TValue>.Id : System.String { get; set; }
+Rizzy.RzInputHidden<TValue>.ctor()
+Rizzy.RzInputHidden<TValue>.static Params(System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.String value = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<System.String>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<System.String>> valueExpression = null, System.String displayName = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputNumberBase<TValue>.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputNumberBase<TValue>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputNumberBase<TValue>.Id : System.String { get; set; }
+Rizzy.RzInputNumberBase<TValue>.ctor()
+Rizzy.RzInputNumberBase<TValue>.static Params(TValue value, System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<TValue>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<TValue>> valueExpression = null, System.String displayName = null, System.String parsingErrorMessage = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputRadioBase<TValue>.Id : System.String { get; set; }
+Rizzy.RzInputRadioBase<TValue>.ctor()
+Rizzy.RzInputRadioBase<TValue>.static Params(TValue value, System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.String name = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputRadioGroupBase<TValue>.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputRadioGroupBase<TValue>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputRadioGroupBase<TValue>.Id : System.String { get; set; }
+Rizzy.RzInputRadioGroupBase<TValue>.ctor()
+Rizzy.RzInputRadioGroupBase<TValue>.static Params(TValue value, System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<TValue>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<TValue>> valueExpression = null, System.String displayName = null, Microsoft.AspNetCore.Components.RenderFragment childContent = null, System.String name = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputSelectBase<TValue>.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputSelectBase<TValue>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputSelectBase<TValue>.Id : System.String { get; set; }
+Rizzy.RzInputSelectBase<TValue>.ctor()
+Rizzy.RzInputSelectBase<TValue>.static Params(TValue value, System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<TValue>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<TValue>> valueExpression = null, System.String displayName = null, Microsoft.AspNetCore.Components.RenderFragment childContent = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputTextAreaBase.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputTextAreaBase.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputTextAreaBase.Id : System.String { get; set; }
+Rizzy.RzInputTextAreaBase.ctor()
+Rizzy.RzInputTextAreaBase.static Params(System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.String value = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<System.String>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<System.String>> valueExpression = null, System.String displayName = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzInputTextBase.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
+Rizzy.RzInputTextBase.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzInputTextBase.Id : System.String { get; set; }
+Rizzy.RzInputTextBase.ctor()
+Rizzy.RzInputTextBase.static Params(System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> additionalAttributes = null, System.String value = null, System.Nullable<Microsoft.AspNetCore.Components.EventCallback<System.String>> valueChanged = null, System.Linq.Expressions.Expression<System.Func<System.String>> valueExpression = null, System.String displayName = null, System.String id = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzModelStateProvider.EditContext : Microsoft.AspNetCore.Components.Forms.EditContext { get; set; }
+Rizzy.RzModelStateProvider.ModelState : Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary { get; set; }
+Rizzy.RzModelStateProvider.ctor()
+Rizzy.RzPageTitle.ChildContent : Microsoft.AspNetCore.Components.RenderFragment { get; set; }
+Rizzy.RzPageTitle.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzPageTitle.ctor()
+Rizzy.RzPageTitle.static Params(Microsoft.AspNetCore.Components.RenderFragment childContent = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzValidationMessageBase<TValue>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzValidationMessageBase<TValue>.ctor()
+Rizzy.RzValidationSummaryBase.ctor()
+Rizzy.ServiceCollectionExtensions.static AddRizzy(Microsoft.Extensions.DependencyInjection.IServiceCollection services, System.Action<Rizzy.Configuration.RizzyConfig> configBuilder = null) -> Microsoft.Extensions.DependencyInjection.IServiceCollection
+Rizzy.Utility.IdGenerator.static UniqueId(System.String prefix) -> System.String
+Rizzy.Utility.RenderFragmentExtensions.static AsMarkupString(Microsoft.AspNetCore.Components.RenderFragment fragment) -> System.String
+Rizzy.Utility.RenderFragmentExtensions.static RenderHtmlAsync(Microsoft.AspNetCore.Components.RenderFragment fragment, System.IServiceProvider serviceProvider) -> System.Threading.Tasks.Task<System.String>
+class Rizzy.Configuration.RizzyConfig
+class Rizzy.DataAnnotationsProcessor
+class Rizzy.FragmentComponent : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+class Rizzy.Framework.Mvc.RzController : Microsoft.AspNetCore.Mvc.ControllerBase, Microsoft.AspNetCore.Mvc.Filters.IActionFilter, Microsoft.AspNetCore.Mvc.Filters.IAsyncActionFilter, Microsoft.AspNetCore.Mvc.Filters.IFilterMetadata, System.IDisposable
+class Rizzy.Framework.Mvc.RzControllerWithViews : Microsoft.AspNetCore.Mvc.Controller, Microsoft.AspNetCore.Mvc.Filters.IActionFilter, Microsoft.AspNetCore.Mvc.Filters.IAsyncActionFilter, Microsoft.AspNetCore.Mvc.Filters.IFilterMetadata, System.IDisposable
+class Rizzy.HtmxConfigHeadOutlet : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+class Rizzy.HtmxSwapContent : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.HtmxSwapService : Rizzy.IHtmxSwapService
+class Rizzy.HtmxSwappable : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+class Rizzy.RizzyComponentParameterBuilder<TComponent>
+class Rizzy.RizzyMiddleware
+class Rizzy.RzInitialValidator : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+class Rizzy.RzInputCheckboxBase : Microsoft.AspNetCore.Components.Forms.InputCheckbox, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputDateBase<TValue> : Microsoft.AspNetCore.Components.Forms.InputDate<TValue>, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputFileBase : Microsoft.AspNetCore.Components.Forms.InputFile, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputHidden<TValue> : Microsoft.AspNetCore.Components.Forms.InputHidden, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputNumberBase<TValue> : Microsoft.AspNetCore.Components.Forms.InputNumber<TValue>, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputRadioBase<TValue> : Microsoft.AspNetCore.Components.Forms.InputRadio<TValue>, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+class Rizzy.RzInputRadioGroupBase<TValue> : Microsoft.AspNetCore.Components.Forms.InputRadioGroup<TValue>, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputSelectBase<TValue> : Microsoft.AspNetCore.Components.Forms.InputSelect<TValue>, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputTextAreaBase : Microsoft.AspNetCore.Components.Forms.InputTextArea, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzInputTextBase : Microsoft.AspNetCore.Components.Forms.InputText, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzModelStateProvider : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+class Rizzy.RzValidationMessageBase<TValue> : Microsoft.AspNetCore.Components.Forms.ValidationMessage<TValue>, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+class Rizzy.RzValidationSummaryBase : Microsoft.AspNetCore.Components.Forms.ValidationSummary, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent, System.IDisposable
+interface Rizzy.IHtmxSwapService
+interface Rizzy.IRizzyService
+sealed class Rizzy.HtmxApp<T> : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+sealed class Rizzy.HtmxLayout<T> : Microsoft.AspNetCore.Components.LayoutComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+sealed class Rizzy.RizzyNonceProvider : Rizzy.Htmx.IRizzyNonceProvider
+sealed class Rizzy.RizzyService : Rizzy.IRizzyService
+sealed class Rizzy.RizzyViewResult : Microsoft.AspNetCore.Http.IResult
+sealed class Rizzy.RzPageTitle : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
+static class Rizzy.AppBuilderExtensions
+static class Rizzy.Components.Form.Helpers.ExpressionFormatter
+static class Rizzy.HttpContextExtensions
+static class Rizzy.ObjectExtensions
+static class Rizzy.ServiceCollectionExtensions
+static class Rizzy.Utility.IdGenerator
+static class Rizzy.Utility.RenderFragmentExtensions

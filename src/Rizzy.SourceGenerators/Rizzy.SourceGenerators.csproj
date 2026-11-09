@@ -1,23 +1,31 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <!--  Roslyn source generators must target netstandard2.0  -->
+  <!--
+    Roslyn source generator for [RizzyParameterize] (RM-C2). Not a package of its own: the Rizzy
+    package ships it under analyzers/dotnet/cs (see Rizzy.csproj), so consumers get it automatically.
+    Roslyn source generators must target netstandard2.0. Microsoft.CodeAnalysis 5.0 matches the
+    compiler in the .NET 10 SDK, which Rizzy requires.
+  -->
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>Rizzy.SourceGenerators</PackageId>
-    <PackageType>Analyzer</PackageType>
-    <Description>Rizzy parameter‑helper source generator</Description>
     <IsRoslynComponent>true</IsRoslynComponent>
     <IsPackable>false</IsPackable>
-    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>    
+    <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
   </PropertyGroup>
- 
+
   <ItemGroup>
-    <!-- Roslyn assemblies, compile‑time only -->
+    <!-- Roslyn assemblies, compile-time only -->
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Analyzer release tracking (RS2008): every diagnostic ID is listed with its release. -->
+    <AdditionalFiles Include="AnalyzerReleases.Shipped.md" />
+    <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" />
   </ItemGroup>
 
 </Project>
