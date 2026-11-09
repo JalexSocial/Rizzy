@@ -14,8 +14,6 @@ public record class HtmxConfig
         public string? FormFieldName { get; set; }
         [JsonPropertyName("headerName")]
         public string? HeaderName { get; set; }
-        [JsonPropertyName("cookieName")]
-        public string? CookieName { get; set; }
         [JsonPropertyName("requestToken")]
         public string? RequestToken { get; set; }
     }

@@ -30,7 +30,7 @@ public class HomeController : RzController
     public IResult Index()
     {
         _swapService.AddSwappableComponent<NavMenu>("sidebar", null, SwapStyle.innerHTML);
-        _swapService.AddRawContent("<!--test comment-->");
+        _swapService.AddRawContent((MarkupString)"<!--test comment-->");
 
         return View<HomeIndex>();
     }
@@ -110,7 +110,7 @@ public class HomeController : RzController
             Random rand = new Random();
             string message = notifications[rand.Next(notifications.Length)];
 
-            _swapService.AddSwappableContent("alert", $"<div class=\"alert alert-primary\" role=\"alert\">{message}</div>", SwapStyle.innerHTML);
+            _swapService.AddSwappableContent("alert", (MarkupString)$"<div class=\"alert alert-primary\" role=\"alert\">{System.Net.WebUtility.HtmlEncode(message)}</div>", SwapStyle.innerHTML);
         }
 
         return PartialView(HomeFragments.RenderServerTime);

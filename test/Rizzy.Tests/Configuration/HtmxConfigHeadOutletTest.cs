@@ -25,7 +25,6 @@ public class HtmxConfigHeadOutletTest : BunitContext
             // Default to true, can be configured again after adding htmx if necessary
             opt.FormFieldName = "abcd";
             opt.HeaderName = "abcd";
-            opt.CookieName = "HX-XSRF-TOKEN";
         });
         Services.AddAntiforgery();
         Services.Configure<RizzyConfig>(config =>

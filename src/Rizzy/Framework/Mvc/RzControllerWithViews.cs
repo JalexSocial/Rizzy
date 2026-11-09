@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -116,15 +116,4 @@ public class RzControllerWithViews : Controller
     [NonAction]
     public virtual IResult PartialView(params RenderFragment[] fragments)
         => Rizzy.PartialView(fragments);
-
-    /// <summary>
-    /// Called before the action method is invoked. Initializes Blazor form data if the request has form content.
-    /// </summary>
-    /// <param name="context">The action executing context.</param>
-    [NonAction]
-    public override void OnActionExecuting(ActionExecutingContext context)
-    {
-        ArgumentNullException.ThrowIfNull(context);
-        context.HttpContext.InitializeBlazorFormData();
-    }
 }

@@ -12,6 +12,18 @@ using Microsoft.Extensions.Options;
 
 namespace Rizzy.Htmx;
 
+/// <summary>
+/// Sets htmx response headers (<c>HX-Trigger</c>, <c>HX-Retarget</c>, ...) for the current request.
+/// Obtain it with <c>HttpContext.Response.Htmx()</c>.
+/// </summary>
+/// <remarks>
+/// Every method that sets an <c>HX-*</c> header or requests an empty body throws
+/// <see cref="InvalidOperationException"/> when the request is not an htmx request (no
+/// <c>HX-Request</c> header), because browsers ignore those headers on normal navigation. Guard
+/// actions that serve both kinds of request with <c>Request.IsHtmx()</c>, or use
+/// <see cref="HtmxResponseAttribute"/>, which does nothing for non-htmx requests.
+/// <see cref="StatusCode"/> works for any request.
+/// </remarks>
 public sealed class HtmxResponse(HttpContext context)
 {
     private const string EmptyResponseBodyRequestedKey = "Rizzy.Htmx.EmptyResponseBodyRequested";
@@ -42,7 +54,6 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse StatusCode(HttpStatusCode statusCode)
     {
-        AssertIsHtmxRequest();
         context.Response.StatusCode = (int)statusCode;
         return this;
     }
@@ -198,7 +209,8 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Reswap(string modifier)
     {
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(modifier);
+        ArgumentException.ThrowIfNullOrWhiteSpace(modifier);
+        AssertIsHtmxRequest();
         _headers[HtmxResponseHeaderNames.Reswap] = modifier;
         return this;
     }
@@ -215,7 +227,9 @@ public sealed class HtmxResponse(HttpContext context)
 
         if (swapStyle is SwapStyle.Default)
         {
-            Reswap(modifier!);
+            // Default means "keep the requested swap style"; only the modifiers (if any) change.
+            if (!string.IsNullOrWhiteSpace(modifier))
+                _headers[HtmxResponseHeaderNames.Reswap] = modifier;
             return this;
         }
 
@@ -238,6 +252,7 @@ public sealed class HtmxResponse(HttpContext context)
     public HtmxResponse Reswap(SwapStyleBuilder swapStyle)
     {
         ArgumentNullException.ThrowIfNull(swapStyle);
+        AssertIsHtmxRequest();
 
         _headers[HtmxResponseHeaderNames.Reswap] = swapStyle.Build();
 
@@ -341,6 +356,73 @@ public sealed class HtmxResponse(HttpContext context)
         AssertIsHtmxRequest();
         MergeTrigger(eventName, SerializeDetail(detail, jsonSerializerOptions), targetSelector);
         return this;
+    }
+
+    /// <summary>
+    /// Like <see cref="Redirect(string)"/>, but only for local URLs (<c>/path</c> or <c>~/path</c>).
+    /// Use it when the URL comes from user input, such as a <c>returnUrl</c> query value, to avoid
+    /// open redirects.
+    /// </summary>
+    /// <param name="localUrl">A local URL.</param>
+    /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
+    /// <exception cref="InvalidOperationException">The URL is not local.</exception>
+    public HtmxResponse LocalRedirect(string localUrl) => Redirect(RequireLocal(localUrl));
+
+    /// <summary>
+    /// Like <see cref="Location(string)"/>, but only for local URLs (<c>/path</c> or <c>~/path</c>).
+    /// </summary>
+    /// <param name="localUrl">A local URL.</param>
+    /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
+    /// <exception cref="InvalidOperationException">The URL is not local.</exception>
+    public HtmxResponse LocalLocation(string localUrl) => Location(RequireLocal(localUrl));
+
+    /// <summary>
+    /// Returns whether <paramref name="url"/> is local to the app: it starts with a single <c>/</c>
+    /// (not <c>//</c> or <c>/\</c>) or with <c>~/</c>. Same rules as MVC's <c>Url.IsLocalUrl</c>.
+    /// </summary>
+    public static bool IsLocalUrl(string? url)
+    {
+        if (string.IsNullOrEmpty(url))
+            return false;
+
+        if (url[0] == '/')
+        {
+            if (url.Length == 1)
+                return true;
+
+            return url[1] != '/' && url[1] != '\\' && !HasControlCharacter(url.AsSpan(1));
+        }
+
+        if (url[0] == '~' && url.Length > 1 && url[1] == '/')
+        {
+            if (url.Length == 2)
+                return true;
+
+            return url[2] != '/' && url[2] != '\\' && !HasControlCharacter(url.AsSpan(2));
+        }
+
+        return false;
+
+        static bool HasControlCharacter(ReadOnlySpan<char> value)
+        {
+            foreach (var ch in value)
+            {
+                if (char.IsControl(ch))
+                    return true;
+            }
+
+            return false;
+        }
+    }
+
+    private string RequireLocal(string localUrl)
+    {
+        if (!IsLocalUrl(localUrl))
+            throw new InvalidOperationException($"'{localUrl}' is not a local URL.");
+
+        return localUrl.StartsWith("~/", StringComparison.Ordinal)
+            ? context.Request.PathBase.Add(new PathString(localUrl[1..])).ToString()
+            : localUrl;
     }
 
     /// <summary>

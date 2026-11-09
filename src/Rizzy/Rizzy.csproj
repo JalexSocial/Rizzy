@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -69,9 +69,19 @@
 	  <Folder Include="wwwroot\js\" />
 	</ItemGroup>
 
-    <PropertyGroup>
-        <IncludeAnalyzerInPackage>true</IncludeAnalyzerInPackage>
-    </PropertyGroup>
+    <!--
+      Ship the [RizzyParameterize] source generator to consumers (RM-C2). The project reference
+      above runs it for Rizzy's own components; this packs the same assembly as an analyzer, so any
+      project that references the Rizzy package can use [RizzyParameterize] too.
+    -->
+    <Target Name="PackRizzySourceGenerator" BeforeTargets="_GetPackageFiles" DependsOnTargets="ResolveProjectReferences">
+        <MSBuild Projects="..\Rizzy.SourceGenerators\Rizzy.SourceGenerators.csproj" Targets="GetTargetPath" Properties="Configuration=$(Configuration)">
+            <Output TaskParameter="TargetOutputs" ItemName="_RizzyGeneratorAssembly" />
+        </MSBuild>
+        <ItemGroup>
+            <None Include="@(_RizzyGeneratorAssembly)" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        </ItemGroup>
+    </Target>
 
     <!--
       Client assets are built by `npm run build` in packages/rizzy, which copies the bundle into

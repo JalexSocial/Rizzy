@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http.HttpResults; // For RazorComponentResult
 using Microsoft.AspNetCore.Mvc.ModelBinding; // For ModelStateDictionary
 using System.Collections.Generic; // For Dictionary
 using System; // For ArgumentNullException, InvalidOperationException
-using Rizzy.Htmx; // For HtmxResponse and HtmxRequestHeaderNames
 
 namespace Rizzy;
 
@@ -42,9 +41,6 @@ public sealed class RizzyService : IRizzyService
     {
         ArgumentNullException.ThrowIfNull(parameterBuilderAction);
 
-        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
-            return Results.NoContent();
-
         var builderInstance = new RizzyComponentParameterBuilder<TComponent>();
         parameterBuilderAction(builderInstance); // Invoke the user's configuration lambda
         var parametersDictionary = builderInstance.Build();
@@ -59,22 +55,7 @@ public sealed class RizzyService : IRizzyService
     /// <inheritdoc/>
     public IResult View<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
     {
-        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
-            return Results.NoContent();
-
-        var parameters = new Dictionary<string, object?>(StringComparer.Ordinal)
-        {
-            { "ComponentType", typeof(TComponent) },
-            { "ComponentParameters", data },
-            { "ModelState", modelState },
-            { "Mode", RzViewMode.Page  }
-        };
-
-        return new RazorComponentResult<RzView>(parameters)
-        {
-            // Streaming is generally desirable for full page views.
-            PreventStreamingRendering = false
-        };
+        return CreateResult(typeof(TComponent), data, modelState, RzViewMode.Page);
     }
 
     /// <inheritdoc/>
@@ -82,9 +63,6 @@ public sealed class RizzyService : IRizzyService
         where TComponent : IComponent
     {
         ArgumentNullException.ThrowIfNull(parameterBuilderAction);
-
-        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
-            return Results.NoContent();
 
         var builderInstance = new RizzyComponentParameterBuilder<TComponent>();
         parameterBuilderAction(builderInstance); // Invoke the user's configuration lambda
@@ -100,31 +78,13 @@ public sealed class RizzyService : IRizzyService
     /// <inheritdoc/>
     public IResult PartialView<TComponent>(Dictionary<string, object?> data, ModelStateDictionary? modelState = null) where TComponent : IComponent
     {
-        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
-            return Results.NoContent();
-
-        var parameters = new Dictionary<string, object?>(StringComparer.Ordinal)
-        {
-            { "ComponentType", typeof(TComponent) },
-            { "ComponentParameters", data },
-            { "ModelState", modelState },
-            { "Mode", RzViewMode.Partial  }
-        };
-        return new RazorComponentResult<RzView>(parameters)
-        {
-            // Partials are often small; streaming might be less critical or even undesirable
-            // depending on HTMX swap strategies. Consider making this configurable if needed.
-            PreventStreamingRendering = false
-        };
+        return CreateResult(typeof(TComponent), data, modelState, RzViewMode.Partial);
     }
 
     /// <inheritdoc/>
     public IResult PartialView(RenderFragment fragment)
     {
         ArgumentNullException.ThrowIfNull(fragment);
-
-        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
-            return Results.NoContent();
 
         return PartialView<FragmentComponent>(new
         {
@@ -137,12 +97,31 @@ public sealed class RizzyService : IRizzyService
     {
         ArgumentNullException.ThrowIfNull(fragments);
 
-        if (HttpContextSafe.Response.Htmx().EmptyResponseBodyRequested)
-            return Results.NoContent();
-
         return PartialView<FragmentComponent>(new
         {
             Fragments = fragments
+        });
+    }
+
+    /// <summary>
+    /// Builds the result for every View/PartialView overload. The empty-body (204) check and form
+    /// mapping happen when the result executes; see <see cref="RizzyViewResult"/>.
+    /// </summary>
+    private static RizzyViewResult CreateResult(Type componentType, Dictionary<string, object?> data, ModelStateDictionary? modelState, RzViewMode mode)
+    {
+        ArgumentNullException.ThrowIfNull(data);
+
+        var parameters = new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            { "ComponentType", componentType },
+            { "ComponentParameters", data },
+            { "ModelState", modelState },
+            { "Mode", mode },
+        };
+
+        return new RizzyViewResult(new RazorComponentResult<RzView>(parameters)
+        {
+            PreventStreamingRendering = false,
         });
     }
 }

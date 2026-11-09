@@ -28,7 +28,8 @@ public sealed class RizzyTestHost : IAsyncLifetime
         builder.Logging.ClearProviders();
 
         builder.Services.AddRazorComponents();
-        builder.Services.AddControllers().AddApplicationPart(typeof(RizzyTestHost).Assembly);
+        // AddControllersWithViews registers the MVC antiforgery filters used by [ValidateAntiForgeryToken].
+        builder.Services.AddControllersWithViews().AddApplicationPart(typeof(RizzyTestHost).Assembly);
         builder.Services.AddRizzy(config =>
         {
             config.RootComponent = typeof(HtmxApp<TestRootLayout>);
@@ -61,6 +62,7 @@ public sealed class RizzyTestHost : IAsyncLifetime
             ctx.Response.Htmx().Redirect("/elsewhere");
             return rizzy.PartialView<TestPage>(new { Message = "never rendered" });
         });
+        app.MapPost("/minimal-post", (IRizzyService rizzy) => rizzy.View<TestPostedFormPage>()).DisableAntiforgery();
         app.MapControllers();
 
         await app.StartAsync();
@@ -128,6 +130,14 @@ public sealed class TestResponseAttributeController : RzController
     public IResult Fragments() => PartialView(
         b => b.AddMarkupContent(0, "<b id=\"f1\">one</b>"),
         b => b.AddMarkupContent(0, "<b id=\"f2\">two</b>"));
+
+    [HttpPost("/ctrl/post")]
+    [IgnoreAntiforgeryToken]
+    public IResult Post() => View<TestPostedFormPage>();
+
+    [HttpPost("/ctrl/antiforgery-validated")]
+    [ValidateAntiForgeryToken]
+    public IResult AntiforgeryValidated() => PartialView<TestPage>(new { Message = "accepted" });
 
     [HttpGet("/attr")]
     [HtmxResponse(PushUrl = "/pushed", Refresh = true, PreventBrowserCurrentUrlUpdate = true, Reswap = SwapStyle.outerHTML)]

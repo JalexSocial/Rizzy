@@ -7,7 +7,6 @@ using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.IO; // Added for StringReader
 using System.Linq;
 using System.Text;
@@ -47,164 +46,100 @@ namespace Rizzy
 #nullable restore
 ";
 
-/// <summary>
-/// Called by the compiler to initialize the generator and register generation steps.
-/// </summary>
-/// <param name="context">The incremental generator initialization context.</param>
-public void Initialize(IncrementalGeneratorInitializationContext context)
-{
-    // Debugger.Launch(); // Uncomment to debug during build
-
-    // ALWAYS add the attribute source via PostInitializationOutput.
-    // This is the most reliable way to ensure it's available for the compilation
-    // when the main ExecuteGeneration step runs.
-    // This will lead to CS0436 if Rizzy.dll (also using this generator) is referenced,
-    // which is an acceptable trade-off for ensuring the generator works standalone.
-    context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
-        "RizzyParameterizeAttribute.g.cs",
-        SourceText.From(RizzyParameterizeAttributeSource, Encoding.UTF8)));
-
-    // Pipeline to find relevant ClassDeclarationSyntax nodes
-    IncrementalValuesProvider<ClassDeclarationSyntax> classDeclarations = context.SyntaxProvider
-        .CreateSyntaxProvider(
-            predicate: static (s, token) => IsSyntaxTargetForGeneration(s, token),
-            transform: static (ctx, token) => GetSemanticTargetForGeneration(ctx, token))
-        .Where(static m => m is not null)!;
-
-    // Combine with compilation
-    IncrementalValueProvider<(Compilation, ImmutableArray<ClassDeclarationSyntax>)> compilationAndClasses =
-        context.CompilationProvider.Combine(classDeclarations.Collect());
-
-    // Register the main source generation action
-    context.RegisterSourceOutput(compilationAndClasses,
-        (spc, source) => ExecuteGeneration(source.Item1, source.Item2, spc));
-}
-
         /// <summary>
-        /// A predicate used to quickly filter syntax nodes for potential processing.
-        /// It identifies class declarations that have attributes and syntactically contain the text "RizzyParameterize".
+        /// Called by the compiler to initialize the generator and register generation steps.
         /// </summary>
-        private static bool IsSyntaxTargetForGeneration(SyntaxNode node, CancellationToken _) =>
-            node is ClassDeclarationSyntax cds && cds.AttributeLists.Count > 0 &&
-            // Using GetText().ToString() is more robust than node.ToString() for full content
-            cds.GetText().ToString().Contains("RizzyParameterize");
-
-        /// <summary>
-        /// A transform function that converts a <see cref="GeneratorSyntaxContext"/> for a candidate syntax node
-        /// into a <see cref="ClassDeclarationSyntax"/> if the node represents a class.
-        /// </summary>
-        private static ClassDeclarationSyntax? GetSemanticTargetForGeneration(GeneratorSyntaxContext context, CancellationToken _)
+        /// <param name="context">The incremental generator initialization context.</param>
+        public void Initialize(IncrementalGeneratorInitializationContext context)
         {
-            return context.Node as ClassDeclarationSyntax;
+            // The attribute is emitted as an internal type into every compilation that uses the
+            // generator, so consumer projects get it without a runtime dependency.
+            context.RegisterPostInitializationOutput(ctx => ctx.AddSource(
+                "RizzyParameterizeAttribute.g.cs",
+                SourceText.From(RizzyParameterizeAttributeSource, Encoding.UTF8)));
+
+            // ForAttributeWithMetadataName only visits classes that carry the attribute, and the
+            // transform returns a value-equatable result, so unrelated edits do not regenerate.
+            IncrementalValuesProvider<GenerationResult> results = context.SyntaxProvider
+                .ForAttributeWithMetadataName(
+                    RizzyParameterizeAttributeFullName,
+                    predicate: static (node, _) => node is ClassDeclarationSyntax,
+                    transform: static (ctx, token) => Generate(ctx, token))
+                .Where(static r => r is not null)!;
+
+            context.RegisterSourceOutput(results, static (spc, result) =>
+            {
+                if (result.Diagnostic is { } diagnostic)
+                    spc.ReportDiagnostic(diagnostic.ToDiagnostic());
+
+                if (result.HintName is not null && result.Source is not null)
+                    spc.AddSource(result.HintName, SourceText.From(result.Source, Encoding.UTF8));
+            });
         }
 
-        /// <summary>
-        /// The main execution logic for the source generator.
-        /// </summary>
-        private void ExecuteGeneration(Compilation compilation, ImmutableArray<ClassDeclarationSyntax> classes, SourceProductionContext spc)
+        private static GenerationResult? Generate(GeneratorAttributeSyntaxContext context, CancellationToken token)
         {
-            if (classes.IsDefaultOrEmpty) return;
+            if (context.TargetSymbol is not INamedTypeSymbol classSymbol)
+                return null;
 
-            INamedTypeSymbol? parameterizeAttributeSymbol = compilation.GetTypeByMetadataName(RizzyParameterizeAttributeFullName);
-            // If this is null, the attribute source wasn't added or found, or there's a namespace mismatch.
-            // This is a critical check.
-            if (parameterizeAttributeSymbol == null) 
-            {
-                // Optionally report a diagnostic to understand why it's not found
-                // spc.ReportDiagnostic(Diagnostic.Create(new DiagnosticDescriptor("RZ9999", "Debug", $"RizzyParameterizeAttribute symbol was not found by GetTypeByMetadataName. FullName used: {RizzyParameterizeAttributeFullName}", "Debug", DiagnosticSeverity.Warning, true), Location.None));
-                return;
-            }
+            // A partial class with several declarations is reported once, for its first declaration.
+            var firstDeclaration = classSymbol.DeclaringSyntaxReferences.FirstOrDefault();
+            if (firstDeclaration is not null && firstDeclaration.GetSyntax(token) != context.TargetNode)
+                return null;
+
+            Compilation compilation = context.SemanticModel.Compilation;
 
             INamedTypeSymbol? parameterAttributeSymbol = compilation.GetTypeByMetadataName(ParameterAttributeFullName);
-            if (parameterAttributeSymbol == null) return; 
-
             INamedTypeSymbol? editorRequiredAttributeSymbol = compilation.GetTypeByMetadataName(EditorRequiredAttributeFullName);
-            if (editorRequiredAttributeSymbol == null) return; 
+            if (parameterAttributeSymbol is null || editorRequiredAttributeSymbol is null)
+                return null;
 
             INamedTypeSymbol? componentBaseSymbol = compilation.GetTypeByMetadataName(ComponentBaseFullName);
 
-            var processedSymbols = new HashSet<INamedTypeSymbol>(SymbolEqualityComparer.Default);
+            if (classSymbol.ContainingType is not null)
+                return GenerationResult.Error(Diagnostics.NestedTypesNotFullySupportedRule, classSymbol);
 
-            foreach (ClassDeclarationSyntax classDec in classes)
-            {
-                if (spc.CancellationToken.IsCancellationRequested) return;
+            var allParameters = CollectParameters(classSymbol, parameterAttributeSymbol, editorRequiredAttributeSymbol, componentBaseSymbol, compilation);
+            if (allParameters.Count == 0)
+                return null;
 
-                SemanticModel semanticModel = compilation.GetSemanticModel(classDec.SyntaxTree);
-                if (semanticModel.GetDeclaredSymbol(classDec, spc.CancellationToken) is not INamedTypeSymbol classSymbol) continue;
-                
-                if (!processedSymbols.Add(classSymbol)) continue; 
+            bool userDefinedCsFileIsNotPartial = classSymbol.DeclaringSyntaxReferences
+                .Select(sr => sr.GetSyntax(token))
+                .Where(syntax =>
+                       !(syntax.SyntaxTree.FilePath?.EndsWith(".razor.g.cs", StringComparison.OrdinalIgnoreCase) ?? false) &&
+                       (syntax.SyntaxTree.FilePath?.EndsWith(".cs", StringComparison.OrdinalIgnoreCase) ?? false))
+                .OfType<ClassDeclarationSyntax>()
+                .Any(cds => !cds.Modifiers.Any(SyntaxKind.PartialKeyword));
 
-                // Now, use the resolved parameterizeAttributeSymbol for the semantic check
-                if (!classSymbol.GetAttributes().Any(ad => SymbolEqualityComparer.Default.Equals(ad.AttributeClass, parameterizeAttributeSymbol)))
-                {
-                    continue;
-                }
+            if (userDefinedCsFileIsNotPartial)
+                return GenerationResult.Error(Diagnostics.ComponentMustBePartialRule, classSymbol);
 
-                bool hasRizzyParameterize =
-                    classSymbol.GetAttributes()
-                               .Any(ad => ad.AttributeClass?.ToDisplayString() ==
-                                          RizzyParameterizeAttributeFullName);
-                if (!hasRizzyParameterize)
-                    continue;
+            string classSource = GeneratePartialClassWithStaticMethod(classSymbol, allParameters);
 
-                // Warn (and skip) if the component is nested
-                if (classSymbol.ContainingType is not null)
-                {
-                    spc.ReportDiagnostic(Diagnostic.Create(
-                        Diagnostics.NestedTypesNotFullySupportedRule,
-                        classSymbol.Locations.FirstOrDefault(),
-                        classSymbol.Name));
-                    continue;
-                }
+            string fqnForHash = classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            string assemblyNameForHash = classSymbol.ContainingAssembly?.Name ?? "unknownassembly";
+            string uniqueFileName =
+                $"{SanitizeFileName(classSymbol.Name)}_" +
+                $"{SanitizeFileName(classSymbol.ContainingNamespace.ToDisplayString())}_" +
+                $"{GetFnv1aHashCode(assemblyNameForHash + ':' + fqnForHash):X8}.RizzyParams.g.cs";
 
-                // Collect all [Parameter] properties (same as before)
-                var allParameters = CollectParameters(
-                    classSymbol,
-                    parameterAttributeSymbol,
-                    editorRequiredAttributeSymbol,
-                    componentBaseSymbol,
-                    compilation);
-
-                if (allParameters.Any())
-                {
-                    // Ensure the user‑authored .cs file is partial (same logic as before)
-                    bool userDefinedCsFileIsNotPartial = classSymbol.DeclaringSyntaxReferences
-                        .Select(sr => sr.GetSyntax(spc.CancellationToken))
-                        .Where(syntax =>
-                               !(syntax.SyntaxTree.FilePath?.EndsWith(".razor.g.cs",
-                                   StringComparison.OrdinalIgnoreCase) ?? false) &&
-                               (syntax.SyntaxTree.FilePath?.EndsWith(".cs",
-                                   StringComparison.OrdinalIgnoreCase) ?? false))
-                        .OfType<ClassDeclarationSyntax>()
-                        .Any(cds => !cds.Modifiers.Any(SyntaxKind.PartialKeyword));
-
-                    if (userDefinedCsFileIsNotPartial)
-                    {
-                        spc.ReportDiagnostic(Diagnostic.Create(
-                            Diagnostics.ComponentMustBePartialRule,
-                            classSymbol.Locations.FirstOrDefault(),
-                            classSymbol.Name));
-                        continue;
-                    }
-
-                    // Generate the Params helper
-                    string classSource = GeneratePartialClassWithStaticMethod(classSymbol, allParameters);
-
-                    // Create a stable, collision‑proof file name
-                    string fqnForHash = classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
-                    string assemblyNameForHash = classSymbol.ContainingAssembly?.Name ?? "unknownassembly";
-                    string uniqueFileName =
-                        $"{SanitizeFileName(classSymbol.Name)}_" +
-                        $"{SanitizeFileName(classSymbol.ContainingNamespace.ToDisplayString())}_" +
-                        $"{GetFnv1aHashCode(assemblyNameForHash + ':' + fqnForHash):X8}.RizzyParams.g.cs";
-
-                    spc.AddSource(uniqueFileName, SourceText.From(classSource, Encoding.UTF8));
-                }
-            }
-            
+            return new GenerationResult(uniqueFileName, classSource, null);
         }
 
-       private List<ParameterData> CollectParameters(
+        /// <summary>The cacheable output of the generator for one component.</summary>
+        private sealed record GenerationResult(string? HintName, string? Source, DiagnosticInfo? Diagnostic)
+        {
+            public static GenerationResult Error(DiagnosticDescriptor descriptor, INamedTypeSymbol symbol)
+                => new(null, null, new DiagnosticInfo(descriptor, symbol.Locations.FirstOrDefault(), symbol.Name));
+        }
+
+        /// <summary>A diagnostic captured without symbols, so generator results stay value-equatable.</summary>
+        private sealed record DiagnosticInfo(DiagnosticDescriptor Descriptor, Location? Location, string Argument)
+        {
+            public Diagnostic ToDiagnostic() => Diagnostic.Create(Descriptor, Location, Argument);
+        }
+
+        private static List<ParameterData> CollectParameters(
             INamedTypeSymbol classSymbol,
             INamedTypeSymbol parameterAttributeSymbol,
             INamedTypeSymbol editorRequiredAttributeSymbol,
@@ -301,7 +236,7 @@ public void Initialize(IncrementalGeneratorInitializationContext context)
             return hash;
         }
         
-        private string GeneratePartialClassWithStaticMethod(INamedTypeSymbol componentSymbol, List<ParameterData> parameters)
+        private static string GeneratePartialClassWithStaticMethod(INamedTypeSymbol componentSymbol, List<ParameterData> parameters)
         {
             string namespaceName = componentSymbol.ContainingNamespace.IsGlobalNamespace
                 ? string.Empty
@@ -448,13 +383,13 @@ public void Initialize(IncrementalGeneratorInitializationContext context)
             return sourceBuilder.ToString();
         }
         
-        private string XmlEncode(string? text)
+        private static string XmlEncode(string? text)
         {
             if (string.IsNullOrEmpty(text)) return string.Empty;
             return System.Security.SecurityElement.Escape(text) ?? text!;
         }
 
-        private string? GetXmlDocsSummary(ISymbol symbol)
+        private static string? GetXmlDocsSummary(ISymbol symbol)
         {
             string? xmlDocs = symbol.GetDocumentationCommentXml(expandIncludes: true, cancellationToken: System.Threading.CancellationToken.None);
             if (string.IsNullOrWhiteSpace(xmlDocs)) return null;
@@ -480,7 +415,7 @@ public void Initialize(IncrementalGeneratorInitializationContext context)
             return null;
         }
 
-        private string GetGenericConstraints(INamedTypeSymbol classSymbol)
+        private static string GetGenericConstraints(INamedTypeSymbol classSymbol)
         {
             var constraintsBuilder = new StringBuilder();
             foreach (var tp in classSymbol.TypeParameters)
@@ -504,7 +439,7 @@ public void Initialize(IncrementalGeneratorInitializationContext context)
             return constraintsBuilder.ToString();
         }
 
-        private string ToCamelCase(string name)
+        private static string ToCamelCase(string name)
         {
             if (string.IsNullOrEmpty(name) || char.IsLower(name[0]))
                 return name;

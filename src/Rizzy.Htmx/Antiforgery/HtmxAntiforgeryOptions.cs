@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Htmx;
+namespace Rizzy.Htmx;
 
 /// <summary>
 /// Represents the options for Rizzy's antiforgery support.
@@ -14,9 +14,4 @@ public sealed class HtmxAntiforgeryOptions
     /// Gets the name of the header used for antiforgery token.
     /// </summary>
     public string? HeaderName { get; set; }
-
-    /// <summary>
-    /// Gets the name of the cookie used for antiforgery token.
-    /// </summary>
-    public string CookieName { get; set; } = Constants.AntiforgeryCookieName;
 }

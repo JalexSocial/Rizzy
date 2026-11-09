@@ -10,7 +10,7 @@ Checks:
   * Rizzy depends on exactly that version of Rizzy.Htmx.
   * Every file in each package is on an allow-list, so stray tooling files,
     publish output or stale bundles can never ship again.
-  * Required files (assembly, XML docs, client bundle) are present.
+  * Required files (assembly, XML docs, client bundle, source generator) are present.
 """
 
 import fnmatch
@@ -47,6 +47,7 @@ PACKAGES = {
             "lib/net10.0/Rizzy.xml",
             "staticwebassets/js/rizzy.js",
             "staticwebassets/js/rizzy.min.js",
+            "analyzers/dotnet/cs/Rizzy.SourceGenerators.dll",
         ],
     },
     "Rizzy.Htmx": {

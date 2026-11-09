@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Rizzy;
 using Rizzy.Htmx;
 using RizzyDemo;
@@ -8,7 +8,6 @@ using RizzyDemo.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// This must be added after AddControllers
 builder.Services.AddRizzy(config =>
 {
     config.RootComponent = typeof(HtmxApp<AppLayout>);
@@ -22,7 +21,8 @@ builder.Services.AddHtmx(config =>
 });
 
 // Add services to the container.
-builder.Services.AddControllers();
+// AddControllersWithViews registers the MVC antiforgery filters used by [ValidateAntiForgeryToken].
+builder.Services.AddControllersWithViews();
 
 builder.Services.AddRazorComponents();
 

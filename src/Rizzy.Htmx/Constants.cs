@@ -11,7 +11,6 @@ internal static class Constants
     /// <summary>
     /// Default antiforgery cookie name
     /// </summary>
-	public const string AntiforgeryCookieName = "HX-XSRF-TOKEN";
 
     internal static class Nonce
     {

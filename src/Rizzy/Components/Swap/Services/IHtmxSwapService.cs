@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Rizzy.Htmx;
 
 namespace Rizzy;
@@ -37,19 +37,30 @@ public interface IHtmxSwapService
     void AddSwappableFragment(string targetId, RenderFragment renderFragment, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null);
 
     /// <summary>
-    /// Adds string content to the service for later rendering.
+    /// Adds pre-rendered HTML to swap into the target. The markup is inserted as-is: never pass
+    /// unencoded user input. Use <see cref="AddSwappableText"/> for plain text.
     /// </summary>
-    /// <param name="targetId">The target DOM element ID where the fragment should be rendered.</param>
-    /// <param name="content">The RenderFragment to add.</param>
-    /// <param name="swapStyle">The style of content swap to apply.</param>
-    /// <param name="selector">A CSS selector to specify where to apply the swap.</param>
-    void AddSwappableContent(string targetId, string content, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null);
+    /// <param name="targetId">The target element id (escaped automatically).</param>
+    /// <param name="markup">The HTML to insert, for example <c>(MarkupString)html</c>.</param>
+    /// <param name="swapStyle">The swap style.</param>
+    /// <param name="selector">An optional CSS selector to use instead of the id.</param>
+    void AddSwappableContent(string targetId, MarkupString markup, SwapStyle swapStyle = SwapStyle.outerHTML, string? selector = null);
 
     /// <summary>
-    /// Adds raw HTML content to the service for later rendering.
+    /// Adds plain text to swap into the target. The text is HTML-encoded.
     /// </summary>
-    /// <param name="content">The raw HTML content to add.</param>
-    void AddRawContent(string content);
+    /// <param name="targetId">The target element id (escaped automatically).</param>
+    /// <param name="text">The text to insert.</param>
+    /// <param name="swapStyle">The swap style.</param>
+    /// <param name="selector">An optional CSS selector to use instead of the id.</param>
+    void AddSwappableText(string targetId, string text, SwapStyle swapStyle = SwapStyle.innerHTML, string? selector = null);
+
+    /// <summary>
+    /// Adds HTML that is appended to the response outside of any swap target (also for non-htmx
+    /// requests). The markup is inserted as-is: never pass unencoded user input.
+    /// </summary>
+    /// <param name="markup">The HTML to insert, for example <c>(MarkupString)html</c>.</param>
+    void AddRawContent(MarkupString markup);
 
     /// <summary>
     /// Renders all added content (components, fragments, and raw HTML) to a single RenderFragment.

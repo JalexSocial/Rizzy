@@ -49,7 +49,6 @@ public class HtmxConfigHeadOutlet : ComponentBase
             {
                 Antiforgery = new HtmxConfig.AntiForgeryConfiguration
                 {
-                    CookieName = AntiforgeryConfig.Value.CookieName,
                     FormFieldName = AntiforgeryConfig.Value.FormFieldName,
                     HeaderName = AntiforgeryConfig.Value.HeaderName,
                 }

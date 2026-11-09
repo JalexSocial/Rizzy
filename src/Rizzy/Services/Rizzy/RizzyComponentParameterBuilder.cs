@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -121,12 +121,21 @@ namespace Rizzy;
         }
 
         /// <summary>
-        /// Adds a <c>ChildContent</c> <see cref="RenderFragment"/> parameter from a markup string.
+        /// Adds a <c>ChildContent</c> parameter from pre-rendered HTML. The markup is inserted as-is:
+        /// never pass unencoded user input. Use <see cref="AddChildText"/> for plain text.
         /// </summary>
-        /// <param name="markup">The markup string for the <c>ChildContent</c>. If null or empty, an empty ChildContent will be added.</param>
+        /// <param name="markup">The HTML for the <c>ChildContent</c>, for example <c>(MarkupString)html</c>.</param>
         /// <returns>The same <see cref="RizzyComponentParameterBuilder{TComponent}"/> instance for fluent chaining.</returns>
-        public RizzyComponentParameterBuilder<TComponent> AddChildContent(string? markup) =>
-            AddChildContent(builder => builder.AddMarkupContent(0, markup));
+        public RizzyComponentParameterBuilder<TComponent> AddChildContent(MarkupString markup) =>
+            AddChildContent(builder => builder.AddContent(0, markup));
+
+        /// <summary>
+        /// Adds a <c>ChildContent</c> parameter from plain text. The text is HTML-encoded.
+        /// </summary>
+        /// <param name="text">The text for the <c>ChildContent</c>.</param>
+        /// <returns>The same <see cref="RizzyComponentParameterBuilder{TComponent}"/> instance for fluent chaining.</returns>
+        public RizzyComponentParameterBuilder<TComponent> AddChildText(string? text) =>
+            AddChildContent(builder => builder.AddContent(0, text));
 
         /// <summary>
         /// Adds an <see cref="EventCallback"/> parameter created from the provided <see cref="Action"/>.
