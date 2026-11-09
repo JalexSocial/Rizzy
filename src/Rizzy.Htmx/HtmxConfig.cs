@@ -191,4 +191,12 @@ public record class HtmxConfig
     [JsonInclude, JsonPropertyName("rizzyVersion")]
     internal string? RizzyVersion { get; set; }
 
+    /// <summary>
+    /// Set to <c>false</c> to silence the console warnings rizzy.js logs for a misconfigured page
+    /// (missing or invalid meta config, or a server/client major version mismatch). Errors are
+    /// still logged. Default: enabled.
+    /// </summary>
+    [JsonPropertyName("rizzyDiagnostics")]
+    public bool? RizzyDiagnostics { get; set; }
+
 }

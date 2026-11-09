@@ -324,3 +324,26 @@ test('scripts carrying the response nonce are promoted to the page nonce', async
     assert.equal(env.document.getElementById('injected').hasAttribute('nonce'), false);
     await env.close();
 });
+
+// ---- RM-D3: stream errors are logged per htmx's detail.error convention ----------------------------
+
+test('a broken stream logs htmx:error and dispatches it', async () => {
+    const stream = controlledStream();
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0' },
+        body: '<button id="go" hx-get="/stream" hx-target="#target">go</button><div id="target"></div>',
+        respond: () => ({ body: stream.body }),
+    });
+    const fired = [];
+    env.document.body.addEventListener('htmx:error', (e) => fired.push(e.detail.error?.message));
+
+    env.document.getElementById('go').click();
+    stream.push(streamingInitial);
+    assert.ok(await waitFor(() => env.document.getElementById('loading')), 'initial HTML is swapped');
+
+    stream.fail(new Error('connection reset'));
+    assert.ok(await waitFor(() => fired.length > 0), 'htmx:error is dispatched');
+    assert.deepEqual(fired, ['connection reset']);
+    assert.ok(env.errors.some((e) => e.startsWith('htmx: htmx:error: connection reset')), 'the error is logged');
+    await env.close();
+});

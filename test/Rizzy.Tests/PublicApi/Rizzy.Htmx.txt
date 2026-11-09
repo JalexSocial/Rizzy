@@ -44,6 +44,7 @@ Rizzy.Htmx.HtmxConfig.MorphSkipChildren : System.String { get; set; }
 Rizzy.Htmx.HtmxConfig.NoSwap : System.Object[] { get; set; }
 Rizzy.Htmx.HtmxConfig.Prefix : System.String { get; set; }
 Rizzy.Htmx.HtmxConfig.RequestClass : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.RizzyDiagnostics : System.Nullable<System.Boolean> { get; set; }
 Rizzy.Htmx.HtmxConfig.ToString() -> System.String
 Rizzy.Htmx.HtmxConfig.Transitions : System.Nullable<System.Boolean> { get; set; }
 Rizzy.Htmx.HtmxConfig.ctor()

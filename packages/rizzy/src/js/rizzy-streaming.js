@@ -28,6 +28,9 @@
 
 (function () {
     const DEBUG = false;
+    const report = (elt, name, detail) => window.Rizzy?.diagnostics?.report
+        ? window.Rizzy.diagnostics.report(elt, name, detail)
+        : htmx.trigger(elt, name, detail);
 
     const STREAM_SINK_ATTR = "data-rizzy-stream-sink";
     const HTML_CLOSE = "</html>";
@@ -130,8 +133,8 @@
         ctx.extensionPromise = readRemainder(state, decoder)
             .catch((error) => {
                 if (error?.name !== "AbortError") {
-                    htmx.trigger(ctx.sourceElement, "htmx:error", { ctx, error });
-                    if (DEBUG) console.error("[rizzy-streaming] stream error", error);
+                    // Logged per htmx's detail.error convention, then dispatched (RM-D3).
+                    report(ctx.sourceElement, "htmx:error", { ctx, error });
                 }
             })
             .finally(() => closeStream(state));

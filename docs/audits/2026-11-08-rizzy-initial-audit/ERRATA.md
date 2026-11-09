@@ -52,3 +52,9 @@ Verified against the htmx 4.0.1 source (`node_modules/htmx.org/dist/htmx.js`) wh
 | Evidence | Form data reached Blazor form mapping only through `RzController.OnActionExecuting`. `app.MapPost("/x", (IRizzyService r) => r.View<T>())` rendered `[SupplyParameterFromForm]` properties as null. Reproduced by `FormPostTests.Minimal_api_view_binds_named_form_values` before the fix. |
 | Resolution | Fixed in Phase C. `RizzyViewResult` supplies the form when any Rizzy view executes. |
 | Status / Confidence | Confirmed (runtime) / High |
+
+## Notes from roadmap Phase D
+
+- **RM-D1** was finished in Phase C (RM-C1): the form is read with `ReadFormAsync`, at most once per request, and the reflection lookup runs once per process. `FormPostTests.Multipart_form_is_read_asynchronously` posts a 200 KB multipart body to a TestServer, which disallows synchronous IO.
+- **RIZZY-028 addition:** htmx 4 applies its `detail.error` logging convention only to events that htmx core triggers itself. The public `htmx.trigger()` dispatches without logging, so the streaming extension's `htmx:error` for a broken stream was never logged. Phase D routes extension errors through `Rizzy.diagnostics.report()`, which logs per the convention and then dispatches.
+- **RIZZY-032 follow-up:** `benchmarks/Rizzy.Benchmarks` records end-to-end baselines (see its README). A full-page `View<T>` costs about 2× a plain `RazorComponentResult`; htmx requests cost about the same as the baseline.
