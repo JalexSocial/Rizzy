@@ -96,3 +96,47 @@ jobs:
             echo "::error::Committed client bundle is out of date. Run 'npm run build' in packages/rizzy and commit the result."
             exit 1
           fi
+
+  e2e:
+    name: Browser tests (Playwright, demo app)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: test/e2e
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: test/e2e/package-lock.json
+
+      - name: Build the demo
+        working-directory: .
+        run: dotnet build src/RizzyDemo/RizzyDemo.csproj -c Release
+
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      # playwright.config.mjs starts the demo (dotnet run --no-build) and waits for it.
+      - name: Run browser tests
+        run: npx playwright test
+
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            test/e2e/playwright-report/
+            test/e2e/test-results/
+          if-no-files-found: ignore

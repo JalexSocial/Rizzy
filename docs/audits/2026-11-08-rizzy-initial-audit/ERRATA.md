@@ -94,3 +94,17 @@ The streaming extension (RIZZY-003) is now checked end to end:
   - The demo sends a strict `script-src 'nonce-…'` CSP and uses `app.UseHtmxErrorHandling()`, the htmx 4 default error swapping and `hx-history-elt`.
   - A new Examples page covers table rows with an out-of-band button, `hx-confirm` with antiforgery, CSP nonces and server errors. The Validation page returns 422 with field errors.
   - The BL0008 warning is fixed.
+
+## RM-A7 completed
+
+- **Browser tests:** `test/e2e` holds a Playwright suite (15 tests, Chromium) against the demo, and CI runs it in an `e2e` job. It covers:
+  - boosted navigation and back/forward history with `hx-history-elt`
+  - native `hx-confirm` (dismiss and accept)
+  - table rows with an out-of-band swap
+  - progressive streaming
+  - 422 validation
+  - CSP nonce promotion vs. an injected script
+  - server errors and antiforgery
+
+  Each test also fails on unexpected console errors or Rizzy configuration warnings.
+- **Coverage (2026-11-09):** line coverage is Rizzy 60.1%, Rizzy.Htmx 72.6% and Rizzy.SourceGenerators 83.6% (branch: 45.5%, 64.9% and 61.9%). This meets the RM-A7 target of at least 50% for the Rizzy package.

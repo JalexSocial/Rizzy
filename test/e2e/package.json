@@ -1,0 +1,12 @@
+{
+  "name": "rizzy-e2e",
+  "private": true,
+  "description": "Browser tests for Rizzy against the demo app (RM-A7). See README.md.",
+  "scripts": {
+    "test": "playwright test",
+    "install-browser": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0"
+  }
+}

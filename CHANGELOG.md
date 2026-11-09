@@ -102,7 +102,8 @@ The 6.0.0 release: htmx 4 support. Upgrading from 5.x is covered step by step in
 ### Changed
 
 - **Builds and tests.** CI builds, tests and packs every pull request, runs a consumer smoke test
-  against the packed packages, and checks that the committed client bundle is current. Releases
+  against the packed packages, runs Playwright browser tests against the demo, and checks that the
+  committed client bundle is current. Releases
   are published only from a version tag (RIZZY-010, RIZZY-023).
 - **Dependencies.** Unused dependencies are removed, and the JS toolchain is updated (RIZZY-024).
 
