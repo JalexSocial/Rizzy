@@ -73,6 +73,7 @@ python eng/check-package-contents.py ./artifacts/nupkgs && bash eng/consumer-smo
 Other things worth knowing:
 
 - **Public API changes** fail `PublicApiBaselineTests`. If the change is intended, regenerate the baselines with `RIZZY_UPDATE_API_BASELINE=1 dotnet test test/Rizzy.Tests/Rizzy.Tests.csproj` and commit `test/Rizzy.Tests/PublicApi/*.txt`, and list breaking changes in `CHANGELOG.md`.
+- **Browser tests** run the demo in Chromium with Playwright: `cd test/e2e && npm ci && npx playwright install chromium && npx playwright test` (see `test/e2e/README.md`). CI runs them on every pull request.
 - **The demo** (`src/RizzyDemo`) is part of the solution: `dotnet run --project src/RizzyDemo --launch-profile http`, then open http://localhost:5088/home/.
 - **Benchmarks:** see `benchmarks/Rizzy.Benchmarks/README.md`.
 - **Versions** are set in one place, `Directory.Build.props`. Releases are cut by the maintainers from a `vX.Y.Z` tag (see `CHANGELOG.md` and `.github/workflows/release.yml`).
