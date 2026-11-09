@@ -116,6 +116,7 @@ Rizzy.RizzyService.View<TComponent>(System.Object data = null, Microsoft.AspNetC
 Rizzy.RizzyService.ctor(Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor)
 Rizzy.RizzyViewResult.ExecuteAsync(Microsoft.AspNetCore.Http.HttpContext httpContext) -> System.Threading.Tasks.Task
 Rizzy.RizzyViewResult.Parameters : System.Collections.Generic.IReadOnlyDictionary<System.String, System.Object> { get; }
+Rizzy.RzHeadOutlet.ctor()
 Rizzy.RzInitialValidator.EditContext : Microsoft.AspNetCore.Components.Forms.EditContext { get; set; }
 Rizzy.RzInitialValidator.ctor()
 Rizzy.RzInputCheckboxBase.DataAnnotationsProcessor : Rizzy.DataAnnotationsProcessor { get; set; }
@@ -211,6 +212,7 @@ sealed class Rizzy.HtmxLayout<T> : Microsoft.AspNetCore.Components.LayoutCompone
 sealed class Rizzy.RizzyNonceProvider : Rizzy.Htmx.IRizzyNonceProvider
 sealed class Rizzy.RizzyService : Rizzy.IRizzyService
 sealed class Rizzy.RizzyViewResult : Microsoft.AspNetCore.Http.IResult
+sealed class Rizzy.RzHeadOutlet : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
 sealed class Rizzy.RzPageTitle : Microsoft.AspNetCore.Components.ComponentBase, Microsoft.AspNetCore.Components.IComponent, Microsoft.AspNetCore.Components.IHandleAfterRender, Microsoft.AspNetCore.Components.IHandleEvent
 static class Rizzy.AppBuilderExtensions
 static class Rizzy.Components.Form.Helpers.ExpressionFormatter

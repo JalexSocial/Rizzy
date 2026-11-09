@@ -19,8 +19,8 @@ internal sealed partial class RizzyStartupDiagnostics(IOptions<RizzyConfig> conf
     }
 
     [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message =
-        "RizzyConfig.RootComponent is the default HtmxApp<EmptyLayout>, which renders no <head> or <HeadOutlet />. " +
+        "RizzyConfig.RootComponent is the default HtmxApp<EmptyLayout>, which renders no <head> or <RzHeadOutlet />. " +
         "The htmx-config meta tag (htmx settings and the antiforgery token) will not be rendered, so unsafe htmx requests " +
-        "will fail antiforgery validation. Set RootComponent to HtmxApp<YourRootLayout>, where the layout renders <HeadOutlet />.")]
+        "will fail antiforgery validation. Set RootComponent to HtmxApp<YourRootLayout>, where the layout renders <RzHeadOutlet /> in its <head>, before the htmx script.")]
     private static partial void LogDefaultRootComponent(ILogger logger);
 }

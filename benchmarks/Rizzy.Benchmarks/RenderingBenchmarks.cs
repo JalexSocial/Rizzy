@@ -105,7 +105,7 @@ public sealed class BenchRootLayout : LayoutComponentBase
         builder.AddMarkupContent(0, "<!DOCTYPE html>");
         builder.OpenElement(1, "html");
         builder.OpenElement(2, "head");
-        builder.OpenComponent<HeadOutlet>(3);
+        builder.OpenComponent<RzHeadOutlet>(3);
         builder.CloseComponent();
         builder.CloseElement();
         builder.OpenElement(4, "body");

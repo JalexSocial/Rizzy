@@ -43,7 +43,7 @@ test('a page without the htmx-config meta tag logs exactly one warning', async (
     const { logs, events } = await boot();
     assert.equal(logs.warn.length, 1);
     assert.match(logs.warn[0][0], /^htmx: htmx:rizzy:config:warn: Rizzy: no <meta name="htmx-config">/);
-    assert.match(logs.warn[0][0], /<HeadOutlet \/>/);
+    assert.match(logs.warn[0][0], /Render <RzHeadOutlet \/> instead of <HeadOutlet \/>/);
     assert.equal(events.length, 1);
     assert.equal(events[0].name, 'htmx:rizzy:config:warn');
     assert.equal(logs.error.length, 0);

@@ -26,7 +26,7 @@
       const meta = doc.querySelector('meta[name="htmx-config"]');
       if (!meta) {
         warnings.push(
-          `Rizzy: no <meta name="htmx-config"> on this page. The root component must render <HeadOutlet /> (Rizzy's HtmxApp<TLayout> does), otherwise the antiforgery token and Rizzy settings are not sent to the client.`
+          'Rizzy: no <meta name="htmx-config"> on this page, so htmx has no antiforgery token or Rizzy settings. Render <RzHeadOutlet /> instead of <HeadOutlet /> in the <head> of your root layout, before the htmx script (Rizzy 6 no longer adds the tag through HeadContent).'
         );
       } else {
         let config = null;

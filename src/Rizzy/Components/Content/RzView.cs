@@ -115,15 +115,9 @@ internal sealed class RzView : ComponentBase
 
             if (Mode == RzViewMode.Page)
             {
-                // Inject htmx configuration and antiforgery token scripts into the head, then render the root component which will wrap the entire page content.
-                bodyBuilder.OpenComponent<Microsoft.AspNetCore.Components.Web.HeadContent>(1);
-                bodyBuilder.AddAttribute(2, "ChildContent", (RenderFragment)(headBuilder => {
-                    headBuilder.OpenComponent<HtmxConfigHeadOutlet>(3);
-                    headBuilder.CloseComponent();
-                }));
-                bodyBuilder.CloseComponent();
-
-                // Render the root component, which will wrap the content. This allows for full-page composition and ensures that HTMX scripts are included in the correct order.
+                // The root component wraps the page. Its layout renders <RzHeadOutlet />, which emits
+                // the htmx config meta tag directly (not through HeadContent, which a page's own
+                // HeadContent would replace: RIZZY-036).
                 bodyBuilder.OpenComponent(5, RizzyConfig?.Value.RootComponent ?? typeof(EmptyRootComponent));
                 bodyBuilder.AddAttribute(6, "ChildContent", content);
                 bodyBuilder.CloseComponent();
