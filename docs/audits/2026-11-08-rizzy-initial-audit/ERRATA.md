@@ -88,7 +88,7 @@ The streaming extension (RIZZY-003) is now checked end to end:
 
 ### Phase E notes
 
-- **RIZZY-033:** the remaining items are done. `llmquery.txt` and `stats.html` are removed and ignored, `.serena/` is ignored, `global.json` and `.editorconfig` are added, and CONTRIBUTING describes the real branch model and build steps. The stale solution entry was already gone.
+- **RIZZY-033:** the remaining items are done. `llmquery.txt` and `stats.html` are removed and ignored, `.serena/` stays tracked (its own `.gitignore` excludes the local cache), `global.json` and `.editorconfig` are added, and CONTRIBUTING describes the real branch model and build steps. The stale solution entry was already gone.
 - **RIZZY-024:** `npm audit` is clean (Vite 6.4.6). `aspnet-client-validation` (unused) and the unused test packages `Alba` and `System.IdentityModel.Tokens.Jwt` are removed. bUnit 2.14.0 removes the transitive AngleSharp advisory (NU1902). FluentAssertions stays on 7.x.
 - **Demo (RM-E3):**
   - The demo sends a strict `script-src 'nonce-…'` CSP and uses `app.UseHtmxErrorHandling()`, the htmx 4 default error swapping and `hx-history-elt`.

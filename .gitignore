@@ -353,6 +353,5 @@ healthchecksdb
 MigrationBackup/
 
 # Local tooling and generated artifacts (RIZZY-033)
-.serena/
 packages/rizzy/stats.html
 llmquery.txt
