@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Rizzy.Htmx.Serialization;
 
@@ -11,12 +11,9 @@ namespace Rizzy.Htmx.Serialization;
     Converters = [
         typeof(TimespanMillisecondJsonConverter),
         typeof(SwapStyleEnumConverter),
-        typeof(JsonCamelCaseStringEnumConverter<ScrollBehavior>),
         typeof(HtmxHistoryModeJsonConverter),
     ])]
 [JsonSerializable(typeof(HtmxConfig))]
-[JsonSerializable(typeof(LocationTarget))]
-[JsonSerializable(typeof(AjaxContext))]
 internal sealed partial class HtmxJsonSerializerContext : JsonSerializerContext
 {
 }

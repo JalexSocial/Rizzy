@@ -8,6 +8,8 @@ Rizzy is a lightweight library that enhances Asp.net MVC applications by seamles
 
 For detailed documentation and examples, please visit the [Rizzy Documentation Site](https://jalexsocial.github.io/rizzy.docs/).
 
+**Upgrading from Rizzy 5 / htmx 2?** Rizzy 6 targets htmx 4.0.1+. See the [upgrade guide](docs/migration/htmx2-to-htmx4.md) for the compatibility table, required markup changes and breaking API changes.
+
 ## Leverage the Best of Both Worlds: Robust MVC Structure meets Modern Blazor UI Components
 
 Remember the power and structure of ASP.NET MVC? The clear separation of concerns, the robust routing and model binding, the mature ecosystem for handling business logic, security, and data access? It's a solid foundation many .NET developers know and trust.

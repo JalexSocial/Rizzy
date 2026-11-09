@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text;
 
 namespace Rizzy.Htmx;
 
@@ -34,8 +35,7 @@ public sealed class SwapStyleBuilder
     public SwapStyleBuilder AfterSwapDelay(TimeSpan time)
     {
         // swap
-        specification.SwapDelay =
-            time.TotalMilliseconds < 1000 ? $"{time.TotalMilliseconds}ms" : $"{time.TotalSeconds}s";
+        specification.SwapDelay = HconFormat.Interval(time);
 
         return this;
     }
@@ -55,8 +55,7 @@ public sealed class SwapStyleBuilder
     public SwapStyleBuilder AfterSettleDelay(TimeSpan time)
     {
         // settle
-        specification.SettleDelay =
-            time.TotalMilliseconds < 1000 ? $"{time.TotalMilliseconds}ms" : $"{time.TotalSeconds}s";
+        specification.SettleDelay = HconFormat.Interval(time);
 
         return this;
     }
@@ -185,14 +184,14 @@ public sealed class SwapStyleBuilder
     /// unwanted behavior on longer requests when the user has already scrolled away. 
     /// </summary>
     /// <remarks>
-    /// <paramref name="scroll"/> when true will be <c>focus-scroll:true</c>, otherwise when false
-    /// will be <c>focus-scroll:false</c>
+    /// <paramref name="scroll"/> when true will be <c>focusScroll:true</c>, otherwise when false
+    /// will be <c>focusScroll:false</c>
     /// </remarks>
     /// <param name="scroll">Whether to scroll to the focus element.</param>
     /// <returns>This <see cref="SwapStyleBuilder"/> object instance.</returns>
     public SwapStyleBuilder ScrollFocus(bool scroll = true)
     {
-        // focus-scroll
+        // focusScroll
         specification.FocusScroll = scroll;
 
         return this;
@@ -203,7 +202,7 @@ public sealed class SwapStyleBuilder
     /// scrolling.
     /// </summary>
     /// <remarks>
-    /// Adds a modifier of <c>focus-scroll:false</c>
+    /// Adds a modifier of <c>focusScroll:false</c>
     /// </remarks>
     /// <returns>This <see cref="SwapStyleBuilder"/> object instance.</returns>
     public SwapStyleBuilder PreserveFocus() => ScrollFocus(false);
@@ -309,6 +308,47 @@ public sealed class SwapStyleBuilder
     public SwapStyleBuilder ShowWindowBottom() => ShowWindow(ScrollDirection.bottom);
 
     /// <summary>
+    /// Controls whether the outer element of the response is stripped before swapping, by adding
+    /// the modifier <c>strip:<paramref name="strip"/></c>.
+    /// </summary>
+    /// <param name="strip">True to swap only the children of the response's root element.</param>
+    /// <returns>This <see cref="SwapStyleBuilder"/> object instance.</returns>
+    public SwapStyleBuilder Strip(bool strip = true)
+    {
+        specification.Strip = strip;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Overrides the swap target by adding the modifier <c>target:<paramref name="cssSelector"/></c>.
+    /// Selectors containing whitespace or commas are quoted.
+    /// </summary>
+    /// <param name="cssSelector">An (extended) CSS selector for the element to swap into.</param>
+    /// <returns>This <see cref="SwapStyleBuilder"/> object instance.</returns>
+    public SwapStyleBuilder Target(string cssSelector)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(cssSelector);
+        specification.Target = cssSelector;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Controls whether an empty main response body is swapped (clearing the target), by adding the
+    /// modifier <c>swapEmpty:<paramref name="swapEmpty"/></c>. By default htmx 4 skips the main
+    /// swap when the response only contained partials.
+    /// </summary>
+    /// <param name="swapEmpty">True to swap even when the main content is empty.</param>
+    /// <returns>This <see cref="SwapStyleBuilder"/> object instance.</returns>
+    public SwapStyleBuilder SwapEmpty(bool swapEmpty = true)
+    {
+        specification.SwapEmpty = swapEmpty;
+
+        return this;
+    }
+
+    /// <summary>
     /// Turns off scrolling after swap.
     /// </summary>
     /// <remarks>
@@ -338,27 +378,33 @@ public sealed class SwapStyleBuilder
     /// <returns>A tuple containing the <see cref="SwapStyle"/> and the constructed command string.</returns>
     internal string Build()
     {
-        string value = specification.SwapStyle.ToHtmxString();
+        var value = new StringBuilder(specification.SwapStyle.ToHtmxString());
 
-        if (specification.SwapDelay != null)
-            value += " swap:" + specification.SwapDelay;
-        if (specification.SettleDelay != null)
-            value += " settle:" + specification.SettleDelay;
-        if (specification.Scroll != null)
-            value += " scroll:" + specification.Scroll;
-        if (specification.ScrollTarget != null)
-            value += " scrollTarget:" + specification.ScrollTarget;
-        if (specification.IgnoreTitle.HasValue)
-            value += " ignoreTitle:" + specification.IgnoreTitle.Value.ToString().ToLowerInvariant();
-        if (specification.Transition.HasValue)
-            value += " transition:" + specification.Transition.Value.ToString().ToLowerInvariant();
-        if (specification.FocusScroll.HasValue)
-            value += " focus-scroll:" + specification.FocusScroll.Value.ToString().ToLowerInvariant();
-        if (specification.Show != null)
-            value += " show:" + specification.Show;
-        if (specification.ShowTarget != null)
-            value += " showTarget:" + specification.ShowTarget;
+        Append(value, "swap", specification.SwapDelay);
+        Append(value, "settle", specification.SettleDelay);
+        Append(value, "scroll", specification.Scroll);
+        Append(value, "scrollTarget", specification.ScrollTarget is null ? null : HconFormat.Value(specification.ScrollTarget));
+        Append(value, "ignoreTitle", specification.IgnoreTitle);
+        Append(value, "transition", specification.Transition);
+        Append(value, "focusScroll", specification.FocusScroll);
+        Append(value, "show", specification.Show);
+        Append(value, "showTarget", specification.ShowTarget is null ? null : HconFormat.Value(specification.ShowTarget));
+        Append(value, "strip", specification.Strip);
+        Append(value, "swapEmpty", specification.SwapEmpty);
+        Append(value, "target", specification.Target is null ? null : HconFormat.Value(specification.Target));
 
-        return value.TrimStart();
+        return value.ToString().TrimStart();
+    }
+
+    private static void Append(StringBuilder sb, string name, string? value)
+    {
+        if (value != null)
+            sb.Append(' ').Append(name).Append(':').Append(value);
+    }
+
+    private static void Append(StringBuilder sb, string name, bool? value)
+    {
+        if (value.HasValue)
+            sb.Append(' ').Append(name).Append(':').Append(value.Value ? "true" : "false");
     }
 }

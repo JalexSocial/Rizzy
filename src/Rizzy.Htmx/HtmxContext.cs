@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 
 namespace Rizzy.Htmx;
 
@@ -13,7 +13,8 @@ public class HtmxContext
     /// <param name="context"></param>
     public HtmxContext(HttpContext context)
     {
-        Request = new HtmxRequest(context);
+        ArgumentNullException.ThrowIfNull(context);
+        Request = context.Request.Htmx();
         Response = new HtmxResponse(context);
     }
 

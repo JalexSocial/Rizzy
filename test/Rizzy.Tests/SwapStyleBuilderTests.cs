@@ -72,7 +72,7 @@ public partial class SwapStyleBuilderTests
 
         var modifiers = sut.ScrollFocus(true).Build();
 
-        modifiers.Should().Be("focus-scroll:true");
+        modifiers.Should().Be("focusScroll:true");
     }
 
     [Fact]

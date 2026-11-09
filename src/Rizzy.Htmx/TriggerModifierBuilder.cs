@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 
 namespace Rizzy.Htmx;
 
@@ -10,7 +9,7 @@ namespace Rizzy.Htmx;
 /// <remarks>
 /// The <see cref="TriggerModifierBuilder"/> class extends the functionality of the <see cref="TriggerBuilder"/> 
 /// by allowing the addition of conditions, delays, throttles, source elements, target filters, consumption flags, 
-/// and queuing options to the htmx trigger definitions.
+/// and event-handling flags to the htmx trigger definitions.
 /// </remarks>
 [DebuggerDisplay("{ToString(),nq}")]
 public sealed class TriggerModifierBuilder
@@ -136,6 +135,8 @@ public sealed class TriggerModifierBuilder
     /// <code>
     /// Trigger.OnEvent("keydown").From("document")
     /// // Resulting hx-trigger: <![CDATA[<div hx-get="/hotkeys" hx-trigger="keydown from:document">Listen on Document]]>
+    /// Trigger.OnEvent("submit").From("closest form")
+    /// // Resulting hx-trigger: submit from:'closest form'
     /// </code>
     /// </example>
     public TriggerModifierBuilder From(string extendedCssSelector)
@@ -184,32 +185,99 @@ public sealed class TriggerModifierBuilder
     }
 
     /// <summary>
-    /// Specifies how events are queued when an event occurs while a request is in flight by adding the modifier <c>queue:<paramref name="option"/></c>.
+    /// Calls <c>preventDefault()</c> on the triggering event by adding the modifier <c>prevent</c>.
     /// </summary>
-    /// <remarks>
-    /// This method sets the event queuing option, such as "first", "last", "all", or "none".
-    /// </remarks>
-    /// <param name="option">(optional) The queue option as a <see cref="TriggerQueueOption"/>.</param>
     /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
     /// <example>
     /// <code>
-    /// Trigger.OnEvent("click").Queue(TriggerQueueOption.All)
-    /// // Resulting hx-trigger: <![CDATA[<div hx-get="/process" hx-trigger="click queue:all">Queue All]]>
+    /// Trigger.OnEvent("submit").Prevent()
+    /// // Resulting hx-trigger: submit prevent
     /// </code>
     /// </example>
-    public TriggerModifierBuilder Queue(TriggerQueueOption option = TriggerQueueOption.last)
+    public TriggerModifierBuilder Prevent()
     {
-        var value = option switch
-        {
-            TriggerQueueOption.first => "first",
-            TriggerQueueOption.last => "last",
-            TriggerQueueOption.none => "none",
-            TriggerQueueOption.all => "all",
-            _ => throw new SwitchExpressionException(option),
-        };
+        specification.Prevent = true;
+        return this;
+    }
 
-        specification.Queue = value;
+    /// <summary>
+    /// Calls <c>stopPropagation()</c> on the triggering event by adding the modifier <c>stop</c>.
+    /// </summary>
+    /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
+    public TriggerModifierBuilder Stop()
+    {
+        specification.Stop = true;
+        return this;
+    }
 
+    /// <summary>
+    /// Calls both <c>preventDefault()</c> and <c>stopPropagation()</c> on the triggering event by
+    /// adding the modifier <c>halt</c>.
+    /// </summary>
+    /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
+    public TriggerModifierBuilder Halt()
+    {
+        specification.Halt = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Registers the event listener in the capture phase by adding the modifier <c>capture</c>.
+    /// </summary>
+    /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
+    public TriggerModifierBuilder Capture()
+    {
+        specification.Capture = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Registers the event listener as passive by adding the modifier <c>passive</c>.
+    /// </summary>
+    /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
+    public TriggerModifierBuilder Passive()
+    {
+        specification.Passive = true;
+        return this;
+    }
+
+    /// <summary>
+    /// Only triggers when the event originates from the element itself, not a descendant, by
+    /// adding the modifier <c>from:self</c>.
+    /// </summary>
+    /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
+    public TriggerModifierBuilder FromSelf()
+    {
+        specification.From = Constants.TriggerModifiers.FromSelf;
+        return this;
+    }
+
+    /// <summary>
+    /// Triggers when the event happens outside the element (for example, click-away) by adding the
+    /// modifier <c>from:outside</c>.
+    /// </summary>
+    /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
+    /// <example>
+    /// <code>
+    /// Trigger.OnEvent("click").FromOutside()
+    /// // Resulting hx-trigger: click from:outside
+    /// </code>
+    /// </example>
+    public TriggerModifierBuilder FromOutside()
+    {
+        specification.From = Constants.TriggerModifiers.FromOutside;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the intersection observer root margin for <c>intersect</c>/<c>revealed</c> triggers by
+    /// adding the modifier <c>rootMargin:<paramref name="margin"/></c>.
+    /// </summary>
+    /// <param name="margin">A CSS margin value such as <c>"10px 0px"</c>.</param>
+    /// <returns>This <see cref="TriggerModifierBuilder"/> instance.</returns>
+    public TriggerModifierBuilder RootMargin(string margin)
+    {
+        specification.RootMargin = margin;
         return this;
     }
 

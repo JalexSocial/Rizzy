@@ -27,6 +27,7 @@ public static class SwapStyleExtensions
             SwapStyle.after => Constants.SwapStyles.After,
             SwapStyle.prepend => Constants.SwapStyles.Prepend,
             SwapStyle.append => Constants.SwapStyles.Append,
+            SwapStyle.outerSync => Constants.SwapStyles.OuterSync,
             SwapStyle.Default => Constants.SwapStyles.Default,
             _ => throw new SwitchExpressionException(swapStyle),
         };

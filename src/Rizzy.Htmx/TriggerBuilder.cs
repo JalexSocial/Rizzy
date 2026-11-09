@@ -20,11 +20,10 @@ namespace Rizzy.Htmx;
 ///     .Throttle(TimeSpan.FromSeconds(2))
 ///     .From("document")
 ///     .Target(".child")
-///     .Consume()
-///     .Queue(TriggerQueueOption.All);
-///     
+///     .Consume();
+///
 /// string triggerDefinition = trigger.ToString();
-/// // Resulting hx-trigger: "click[ctrlKey] delay:1s throttle:2s from:document target:.child consume queue:all"
+/// // Resulting hx-trigger: "click[ctrlKey] delay:1s throttle:2s from:document target:.child consume"
 /// </code>
 /// </example>
 [DebuggerDisplay("{ToString(),nq}")]
@@ -159,7 +158,9 @@ public sealed class TriggerBuilder
 
     internal void AddTrigger(HtmxTriggerSpecification trigger)
     {
-        if (!triggers.Contains(trigger))
+        // Reference check: specs are added before their modifiers are applied, so value equality
+        // would wrongly drop a second trigger that starts out identical to an earlier one.
+        if (!triggers.Exists(t => ReferenceEquals(t, trigger)))
             triggers.Add(trigger);
     }
 

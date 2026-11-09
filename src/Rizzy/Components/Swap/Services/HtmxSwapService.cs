@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -133,7 +133,7 @@ public class HtmxSwapService : IHtmxSwapService
     /// <returns>A RenderFragment containing all the content managed by the service.</returns>
     public RenderFragment RenderToFragment()
     {
-        var isHtmx = new HtmxRequest(_httpContext).IsHtmx;
+        var isHtmx = _httpContext.Request.Htmx().IsHtmx;
 
         return builder =>
         {

@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -28,6 +28,7 @@ internal sealed class SwapStyleEnumConverter : JsonConverter<SwapStyle>
             Constants.SwapStyles.After => SwapStyle.after,
             Constants.SwapStyles.Prepend => SwapStyle.prepend,
             Constants.SwapStyles.Append => SwapStyle.append,
+            Constants.SwapStyles.OuterSync => SwapStyle.outerSync,
             _ => throw new SwitchExpressionException(value)
         };
 
