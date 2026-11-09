@@ -1,0 +1,101 @@
+name: Release
+
+# Publishes Rizzy, Rizzy.Htmx and @jalexsocial/rizzy together, with one version taken from
+# the git tag (e.g. v6.0.0 or v6.0.0-preview.1). Nothing is published from ordinary pushes.
+# Pushes do NOT use --skip-duplicate: re-using a version must fail loudly (RIZZY-001, RIZZY-010).
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (without the leading v), e.g. 6.0.0-preview.1'
+        required: true
+
+permissions:
+  contents: write   # create the GitHub release
+  id-token: write   # npm provenance
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: release
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine version
+        id: version
+        shell: bash
+        run: |
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            version="${{ github.event.inputs.version }}"
+          else
+            version="${GITHUB_REF_NAME#v}"
+          fi
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::'$version' is not a valid SemVer version"
+            exit 1
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [[ "$version" == *-* ]]; then echo "npm_tag=next" >> "$GITHUB_OUTPUT"; else echo "npm_tag=latest" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org/
+
+      - name: Build
+        run: dotnet build src/Rizzy.sln -c Release -p:Version=${{ steps.version.outputs.version }}
+
+      - name: Test
+        run: dotnet test test/Rizzy.Tests/Rizzy.Tests.csproj -c Release --no-build
+
+      - name: JS test and build check
+        working-directory: packages/rizzy
+        run: |
+          npm ci
+          npm test
+          npm run build:check
+          cd ../.. && git add -N packages/rizzy/dist src/Rizzy/wwwroot/js && git diff --exit-code --stat -- packages/rizzy/dist src/Rizzy/wwwroot/js
+
+      - name: Pack
+        run: |
+          dotnet pack src/Rizzy.Htmx/Rizzy.Htmx.csproj -c Release --no-build -p:Version=${{ steps.version.outputs.version }} -o ./artifacts/nupkgs
+          dotnet pack src/Rizzy/Rizzy.csproj -c Release --no-build -p:Version=${{ steps.version.outputs.version }} -o ./artifacts/nupkgs
+
+      - name: Check package contents
+        run: python3 eng/check-package-contents.py ./artifacts/nupkgs ${{ steps.version.outputs.version }}
+
+      - name: Consumer smoke test
+        run: bash eng/consumer-smoke-test.sh ./artifacts/nupkgs ${{ steps.version.outputs.version }}
+
+      - name: Push to NuGet
+        run: >
+          dotnet nuget push "./artifacts/nupkgs/*.nupkg"
+          --api-key "${{ secrets.NUGET_API_KEY }}"
+          --source https://api.nuget.org/v3/index.json
+
+      - name: Publish npm package
+        working-directory: packages/rizzy
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm pkg set version=${{ steps.version.outputs.version }}
+          npm publish --access public --provenance --tag ${{ steps.version.outputs.npm_tag }}
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=""
+          if [[ "${{ steps.version.outputs.version }}" == *-* ]]; then prerelease="--prerelease"; fi
+          gh release create "v${{ steps.version.outputs.version }}" ./artifacts/nupkgs/*.nupkg \
+            --title "v${{ steps.version.outputs.version }}" --generate-notes $prerelease --verify-tag || \
+          gh release create "v${{ steps.version.outputs.version }}" ./artifacts/nupkgs/*.nupkg \
+            --title "v${{ steps.version.outputs.version }}" --generate-notes $prerelease --target "${{ github.sha }}"

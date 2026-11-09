@@ -347,7 +347,7 @@ public void Initialize(IncrementalGeneratorInitializationContext context)
                 }
                 methodBuilder.AppendLine("</param>");
             }
-            methodBuilder.AppendLine($@"    /// <returns>A <see cref=""global::System.Collections.Generic.Dictionary{{string,object}}"" /> containing the component parameters.</returns>");
+            methodBuilder.AppendLine($@"    /// <returns>A <see cref=""global::System.Collections.Generic.Dictionary{{TKey,TValue}}"" /> (string keys, object values) containing the component parameters.</returns>");
             
             methodBuilder.Append($"    public static global::System.Collections.Generic.Dictionary<string, object?> Params(");
 

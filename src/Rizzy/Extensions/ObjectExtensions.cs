@@ -29,26 +29,38 @@ public static class ObjectExtensions
         return dict;
     }
 
+    // The default System.Text.Json encoder escapes HTML-sensitive characters (<, >, &, ', +, `),
+    // backslashes, control characters and line/paragraph separators, so the output is always a
+    // single valid JavaScript expression that cannot break out of a string literal.
+    private static readonly JsonSerializerOptions AlpineDataOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.Never
+    };
+
+    private static readonly JsonSerializerOptions AlpineDataIgnoreNullOptions = new()
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
+
     /// <summary>
-    /// Serializes .NET objects for use with Alpine.js x-data attribute
+    /// Serializes .NET objects for use with an Alpine.js <c>x-data</c> attribute.
     /// </summary>
-    /// <param name="value"></param>
-    /// <param name="ignoreNullValues"></param>
+    /// <remarks>
+    /// The result is standard, HTML-safe JSON (a valid JavaScript object literal). Razor
+    /// attribute-encodes the double quotes, and the browser decodes them before Alpine
+    /// evaluates the expression, so untrusted string values cannot inject script.
+    /// </remarks>
+    /// <param name="value">The object to serialize.</param>
+    /// <param name="ignoreNullValues">When <see langword="true"/>, properties with null values are omitted.</param>
     /// <code>
     /// <Widget x-data="@myDataObject.SerializeAsAlpineData()"></Widget>
     /// </code>
-    /// <returns></returns>
+    /// <returns>A JSON string, or an empty string when <paramref name="value"/> is null.</returns>
     public static string SerializeAsAlpineData(this object? value, bool ignoreNullValues = false)
     {
         if (value is null)
             return string.Empty;
 
-        var options = new JsonSerializerOptions
-        {
-            Converters = { new SingleQuoteStringConverter() },
-            DefaultIgnoreCondition = ignoreNullValues ? JsonIgnoreCondition.WhenWritingNull : JsonIgnoreCondition.Never 
-        };
-
-        return JsonSerializer.Serialize(value, options);
+        return JsonSerializer.Serialize(value, ignoreNullValues ? AlpineDataIgnoreNullOptions : AlpineDataOptions);
     }
 }

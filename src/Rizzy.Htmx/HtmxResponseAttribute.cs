@@ -22,12 +22,12 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     /// <summary>
     /// Prevents the browser's history from being updated.
     /// </summary>
-    public bool? PreventBrowserHistoryUpdate { get; set; }
+    public bool PreventBrowserHistoryUpdate { get; set; }
 
     /// <summary>
     /// Prevents the browser's current URL from being updated.
     /// </summary>
-    public bool? PreventBrowserCurrentUrlUpdate { get; set; }
+    public bool PreventBrowserCurrentUrlUpdate { get; set; }
 
     /// <summary>
     /// Initiates a client-side redirect to a specified URL.
@@ -37,7 +37,7 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     /// <summary>
     /// Triggers a client-side full page refresh.
     /// </summary>
-    public bool? Refresh { get; set; }
+    public bool Refresh { get; set; }
 
     /// <summary>
     /// Replaces the current URL in the browser's location bar.
@@ -46,8 +46,9 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
 
     /// <summary>
     /// Specifies how the response will be swapped in the client-side, using HTMX swap strategies.
+    /// <see cref="SwapStyle.Default"/> (the default) means no <c>HX-Reswap</c> header is sent.
     /// </summary>
-    public SwapStyle? Reswap { get; set; }
+    public SwapStyle Reswap { get; set; } = SwapStyle.Default;
 
     /// <summary>
     /// Updates the target of the content update to a different element on the page using a CSS selector.
@@ -64,23 +65,31 @@ public sealed class HtmxResponseAttribute : Attribute, IResultFilter
     /// Called before the action result is executed. This method applies the HTMX configurations
     /// specified by the attribute properties to the response headers.
     /// </summary>
+    /// <remarks>
+    /// The attribute does nothing for requests that were not made by htmx, so decorated actions
+    /// still work for normal browser navigation (progressive enhancement).
+    /// </remarks>
     /// <param name="context">The context in which the result is being executed.</param>
-    /// <exception cref="ArgumentNullException">Thrown if the context is null.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="context"/> is null.</exception>
     public void OnResultExecuting(ResultExecutingContext context)
     {
-        if (context == null) throw new ArgumentNullException(nameof(context));
+        ArgumentNullException.ThrowIfNull(context);
+
+        // htmx response headers are meaningless for non-htmx requests; skip instead of failing.
+        if (!context.HttpContext.Request.IsHtmx())
+            return;
 
         var htmxResponse = new HtmxResponse(context.HttpContext);
 
         // Dynamically apply the HTMX response configurations based on set properties
         if (!string.IsNullOrEmpty(Location)) htmxResponse.Location(Location);
         if (!string.IsNullOrEmpty(PushUrl)) htmxResponse.PushUrl(PushUrl);
-        if (PreventBrowserHistoryUpdate == true) htmxResponse.PreventBrowserHistoryUpdate();
-        if (PreventBrowserCurrentUrlUpdate == true) htmxResponse.PreventBrowserCurrentUrlUpdate();
+        if (PreventBrowserHistoryUpdate) htmxResponse.PreventBrowserHistoryUpdate();
+        if (PreventBrowserCurrentUrlUpdate) htmxResponse.PreventBrowserCurrentUrlUpdate();
         if (!string.IsNullOrEmpty(Redirect)) htmxResponse.Redirect(Redirect);
-        if (Refresh == true) htmxResponse.Refresh();
+        if (Refresh) htmxResponse.Refresh();
         if (!string.IsNullOrEmpty(ReplaceUrl)) htmxResponse.ReplaceUrl(ReplaceUrl);
-        if (Reswap != null) htmxResponse.Reswap((SwapStyle)Reswap, null);
+        if (Reswap != SwapStyle.Default) htmxResponse.Reswap(Reswap);
         if (!string.IsNullOrEmpty(Retarget)) htmxResponse.Retarget(Retarget);
         if (!string.IsNullOrEmpty(Reselect)) htmxResponse.Reselect(Reselect);
     }

@@ -1,0 +1,6 @@
+# Client sources and built bundles always use LF, so a Windows build (core.autocrlf=true)
+# produces byte-identical bundles and sourcemaps to the CI build. Sourcemaps embed the
+# source text, so CRLF checkouts would otherwise fail the CI drift check.
+packages/rizzy/src/** text eol=lf
+packages/rizzy/dist/** text eol=lf
+src/Rizzy/wwwroot/js/** text eol=lf

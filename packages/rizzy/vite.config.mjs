@@ -4,13 +4,16 @@ import fs                 from 'fs-extra';
 import path               from 'node:path';
 
 /* ———————————————————————————————
-   Copy dist → ../../src/Rizzy/wwwroot/  
+   Mirror dist → ../../src/Rizzy/wwwroot/
+   wwwroot/js is emptied first so stale bundles from older builds are never
+   shipped as static web assets (RIZZY-021).
    ——————————————————————————————— */
 const wwwrootDest = path.resolve(__dirname, '../../src/Rizzy/wwwroot/');
 function copyToWwwRoot() {
     return {
         name: 'copy-to-wwwroot',
         closeBundle() {
+            fs.emptyDirSync(path.join(wwwrootDest, 'js'));
             fs.copySync(path.resolve(__dirname, 'dist'),
                 wwwrootDest,
                 { overwrite: true, dereference: true });

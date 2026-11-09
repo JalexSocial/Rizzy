@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 namespace Rizzy;
 
 /// <summary>
-/// A Rizzy-enhanced wrapper for <see cref="InputHidden{TValue}"/>.
+/// A Rizzy-enhanced wrapper for <see cref="InputHidden"/>.
 /// Handles automatic ID generation, MVC form field mapping, and data annotation attributes.
 /// </summary>
 /// <typeparam name="TValue">The type of the value.</typeparam>
