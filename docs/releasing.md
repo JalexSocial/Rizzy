@@ -17,17 +17,33 @@ See `CHANGELOG.md` for the SemVer policy.
    `packages/rizzy/src/js/rizzy-diagnostics.js` (a test fails until they match) and rebuild the bundle.
 4. **htmx version.** If htmx was upgraded, check that `npm run generate:htmx-assets` was run and the drift tests pass (see CONTRIBUTING).
 5. **Merge** the release PR to `main` and wait for CI to pass.
-6. **Tag** the merge commit and push the tag:
+6. **Tag** the merge commit and push the tag (approve the run in the `release` environment):
    ```bash
    git tag -a vX.Y.Z -m "Rizzy X.Y.Z" && git push origin vX.Y.Z
    ```
    Versions with a pre-release suffix (`6.0.0-preview.1`) are published to npm under the `next`
    tag and marked as pre-releases on GitHub.
-7. **Check** the GitHub release (its notes are generated from merged PRs; paste the changelog
-   section in as well), nuget.org and npm.
+7. **Check** the published packages:
+   - the GitHub release, whose notes are the changelog section followed by the merged PRs;
+   - nuget.org: create a fresh app and `dotnet add package Rizzy --version X.Y.Z` (it can take a
+     few minutes to be listed);
+   - npm: `npm view @jalexsocial/rizzy dist-tags` (`next` for pre-releases, `latest` otherwise).
+8. **Bump** `Directory.Build.props` to the next development version (for example
+   `6.0.0-preview.2-dev`).
+
+The workflow refuses to publish when `CHANGELOG.md` has no section for the version
+(`eng/changelog-section.sh`), before anything is pushed.
 
 ## One-time setup (maintainers)
 
-- A `release` environment in the GitHub repository with the `NUGET_API_KEY` and `NPM_TOKEN`
-  secrets.
-- Deprecate the broken Rizzy 5.4.0 on nuget.org (RIZZY-001).
+- **Environment.** Create a `release` environment (Settings → Environments) with yourself as a
+  required reviewer, so a pushed tag waits for your approval before anything is published. Move the
+  publishing secrets from the repository into it.
+- **NuGet.** `NUGET_API_KEY` must be unexpired and allowed to push `Rizzy` and `Rizzy.Htmx`.
+- **npm**, one of:
+  - *Trusted publishing (recommended):* on npmjs.com, add a trusted publisher for
+    `@jalexsocial/rizzy` (GitHub Actions, repository `JalexSocial/Rizzy`, workflow `release.yml`,
+    environment `release`) and remove the `NPM_TOKEN` secret. No long-lived token is stored.
+  - *Token:* an `NPM_TOKEN` secret with publish rights to `@jalexsocial/rizzy`. Check its expiry.
+- **After the first 6.x release:** deprecate Rizzy 5.4.0 on nuget.org (it depends on a pre-htmx-4
+  Rizzy.Htmx, RIZZY-001) and point users to 6.0.
