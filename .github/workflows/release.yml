@@ -14,7 +14,7 @@ on:
 
 permissions:
   contents: write   # create the GitHub release
-  id-token: write   # npm provenance
+  id-token: write   # OIDC: NuGet and npm trusted publishing, npm provenance
 
 jobs:
   release:
@@ -78,10 +78,31 @@ jobs:
       - name: Consumer smoke test
         run: bash eng/consumer-smoke-test.sh ./artifacts/nupkgs ${{ steps.version.outputs.version }}
 
+      # NuGet trusted publishing: NuGet/login trades this run's GitHub OIDC token for an API key
+      # that expires in about an hour, if the run matches a Trusted Publishing policy on nuget.org
+      # (repository JalexSocial/Rizzy, workflow release.yml, environment release). No long-lived
+      # key is stored. NUGET_USER is the nuget.org profile name (not the email) of the policy's
+      # owner, set as a variable on the release environment. Logging in just before the push keeps
+      # the short-lived key from expiring during the build.
+      - name: Check NUGET_USER is set
+        env:
+          NUGET_USER: ${{ vars.NUGET_USER }}
+        run: |
+          if [ -z "$NUGET_USER" ]; then
+            echo "::error::Set the NUGET_USER variable (your nuget.org profile name) on the release environment."
+            exit 1
+          fi
+
+      - name: Log in to NuGet (trusted publishing)
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
       - name: Push to NuGet
         run: >
           dotnet nuget push "./artifacts/nupkgs/*.nupkg"
-          --api-key "${{ secrets.NUGET_API_KEY }}"
+          --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
           --source https://api.nuget.org/v3/index.json
 
       # Works with npm trusted publishing (OIDC; configure it on npmjs.com for this workflow and

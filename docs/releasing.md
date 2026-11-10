@@ -37,9 +37,16 @@ The workflow refuses to publish when `CHANGELOG.md` has no section for the versi
 ## One-time setup (maintainers)
 
 - **Environment.** Create a `release` environment (Settings → Environments) with yourself as a
-  required reviewer, so a pushed tag waits for your approval before anything is published. Move the
-  publishing secrets from the repository into it.
-- **NuGet.** `NUGET_API_KEY` must be unexpired and allowed to push `Rizzy` and `Rizzy.Htmx`.
+  required reviewer, so a pushed tag waits for your approval before anything is published. Both
+  trusted publishing policies (NuGet and npm) name this environment, so only approved runs can
+  publish.
+- **NuGet (trusted publishing).** On nuget.org, open your username menu → *Trusted Publishing* and
+  add a policy: owner = the account that owns `Rizzy` and `Rizzy.Htmx`, repository owner
+  `JalexSocial`, repository `Rizzy`, workflow file `release.yml`, environment `release`. On the
+  `release` environment, add a **variable** (not a secret) `NUGET_USER` set to that account's
+  nuget.org profile name (not its email). The workflow's `NuGet/login` step exchanges the run's
+  OIDC token for an API key that lasts about an hour, so no NuGet key is stored. After the first
+  successful publish, delete any old `NUGET_API_KEY` secret and revoke that key on nuget.org.
 - **npm**, one of:
   - *Trusted publishing (recommended):* on npmjs.com, add a trusted publisher for
     `@jalexsocial/rizzy` (GitHub Actions, repository `JalexSocial/Rizzy`, workflow `release.yml`,
