@@ -21,6 +21,13 @@ builder.Services.AddHtmx(config =>
     // RestrictExtensions htmx accepts only Rizzy's own extensions plus the ones enabled here.
     config.UseExtensions(HtmxExtension.Preload);
     config.RestrictExtensions = true;
+
+    // Serve htmx from a local copy instead of jsDelivr when configured (the CI browser tests
+    // set Demo__HtmxBaseUrl=/lib/htmx/ after copying htmx.org's dist folder there). Integrity
+    // stays on: the copy is the pinned version, so the hashes still apply.
+    var htmxBaseUrl = builder.Configuration["Demo:HtmxBaseUrl"];
+    if (!string.IsNullOrWhiteSpace(htmxBaseUrl))
+        config.Scripts = new HtmxScriptOptions { BaseUrl = htmxBaseUrl, Integrity = true };
 });
 
 // Add services to the container.

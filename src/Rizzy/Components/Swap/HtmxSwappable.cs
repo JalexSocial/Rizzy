@@ -11,7 +11,7 @@ public partial class HtmxSwappable : ComponentBase
     private string _swapParam = string.Empty;
 
     [Inject]
-    private IOptionsSnapshot<HtmxConfig> HtmxOptions { get; set; } = default!;
+    private IOptionsMonitor<HtmxConfig> HtmxOptions { get; set; } = default!;
 
     [Parameter, EditorRequired]
     public string TargetId { get; set; } = default!;
@@ -35,7 +35,7 @@ public partial class HtmxSwappable : ComponentBase
         builder.OpenElement(0, "hx-partial");
 
         var target = !string.IsNullOrEmpty(Selector) ? Selector : CssSelector.Id(TargetId);
-        var prefix = HtmxOptions.Value.Prefix;
+        var prefix = HtmxOptions.CurrentValue.Prefix;
 
         builder.AddAttribute(1, HtmxAttributeName.Resolve("hx-target", prefix), target);
         builder.AddAttribute(2, HtmxAttributeName.Resolve("hx-swap", prefix), _swapParam);

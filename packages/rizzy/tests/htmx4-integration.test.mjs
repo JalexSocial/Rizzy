@@ -499,3 +499,49 @@ test('extensions that wrap ctx.fetch after rizzy-streaming all run once and stre
     assert.equal(env.errors.length, 0);
     await env.close();
 });
+
+// A layer that calls its fetch again (a retry) must reach the same layer below it each time.
+test('a retrying fetch wrapper reaches the wrapper below it on every attempt', async () => {
+    let attempts = 0;
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0' },
+        body: '<button id="go" hx-get="/x" hx-target="#target">go</button><div id="target"></div>',
+        respond: () => (++attempts === 1 ? { status: 503, body: '' } : { body: '<p id="ok">ok</p>' }),
+    });
+    const calls = [];
+    env.htmx.registerExtension('test-logger', {
+        htmx_before_request(_elt, { ctx }) {
+            const previous = ctx.fetch;
+            ctx.fetch = (url, init) => { calls.push('logger'); return previous(url, init); };
+        },
+    });
+    env.htmx.registerExtension('test-retry', {
+        htmx_before_request(_elt, { ctx }) {
+            const previous = ctx.fetch;
+            ctx.fetch = async (url, init) => {
+                calls.push('retry');
+                let response = await previous(url, init);
+                if (response.status === 503) response = await previous(url, init);
+                return response;
+            };
+        },
+    });
+
+    env.document.getElementById('go').click();
+    assert.ok(await waitFor(() => env.document.getElementById('ok')), 'the retried response is swapped');
+    assert.deepEqual([...calls], ['retry', 'logger', 'logger']);
+    assert.equal(attempts, 2);
+    await env.close();
+});
+
+test('a duplicate registration is not reported as an allow-list rejection', async () => {
+    const env = await bootHtmx({
+        config: { rizzyVersion: '6.0.0' },
+        body: '<div></div>',
+        respond: () => ({ body: '' }),
+    });
+    // rizzy-nonce is already registered; registering it again returns false (a duplicate).
+    assert.equal(env.htmx.registerExtension('rizzy-nonce', {}), false);
+    assert.equal(env.window.Rizzy.diagnostics.checkPage(env.document).length, 0);
+    await env.close();
+});

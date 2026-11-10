@@ -126,6 +126,13 @@ public sealed class HtmxExtension : IEquatable<HtmxExtension>
     /// <inheritdoc/>
     public override int GetHashCode() => StringComparer.Ordinal.GetHashCode(Name);
 
+    /// <summary>Two descriptors are equal when they have the same registered name.</summary>
+    public static bool operator ==(HtmxExtension? left, HtmxExtension? right)
+        => left is null ? right is null : left.Equals(right);
+
+    /// <summary>Two descriptors differ when their registered names differ.</summary>
+    public static bool operator !=(HtmxExtension? left, HtmxExtension? right) => !(left == right);
+
     /// <inheritdoc/>
     public override string ToString() => Name;
 }

@@ -30,6 +30,17 @@ public class ExtensionTests : BunitContext
     }
 
     [Fact]
+    public void Equality_and_operators_compare_registered_names()
+    {
+        var custom = HtmxExtension.Custom("sse", "/my-sse.js");
+        (custom == HtmxExtension.Sse).Should().BeTrue();
+        (custom != HtmxExtension.Ws).Should().BeTrue();
+        custom.Equals(HtmxExtension.Sse).Should().BeTrue();
+        ((HtmxExtension?)null == null).Should().BeTrue();
+        (HtmxExtension.Sse == null).Should().BeFalse();
+    }
+
+    [Fact]
     public void UseExtensions_adds_once_and_ignores_rizzys_bundled_extensions()
     {
         var config = new HtmxConfig()

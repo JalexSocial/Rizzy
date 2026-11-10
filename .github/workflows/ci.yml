@@ -122,6 +122,16 @@ jobs:
         working-directory: .
         run: dotnet build src/RizzyDemo/RizzyDemo.csproj -c Release
 
+      # Serve the pinned htmx from the demo instead of jsDelivr, so a CDN outage cannot fail CI.
+      # <RzScripts /> still checks the integrity hashes against this copy.
+      - name: Copy htmx into the demo
+        working-directory: .
+        run: |
+          (cd packages/rizzy && npm ci)
+          mkdir -p src/RizzyDemo/wwwroot/lib/htmx
+          cp -r packages/rizzy/node_modules/htmx.org/dist/. src/RizzyDemo/wwwroot/lib/htmx/
+          echo "Demo__HtmxBaseUrl=/lib/htmx/" >> "$GITHUB_ENV"
+
       - name: Install Playwright
         run: |
           npm ci

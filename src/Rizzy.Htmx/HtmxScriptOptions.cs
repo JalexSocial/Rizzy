@@ -33,17 +33,17 @@ public sealed record class HtmxScriptOptions
     public bool IncludeHtmx { get; set; } = true;
 
     /// <summary>The URL of an htmx file under <see cref="BaseUrl"/> (for example <c>htmx</c> or <c>ext/hx-sse</c>).</summary>
-    public string UrlFor(string file)
+    internal string UrlFor(string file)
     {
         var baseUrl = BaseUrl.EndsWith('/') ? BaseUrl : BaseUrl + "/";
         return $"{baseUrl}{file}{(Minified ? ".min.js" : ".js")}";
     }
 
     /// <summary>Whether integrity hashes apply: <see cref="Integrity"/> when set, otherwise only for the default jsDelivr URL.</summary>
-    public bool UsesIntegrity => Integrity ?? string.Equals(
+    internal bool UsesIntegrity => Integrity ?? string.Equals(
         BaseUrl.TrimEnd('/'), HtmxAssets.CdnBaseUrl.TrimEnd('/'), StringComparison.OrdinalIgnoreCase);
 
     /// <summary>The integrity hash for an htmx file, or <see langword="null"/> when integrity does not apply or the file is unknown.</summary>
-    public string? IntegrityFor(string file)
+    internal string? IntegrityFor(string file)
         => UsesIntegrity && HtmxAssets.Integrity.TryGetValue(file + (Minified ? ".min.js" : ".js"), out var hash) ? hash : null;
 }

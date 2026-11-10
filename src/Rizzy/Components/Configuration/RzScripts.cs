@@ -27,20 +27,20 @@ namespace Rizzy;
 /// </remarks>
 public sealed class RzScripts : ComponentBase
 {
-    [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
+    [Inject] private IOptionsMonitor<HtmxConfig> Options { get; set; } = default!;
     [Inject] private IRizzyNonceProvider NonceProvider { get; set; } = default!;
-    [Inject] private IOptionsSnapshot<Rizzy.Configuration.RizzyConfig> RizzyOptions { get; set; } = default!;
+    [Inject] private IOptionsMonitor<Rizzy.Configuration.RizzyConfig> RizzyOptions { get; set; } = default!;
 
     /// <inheritdoc />
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
-        var config = Options.Value;
+        var config = Options.CurrentValue;
         var scripts = config.Scripts;
         var nonce = NonceProvider.GetNonce();
         var sources = new List<(string Src, string? Integrity)>();
         if (scripts.IncludeHtmx)
             sources.Add((scripts.UrlFor("htmx"), scripts.IntegrityFor("htmx")));
-        sources.Add((RizzyOptions.Value.ClientScriptUrl, null));
+        sources.Add((RizzyOptions.CurrentValue.ClientScriptUrl, null));
         foreach (var extension in config.EnabledExtensions)
         {
             if (extension.FileName is { } file)

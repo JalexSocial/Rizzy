@@ -24,7 +24,12 @@
       const tracked = function registerExtension(name, extension) {
         const result = original(name, extension);
         if (result === false) {
-          if (!registered.has(name)) rejected.add(name);
+          const allowList = String(htmx.config?.extensions ?? "").split(",").map((n) => n.trim()).filter(Boolean);
+          if (allowList.length > 0 && !allowList.includes(name)) {
+            rejected.add(name);
+          } else {
+            registered.add(name);
+          }
         } else {
           registered.add(name);
           rejected.delete(name);
@@ -149,7 +154,11 @@
           if (depth > 0) {
             const layer = layers[Math.max(0, layers.length - 1 - depth)];
             depth++;
-            return layer(url, init);
+            try {
+              return await layer(url, init);
+            } finally {
+              depth--;
+            }
           }
           depth = 1;
           let response;

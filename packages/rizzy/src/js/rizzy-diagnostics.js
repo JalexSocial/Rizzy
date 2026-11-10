@@ -55,7 +55,15 @@
         const tracked = function registerExtension(name, extension) {
             const result = original(name, extension);
             if (result === false) {
-                if (!registered.has(name)) rejected.add(name);   // not a duplicate: blocked by the allow-list
+                // htmx returns false for a name missing from a non-empty allow-list, and for a
+                // duplicate registration (including one registered before rizzy.js loaded).
+                const allowList = String(htmx.config?.extensions ?? "")
+                    .split(",").map((n) => n.trim()).filter(Boolean);
+                if (allowList.length > 0 && !allowList.includes(name)) {
+                    rejected.add(name);
+                } else {
+                    registered.add(name);   // a duplicate: the extension is registered
+                }
             } else {
                 registered.add(name);
                 rejected.delete(name);

@@ -60,9 +60,15 @@
             let depth = 0;
             const wrapped = async (url, init) => {
                 if (depth > 0) {
+                    // Step one layer down for the duration of this call, then back up, so a layer
+                    // that calls its fetch again (a retry) reaches the same layer below it.
                     const layer = layers[Math.max(0, layers.length - 1 - depth)];
                     depth++;
-                    return layer(url, init);
+                    try {
+                        return await layer(url, init);
+                    } finally {
+                        depth--;
+                    }
                 }
                 depth = 1;
                 let response;

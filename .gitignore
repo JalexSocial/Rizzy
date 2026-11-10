@@ -355,3 +355,5 @@ MigrationBackup/
 # Local tooling and generated artifacts (RIZZY-033)
 packages/rizzy/stats.html
 llmquery.txt
+# htmx copied into the demo by the CI browser-test job
+src/RizzyDemo/wwwroot/lib/htmx/

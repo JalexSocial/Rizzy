@@ -179,6 +179,8 @@ Rizzy.Htmx.HtmxExtension.static Sse : Rizzy.Htmx.HtmxExtension
 Rizzy.Htmx.HtmxExtension.static Targets : Rizzy.Htmx.HtmxExtension
 Rizzy.Htmx.HtmxExtension.static Upsert : Rizzy.Htmx.HtmxExtension
 Rizzy.Htmx.HtmxExtension.static Ws : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static op_Equality(Rizzy.Htmx.HtmxExtension left, Rizzy.Htmx.HtmxExtension right) -> System.Boolean
+Rizzy.Htmx.HtmxExtension.static op_Inequality(Rizzy.Htmx.HtmxExtension left, Rizzy.Htmx.HtmxExtension right) -> System.Boolean
 Rizzy.Htmx.HtmxHistoryMode.Disabled = 1
 Rizzy.Htmx.HtmxHistoryMode.Enabled = 0
 Rizzy.Htmx.HtmxHistoryMode.Reload = 2
@@ -279,11 +281,8 @@ Rizzy.Htmx.HtmxScriptOptions.Equals(System.Object obj) -> System.Boolean
 Rizzy.Htmx.HtmxScriptOptions.GetHashCode() -> System.Int32
 Rizzy.Htmx.HtmxScriptOptions.IncludeHtmx : System.Boolean { get; set; }
 Rizzy.Htmx.HtmxScriptOptions.Integrity : System.Nullable<System.Boolean> { get; set; }
-Rizzy.Htmx.HtmxScriptOptions.IntegrityFor(System.String file) -> System.String
 Rizzy.Htmx.HtmxScriptOptions.Minified : System.Boolean { get; set; }
 Rizzy.Htmx.HtmxScriptOptions.ToString() -> System.String
-Rizzy.Htmx.HtmxScriptOptions.UrlFor(System.String file) -> System.String
-Rizzy.Htmx.HtmxScriptOptions.UsesIntegrity : System.Boolean { get; }
 Rizzy.Htmx.HtmxScriptOptions.ctor()
 Rizzy.Htmx.HtmxScriptOptions.static op_Equality(Rizzy.Htmx.HtmxScriptOptions left, Rizzy.Htmx.HtmxScriptOptions right) -> System.Boolean
 Rizzy.Htmx.HtmxScriptOptions.static op_Inequality(Rizzy.Htmx.HtmxScriptOptions left, Rizzy.Htmx.HtmxScriptOptions right) -> System.Boolean
