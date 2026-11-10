@@ -14,7 +14,7 @@ on:
 
 permissions:
   contents: write   # create the GitHub release
-  id-token: write   # npm provenance
+  id-token: write   # OIDC: NuGet and npm trusted publishing, npm provenance
 
 jobs:
   release:
@@ -38,6 +38,9 @@ jobs:
           fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
           if [[ "$version" == *-* ]]; then echo "npm_tag=next" >> "$GITHUB_OUTPUT"; else echo "npm_tag=latest" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Check the changelog has a section for this version
+        run: bash eng/changelog-section.sh "${{ steps.version.outputs.version }}" > /dev/null
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -75,27 +78,56 @@ jobs:
       - name: Consumer smoke test
         run: bash eng/consumer-smoke-test.sh ./artifacts/nupkgs ${{ steps.version.outputs.version }}
 
+      # NuGet trusted publishing: NuGet/login trades this run's GitHub OIDC token for an API key
+      # that expires in about an hour, if the run matches a Trusted Publishing policy on nuget.org
+      # (repository JalexSocial/Rizzy, workflow release.yml, environment release). No long-lived
+      # key is stored. NUGET_USER is the nuget.org profile name (not the email) of the policy's
+      # owner, set as a variable on the release environment. Logging in just before the push keeps
+      # the short-lived key from expiring during the build.
+      - name: Check NUGET_USER is set
+        env:
+          NUGET_USER: ${{ vars.NUGET_USER }}
+        run: |
+          if [ -z "$NUGET_USER" ]; then
+            echo "::error::Set the NUGET_USER variable (your nuget.org profile name) on the release environment."
+            exit 1
+          fi
+
+      - name: Log in to NuGet (trusted publishing)
+        id: nuget-login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ vars.NUGET_USER }}
+
       - name: Push to NuGet
         run: >
           dotnet nuget push "./artifacts/nupkgs/*.nupkg"
-          --api-key "${{ secrets.NUGET_API_KEY }}"
+          --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
           --source https://api.nuget.org/v3/index.json
 
+      # Works with npm trusted publishing (OIDC; configure it on npmjs.com for this workflow and
+      # leave NPM_TOKEN unset) or with an NPM_TOKEN secret. Trusted publishing needs npm 11.5.1+,
+      # newer than the npm bundled with Node 22.
       - name: Publish npm package
         working-directory: packages/rizzy
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          npm install -g npm@^11.5.1
           npm pkg set version=${{ steps.version.outputs.version }}
           npm publish --access public --provenance --tag ${{ steps.version.outputs.npm_tag }}
 
+      # The release notes are this version's CHANGELOG.md section, followed by GitHub's list of
+      # merged pull requests.
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          version="${{ steps.version.outputs.version }}"
+          bash eng/changelog-section.sh "$version" > release-notes.md
           prerelease=""
-          if [[ "${{ steps.version.outputs.version }}" == *-* ]]; then prerelease="--prerelease"; fi
-          gh release create "v${{ steps.version.outputs.version }}" ./artifacts/nupkgs/*.nupkg \
-            --title "v${{ steps.version.outputs.version }}" --generate-notes $prerelease --verify-tag || \
-          gh release create "v${{ steps.version.outputs.version }}" ./artifacts/nupkgs/*.nupkg \
-            --title "v${{ steps.version.outputs.version }}" --generate-notes $prerelease --target "${{ github.sha }}"
+          if [[ "$version" == *-* ]]; then prerelease="--prerelease"; fi
+          gh release create "v$version" ./artifacts/nupkgs/*.nupkg \
+            --title "v$version" --notes-file release-notes.md --generate-notes $prerelease --verify-tag || \
+          gh release create "v$version" ./artifacts/nupkgs/*.nupkg \
+            --title "v$version" --notes-file release-notes.md --generate-notes $prerelease --target "${{ github.sha }}"
