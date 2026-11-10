@@ -17,6 +17,28 @@
       if (typeof htmx === "undefined") return true;
       return htmx.trigger(elt && elt.isConnected ? elt : document, eventName, detail);
     };
+    const registered = diagnostics.registeredExtensions = diagnostics.registeredExtensions || /* @__PURE__ */ new Set();
+    const rejected = diagnostics.rejectedExtensions = diagnostics.rejectedExtensions || /* @__PURE__ */ new Set();
+    if (typeof htmx !== "undefined" && typeof htmx.registerExtension === "function" && !htmx.registerExtension._rizzyTracked) {
+      const original = htmx.registerExtension.bind(htmx);
+      const tracked = function registerExtension(name, extension) {
+        const result = original(name, extension);
+        if (result === false) {
+          const allowList = String(htmx.config?.extensions ?? "").split(",").map((n) => n.trim()).filter(Boolean);
+          if (allowList.length > 0 && !allowList.includes(name)) {
+            rejected.add(name);
+          } else {
+            registered.add(name);
+          }
+        } else {
+          registered.add(name);
+          rejected.delete(name);
+        }
+        return result;
+      };
+      tracked._rizzyTracked = true;
+      htmx.registerExtension = tracked;
+    }
     function majorOf(version) {
       const match = /^(\d+)\./.exec(String(version ?? "").trim());
       return match ? Number(match[1]) : null;
@@ -36,6 +58,18 @@
           warnings.push('Rizzy: <meta name="htmx-config"> does not contain valid JSON; htmx ignores it.');
         }
         if (config?.rizzyDiagnostics === false) return [];
+        for (const name of rejected) {
+          warnings.push(
+            `Rizzy: htmx rejected the "${name}" extension because htmx.config.extensions ("${config?.extensions ?? ""}") does not list it. Enable extensions with HtmxConfig.UseExtensions(...), which keeps the allow-list in step, or add the name to HtmxConfig.Extensions.`
+          );
+        }
+        for (const name of config?.rizzyExtensions ?? []) {
+          if (!registered.has(name) && !rejected.has(name)) {
+            warnings.push(
+              `Rizzy: the "${name}" extension is enabled on the server but rizzy.js did not see it register. Render <RzScripts /> in the root layout (after <RzHeadOutlet />). If you load the scripts yourself, load the extension after htmx and after rizzy.js: an extension registered before rizzy.js is not tracked and is reported here even though it works.`
+            );
+          }
+        }
         const serverMajor = majorOf(config?.rizzyVersion);
         if (serverMajor !== null && serverMajor !== CLIENT_MAJOR) {
           warnings.push(
@@ -114,13 +148,36 @@
       htmx_before_request(_elt, detail) {
         const ctx = detail?.ctx;
         if (!ctx || typeof ctx.fetch !== "function" || ctx.fetch._rizzyStreaming) return;
-        const originalFetch = ctx.fetch;
+        const layers = [ctx.fetch];
+        let depth = 0;
         const wrapped = async (url, init) => {
-          const response = await originalFetch(url, init);
+          if (depth > 0) {
+            const layer = layers[Math.max(0, layers.length - 1 - depth)];
+            depth++;
+            try {
+              return await layer(url, init);
+            } finally {
+              depth--;
+            }
+          }
+          depth = 1;
+          let response;
+          try {
+            response = await layers[layers.length - 1](url, init);
+          } finally {
+            depth = 0;
+          }
           return splitStreamingResponse(ctx, response);
         };
         wrapped._rizzyStreaming = true;
-        ctx.fetch = wrapped;
+        Object.defineProperty(ctx, "fetch", {
+          configurable: true,
+          enumerable: true,
+          get: () => wrapped,
+          set: (value) => {
+            if (typeof value === "function" && !value._rizzyStreaming) layers.push(value);
+          }
+        });
       },
       htmx_after_swap(_elt, detail) {
         const state = detail?.ctx && streams.get(detail.ctx);

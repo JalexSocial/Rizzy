@@ -17,13 +17,18 @@ Rizzy.Htmx.CssSelector.static Id(System.String id) -> System.String
 Rizzy.Htmx.HtmxAntiforgeryOptions.FormFieldName : System.String { get; set; }
 Rizzy.Htmx.HtmxAntiforgeryOptions.HeaderName : System.String { get; set; }
 Rizzy.Htmx.HtmxAntiforgeryOptions.ctor()
+Rizzy.Htmx.HtmxAssets.Integrity : System.Collections.Generic.IReadOnlyDictionary<System.String, System.String> { get; }
+Rizzy.Htmx.HtmxAssets.const CdnBaseUrl : System.String
+Rizzy.Htmx.HtmxAssets.const Version : System.String
 Rizzy.Htmx.HtmxAttributeName.static Resolve(System.String canonicalName, System.String prefix) -> System.String
 Rizzy.Htmx.HtmxConfig.<Clone>$() -> Rizzy.Htmx.HtmxConfig
+Rizzy.Htmx.HtmxConfig.AdditionalSettings : System.Collections.Generic.Dictionary<System.String, System.Text.Json.JsonElement> { get; set; }
 Rizzy.Htmx.HtmxConfig.AllowEmptySwapAfterOOB : System.Nullable<System.Boolean> { get; set; }
 Rizzy.Htmx.HtmxConfig.DefaultFocusScroll : System.Nullable<System.Boolean> { get; set; }
 Rizzy.Htmx.HtmxConfig.DefaultSettleDelay : System.Nullable<System.TimeSpan> { get; set; }
 Rizzy.Htmx.HtmxConfig.DefaultSwap : System.Nullable<Rizzy.Htmx.SwapStyle> { get; set; }
 Rizzy.Htmx.HtmxConfig.DefaultTimeout : System.Nullable<System.TimeSpan> { get; set; }
+Rizzy.Htmx.HtmxConfig.EnabledExtensions : System.Collections.Generic.IReadOnlyList<Rizzy.Htmx.HtmxExtension> { get; }
 Rizzy.Htmx.HtmxConfig.Equals(Rizzy.Htmx.HtmxConfig other) -> System.Boolean
 Rizzy.Htmx.HtmxConfig.Equals(System.Object obj) -> System.Boolean
 Rizzy.Htmx.HtmxConfig.Extensions : System.String { get; set; }
@@ -44,9 +49,13 @@ Rizzy.Htmx.HtmxConfig.MorphSkipChildren : System.String { get; set; }
 Rizzy.Htmx.HtmxConfig.NoSwap : System.Object[] { get; set; }
 Rizzy.Htmx.HtmxConfig.Prefix : System.String { get; set; }
 Rizzy.Htmx.HtmxConfig.RequestClass : System.String { get; set; }
+Rizzy.Htmx.HtmxConfig.RestrictExtensions : System.Boolean { get; set; }
 Rizzy.Htmx.HtmxConfig.RizzyDiagnostics : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.Scripts : Rizzy.Htmx.HtmxScriptOptions { get; set; }
+Rizzy.Htmx.HtmxConfig.Set(System.String key, System.Object value) -> Rizzy.Htmx.HtmxConfig
 Rizzy.Htmx.HtmxConfig.ToString() -> System.String
 Rizzy.Htmx.HtmxConfig.Transitions : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxConfig.UseExtensions(params Rizzy.Htmx.HtmxExtension[] extensions) -> Rizzy.Htmx.HtmxConfig
 Rizzy.Htmx.HtmxConfig.ctor()
 Rizzy.Htmx.HtmxConfig.static op_Equality(Rizzy.Htmx.HtmxConfig left, Rizzy.Htmx.HtmxConfig right) -> System.Boolean
 Rizzy.Htmx.HtmxConfig.static op_Inequality(Rizzy.Htmx.HtmxConfig left, Rizzy.Htmx.HtmxConfig right) -> System.Boolean
@@ -59,6 +68,119 @@ Rizzy.Htmx.HtmxErrorHandlingExtensions.static UseHtmxRedirects(Microsoft.AspNetC
 Rizzy.Htmx.HtmxErrorHandlingOptions.ErrorEvent : System.String { get; set; }
 Rizzy.Htmx.HtmxErrorHandlingOptions.ErrorTarget : System.String { get; set; }
 Rizzy.Htmx.HtmxErrorHandlingOptions.ctor()
+Rizzy.Htmx.HtmxEvents.Csp.const Strip : System.String
+Rizzy.Htmx.HtmxEvents.Csp.const Violation : System.String
+Rizzy.Htmx.HtmxEvents.Download.const Complete : System.String
+Rizzy.Htmx.HtmxEvents.Download.const Progress : System.String
+Rizzy.Htmx.HtmxEvents.Download.const Start : System.String
+Rizzy.Htmx.HtmxEvents.Head.const AfterMerge : System.String
+Rizzy.Htmx.HtmxEvents.Head.const BeforeAdd : System.String
+Rizzy.Htmx.HtmxEvents.Head.const BeforeMerge : System.String
+Rizzy.Htmx.HtmxEvents.Head.const BeforeRemove : System.String
+Rizzy.Htmx.HtmxEvents.HistoryCache.const AfterRestore : System.String
+Rizzy.Htmx.HtmxEvents.HistoryCache.const AfterSave : System.String
+Rizzy.Htmx.HtmxEvents.HistoryCache.const BeforeRestore : System.String
+Rizzy.Htmx.HtmxEvents.HistoryCache.const BeforeSave : System.String
+Rizzy.Htmx.HtmxEvents.HistoryCache.const Hit : System.String
+Rizzy.Htmx.HtmxEvents.HistoryCache.const Miss : System.String
+Rizzy.Htmx.HtmxEvents.Multipart.const AfterConnection : System.String
+Rizzy.Htmx.HtmxEvents.Multipart.const AfterPart : System.String
+Rizzy.Htmx.HtmxEvents.Multipart.const BeforeConnection : System.String
+Rizzy.Htmx.HtmxEvents.Multipart.const BeforePart : System.String
+Rizzy.Htmx.HtmxEvents.Multipart.const Close : System.String
+Rizzy.Htmx.HtmxEvents.Multipart.const Error : System.String
+Rizzy.Htmx.HtmxEvents.Prompt.const Answered : System.String
+Rizzy.Htmx.HtmxEvents.Rizzy.const ConfigWarn : System.String
+Rizzy.Htmx.HtmxEvents.Rizzy.const ConfirmDialog : System.String
+Rizzy.Htmx.HtmxEvents.Rizzy.const ServerError : System.String
+Rizzy.Htmx.HtmxEvents.Rizzy.const StreamBlock : System.String
+Rizzy.Htmx.HtmxEvents.Rizzy.const StreamClose : System.String
+Rizzy.Htmx.HtmxEvents.Rizzy.const StreamOpen : System.String
+Rizzy.Htmx.HtmxEvents.Sse.const AfterConnection : System.String
+Rizzy.Htmx.HtmxEvents.Sse.const AfterMessage : System.String
+Rizzy.Htmx.HtmxEvents.Sse.const BeforeConnection : System.String
+Rizzy.Htmx.HtmxEvents.Sse.const BeforeMessage : System.String
+Rizzy.Htmx.HtmxEvents.Sse.const Close : System.String
+Rizzy.Htmx.HtmxEvents.Sse.const Error : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const AfterConnection : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const AfterMessageIncoming : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const AfterMessageOutgoing : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const BeforeConnection : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const BeforeMessageIncoming : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const BeforeMessageOutgoing : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const Close : System.String
+Rizzy.Htmx.HtmxEvents.Ws.const Error : System.String
+Rizzy.Htmx.HtmxEvents.const Abort : System.String
+Rizzy.Htmx.HtmxEvents.const AfterCleanup : System.String
+Rizzy.Htmx.HtmxEvents.const AfterHistoryPush : System.String
+Rizzy.Htmx.HtmxEvents.const AfterHistoryReplace : System.String
+Rizzy.Htmx.HtmxEvents.const AfterHistoryUpdate : System.String
+Rizzy.Htmx.HtmxEvents.const AfterImplicitInheritance : System.String
+Rizzy.Htmx.HtmxEvents.const AfterInit : System.String
+Rizzy.Htmx.HtmxEvents.const AfterProcess : System.String
+Rizzy.Htmx.HtmxEvents.const AfterRequest : System.String
+Rizzy.Htmx.HtmxEvents.const AfterSettle : System.String
+Rizzy.Htmx.HtmxEvents.const AfterSwap : System.String
+Rizzy.Htmx.HtmxEvents.const AfterViewTransition : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeCleanup : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeHistoryRestore : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeHistoryUpdate : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeInit : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeMorphAttr : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeMorphNode : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeOnInit : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeProcess : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeRequest : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeResponse : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeSettle : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeSwap : System.String
+Rizzy.Htmx.HtmxEvents.const BeforeViewTransition : System.String
+Rizzy.Htmx.HtmxEvents.const ConfigRequest : System.String
+Rizzy.Htmx.HtmxEvents.const Confirm : System.String
+Rizzy.Htmx.HtmxEvents.const Error : System.String
+Rizzy.Htmx.HtmxEvents.const FinallyRequest : System.String
+Rizzy.Htmx.HtmxEvents.const FinallySwap : System.String
+Rizzy.Htmx.HtmxEvents.const ProcessPrefix : System.String
+Rizzy.Htmx.HtmxEvents.const ResponseError : System.String
+Rizzy.Htmx.HtmxEvents.const Scope : System.String
+Rizzy.Htmx.HtmxEvents.static Process(System.String type) -> System.String
+Rizzy.Htmx.HtmxEvents.static WithMetaCharacter(System.String eventName, System.String metaCharacter) -> System.String
+Rizzy.Htmx.HtmxExtension.Description : System.String { get; }
+Rizzy.Htmx.HtmxExtension.Equals(Rizzy.Htmx.HtmxExtension other) -> System.Boolean
+Rizzy.Htmx.HtmxExtension.Equals(System.Object obj) -> System.Boolean
+Rizzy.Htmx.HtmxExtension.FileName : System.String { get; }
+Rizzy.Htmx.HtmxExtension.GetHashCode() -> System.Int32
+Rizzy.Htmx.HtmxExtension.IsBundledWithRizzy : System.Boolean { get; }
+Rizzy.Htmx.HtmxExtension.IsCustom : System.Boolean { get; }
+Rizzy.Htmx.HtmxExtension.Name : System.String { get; }
+Rizzy.Htmx.HtmxExtension.Official : System.Collections.Generic.IReadOnlyList<Rizzy.Htmx.HtmxExtension> { get; }
+Rizzy.Htmx.HtmxExtension.Rizzy : System.Collections.Generic.IReadOnlyList<Rizzy.Htmx.HtmxExtension> { get; }
+Rizzy.Htmx.HtmxExtension.ScriptUrl : System.String { get; }
+Rizzy.Htmx.HtmxExtension.ToString() -> System.String
+Rizzy.Htmx.HtmxExtension.static AlpineCompat : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static BrowserIndicator : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Csp : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Custom(System.String name, System.String scriptUrl = null, System.String description = ) -> Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Download : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Head : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static HistoryCache : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Htmx2Compat : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Live : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Multipart : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static PTag : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Pending : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Preload : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Prompt : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static RizzyAntiforgery : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static RizzyConfirm : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static RizzyNonce : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static RizzyStreaming : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Sse : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Targets : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Upsert : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static Ws : Rizzy.Htmx.HtmxExtension
+Rizzy.Htmx.HtmxExtension.static op_Equality(Rizzy.Htmx.HtmxExtension left, Rizzy.Htmx.HtmxExtension right) -> System.Boolean
+Rizzy.Htmx.HtmxExtension.static op_Inequality(Rizzy.Htmx.HtmxExtension left, Rizzy.Htmx.HtmxExtension right) -> System.Boolean
 Rizzy.Htmx.HtmxHistoryMode.Disabled = 1
 Rizzy.Htmx.HtmxHistoryMode.Enabled = 0
 Rizzy.Htmx.HtmxHistoryMode.Reload = 2
@@ -68,8 +190,11 @@ Rizzy.Htmx.HtmxRequest.IsFullPage : System.Boolean { get; }
 Rizzy.Htmx.HtmxRequest.IsHistoryRestore : System.Boolean { get; }
 Rizzy.Htmx.HtmxRequest.IsHtmx : System.Boolean { get; }
 Rizzy.Htmx.HtmxRequest.IsPartial : System.Boolean { get; }
+Rizzy.Htmx.HtmxRequest.LastPartId : System.String { get; }
 Rizzy.Htmx.HtmxRequest.Method : System.String { get; }
+Rizzy.Htmx.HtmxRequest.PTag : System.String { get; }
 Rizzy.Htmx.HtmxRequest.Path : Microsoft.AspNetCore.Http.PathString { get; }
+Rizzy.Htmx.HtmxRequest.Prompt : System.String { get; }
 Rizzy.Htmx.HtmxRequest.RequestType : System.String { get; }
 Rizzy.Htmx.HtmxRequest.Source : System.String { get; }
 Rizzy.Htmx.HtmxRequest.SourceId : System.String { get; }
@@ -83,6 +208,9 @@ Rizzy.Htmx.HtmxRequestHeaderNames.const Boosted : System.String
 Rizzy.Htmx.HtmxRequestHeaderNames.const CurrentURL : System.String
 Rizzy.Htmx.HtmxRequestHeaderNames.const HistoryRestoreRequest : System.String
 Rizzy.Htmx.HtmxRequestHeaderNames.const HtmxRequest : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const LastPartId : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const PTag : System.String
+Rizzy.Htmx.HtmxRequestHeaderNames.const Prompt : System.String
 Rizzy.Htmx.HtmxRequestHeaderNames.const RequestType : System.String
 Rizzy.Htmx.HtmxRequestHeaderNames.const Source : System.String
 Rizzy.Htmx.HtmxRequestHeaderNames.const Target : System.String
@@ -91,12 +219,14 @@ Rizzy.Htmx.HtmxRequestType.Full = 2
 Rizzy.Htmx.HtmxRequestType.None = 0
 Rizzy.Htmx.HtmxRequestType.Partial = 1
 Rizzy.Htmx.HtmxRequestType.Unknown = 3
+Rizzy.Htmx.HtmxResponse.Download(System.String url) -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.EmptyBody() -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.EmptyResponseBodyRequested : System.Boolean { get; }
 Rizzy.Htmx.HtmxResponse.LocalLocation(System.String localUrl) -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.LocalRedirect(System.String localUrl) -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.Location(Rizzy.Htmx.LocationTarget locationTarget) -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.Location(System.String path) -> Rizzy.Htmx.HtmxResponse
+Rizzy.Htmx.HtmxResponse.PTag(System.String tag) -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.PreventBrowserCurrentUrlUpdate() -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.PreventBrowserHistoryUpdate() -> Rizzy.Htmx.HtmxResponse
 Rizzy.Htmx.HtmxResponse.PushUrl(System.String url) -> Rizzy.Htmx.HtmxResponse
@@ -132,7 +262,9 @@ Rizzy.Htmx.HtmxResponseAttribute.Reselect : System.String { get; set; }
 Rizzy.Htmx.HtmxResponseAttribute.Reswap : Rizzy.Htmx.SwapStyle { get; set; }
 Rizzy.Htmx.HtmxResponseAttribute.Retarget : System.String { get; set; }
 Rizzy.Htmx.HtmxResponseAttribute.ctor()
+Rizzy.Htmx.HtmxResponseHeaderNames.const Download : System.String
 Rizzy.Htmx.HtmxResponseHeaderNames.const Location : System.String
+Rizzy.Htmx.HtmxResponseHeaderNames.const PTag : System.String
 Rizzy.Htmx.HtmxResponseHeaderNames.const PushUrl : System.String
 Rizzy.Htmx.HtmxResponseHeaderNames.const Redirect : System.String
 Rizzy.Htmx.HtmxResponseHeaderNames.const Refresh : System.String
@@ -142,6 +274,18 @@ Rizzy.Htmx.HtmxResponseHeaderNames.const Reswap : System.String
 Rizzy.Htmx.HtmxResponseHeaderNames.const Retarget : System.String
 Rizzy.Htmx.HtmxResponseHeaderNames.const Trigger : System.String
 Rizzy.Htmx.HtmxResponseHeaderNames.static All : System.String[]
+Rizzy.Htmx.HtmxScriptOptions.<Clone>$() -> Rizzy.Htmx.HtmxScriptOptions
+Rizzy.Htmx.HtmxScriptOptions.BaseUrl : System.String { get; set; }
+Rizzy.Htmx.HtmxScriptOptions.Equals(Rizzy.Htmx.HtmxScriptOptions other) -> System.Boolean
+Rizzy.Htmx.HtmxScriptOptions.Equals(System.Object obj) -> System.Boolean
+Rizzy.Htmx.HtmxScriptOptions.GetHashCode() -> System.Int32
+Rizzy.Htmx.HtmxScriptOptions.IncludeHtmx : System.Boolean { get; set; }
+Rizzy.Htmx.HtmxScriptOptions.Integrity : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HtmxScriptOptions.Minified : System.Boolean { get; set; }
+Rizzy.Htmx.HtmxScriptOptions.ToString() -> System.String
+Rizzy.Htmx.HtmxScriptOptions.ctor()
+Rizzy.Htmx.HtmxScriptOptions.static op_Equality(Rizzy.Htmx.HtmxScriptOptions left, Rizzy.Htmx.HtmxScriptOptions right) -> System.Boolean
+Rizzy.Htmx.HtmxScriptOptions.static op_Inequality(Rizzy.Htmx.HtmxScriptOptions left, Rizzy.Htmx.HtmxScriptOptions right) -> System.Boolean
 Rizzy.Htmx.HtmxStatus.const ValidationFailed : System.Int32
 Rizzy.Htmx.HtmxStatus.static Attribute(System.Int32 statusCode) -> System.String
 Rizzy.Htmx.HtmxStatus.static Attribute(System.String pattern) -> System.String
@@ -177,6 +321,185 @@ Rizzy.Htmx.HttpContextExtensions.static Htmx(Microsoft.AspNetCore.Http.HttpRespo
 Rizzy.Htmx.HttpContextExtensions.static Htmx(Microsoft.AspNetCore.Http.HttpResponse response, System.Action<Rizzy.Htmx.HtmxResponse> action) -> System.Void
 Rizzy.Htmx.HttpContextExtensions.static IsHtmx(Microsoft.AspNetCore.Http.HttpRequest request) -> System.Boolean
 Rizzy.Htmx.HttpContextExtensions.static RemoveFieldMapping(Microsoft.AspNetCore.Http.HttpContext context, Microsoft.AspNetCore.Components.Forms.EditContext editContext) -> System.Void
+Rizzy.Htmx.Hx.static Action(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Attr(System.String name, System.Object value) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Attributes() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Boost(System.Boolean boost = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Boost(System.Object settings) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static BrowserIndicator(System.Boolean show = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Config(System.Object config) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Confirm(Rizzy.Htmx.HxConfirm props) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Confirm(System.String text) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Delete(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Disable(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Encoding(System.String encoding) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static EncodingMultipart() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Get(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Head(Rizzy.Htmx.HxHeadStrategy strategy) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Headers(System.Object headers) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static History(System.Boolean cache) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static HistoryElt() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Ignore() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Include(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Indicator(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Live(System.String expression) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Method(System.String method) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static MorphSkip() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static MorphSkipChildren() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static MultipartClose(System.String eventName) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static MultipartConnect(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Nonce(System.String nonce) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static On(System.String eventName, System.String script) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static On(params System.ValueTuple<System.String, System.String>[] handlers) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static PTag(System.String initialTag) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Patch(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Pending(System.String templateSelector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Post(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Preload() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Preload(Rizzy.Htmx.TriggerModifierBuilder trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Preload(System.String trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Preserve() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Prompt(System.String text) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static PushUrl(System.Boolean push = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static PushUrl(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Put(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Query(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static ReplaceUrl(System.Boolean replace = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static ReplaceUrl(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Select(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static SelectOob(System.String selectors) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static SseClose(System.String eventName) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static SseConnect(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Status(System.Int32 statusCode, System.String spec) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Status(System.String pattern, System.String spec) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Swap(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Swap(Rizzy.Htmx.SwapStyleBuilder style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Swap(System.String swap) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static SwapOob(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static SwapOob(Rizzy.Htmx.SwapStyleBuilder style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static SwapOob(System.String value = true) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Sync(System.String selector, Rizzy.Htmx.HxSyncStrategy strategy) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Sync(System.String sync) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Target(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Targets(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Trigger(Rizzy.Htmx.TriggerBuilder trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Trigger(Rizzy.Htmx.TriggerModifierBuilder trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Trigger(System.String trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Validate(System.Boolean validate = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static Vals(System.Object values) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static WsConnect(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.Hx.static WsSend() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Action(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Append() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Attr(System.String name, System.Object value) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Boost(System.Boolean boost = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Boost(System.Object settings) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.BrowserIndicator(System.Boolean show = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Config(System.Object config) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Confirm(Rizzy.Htmx.HxConfirm props) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Confirm(System.String text) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.DefaultMetaCharacter : System.String { get; }
+Rizzy.Htmx.HxAttributes.Delete(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Disable(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Encoding(System.String encoding) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.EncodingMultipart() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Get(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.GetEnumerator() -> System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<System.String, System.Object>>
+Rizzy.Htmx.HxAttributes.Head(Rizzy.Htmx.HxHeadStrategy strategy) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Headers(System.Object headers) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.History(System.Boolean cache) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.HistoryElt() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Ignore() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Include(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Indicator(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Inherited() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Live(System.String expression) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Method(System.String method) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.MorphSkip() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.MorphSkipChildren() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.MultipartClose(System.String eventName) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.MultipartConnect(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Nonce(System.String nonce) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.On(System.String eventName, System.String script) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.On(params System.ValueTuple<System.String, System.String>[] handlers) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.PTag(System.String initialTag) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Patch(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Pending(System.String templateSelector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Post(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Preload() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Preload(Rizzy.Htmx.TriggerModifierBuilder trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Preload(System.String trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Preserve() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Prompt(System.String text) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.PushUrl(System.Boolean push = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.PushUrl(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Put(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Query(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.ReplaceUrl(System.Boolean replace = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.ReplaceUrl(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Select(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.SelectOob(System.String selectors) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.SseClose(System.String eventName) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.SseConnect(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Status(System.Int32 statusCode, System.String spec) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Status(System.String pattern, System.String spec) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Swap(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Swap(Rizzy.Htmx.SwapStyleBuilder style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Swap(System.String swap) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.SwapOob(Rizzy.Htmx.SwapStyle style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.SwapOob(Rizzy.Htmx.SwapStyleBuilder style) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.SwapOob(System.String value = true) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Sync(System.String selector, Rizzy.Htmx.HxSyncStrategy strategy) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Sync(System.String sync) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Target(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Targets(System.String selector) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.ToString() -> System.String
+Rizzy.Htmx.HxAttributes.Trigger(Rizzy.Htmx.TriggerBuilder trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Trigger(Rizzy.Htmx.TriggerModifierBuilder trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Trigger(System.String trigger) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Validate(System.Boolean validate = True) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.Vals(System.Object values) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.WithMetaCharacter(System.String metaCharacter) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.WsConnect(System.String url) -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.WsSend() -> Rizzy.Htmx.HxAttributes
+Rizzy.Htmx.HxAttributes.ctor()
+Rizzy.Htmx.HxConfirm.<Clone>$() -> Rizzy.Htmx.HxConfirm
+Rizzy.Htmx.HxConfirm.ConfirmButtonText : System.String { get; set; }
+Rizzy.Htmx.HxConfirm.DenyButtonText : System.String { get; set; }
+Rizzy.Htmx.HxConfirm.DismissButtonText : System.String { get; set; }
+Rizzy.Htmx.HxConfirm.Equals(Rizzy.Htmx.HxConfirm other) -> System.Boolean
+Rizzy.Htmx.HxConfirm.Equals(System.Object obj) -> System.Boolean
+Rizzy.Htmx.HxConfirm.GetHashCode() -> System.Int32
+Rizzy.Htmx.HxConfirm.ShowCancelButton : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HxConfirm.ShowConfirmButton : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HxConfirm.ShowDenyButton : System.Nullable<System.Boolean> { get; set; }
+Rizzy.Htmx.HxConfirm.Text : System.String { get; set; }
+Rizzy.Htmx.HxConfirm.Title : System.String { get; set; }
+Rizzy.Htmx.HxConfirm.ToString() -> System.String
+Rizzy.Htmx.HxConfirm.ctor()
+Rizzy.Htmx.HxConfirm.static op_Equality(Rizzy.Htmx.HxConfirm left, Rizzy.Htmx.HxConfirm right) -> System.Boolean
+Rizzy.Htmx.HxConfirm.static op_Inequality(Rizzy.Htmx.HxConfirm left, Rizzy.Htmx.HxConfirm right) -> System.Boolean
+Rizzy.Htmx.HxHeadStrategy.Append = 1
+Rizzy.Htmx.HxHeadStrategy.Merge = 0
+Rizzy.Htmx.HxHeadStrategy.ReEval = 2
+Rizzy.Htmx.HxSyncStrategy.Abort = 1
+Rizzy.Htmx.HxSyncStrategy.Drop = 0
+Rizzy.Htmx.HxSyncStrategy.QueueAll = 5
+Rizzy.Htmx.HxSyncStrategy.QueueFirst = 3
+Rizzy.Htmx.HxSyncStrategy.QueueLast = 4
+Rizzy.Htmx.HxSyncStrategy.Replace = 2
+Rizzy.Htmx.HxTarget.const Body : System.String
+Rizzy.Htmx.HxTarget.const Document : System.String
+Rizzy.Htmx.HxTarget.const Host : System.String
+Rizzy.Htmx.HxTarget.const This : System.String
+Rizzy.Htmx.HxTarget.const Window : System.String
+Rizzy.Htmx.HxTarget.static Closest(System.String selector) -> System.String
+Rizzy.Htmx.HxTarget.static Find(System.String selector) -> System.String
+Rizzy.Htmx.HxTarget.static FindAll(System.String selector) -> System.String
+Rizzy.Htmx.HxTarget.static Global(System.String selector) -> System.String
+Rizzy.Htmx.HxTarget.static Id(System.String id) -> System.String
+Rizzy.Htmx.HxTarget.static Next(System.String selector = null) -> System.String
+Rizzy.Htmx.HxTarget.static Previous(System.String selector = null) -> System.String
 Rizzy.Htmx.IRizzyNonceProvider.GetNonce() -> System.String
 Rizzy.Htmx.LocationTarget.Path : System.String { get; set; }
 Rizzy.Htmx.LocationTarget.ctor()
@@ -298,28 +621,47 @@ class Rizzy.Htmx.RzFormFieldMap
 enum Rizzy.Htmx.AntiforgeryStrategy : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
 enum Rizzy.Htmx.HtmxHistoryMode : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
 enum Rizzy.Htmx.HtmxRequestType : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+enum Rizzy.Htmx.HxHeadStrategy : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
+enum Rizzy.Htmx.HxSyncStrategy : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
 enum Rizzy.Htmx.ScrollDirection : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
 enum Rizzy.Htmx.SwapStyle : System.IComparable, System.IConvertible, System.IFormattable, System.ISpanFormattable
 interface Rizzy.Htmx.IRizzyNonceProvider
 sealed class Rizzy.Htmx.HtmxAntiforgeryOptions
 sealed class Rizzy.Htmx.HtmxErrorHandlingOptions
+sealed class Rizzy.Htmx.HtmxExtension : System.IEquatable<Rizzy.Htmx.HtmxExtension>
 sealed class Rizzy.Htmx.HtmxRequestAttribute : System.Attribute, Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraint, Microsoft.AspNetCore.Mvc.ActionConstraints.IActionConstraintMetadata
 sealed class Rizzy.Htmx.HtmxResponse
 sealed class Rizzy.Htmx.HtmxResponseAttribute : System.Attribute, Microsoft.AspNetCore.Mvc.Filters.IFilterMetadata, Microsoft.AspNetCore.Mvc.Filters.IResultFilter
+sealed class Rizzy.Htmx.HtmxScriptOptions : System.IEquatable<Rizzy.Htmx.HtmxScriptOptions>
 sealed class Rizzy.Htmx.HtmxTriggerSpecification : System.IEquatable<Rizzy.Htmx.HtmxTriggerSpecification>
+sealed class Rizzy.Htmx.HxAttributes : System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<System.String, System.Object>>, System.Collections.IEnumerable
+sealed class Rizzy.Htmx.HxConfirm : System.IEquatable<Rizzy.Htmx.HxConfirm>
 sealed class Rizzy.Htmx.LocationTarget : Rizzy.Htmx.AjaxContext
 sealed class Rizzy.Htmx.Serialization.HtmxHistoryModeJsonConverter : System.Text.Json.Serialization.JsonConverter<Rizzy.Htmx.HtmxHistoryMode>
 sealed class Rizzy.Htmx.SwapStyleBuilder
 sealed class Rizzy.Htmx.TriggerBuilder
 sealed class Rizzy.Htmx.TriggerModifierBuilder
 static class Rizzy.Htmx.CssSelector
+static class Rizzy.Htmx.HtmxAssets
 static class Rizzy.Htmx.HtmxAttributeName
 static class Rizzy.Htmx.HtmxConfigExtension
 static class Rizzy.Htmx.HtmxErrorHandlingExtensions
+static class Rizzy.Htmx.HtmxEvents
+static class Rizzy.Htmx.HtmxEvents.Csp
+static class Rizzy.Htmx.HtmxEvents.Download
+static class Rizzy.Htmx.HtmxEvents.Head
+static class Rizzy.Htmx.HtmxEvents.HistoryCache
+static class Rizzy.Htmx.HtmxEvents.Multipart
+static class Rizzy.Htmx.HtmxEvents.Prompt
+static class Rizzy.Htmx.HtmxEvents.Rizzy
+static class Rizzy.Htmx.HtmxEvents.Sse
+static class Rizzy.Htmx.HtmxEvents.Ws
 static class Rizzy.Htmx.HtmxRequestHeaderNames
 static class Rizzy.Htmx.HtmxResponseHeaderNames
 static class Rizzy.Htmx.HtmxStatus
 static class Rizzy.Htmx.HttpContextExtensions
+static class Rizzy.Htmx.Hx
+static class Rizzy.Htmx.HxTarget
 static class Rizzy.Htmx.ServiceCollectionExtensions
 static class Rizzy.Htmx.SwapStyleBuilderExtension
 static class Rizzy.Htmx.SwapStyleExtensions

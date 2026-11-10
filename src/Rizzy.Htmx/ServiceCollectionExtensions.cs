@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Antiforgery;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
@@ -41,6 +43,7 @@ public static class ServiceCollectionExtensions
                     htmx.FormFieldName = antiforgery.Value.FormFieldName;
                     htmx.HeaderName = antiforgery.Value.HeaderName;
                 });
+            services.AddTransient<IStartupFilter, HxAttributesStartupFilter>();
         }
 
         if (configure is not null)
@@ -51,4 +54,20 @@ public static class ServiceCollectionExtensions
 
     /// <summary>Marks that <see cref="AddHtmx"/> has registered its services.</summary>
     private sealed class HtmxServicesMarker;
+
+    /// <summary>
+    /// Copies <see cref="HtmxConfig.MetaCharacter"/> to <see cref="HxAttributes.DefaultMetaCharacter"/>
+    /// when the app starts, so attribute names built with <see cref="Hx"/> match what htmx looks up.
+    /// </summary>
+    private sealed class HxAttributesStartupFilter(IOptions<HtmxConfig> options) : IStartupFilter
+    {
+        public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
+        {
+            // Only when configured, so another host starting in the same process (tests) does
+            // not reset a value an app set.
+            if (!string.IsNullOrEmpty(options.Value.MetaCharacter))
+                HxAttributes.DefaultMetaCharacter = options.Value.MetaCharacter;
+            return next;
+        }
+    }
 }

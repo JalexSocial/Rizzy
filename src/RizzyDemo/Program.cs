@@ -14,7 +14,21 @@ builder.Services.AddRizzy(config =>
 });
 
 // htmx 4 defaults: error responses swap, which the validation example relies on (422).
-builder.Services.AddHtmx(config => config.Mode = "same-origin");
+builder.Services.AddHtmx(config =>
+{
+    config.Mode = "same-origin";
+    // Preload boosted navigation links on hover. <RzScripts /> loads the extension, and with
+    // RestrictExtensions htmx accepts only Rizzy's own extensions plus the ones enabled here.
+    config.UseExtensions(HtmxExtension.Preload);
+    config.RestrictExtensions = true;
+
+    // Serve htmx from a local copy instead of jsDelivr when configured (the CI browser tests
+    // set Demo__HtmxBaseUrl=/lib/htmx/ after copying htmx.org's dist folder there). Integrity
+    // stays on: the copy is the pinned version, so the hashes still apply.
+    var htmxBaseUrl = builder.Configuration["Demo:HtmxBaseUrl"];
+    if (!string.IsNullOrWhiteSpace(htmxBaseUrl))
+        config.Scripts = new HtmxScriptOptions { BaseUrl = htmxBaseUrl, Integrity = true };
+});
 
 // Add services to the container.
 // AddControllersWithViews registers the MVC antiforgery filters used by [ValidateAntiForgeryToken].

@@ -1,4 +1,4 @@
-﻿namespace Rizzy.Htmx;
+namespace Rizzy.Htmx;
 
 /// <summary>
 /// The HTMX request header names.
@@ -40,6 +40,15 @@ public static class HtmxRequestHeaderNames
     /// Indicates if this is a full or partial request.
     /// </summary>
     public const string RequestType = "HX-Request-Type";
+
+    /// <summary>The user's answer to <c>hx-prompt</c>, URI-encoded (sent by the hx-prompt extension; not in <see cref="All"/>).</summary>
+    public const string Prompt = "HX-Prompt";
+
+    /// <summary>The element's current polling tag (sent by the hx-ptag extension; not in <see cref="All"/>).</summary>
+    public const string PTag = "HX-PTag";
+
+    /// <summary>The id of the last part received before a reconnect (sent by the hx-multipart extension; not in <see cref="All"/>).</summary>
+    public const string LastPartId = "HX-Last-Part-ID";
 
     /// <summary>
     /// Collection of all HTMX request headers

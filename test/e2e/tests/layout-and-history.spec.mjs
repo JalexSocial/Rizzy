@@ -71,3 +71,34 @@ test('the counter posts with the antiforgery token', async ({ page, issues }) =>
 
     await expect(status).toHaveText(`Current count: ${before + 1}`);
 });
+
+test('RzScripts loads htmx, rizzy.js and the Preload extension with integrity and nonce', async ({ page, issues }) => {
+    await page.goto('/home/');
+    const scripts = await page.evaluate(() => [...document.head.querySelectorAll('script[src]')].map((s) => ({
+        src: s.getAttribute('src'), integrity: s.getAttribute('integrity'), hasNonce: Boolean(s.nonce),
+    })));
+    expect(scripts.map((s) => s.src.replace(/^.*\//, ''))).toEqual(['htmx.min.js', 'rizzy.js', 'hx-preload.min.js']);
+    expect(scripts[0].integrity).toMatch(/^sha384-/);
+    expect(scripts[2].integrity).toMatch(/^sha384-/);
+    expect(scripts.every((s) => s.hasNonce)).toBe(true);
+
+    const registered = await page.evaluate(() => [...window.Rizzy.diagnostics.registeredExtensions].sort());
+    expect(registered).toEqual(['preload', 'rizzy-antiforgery', 'rizzy-confirm', 'rizzy-nonce', 'rizzy-streaming']);
+    expect(await page.evaluate(() => htmx.config.extensions)).toContain('preload');
+});
+
+test('mousedown on a boosted nav link preloads it, and the click reuses that response (hx-preload)', async ({ page, issues }) => {
+    await page.goto('/home/');
+    const requests = [];
+    page.on('request', (r) => { if (r.url().endsWith('/home/counter')) requests.push(r); });
+    const link = page.locator('nav a', { hasText: 'Counter' });
+
+    await link.dispatchEvent('mousedown');
+    await expect.poll(() => requests.length).toBe(1);
+    await expect(page).toHaveURL(/\/home\/$/);   // preloaded, not swapped or pushed
+
+    await link.click();
+    await expect(page.locator('article h1')).toHaveText('Counter');
+    await page.waitForTimeout(300);
+    expect(requests.length, 'the click used the preloaded response').toBe(1);
+});

@@ -72,6 +72,8 @@ python eng/check-package-contents.py ./artifacts/nupkgs && bash eng/consumer-smo
 
 Other things worth knowing:
 
+- **Upgrading htmx:** bump `htmx.org` in `packages/rizzy/package.json` (dev and peer dependency), run `npm run generate:htmx-assets` (pinned version and SRI hashes in `src/Rizzy.Htmx/HtmxAssets.g.cs`), then `npm test`. `tests/htmx4-coverage.test.mjs` lists any attribute, event or extension the new htmx has that `Hx`, `HtmxEvents` or `HtmxExtension` does not cover yet.
+- **Docs tables:** after changing `HxAttributes.cs` or `HtmxEvents.cs`, regenerate the tables in the [rizzy.docs](https://github.com/JalexSocial/rizzy.docs) repository with `python scripts/generate_api_tables.py` (run there, with this repository checked out next to it).
 - **Public API changes** fail `PublicApiBaselineTests`. If the change is intended, regenerate the baselines with `RIZZY_UPDATE_API_BASELINE=1 dotnet test test/Rizzy.Tests/Rizzy.Tests.csproj` and commit `test/Rizzy.Tests/PublicApi/*.txt`, and list breaking changes in `CHANGELOG.md`.
 - **Browser tests** run the demo in Chromium with Playwright: `cd test/e2e && npm ci && npx playwright install chromium && npx playwright test` (see `test/e2e/README.md`). CI runs them on every pull request.
 - **The demo** (`src/RizzyDemo`) is part of the solution: `dotnet run --project src/RizzyDemo --launch-profile http`, then open http://localhost:5088/home/.

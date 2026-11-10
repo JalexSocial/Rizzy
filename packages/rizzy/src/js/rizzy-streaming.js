@@ -47,13 +47,47 @@
             const ctx = detail?.ctx;
             if (!ctx || typeof ctx.fetch !== "function" || ctx.fetch._rizzyStreaming) return;
 
-            const originalFetch = ctx.fetch;
+            // Other extensions may change ctx.fetch after this hook runs, in two ways:
+            //   - replace it (hx-preload installs `() => prefetchedResponse`), or
+            //   - wrap it (`const prev = ctx.fetch; ctx.fetch = (u, i) => prev(u, i)`).
+            // ctx.fetch therefore becomes an accessor. Reads always return the streaming wrapper;
+            // each assignment adds a layer. A wrapping extension captured the wrapper as `prev`,
+            // so the wrapper is re-entered from inside the layer above; each re-entry calls the
+            // next layer down, which reproduces the plain-assignment chain (newest layer first,
+            // down to the fetch that was in place before this hook) with streaming applied once
+            // to the final response.
+            const layers = [ctx.fetch];
+            let depth = 0;
             const wrapped = async (url, init) => {
-                const response = await originalFetch(url, init);
+                if (depth > 0) {
+                    // Step one layer down for the duration of this call, then back up, so a layer
+                    // that calls its fetch again (a retry) reaches the same layer below it.
+                    const layer = layers[Math.max(0, layers.length - 1 - depth)];
+                    depth++;
+                    try {
+                        return await layer(url, init);
+                    } finally {
+                        depth--;
+                    }
+                }
+                depth = 1;
+                let response;
+                try {
+                    response = await layers[layers.length - 1](url, init);
+                } finally {
+                    depth = 0;
+                }
                 return splitStreamingResponse(ctx, response);
             };
             wrapped._rizzyStreaming = true;
-            ctx.fetch = wrapped;
+            Object.defineProperty(ctx, "fetch", {
+                configurable: true,
+                enumerable: true,
+                get: () => wrapped,
+                set: (value) => {
+                    if (typeof value === "function" && !value._rizzyStreaming) layers.push(value);
+                },
+            });
         },
 
         htmx_after_swap(_elt, detail) {

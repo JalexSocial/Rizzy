@@ -24,8 +24,10 @@ export const htmxVersion = JSON.parse(
  *         {status?: number, headers?: Record<string,string>, body?: string}} options.respond
  * @param {boolean} [options.rizzy=true]  Load the Rizzy bundle after htmx.
  * @param {string} [options.head]         Extra <head> markup (e.g. a nonced script).
+ * @param {string[]} [options.extensions] Official extension files (e.g. 'hx-ptag') loaded after Rizzy,
+ *                                        in the order <RzScripts /> uses.
  */
-export async function bootHtmx({ body, config, respond, rizzy = true, head = '' }) {
+export async function bootHtmx({ body, config, respond, rizzy = true, head = '', extensions = [] }) {
     const meta = config
         ? `<meta name="htmx-config" content='${JSON.stringify(config).replace(/'/g, '&#39;')}'>`
         : '';
@@ -72,6 +74,9 @@ export async function bootHtmx({ body, config, respond, rizzy = true, head = '' 
 
     window.eval(htmxSource);
     if (rizzy) window.eval(rizzySource);
+    for (const ext of extensions) {
+        window.eval(fs.readFileSync(require.resolve(`htmx.org/dist/ext/${ext}.js`), 'utf8'));
+    }
 
     // htmx initializes on the next tick once the document has loaded.
     await waitFor(() => window.document.readyState !== 'loading', 1000);

@@ -25,9 +25,9 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     private string _jsonConfig = string.Empty;
     [Inject] private IRizzyNonceProvider? NonceProvider { get; set; }
-    [Inject] private IOptionsSnapshot<HtmxConfig> Options { get; set; } = default!;
+    [Inject] private IOptionsMonitor<HtmxConfig> Options { get; set; } = default!;
     [Inject] private IAntiforgery Antiforgery { get; set; } = default!;
-    [Inject] private IOptionsSnapshot<RizzyConfig> RizzyConfig { get; set; } = default!;
+    [Inject] private IOptionsMonitor<RizzyConfig> RizzyConfig { get; set; } = default!;
     [Inject] private IOptions<HtmxAntiforgeryOptions> AntiforgeryConfig { get; set; } = default!;
 
     [CascadingParameter]
@@ -41,9 +41,17 @@ public class HtmxConfigHeadOutlet : ComponentBase
 
     protected override Task OnParametersSetAsync()
     {
-        var config = Options.Value;
+        // Work on a copy: the monitored options instance is shared by every request.
+        var config = Options.CurrentValue with { };
 
-        if (RizzyConfig.Value.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
+        // Keep the htmx.config.extensions allow-list in step with the enabled extensions, so htmx
+        // never silently rejects Rizzy's own extensions or one enabled with UseExtensions.
+        config.Extensions = config.ResolveExtensionAllowList(HtmxExtension.Rizzy.Select(e => e.Name));
+        config.ExpectedExtensions = config.EnabledExtensions.Count > 0
+            ? config.EnabledExtensions.Select(e => e.Name).ToArray()
+            : null;
+
+        if (RizzyConfig.CurrentValue.AntiforgeryStrategy == AntiforgeryStrategy.GenerateTokensPerPage)
         {
             config = config with
             {

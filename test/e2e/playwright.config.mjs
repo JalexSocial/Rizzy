@@ -21,7 +21,8 @@ export default defineConfig({
         // Release build of the demo; CI builds the solution first, so --no-build is safe there.
         command: `dotnet run --project ../../src/RizzyDemo/RizzyDemo.csproj -c Release ${process.env.CI ? '--no-build ' : ''}--no-launch-profile --urls ${baseURL}`,
         url: `${baseURL}/home/`,
-        env: { ASPNETCORE_ENVIRONMENT: 'Development' },
+        // Keep the caller's environment (CI sets Demo__HtmxBaseUrl to serve htmx locally).
+        env: { ...process.env, ASPNETCORE_ENVIRONMENT: 'Development' },
         reuseExistingServer: !process.env.CI,
         timeout: 180_000,
     },

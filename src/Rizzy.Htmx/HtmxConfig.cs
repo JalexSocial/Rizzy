@@ -199,4 +199,126 @@ public record class HtmxConfig
     [JsonPropertyName("rizzyDiagnostics")]
     public bool? RizzyDiagnostics { get; set; }
 
+    // ---- Extensions -----------------------------------------------------------------------------
+
+    private List<HtmxExtension> _enabledExtensions = [];
+
+    /// <summary>
+    /// The extensions enabled with <see cref="UseExtensions"/>. <c>&lt;RzScripts /&gt;</c> loads their
+    /// scripts, and Rizzy adds their registered names to the allow-list when one is in use.
+    /// </summary>
+    [JsonIgnore]
+    public IReadOnlyList<HtmxExtension> EnabledExtensions => _enabledExtensions;
+
+    /// <summary>
+    /// Enables htmx extensions: <c>&lt;RzScripts /&gt;</c> loads their scripts after htmx, and their
+    /// registered names are kept in the <c>htmx.config.extensions</c> allow-list whenever one is in
+    /// use (see <see cref="RestrictExtensions"/>). Repeated calls add to the list.
+    /// </summary>
+    /// <example><code>
+    /// builder.Services.AddHtmx(o => o.UseExtensions(HtmxExtension.Sse, HtmxExtension.Preload));
+    /// </code></example>
+    public HtmxConfig UseExtensions(params HtmxExtension[] extensions)
+    {
+        ArgumentNullException.ThrowIfNull(extensions);
+        // A copy, so a config created with `with` never shares its list with the original.
+        var list = new List<HtmxExtension>(_enabledExtensions);
+        foreach (var extension in extensions)
+        {
+            ArgumentNullException.ThrowIfNull(extension);
+            if (extension.IsBundledWithRizzy)
+                continue; // always loaded with rizzy.js
+            if (!list.Contains(extension))
+                list.Add(extension);
+        }
+        _enabledExtensions = list;
+        return this;
+    }
+
+    /// <summary>
+    /// When <see langword="true"/>, htmx only accepts the extensions enabled with
+    /// <see cref="UseExtensions"/>, any listed in <see cref="Extensions"/>, and (with the Rizzy
+    /// package) Rizzy's own. Default <see langword="false"/>: htmx accepts every extension that
+    /// registers, unless you set <see cref="Extensions"/> yourself; the enabled extensions (and
+    /// Rizzy's own) are then added to it.
+    /// </summary>
+    [JsonIgnore]
+    public bool RestrictExtensions { get; set; }
+
+    /// <summary>How <c>&lt;RzScripts /&gt;</c> loads htmx, its extensions and the Rizzy script.</summary>
+    [JsonIgnore]
+    public HtmxScriptOptions Scripts { get; set; } = new();
+
+    /// <summary>
+    /// The extensions the server expects to register, so rizzy.js can warn about one that did not.
+    /// Set automatically by <c>HtmxConfigHeadOutlet</c>.
+    /// </summary>
+    [JsonInclude, JsonPropertyName("rizzyExtensions")]
+    internal string[]? ExpectedExtensions { get; set; }
+
+    /// <summary>
+    /// Returns the <c>htmx.config.extensions</c> value to write: <see langword="null"/> (all
+    /// extensions allowed) unless an allow-list is in use, in which case it contains the listed
+    /// names, <paramref name="alwaysAllowed"/> (Rizzy passes its own extensions) and every enabled
+    /// extension.
+    /// </summary>
+    internal string? ResolveExtensionAllowList(IEnumerable<string>? alwaysAllowed = null)
+    {
+        var userList = (Extensions ?? string.Empty)
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        if (!RestrictExtensions && userList.Length == 0)
+            return null;
+
+        var names = new List<string>();
+        void Add(string name) { if (!names.Contains(name, StringComparer.Ordinal)) names.Add(name); }
+        foreach (var name in userList) Add(name);
+        foreach (var name in alwaysAllowed ?? []) Add(name);
+        foreach (var extension in _enabledExtensions) Add(extension.Name);
+        return string.Join(", ", names);
+    }
+
+    // ---- Extension settings ---------------------------------------------------------------------
+
+    /// <summary>JSON keys written by HtmxConfig's own properties, mapped to the property name.</summary>
+    private static readonly Lazy<Dictionary<string, string>> KnownKeys = new(() =>
+        typeof(HtmxConfig)
+            .GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            .Select(p => (Property: p.Name, Json: p.GetCustomAttributes(typeof(JsonPropertyNameAttribute), true)
+                .OfType<JsonPropertyNameAttribute>().FirstOrDefault()?.Name))
+            .Where(p => p.Json is not null)
+            .ToDictionary(p => p.Json!, p => p.Property, StringComparer.OrdinalIgnoreCase));
+
+    /// <summary>
+    /// Additional <c>htmx.config</c> keys, written into the meta tag as-is. Use <see cref="Set"/> to
+    /// add them; extensions read their own sections (<c>sse</c>, <c>ws</c>, <c>preload</c>,
+    /// <c>historyCache</c>, <c>live</c>, <c>multipart</c>, <c>boostBrowserIndicator</c>,
+    /// <c>safeEval</c>, ...).
+    /// </summary>
+    [JsonExtensionData]
+    public Dictionary<string, System.Text.Json.JsonElement> AdditionalSettings { get; set; } = new();
+
+    /// <summary>
+    /// Sets an additional <c>htmx.config</c> key, typically an extension's settings. The value is
+    /// serialized as JSON with camelCase property names. Keys that an <see cref="HtmxConfig"/>
+    /// property already writes (<c>mode</c>, <c>extensions</c>, ...) are rejected: set the property.
+    /// </summary>
+    /// <example><code>
+    /// o.Set("sse", new { reconnect = true, reconnectDelay = 1000 })
+    ///  .Set("historyCache", new { size = 20 });
+    /// </code></example>
+    public HtmxConfig Set(string key, object? value)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(key);
+        if (KnownKeys.Value.TryGetValue(key, out var property))
+            throw new ArgumentException(
+                $"\"{key}\" is already written by HtmxConfig.{property}; set that property instead.", nameof(key));
+        var settings = new Dictionary<string, System.Text.Json.JsonElement>(AdditionalSettings)
+        {
+            [key] = System.Text.Json.JsonSerializer.SerializeToElement(value, System.Text.Json.JsonSerializerOptions.Web),
+        };
+        AdditionalSettings = settings;
+        return this;
+    }
+
 }

@@ -24,5 +24,7 @@ npx playwright test
 ```
 
 The config starts the demo on http://localhost:5088 (`dotnet run -c Release`), or reuses one that
-is already running there. Set `RIZZY_E2E_PORT` to use another port. CI runs this suite on every pull
+is already running there. The demo loads htmx from jsDelivr; CI copies htmx.org's `dist` folder to
+`src/RizzyDemo/wwwroot/lib/htmx/` and sets `Demo__HtmxBaseUrl=/lib/htmx/` instead, so a CDN outage
+cannot fail the build. You can do the same locally. Set `RIZZY_E2E_PORT` to use another port. CI runs this suite on every pull
 request (the `e2e` job in `.github/workflows/ci.yml`).
