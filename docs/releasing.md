@@ -34,6 +34,24 @@ See `CHANGELOG.md` for the SemVer policy.
 The workflow refuses to publish when `CHANGELOG.md` has no section for the version
 (`eng/changelog-section.sh`), before anything is pushed.
 
+## When a release fails partway
+
+The workflow publishes NuGet first, then npm, then the GitHub release.
+
+- **Failed before NuGet** (a check, the build or the tests): fix the cause and re-run the failed
+  run. Nothing was published. A re-run uses the tag's copy of `release.yml`, so a fix to the
+  workflow itself needs a new tag instead.
+- **NuGet published, npm or the GitHub release failed:** don't re-run; the NuGet push would fail on
+  the duplicate version. Fix the cause, then run the workflow manually from `main` (Actions →
+  Release → Run workflow) with the version and **npm only** ticked:
+  ```bash
+  gh workflow run release.yml --ref main -f version=X.Y.Z -f npm_only=true
+  ```
+  It checks out the `vX.Y.Z` tag, skips NuGet, and publishes npm and the GitHub release. If npm
+  fails with `ENEEDAUTH`, its trusted publishing exchange failed: the step's verbose log says why
+  (search for `oidc`), and the usual cause is a field in the npm trusted publisher that doesn't
+  exactly match (`JalexSocial`, `Rizzy`, `release.yml`, `release`).
+
 ## One-time setup (maintainers)
 
 - **Environment.** Create a `release` environment (Settings → Environments) with yourself as a
@@ -47,10 +65,10 @@ The workflow refuses to publish when `CHANGELOG.md` has no section for the versi
   nuget.org profile name (not its email). The workflow's `NuGet/login` step exchanges the run's
   OIDC token for an API key that lasts about an hour, so no NuGet key is stored. After the first
   successful publish, delete any old `NUGET_API_KEY` secret and revoke that key on nuget.org.
-- **npm**, one of:
-  - *Trusted publishing (recommended):* on npmjs.com, add a trusted publisher for
-    `@jalexsocial/rizzy` (GitHub Actions, repository `JalexSocial/Rizzy`, workflow `release.yml`,
-    environment `release`) and remove the `NPM_TOKEN` secret. No long-lived token is stored.
-  - *Token:* an `NPM_TOKEN` secret with publish rights to `@jalexsocial/rizzy`. Check its expiry.
+- **npm (trusted publishing).** On npmjs.com, open `@jalexsocial/rizzy` → Settings → Trusted
+  Publisher → GitHub Actions: organization `JalexSocial`, repository `Rizzy`, workflow
+  `release.yml`, environment `release` (all case-sensitive). No npm token is stored. npm asks for a
+  publish through a new trusted publisher by a deadline (shown on the settings page) to validate
+  it; if that passes, add it again before releasing.
 - **After the first 6.x release:** deprecate Rizzy 5.4.0 on nuget.org (it depends on a pre-htmx-4
   Rizzy.Htmx, RIZZY-001) and point users to 6.0.

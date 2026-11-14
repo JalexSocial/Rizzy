@@ -3,6 +3,12 @@ name: Release
 # Publishes Rizzy, Rizzy.Htmx and @jalexsocial/rizzy together, with one version taken from
 # the git tag (e.g. v6.0.0 or v6.0.0-preview.1). Nothing is published from ordinary pushes.
 # Pushes do NOT use --skip-duplicate: re-using a version must fail loudly (RIZZY-001, RIZZY-010).
+#
+# Recovering a partial release: when NuGet published but a later step failed, re-running the tag's
+# run cannot help (NuGet rejects the duplicate, and a re-run uses the tag's copy of this file). Run
+# this workflow manually from main with the version and "npm only" ticked: it checks out the tag,
+# skips NuGet, and publishes npm and the GitHub release. It must stay in this file, because the npm
+# and NuGet trusted publishing policies name release.yml.
 on:
   push:
     tags: [ 'v*' ]
@@ -11,6 +17,10 @@ on:
       version:
         description: 'Version to release (without the leading v), e.g. 6.0.0-preview.1'
         required: true
+      npm_only:
+        description: 'npm only: the version is already on NuGet; publish npm and the GitHub release from its tag'
+        type: boolean
+        default: false
 
 permissions:
   contents: write   # create the GitHub release
@@ -22,6 +32,9 @@ jobs:
     environment: release
     steps:
       - uses: actions/checkout@v4
+        with:
+          # An npm-only run publishes exactly what the tag holds, not the tip of main.
+          ref: ${{ inputs.npm_only && format('refs/tags/v{0}', inputs.version) || '' }}
 
       - name: Determine version
         id: version
@@ -47,11 +60,12 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
+      # No registry-url: that writes an .npmrc that authenticates with NODE_AUTH_TOKEN, and npm
+      # publishes through trusted publishing (OIDC) instead.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          registry-url: https://registry.npmjs.org/
 
       - name: Build
         run: dotnet build src/Rizzy.sln -c Release -p:Version=${{ steps.version.outputs.version }}
@@ -85,6 +99,7 @@ jobs:
       # owner, set as a variable on the release environment. Logging in just before the push keeps
       # the short-lived key from expiring during the build.
       - name: Check NUGET_USER is set
+        if: ${{ !inputs.npm_only }}
         env:
           NUGET_USER: ${{ vars.NUGET_USER }}
         run: |
@@ -95,27 +110,29 @@ jobs:
 
       - name: Log in to NuGet (trusted publishing)
         id: nuget-login
+        if: ${{ !inputs.npm_only }}
         uses: NuGet/login@v1
         with:
           user: ${{ vars.NUGET_USER }}
 
       - name: Push to NuGet
+        if: ${{ !inputs.npm_only }}
         run: >
           dotnet nuget push "./artifacts/nupkgs/*.nupkg"
           --api-key "${{ steps.nuget-login.outputs.NUGET_API_KEY }}"
           --source https://api.nuget.org/v3/index.json
 
-      # Works with npm trusted publishing (OIDC; configure it on npmjs.com for this workflow and
-      # leave NPM_TOKEN unset) or with an NPM_TOKEN secret. Trusted publishing needs npm 11.5.1+,
-      # newer than the npm bundled with Node 22.
+      # npm trusted publishing (OIDC): npmjs.com trusts this repository, release.yml and the
+      # release environment, so no token is stored. It needs npm 11.5.1+, newer than the npm bundled
+      # with Node 22. When the OIDC exchange fails, npm only reports ENEEDAUTH; the verbose log shows
+      # the reason (look for "oidc").
       - name: Publish npm package
         working-directory: packages/rizzy
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm install -g npm@^11.5.1
+          echo "npm $(npm --version)"
           npm pkg set version=${{ steps.version.outputs.version }}
-          npm publish --access public --provenance --tag ${{ steps.version.outputs.npm_tag }}
+          npm publish --access public --provenance --tag ${{ steps.version.outputs.npm_tag }} --loglevel verbose
 
       # The release notes are this version's CHANGELOG.md section, followed by GitHub's list of
       # merged pull requests.
