@@ -24,8 +24,11 @@
 Install the library via NuGet:
 
 ```bash
-dotnet add package Rizzy.Htmx
+dotnet add package Rizzy.Htmx --prerelease
 ```
+
+While Rizzy 6 is in preview, include `--prerelease`; without it you get the 5.x line, which
+doesn't support htmx 4.
 
 ## Getting Started
 

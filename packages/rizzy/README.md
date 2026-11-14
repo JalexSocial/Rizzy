@@ -37,8 +37,10 @@ classic (UMD) script, so don't add `type="module"`:
 From npm instead of the NuGet static asset:
 
 ```bash
-npm install @jalexsocial/rizzy htmx.org@^4.0.1
+npm install @jalexsocial/rizzy@next htmx.org@^4.0.1
 ```
+
+While Rizzy 6 is in preview it is published under the `next` tag; `latest` is still 5.x.
 
 Then serve `node_modules/@jalexsocial/rizzy/dist/js/rizzy.min.js` (or import `@jalexsocial/rizzy`
 in your bundler after htmx). Use the same version as your Rizzy NuGet packages; the diagnostics warn

@@ -17,8 +17,11 @@ Rizzy 6 requires .NET 10 and htmx 4.0.1 or later.
 **1. Install the package** (it brings the matching `Rizzy.Htmx` and the client script):
 
 ```bash
-dotnet add package Rizzy
+dotnet add package Rizzy --prerelease
 ```
+
+While Rizzy 6 is in preview, include `--prerelease`; without it you get the 5.x line, which
+doesn't support htmx 4.
 
 **2. Register Rizzy** in `Program.cs`:
 

@@ -67,7 +67,7 @@ dotnet pack src/Rizzy/Rizzy.csproj -c Release -o ./artifacts/nupkgs
 ```
 
 ```bash
-python eng/check-package-contents.py ./artifacts/nupkgs && bash eng/consumer-smoke-test.sh ./artifacts/nupkgs 6.0.0-dev
+python eng/check-package-contents.py ./artifacts/nupkgs && bash eng/consumer-smoke-test.sh ./artifacts/nupkgs 6.0.0-preview.2-dev
 ```
 
 Other things worth knowing:
