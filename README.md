@@ -12,7 +12,8 @@ For detailed documentation and examples, please visit the [Rizzy Documentation S
 
 ## Quick start
 
-Rizzy 6 requires .NET 10 and htmx 4.0.1 or later.
+Rizzy 6 runs on .NET 10 or .NET 11 (the packages include a build for each) and requires htmx 4.0.1
+or later.
 
 **1. Install the package** (it brings the matching `Rizzy.Htmx` and the client script):
 

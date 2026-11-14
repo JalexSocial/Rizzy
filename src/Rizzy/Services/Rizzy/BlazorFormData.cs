@@ -40,21 +40,30 @@ internal static class BlazorFormData
     /// Reads the posted form (if any) and makes it available to Blazor form mapping. Runs at most
     /// once per request.
     /// </summary>
-    public static async Task InitializeAsync(HttpContext context)
+    /// <returns>
+    /// <see langword="false"/> when the form must not be mapped because the request failed
+    /// cross-site request forgery protection (see <see cref="FormPostProtection"/>); the caller
+    /// responds with 400 Bad Request.
+    /// </returns>
+    public static async Task<bool> InitializeAsync(HttpContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
 
         if (!context.Request.HasFormContentType || context.Items.ContainsKey(InitializedKey))
-            return;
+            return true;
 
         context.Items[InitializedKey] = true;
 
         var form = await context.Request.ReadFormAsync(context.RequestAborted).ConfigureAwait(false);
         var handler = form[HandlerField].FirstOrDefault();
         if (string.IsNullOrEmpty(handler))
-            return;
+            return true;
+
+        if (!await FormPostProtection.IsAllowedAsync(context).ConfigureAwait(false))
+            return false;
 
         s_accessor.Value.SetFormData(context, handler, form);
+        return true;
     }
 
     private sealed class Accessor

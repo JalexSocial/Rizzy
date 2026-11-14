@@ -165,4 +165,4 @@ If you prefer htmx 2 behavior, set `HtmxConfig.NoSwap = [204, 304, "4xx", "5xx"]
 - `HtmxResponse.LocalRedirect(...)`, `LocalLocation(...)`, `HtmxResponse.IsLocalUrl(...)` (open-redirect safe).
 - `CssSelector.Escape(...)`, `CssSelector.Id(...)`.
 - `IHtmxSwapService.AddSwappableText(...)`, `RizzyComponentParameterBuilder.AddChildText(...)`.
-- **`[RizzyParameterize]` for your own components.** The source generator now ships in the Rizzy package. Mark a `partial` component with `[Rizzy.RizzyParameterize]` to get a typed `Params(...)` helper. It reports `RZ0001` for non-partial classes and `RZ0002` for nested ones. It requires the .NET 10 SDK compiler.
+- **`[RizzyParameterize]` for your own components.** The source generator now ships in the Rizzy package. Mark a `partial` component with `[Rizzy.RizzyParameterize]` to get a typed `Params(...)` helper. It reports `RZ0001` for non-partial classes and `RZ0002` for nested ones. It requires the .NET 10 SDK compiler or later.

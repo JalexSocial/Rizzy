@@ -40,7 +40,8 @@ We recommend the following workflow for contributions to Rizzy:
 
 ## Building and testing
 
-You need the .NET 10 SDK (`global.json` pins the 10.0 feature band) and Node.js 22. These are the steps CI runs, from the repository root:
+You need the .NET 11 SDK (`global.json` pins the 11.0 feature band), the .NET 10 runtime (the
+libraries and tests target both `net10.0` and `net11.0`, and `dotnet test` runs both), and Node.js 22. These are the steps CI runs, from the repository root:
 
 ```bash
 dotnet build src/Rizzy.sln -c Release

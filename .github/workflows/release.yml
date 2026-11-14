@@ -58,7 +58,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '10.0.x'
+          # Rizzy targets net10.0 and net11.0: the .NET 11 SDK builds both, and the tests run on
+          # both runtimes.
+          dotnet-version: |
+            10.0.x
+            11.0.x
 
       # No registry-url: that writes an .npmrc that authenticates with NODE_AUTH_TOKEN, and npm
       # publishes through trusted publishing (OIDC) instead.
