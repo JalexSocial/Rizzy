@@ -11,7 +11,8 @@ namespace Rizzy;
 /// At execution time it (1) returns 204 No Content if <see cref="HtmxResponse.EmptyBody"/>,
 /// <see cref="HtmxResponse.Redirect(string)"/> or <see cref="HtmxResponse.Refresh"/> asked for an
 /// empty body, (2) supplies the posted form to Blazor form mapping so
-/// <c>[SupplyParameterFromForm]</c> works for controllers and minimal APIs alike, and then
+/// <c>[SupplyParameterFromForm]</c> works for controllers and minimal APIs alike (returning 400 Bad
+/// Request instead if the post fails cross-site request forgery protection), and then
 /// (3) renders the component through <see cref="RazorComponentResult"/>.
 /// </remarks>
 public sealed class RizzyViewResult : IResult
@@ -37,7 +38,12 @@ public sealed class RizzyViewResult : IResult
             return;
         }
 
-        await BlazorFormData.InitializeAsync(httpContext).ConfigureAwait(false);
+        if (!await BlazorFormData.InitializeAsync(httpContext).ConfigureAwait(false))
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            return;
+        }
+
         await _inner.ExecuteAsync(httpContext).ConfigureAwait(false);
     }
 }

@@ -18,6 +18,26 @@ Finding IDs (RIZZY-0xx) refer to the
 
 ## [Unreleased]
 
+### Added
+
+- **.NET 11 support.** Rizzy and Rizzy.Htmx target both `net10.0` and `net11.0`. On .NET 11:
+  - Rizzy's form mapping (`[SupplyParameterFromForm]` in Rizzy views) checks posts with ASP.NET
+    Core 11's automatic CSRF protection (the browser's `Sec-Fetch-Site`/`Origin` headers) when the
+    endpoint has not already been judged by antiforgery. Same-origin posts, which includes every htmx
+    request, need no token; cross-site posts get 400 Bad Request. Opt an endpoint out with
+    `.DisableAntiforgery()` or `[IgnoreAntiforgeryToken]`, or allow a cross-origin caller with a CORS
+    policy that has `AllowCredentials()`.
+  - `RzInitialValidator` validates with `EditContext.ValidateAsync()`, so async validators
+    (`AsyncValidationAttribute`, `IAsyncValidatableObject`) run.
+  - `RzPageTitle` works inside a `CacheView` when the title is set with `Text`.
+- **`RzPageTitle.Text`** sets the title as plain text (both frameworks).
+
+### Changed
+
+- **Form mapping honors the antiforgery verdict.** When antiforgery has already judged a request
+  (`app.UseAntiforgery()` on an endpoint that requires antiforgery) and found it invalid, Rizzy no
+  longer supplies the posted form to `[SupplyParameterFromForm]`; the view returns 400 Bad Request.
+
 ## [6.0.0-preview.1] - 2026-11-09
 
 The first preview of Rizzy 6.0.0: htmx 4 support. Upgrading from 5.x is covered step by step in

@@ -172,8 +172,9 @@ Rizzy.RzModelStateProvider.ModelState : Microsoft.AspNetCore.Mvc.ModelBinding.Mo
 Rizzy.RzModelStateProvider.ctor()
 Rizzy.RzPageTitle.ChildContent : Microsoft.AspNetCore.Components.RenderFragment { get; set; }
 Rizzy.RzPageTitle.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
+Rizzy.RzPageTitle.Text : System.String { get; set; }
 Rizzy.RzPageTitle.ctor()
-Rizzy.RzPageTitle.static Params(Microsoft.AspNetCore.Components.RenderFragment childContent = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
+Rizzy.RzPageTitle.static Params(Microsoft.AspNetCore.Components.RenderFragment childContent = null, System.String text = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
 Rizzy.RzScripts.ctor()
 Rizzy.RzValidationMessageBase<TValue>.HttpContext : Microsoft.AspNetCore.Http.HttpContext { get; set; }
 Rizzy.RzValidationMessageBase<TValue>.ctor()

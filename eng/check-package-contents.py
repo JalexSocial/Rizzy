@@ -29,11 +29,18 @@ COMMON_ALLOWED = [
     "rizzy.png",
 ]
 
+# Every target framework in the packages (Rizzy.csproj and Rizzy.Htmx.csproj <TargetFrameworks>).
+FRAMEWORKS = ["net10.0", "net11.0"]
+
+
+def lib(assembly: str) -> list[str]:
+    return [f"lib/{tfm}/{assembly}.{ext}" for tfm in FRAMEWORKS for ext in ("dll", "xml")]
+
+
 PACKAGES = {
     "Rizzy": {
         "allowed": COMMON_ALLOWED + [
-            "lib/net10.0/Rizzy.dll",
-            "lib/net10.0/Rizzy.xml",
+            *lib("Rizzy"),
             "build/*.props",
             "buildMultiTargeting/*.props",
             "buildTransitive/*.props",
@@ -43,8 +50,7 @@ PACKAGES = {
             "analyzers/dotnet/cs/Rizzy.SourceGenerators.dll",
         ],
         "required": [
-            "lib/net10.0/Rizzy.dll",
-            "lib/net10.0/Rizzy.xml",
+            *lib("Rizzy"),
             "staticwebassets/js/rizzy.js",
             "staticwebassets/js/rizzy.min.js",
             "analyzers/dotnet/cs/Rizzy.SourceGenerators.dll",
@@ -52,12 +58,10 @@ PACKAGES = {
     },
     "Rizzy.Htmx": {
         "allowed": COMMON_ALLOWED + [
-            "lib/net10.0/Rizzy.Htmx.dll",
-            "lib/net10.0/Rizzy.Htmx.xml",
+            *lib("Rizzy.Htmx"),
         ],
         "required": [
-            "lib/net10.0/Rizzy.Htmx.dll",
-            "lib/net10.0/Rizzy.Htmx.xml",
+            *lib("Rizzy.Htmx"),
         ],
     },
 }

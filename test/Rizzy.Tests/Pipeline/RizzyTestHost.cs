@@ -73,6 +73,13 @@ public sealed class RizzyTestHost : IAsyncLifetime
         app.MapGet("/stream", (IRizzyService rizzy) => rizzy.View<TestStreamingPage>());
         app.MapGet("/stream-partial", (IRizzyService rizzy) => rizzy.PartialView<TestStreamingPage>());
         app.MapPost("/minimal-post", (IRizzyService rizzy) => rizzy.View<TestPostedFormPage>()).DisableAntiforgery();
+        // No antiforgery metadata: Rizzy's form mapping applies the CSRF check itself.
+        app.MapPost("/minimal-post-protected", (IRizzyService rizzy) => rizzy.View<TestPostedFormPage>());
+        app.MapGet("/title-text", (IRizzyService rizzy) => rizzy.View<TestTitleTextPage>());
+#if NET11_0_OR_GREATER
+        app.MapGet("/cached-title", (IRizzyService rizzy) => rizzy.View<TestCachedTitlePage>());
+        app.MapGet("/async-validate", (IRizzyService rizzy) => rizzy.View<TestAsyncFormPage>());
+#endif
         app.MapControllers();
 
         await app.StartAsync();

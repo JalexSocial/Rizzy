@@ -7,12 +7,15 @@
 # cannot see. It also checks that the packaged [RizzyParameterize] source generator runs in
 # the consumer's build.
 #
-# Usage: eng/consumer-smoke-test.sh <directory-containing-nupkgs> <version>
+# Usage: eng/consumer-smoke-test.sh <directory-containing-nupkgs> <version> [target frameworks]
+# The consumer app is built and run once per target framework (default: net10.0 and net11.0,
+# every framework the packages target).
 set -euo pipefail
 
 # pwd -W gives a native Windows path under Git Bash (needed inside nuget.config).
 PKG_DIR="$(cd "$1" && (pwd -W 2>/dev/null || pwd))"
 VERSION="$2"
+FRAMEWORKS="${3:-net10.0 net11.0}"
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 
@@ -43,7 +46,7 @@ cat > "$WORK/app/SmokeApp.csproj" <<EOF
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
+    <TargetFramework>__TFM__</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -126,6 +129,10 @@ return 0;
 EOF
 
 cd "$WORK/app"
+for TFM in $FRAMEWORKS; do
+echo "--- $TFM"
+sed -i.bak -E "s#<TargetFramework>[^<]+</TargetFramework>#<TargetFramework>$TFM</TargetFramework>#" SmokeApp.csproj
+rm -rf obj bin
 dotnet restore --configfile "$WORK/nuget.config" --packages "$WORK/packages"
 
 # Both packages must resolve to exactly the version under test.
@@ -143,4 +150,5 @@ for package in ("Rizzy", "Rizzy.Htmx"):
 PY
 
 dotnet run --no-restore -c Release
-echo "Consumer smoke test passed for Rizzy $VERSION"
+done
+echo "Consumer smoke test passed for Rizzy $VERSION ($FRAMEWORKS)"
