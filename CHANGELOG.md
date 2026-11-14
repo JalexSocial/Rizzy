@@ -18,7 +18,9 @@ Finding IDs (RIZZY-0xx) refer to the
 
 ## [Unreleased]
 
-The 6.0.0 release: htmx 4 support. Upgrading from 5.x is covered step by step in
+## [6.0.0-preview.1] - 2026-11-09
+
+The first preview of Rizzy 6.0.0: htmx 4 support. Upgrading from 5.x is covered step by step in
 [docs/migration/htmx2-to-htmx4.md](docs/migration/htmx2-to-htmx4.md).
 
 ### Breaking
@@ -139,5 +141,6 @@ it; upgrade to 6.0.0.
 
 See the [GitHub releases](https://github.com/JalexSocial/Rizzy/releases) and tags.
 
-[Unreleased]: https://github.com/JalexSocial/Rizzy/compare/v5.2.0...HEAD
+[Unreleased]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.1...HEAD
+[6.0.0-preview.1]: https://github.com/JalexSocial/Rizzy/compare/v5.2.0...v6.0.0-preview.1
 [5.4.0]: https://www.nuget.org/packages/Rizzy/5.4.0

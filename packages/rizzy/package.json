@@ -30,7 +30,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jalexsocial/rizzy.git"
+    "url": "git+https://github.com/JalexSocial/Rizzy.git",
+    "directory": "packages/rizzy"
   },
   "keywords": [
     "asp.net",
@@ -42,9 +43,9 @@
   "author": "Michael Tanczos",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jalexsocial/rizzy/issues"
+    "url": "https://github.com/JalexSocial/Rizzy/issues"
   },
-  "homepage": "https://github.com/jalexsocial/rizzy#readme",
+  "homepage": "https://jalexsocial.github.io/rizzy.docs/",
   "peerDependencies": {
     "htmx.org": "^4.0.1"
   },
