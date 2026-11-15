@@ -7,6 +7,6 @@
     and CI builds.
   -->
   <PropertyGroup>
-    <Version>6.0.0-preview.2-dev</Version>
+    <Version>6.0.0-preview.3-dev</Version>
   </PropertyGroup>
 </Project>
