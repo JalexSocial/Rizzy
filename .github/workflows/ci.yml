@@ -18,7 +18,7 @@ concurrency:
 jobs:
   dotnet:
     name: .NET build, test and pack
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
@@ -67,7 +67,7 @@ jobs:
 
   client:
     name: JS test, build and drift check
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: packages/rizzy
@@ -103,7 +103,7 @@ jobs:
 
   e2e:
     name: Browser tests (Playwright, demo app)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: test/e2e

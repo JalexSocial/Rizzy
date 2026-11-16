@@ -44,30 +44,19 @@ public partial class RzInputTextAreaBase : InputTextArea
     {
         base.OnParametersSet();
 
-        if (string.IsNullOrEmpty(Id))
-        {
-            // NameAttributeValue might be empty without an EditContext, so provide a fallback.
-            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rztextarea");
-        }
-
         if (EditContext is not null)
         {
-            // Store the FieldIdentifier locally
+            // Registers the field for labels and validation messages, adopting an id a label reserved.
             _fieldIdentifier = FieldIdentifier;
-            
-            // Get and store the fieldMapping dictionary instance
-            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-
-            // Add mapping for this field (use FieldIdentifier from the base class).
-            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
-            {
-                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue!, Id = Id };
-            }
+            Id = FormFieldRegistration.Register(HttpContext, EditContext, _fieldIdentifier, NameAttributeValue, Id, "rztextarea", out _fieldMapping);
 
             AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputTextAreaBase), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
         else
         {
+            if (string.IsNullOrEmpty(Id))
+                Id = IdGenerator.UniqueId(NameAttributeValue ?? "rztextarea");
+
             var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
             attrib.TryAdd("id", Id);
             AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);

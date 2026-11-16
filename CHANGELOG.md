@@ -18,6 +18,22 @@ Finding IDs (RIZZY-0xx) refer to the
 
 ## [Unreleased]
 
+### Added
+
+- `HttpContext.GetOrReserveFieldId(EditContext, FieldIdentifier)` returns the id of the form
+  control registered for a field, or reserves one when the control has not rendered yet. Label
+  components (such as RizzyUI's `FieldLabel`) use it to point `for` at an input that comes after
+  them.
+
+### Fixed
+
+- A label rendered before its input can point at it. Rizzy's inputs register their field when
+  they render, so a label earlier in the form found no id and rendered no `for`. Every Rizzy input
+  base (text, text area, number, checkbox, date, select, radio group, hidden) now adopts an id
+  reserved for its field when it has no explicit `Id`, and completes the reservation with its field
+  name. An input with an explicit `Id` keeps it; a label rendered before such an input should use
+  that id directly. A validation message rendered before its input still uses the field name.
+
 ## [6.0.0-preview.2] - 2026-11-14
 
 The second preview of Rizzy 6.0.0 adds .NET 11 support: the packages include builds for .NET 10

@@ -45,31 +45,20 @@ public partial class RzInputHidden<TValue> : InputHidden
     {
         base.OnParametersSet();
 
-        if (string.IsNullOrEmpty(Id))
-        {
-            // NameAttributeValue might be empty without an EditContext, so provide a fallback.
-            Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzhidden");
-        }
-
         if (EditContext is not null)
         {
-            // Store the FieldIdentifier locally to ensure safe disposal
+            // Registers the field for labels and validation messages, adopting an id a label reserved.
             _fieldIdentifier = FieldIdentifier;
-
-            // Get and store the fieldMapping dictionary instance
-            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-
-            // Add mapping for this field (use FieldIdentifier from the base class).
-            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
-            {
-                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue!, Id = Id };
-            }
+            Id = FormFieldRegistration.Register(HttpContext, EditContext, _fieldIdentifier, NameAttributeValue, Id, "rzhidden", out _fieldMapping);
 
             // Merge validation attributes (even for hidden fields, this ensures data-val attributes exist if needed by scripts)
             AdditionalAttributes = DataAnnotationsProcessor?.MergeAttributes(nameof(RzInputHidden<TValue>), ValueExpression, AdditionalAttributes, Id) ?? AdditionalAttributes;
         }
         else
         {
+            if (string.IsNullOrEmpty(Id))
+                Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzhidden");
+
             var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
             attrib.TryAdd("id", Id);
             AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);

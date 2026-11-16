@@ -69,6 +69,7 @@ Rizzy.HtmxSwappable.TargetId : System.String { get; set; }
 Rizzy.HtmxSwappable.ctor()
 Rizzy.HtmxSwappable.static Params(System.String targetId, Microsoft.AspNetCore.Components.RenderFragment childContent, System.Nullable<Rizzy.Htmx.SwapStyle> swapStyle = null, System.String selector = null) -> System.Collections.Generic.Dictionary<System.String, System.Object>
 Rizzy.HttpContextExtensions.static GetNonce(Microsoft.AspNetCore.Http.HttpContext context) -> System.String
+Rizzy.HttpContextExtensions.static GetOrReserveFieldId(Microsoft.AspNetCore.Http.HttpContext context, Microsoft.AspNetCore.Components.Forms.EditContext editContext, Microsoft.AspNetCore.Components.Forms.FieldIdentifier field) -> System.String
 Rizzy.IHtmxSwapService.AddRawContent(Microsoft.AspNetCore.Components.MarkupString markup) -> System.Void
 Rizzy.IHtmxSwapService.AddSwappableComponent<TComponent>(System.String targetId, System.Collections.Generic.Dictionary<System.String, System.Object> parameters = null, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
 Rizzy.IHtmxSwapService.AddSwappableComponent<TComponent>(System.String targetId, System.Object parameters = null, Rizzy.Htmx.SwapStyle swapStyle = outerHTML, System.String selector = null) -> System.Void
