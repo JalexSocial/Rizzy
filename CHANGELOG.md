@@ -18,6 +18,10 @@ Finding IDs (RIZZY-0xx) refer to the
 
 ## [Unreleased]
 
+## [6.0.0-preview.3] - 2026-11-15
+
+The third preview of Rizzy 6.0.0 lets a label that renders before its input point at it.
+
 ### Added
 
 - `HttpContext.GetOrReserveFieldId(EditContext, FieldIdentifier)` returns the id of the form
@@ -182,7 +186,8 @@ it; upgrade to 6.0.0.
 
 See the [GitHub releases](https://github.com/JalexSocial/Rizzy/releases) and tags.
 
-[Unreleased]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.2...HEAD
+[Unreleased]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.3...HEAD
+[6.0.0-preview.3]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.2...v6.0.0-preview.3
 [6.0.0-preview.2]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.1...v6.0.0-preview.2
 [6.0.0-preview.1]: https://github.com/JalexSocial/Rizzy/compare/v5.2.0...v6.0.0-preview.1
 [5.4.0]: https://www.nuget.org/packages/Rizzy/5.4.0
