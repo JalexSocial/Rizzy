@@ -46,6 +46,7 @@ public sealed class RizzyTestHost : IAsyncLifetime
         app.MapGet("/partial", (IRizzyService rizzy) => rizzy.PartialView<TestPage>(new { Message = "hello partial" }));
         app.MapGet("/swap", (IRizzyService rizzy) => rizzy.PartialView<TestSwapPage>());
         app.MapGet("/form", (IRizzyService rizzy) => rizzy.View<TestFormPage>());
+        app.MapGet("/form-label-first", (IRizzyService rizzy) => rizzy.View<TestLabelFirstFormPage>());
         app.MapGet("/form-invalid", (IRizzyService rizzy) =>
         {
             var modelState = new ModelStateDictionary();

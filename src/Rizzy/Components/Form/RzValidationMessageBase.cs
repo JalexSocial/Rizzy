@@ -53,7 +53,8 @@ public class RzValidationMessageBase<TValue> : ValidationMessage<TValue>
         var fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
 
         string fieldName;
-        if (fieldMapping != null && fieldMapping.TryGetValue(field, out var mapping))
+        // A reservation made by a label (id only, no field name) is not a registered input yet.
+        if (fieldMapping != null && fieldMapping.TryGetValue(field, out var mapping) && !string.IsNullOrEmpty(mapping.FieldName))
         {
             fieldName = mapping.FieldName;
         }

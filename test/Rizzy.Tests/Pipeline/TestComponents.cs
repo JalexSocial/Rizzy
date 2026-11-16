@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace Rizzy.Tests.Pipeline;
 
@@ -138,6 +139,111 @@ public sealed class TestFormPage : ComponentBase
 
     // Each call renders one component inside its own region, so fixed sequence numbers are valid.
 #pragma warning disable ASP0006 // the region number is a per-call literal supplied by the caller
+    private void Input<TComponent, TValue>(RenderTreeBuilder b, int region, TValue value, Action<TValue> setter, Expression<Func<TValue>> expression)
+        where TComponent : IComponent
+    {
+        b.OpenRegion(region);
+        b.OpenComponent<TComponent>(0);
+        b.AddComponentParameter(1, "Value", value);
+        b.AddComponentParameter(2, "ValueChanged", EventCallback.Factory.Create(this, setter));
+        b.AddComponentParameter(3, "ValueExpression", expression);
+        b.CloseComponent();
+        b.CloseRegion();
+    }
+#pragma warning restore ASP0006
+}
+
+/// <summary>
+/// A label like RizzyUI's FieldLabel: resolves its <c>for</c> through the field mapping in
+/// <c>OnParametersSet</c>, which runs before a later sibling input has registered its field.
+/// </summary>
+public sealed class TestFieldLabel<TValue> : ComponentBase
+{
+    private string? _forId;
+
+    [CascadingParameter] private HttpContext? HttpContext { get; set; }
+    [CascadingParameter] private EditContext? EditContext { get; set; }
+    [Parameter] public Expression<Func<TValue>>? For { get; set; }
+
+    protected override void OnParametersSet()
+        => _forId = HttpContext!.GetOrReserveFieldId(EditContext!, FieldIdentifier.Create(For!));
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenElement(0, "label");
+        builder.AddAttribute(1, "for", _forId);
+        builder.AddAttribute(2, "data-label-for", FieldIdentifier.Create(For!).FieldName);
+        builder.CloseElement();
+    }
+}
+
+/// <summary>
+/// Labels rendered before their inputs (and one after), a validation message before its input, and
+/// an input with an explicit id.
+/// </summary>
+public sealed class TestLabelFirstFormPage : ComponentBase
+{
+    [Parameter] public TestPerson Person { get; set; } = new();
+
+    protected override void BuildRenderTree(RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<EditForm>(0);
+        builder.AddComponentParameter(1, nameof(EditForm.Model), Person);
+        builder.AddComponentParameter(2, nameof(EditForm.FormName), "person");
+        builder.AddComponentParameter(3, nameof(EditForm.ChildContent), (RenderFragment<EditContext>)(_ => b =>
+        {
+            Label(b, 10, () => Person.Name);
+            b.OpenComponent<RzValidationMessageBase<string?>>(11);
+            b.AddComponentParameter(12, "For", (Expression<Func<string?>>)(() => Person.Name));
+            b.CloseComponent();
+            Input<RzInputTextBase, string?>(b, 20, Person.Name, v => Person.Name = v, () => Person.Name);
+
+            Label(b, 30, () => Person.Age);
+            Input<RzInputNumberBase<int>, int>(b, 40, Person.Age, v => Person.Age = v, () => Person.Age);
+
+            Label(b, 50, () => Person.Subscribe);
+            Input<RzInputCheckboxBase, bool>(b, 60, Person.Subscribe, v => Person.Subscribe = v, () => Person.Subscribe);
+
+            Label(b, 70, () => Person.BirthDate);
+            Input<RzInputDateBase<DateTime>, DateTime>(b, 80, Person.BirthDate, v => Person.BirthDate = v, () => Person.BirthDate);
+
+            Label(b, 90, () => Person.Bio);
+            Input<RzInputTextAreaBase, string?>(b, 100, Person.Bio, v => Person.Bio = v, () => Person.Bio);
+
+            Label(b, 110, () => Person.Token);
+            Input<RzInputHidden<string>, string?>(b, 120, Person.Token, v => Person.Token = v, () => Person.Token);
+
+            Label(b, 130, () => Person.Color);
+            b.OpenComponent<RzInputSelectBase<string>>(140);
+            b.AddComponentParameter(141, "Value", Person.Color);
+            b.AddComponentParameter(142, "ValueChanged", EventCallback.Factory.Create<string>(this, v => Person.Color = v));
+            b.AddComponentParameter(143, "ValueExpression", (Expression<Func<string>>)(() => Person.Color));
+            b.AddComponentParameter(144, "ChildContent", (RenderFragment)(o => o.AddMarkupContent(0, "<option value=\"red\">Red</option>")));
+            b.CloseComponent();
+
+            // An explicit id is kept; the label rendered earlier keeps the id it reserved.
+            Label(b, 150, () => Person.Email);
+            b.OpenComponent<RzInputTextBase>(160);
+            b.AddComponentParameter(161, "Value", Person.Email);
+            b.AddComponentParameter(162, "ValueChanged", EventCallback.Factory.Create<string?>(this, v => Person.Email = v));
+            b.AddComponentParameter(163, "ValueExpression", (Expression<Func<string?>>)(() => Person.Email));
+            b.AddComponentParameter(164, "Id", "explicit-email");
+            b.CloseComponent();
+            Label(b, 170, () => Person.Email);
+        }));
+        builder.CloseComponent();
+    }
+
+#pragma warning disable ASP0006 // the region number is a per-call literal supplied by the caller
+    private static void Label<TValue>(RenderTreeBuilder b, int region, Expression<Func<TValue>> expression)
+    {
+        b.OpenRegion(region);
+        b.OpenComponent<TestFieldLabel<TValue>>(0);
+        b.AddComponentParameter(1, "For", expression);
+        b.CloseComponent();
+        b.CloseRegion();
+    }
+
     private void Input<TComponent, TValue>(RenderTreeBuilder b, int region, TValue value, Action<TValue> setter, Expression<Func<TValue>> expression)
         where TComponent : IComponent
     {

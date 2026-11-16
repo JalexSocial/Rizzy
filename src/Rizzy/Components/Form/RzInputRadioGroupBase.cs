@@ -45,25 +45,16 @@ public partial class RzInputRadioGroupBase<TValue> : InputRadioGroup<TValue>
     {
         base.OnParametersSet();
 
-        if (string.IsNullOrEmpty(Id))
+        if (EditContext is not null)
+        {
+            // Registers the field for labels and validation messages, adopting an id a label reserved.
+            _fieldIdentifier = FieldIdentifier;
+            Id = FormFieldRegistration.Register(HttpContext, EditContext, _fieldIdentifier, NameAttributeValue, Id, "rzradiogroup", out _fieldMapping);
+        }
+        else if (string.IsNullOrEmpty(Id))
         {
             // NameAttributeValue might be empty without an EditContext, so provide a fallback.
             Id = IdGenerator.UniqueId(NameAttributeValue ?? "rzradiogroup");
-        }
-
-        if (EditContext != null)
-        {
-            // Store the FieldIdentifier locally
-            _fieldIdentifier = FieldIdentifier;
-
-            // Get and store the fieldMapping dictionary instance
-            _fieldMapping = HttpContext?.GetOrAddFieldMapping(EditContext);
-
-            // Add mapping for this field (use FieldIdentifier from the base class).
-            if (_fieldMapping != null && !_fieldMapping.ContainsKey(_fieldIdentifier))
-            {
-                _fieldMapping[_fieldIdentifier] = new RzFormFieldMap { FieldName = NameAttributeValue!, Id = Id };
-            }
         }
 
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
