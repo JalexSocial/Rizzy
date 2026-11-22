@@ -117,14 +117,44 @@ public class PhaseCSafetyTests
         return context;
     }
 
+    // Decision D-30 (RizzyUI Summit SF-043) replaced RIZZY-030's throw: outside an htmx request every
+    // htmx setter does nothing, consistently, so actions that serve direct page loads need no guards.
     [Fact]
-    public void Every_reswap_overload_requires_an_htmx_request()
+    public void Every_htmx_setter_does_nothing_outside_an_htmx_request()
     {
-        var response = Context(htmx: false).Response.Htmx();
+        var context = Context(htmx: false);
+        var response = context.Response.Htmx();
 
-        response.Invoking(r => r.Reswap("innerHTML")).Should().Throw<InvalidOperationException>();
-        response.Invoking(r => r.Reswap(SwapStyle.outerHTML)).Should().Throw<InvalidOperationException>();
-        response.Invoking(r => r.Reswap(new SwapStyleBuilder(SwapStyle.innerHTML))).Should().Throw<InvalidOperationException>();
+        response.Reswap("innerHTML")
+            .Reswap(SwapStyle.outerHTML)
+            .Reswap(new SwapStyleBuilder(SwapStyle.innerHTML))
+            .Location("/next")
+            .PushUrl("/next")
+            .ReplaceUrl("/next")
+            .Redirect("/next")
+            .Refresh()
+            .Retarget("#main")
+            .Reselect("#main")
+            .Trigger("saved")
+            .TriggerOn("saved", "#main")
+            .EmptyBody();
+
+        context.Response.Headers.Keys.Where(k => k.StartsWith("HX-", StringComparison.OrdinalIgnoreCase)).Should().BeEmpty();
+        response.EmptyResponseBodyRequested.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ValidationFailed_sets_422_on_any_request_and_htmx_headers_only_for_htmx()
+    {
+        var page = Context(htmx: false);
+        page.Response.Htmx().ValidationFailed("#form", SwapStyle.outerHTML);
+        page.Response.StatusCode.Should().Be(422);
+        page.Response.Headers.ContainsKey(HtmxResponseHeaderNames.Retarget).Should().BeFalse();
+
+        var htmx = Context(htmx: true);
+        htmx.Response.Htmx().ValidationFailed("#form", SwapStyle.outerHTML);
+        htmx.Response.StatusCode.Should().Be(422);
+        htmx.Response.Headers[HtmxResponseHeaderNames.Retarget].ToString().Should().Be("#form");
     }
 
     [Fact]

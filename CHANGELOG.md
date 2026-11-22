@@ -18,6 +18,10 @@ Finding IDs (RIZZY-0xx) refer to the
 
 ## [Unreleased]
 
+### Changed
+
+- **`HtmxResponse` setters do nothing outside htmx requests** (decision D-30, RizzyUI Summit SF-043). Every method that sets an `HX-*` header, and `EmptyBody()`, threw `InvalidOperationException` on a normal request, so an action that serves both a bookmarked URL and boosted navigation needed a guard around each header, and forgetting one turned the direct page load into a 500. They now skip the header and log at Debug level. `ValidationFailed()` sets its 422 on any request and adds `HX-Retarget`/`HX-Reswap` only for htmx. This reverses RIZZY-030's throwing policy.
+
 ### Fixed
 
 - **Validation errors for list items reach their fields** (RizzyUI Summit SF-044). `RzModelStateProvider` resolved any model state key with an indexer (`Model.Attendees[1].Name`) to the raw key, so a 422 for a form that edits a list showed no messages and marked every input valid. Keys now walk lists, arrays and dictionaries (`Attendees[1].Name`, `Groups[0][2].Name`, `ByCode[vip].Name`); keys the walk cannot follow still fall back to the raw key.
