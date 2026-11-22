@@ -31,6 +31,9 @@ public sealed class RzScripts : ComponentBase
     [Inject] private IRizzyNonceProvider NonceProvider { get; set; } = default!;
     [Inject] private IOptionsMonitor<Rizzy.Configuration.RizzyConfig> RizzyOptions { get; set; } = default!;
 
+    /// <summary>The current request, for its path base (static SSR provides it).</summary>
+    [CascadingParameter] private Microsoft.AspNetCore.Http.HttpContext? HttpContext { get; set; }
+
     /// <inheritdoc />
     protected override void BuildRenderTree(RenderTreeBuilder builder)
     {
@@ -40,7 +43,7 @@ public sealed class RzScripts : ComponentBase
         var sources = new List<(string Src, string? Integrity)>();
         if (scripts.IncludeHtmx)
             sources.Add((scripts.UrlFor("htmx"), scripts.IntegrityFor("htmx")));
-        sources.Add((RizzyOptions.CurrentValue.ClientScriptUrl, null));
+        sources.Add((WithPathBase(RizzyOptions.CurrentValue.ClientScriptUrl), null));
         foreach (var extension in config.EnabledExtensions)
         {
             if (extension.FileName is { } file)
@@ -61,5 +64,21 @@ public sealed class RzScripts : ComponentBase
             builder.AddAttribute(4, "nonce", nonce);
             builder.CloseElement();
         }
+    }
+
+    /// <summary>
+    /// Prefixes a root-relative URL with the request's path base (RizzyUI Summit SF-017): a relative
+    /// default broke on nested URLs. Absolute, protocol-relative and relative URLs are unchanged.
+    /// </summary>
+    private string WithPathBase(string url)
+    {
+        if (url.Length < 2 || url[0] != '/' || url[1] == '/')
+            return url;
+
+        var pathBase = HttpContext?.Request.PathBase.Value?.TrimEnd('/');
+        if (string.IsNullOrEmpty(pathBase) || url.StartsWith(pathBase + "/", StringComparison.OrdinalIgnoreCase))
+            return url;
+
+        return pathBase + url;
     }
 }

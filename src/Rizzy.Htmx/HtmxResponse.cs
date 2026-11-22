@@ -8,7 +8,9 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Runtime.CompilerServices;
 
 namespace Rizzy.Htmx;
 
@@ -17,12 +19,11 @@ namespace Rizzy.Htmx;
 /// Obtain it with <c>HttpContext.Response.Htmx()</c>.
 /// </summary>
 /// <remarks>
-/// Every method that sets an <c>HX-*</c> header or requests an empty body throws
-/// <see cref="InvalidOperationException"/> when the request is not an htmx request (no
-/// <c>HX-Request</c> header), because browsers ignore those headers on normal navigation. Guard
-/// actions that serve both kinds of request with <c>Request.IsHtmx()</c>, or use
-/// <see cref="HtmxResponseAttribute"/>, which does nothing for non-htmx requests.
-/// <see cref="StatusCode"/> works for any request.
+/// Every method that sets an <c>HX-*</c> header or requests an empty body does nothing when the
+/// request is not an htmx request (no <c>HX-Request</c> header), and logs that at Debug level:
+/// browsers ignore those headers on normal navigation, so an action can serve a direct page load and
+/// htmx without a guard around each header. <see cref="StatusCode"/> works for any request, and
+/// <see cref="ValidationFailed"/> sets its 422 on any request.
 /// </remarks>
 public sealed class HtmxResponse(HttpContext context)
 {
@@ -65,7 +66,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse EmptyBody()
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         EmptyResponseBodyRequested = true;
         return this;
     }
@@ -77,7 +78,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Location(string path)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.Location] = HeaderUrl.Encode(path);
         return this;
     }
@@ -89,7 +90,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Location(LocationTarget locationTarget)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         var json = JsonSerializer.Serialize(locationTarget, HtmxAjaxJsonSerializerContext.Default.LocationTarget);
         _headers[HtmxResponseHeaderNames.Location] = json;
         return this;
@@ -103,7 +104,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse PushUrl(string url)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.PushUrl] = HeaderUrl.Encode(url);
         return this;
     }
@@ -126,7 +127,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse PreventBrowserHistoryUpdate()
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.PushUrl] = "false";
         return this;
     }
@@ -138,7 +139,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse PreventBrowserCurrentUrlUpdate()
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.ReplaceUrl] = "false";
         return this;
     }
@@ -150,7 +151,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Redirect(string url)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.Redirect] = HeaderUrl.Encode(url);
         EmptyResponseBodyRequested = true;
         return this;
@@ -173,7 +174,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Refresh()
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.Refresh] = "true";
         EmptyResponseBodyRequested = true;
         return this;
@@ -186,7 +187,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse ReplaceUrl(string url)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.ReplaceUrl] = HeaderUrl.Encode(url);
         return this;
     }
@@ -210,7 +211,7 @@ public sealed class HtmxResponse(HttpContext context)
     public HtmxResponse Reswap(string modifier)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(modifier);
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         _headers[HtmxResponseHeaderNames.Reswap] = modifier;
         return this;
     }
@@ -223,7 +224,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Reswap(SwapStyle swapStyle, string? modifier = null)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
 
         if (swapStyle is SwapStyle.Default)
         {
@@ -252,7 +253,7 @@ public sealed class HtmxResponse(HttpContext context)
     public HtmxResponse Reswap(SwapStyleBuilder swapStyle)
     {
         ArgumentNullException.ThrowIfNull(swapStyle);
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
 
         _headers[HtmxResponseHeaderNames.Reswap] = swapStyle.Build();
 
@@ -267,7 +268,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse PTag(string tag)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         ArgumentException.ThrowIfNullOrWhiteSpace(tag);
         _headers[HtmxResponseHeaderNames.PTag] = tag;
         return this;
@@ -281,7 +282,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Download(string url)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         ArgumentException.ThrowIfNullOrWhiteSpace(url);
         _headers[HtmxResponseHeaderNames.Download] = url;
         return this;
@@ -294,7 +295,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Retarget(string selector)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
 
         _headers[HtmxResponseHeaderNames.Retarget] = selector;
 
@@ -308,7 +309,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Reselect(string selector)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
 
         _headers[HtmxResponseHeaderNames.Reselect] = selector;
 
@@ -326,7 +327,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Trigger(string eventName)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         MergeTrigger(eventName, null, null);
         return this;
     }
@@ -344,7 +345,7 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse Trigger<TEventDetail>(string eventName, TEventDetail detail, JsonSerializerOptions? jsonSerializerOptions = null)
     {
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         MergeTrigger(eventName, SerializeDetail(detail, jsonSerializerOptions), null);
         return this;
     }
@@ -359,7 +360,7 @@ public sealed class HtmxResponse(HttpContext context)
     public HtmxResponse TriggerOn(string eventName, string targetSelector)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(targetSelector);
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         MergeTrigger(eventName, null, targetSelector);
         return this;
     }
@@ -381,7 +382,7 @@ public sealed class HtmxResponse(HttpContext context)
     public HtmxResponse TriggerOn<TEventDetail>(string eventName, string targetSelector, TEventDetail detail, JsonSerializerOptions? jsonSerializerOptions = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(targetSelector);
-        AssertIsHtmxRequest();
+        if (SkipOutsideHtmx()) return this;
         MergeTrigger(eventName, SerializeDetail(detail, jsonSerializerOptions), targetSelector);
         return this;
     }
@@ -467,8 +468,9 @@ public sealed class HtmxResponse(HttpContext context)
     /// <returns>This <see cref="HtmxResponse"/> object instance.</returns>
     public HtmxResponse ValidationFailed(string? retargetSelector = null, SwapStyle reswap = SwapStyle.Default)
     {
-        AssertIsHtmxRequest();
+        // The 422 is right for a failed form post either way; only the htmx headers need htmx.
         context.Response.StatusCode = HtmxStatus.ValidationFailed;
+        if (SkipOutsideHtmx()) return this;
 
         if (!string.IsNullOrWhiteSpace(retargetSelector))
             _headers[HtmxResponseHeaderNames.Retarget] = retargetSelector;
@@ -545,13 +547,18 @@ public sealed class HtmxResponse(HttpContext context)
 
     private readonly record struct TriggerEvent(string Name, JsonNode? Detail);
 
-    private void AssertIsHtmxRequest()
+    /// <summary>
+    /// True (and a Debug log) when the request is not an htmx request: the htmx header is skipped
+    /// rather than thrown, so an action that serves both a direct page load and htmx needs no guard
+    /// around each header (decision D-30, RizzyUI Summit SF-043).
+    /// </summary>
+    private bool SkipOutsideHtmx([CallerMemberName] string member = "")
     {
-        if (!_isHtmxRequest)
-        {
-            throw new InvalidOperationException(
-                "The active request is not an htmx request. " +
-                "Setting response headers during request has no effect.");
-        }
+        if (_isHtmxRequest)
+            return false;
+
+        var logger = context.RequestServices?.GetService<ILoggerFactory>()?.CreateLogger<HtmxResponse>();
+        logger?.LogDebug("HtmxResponse.{Member} skipped: the request is not an htmx request.", member);
+        return true;
     }
 }

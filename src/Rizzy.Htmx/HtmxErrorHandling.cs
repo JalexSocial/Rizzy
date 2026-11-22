@@ -131,6 +131,11 @@ public static class HtmxErrorHandlingExtensions
 
         context.Response.StatusCode = statusCode;
         context.Response.Headers[HtmxResponseHeaderNames.Redirect] = HeaderUrl.Encode(context.RedirectUri);
+        // The empty 401/403 is the message: status code pages must not replace it with an error page,
+        // which htmx would swap into the target instead of following HX-Redirect (RizzyUI Summit SF-020).
+        var statusPages = context.HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IStatusCodePagesFeature>();
+        if (statusPages is not null)
+            statusPages.Enabled = false;
         return Task.CompletedTask;
     }
 }

@@ -12,9 +12,11 @@ public class RizzyConfig
 
     /// <summary>
     /// The URL of the Rizzy client script that <c>&lt;RzScripts /&gt;</c> loads after htmx.
-    /// Default <c>_content/Rizzy/js/rizzy.js</c> (the copy in the Rizzy package).
+    /// Default <c>/_content/Rizzy/js/rizzy.js</c> (the copy in the Rizzy package). A root-relative URL
+    /// (starting with one <c>/</c>) gets the request's path base, so the script loads on nested URLs
+    /// and in apps hosted under a virtual directory; absolute and relative URLs are used as given.
     /// </summary>
-    public string ClientScriptUrl { get; set; } = "_content/Rizzy/js/rizzy.js";
+    public string ClientScriptUrl { get; set; } = "/_content/Rizzy/js/rizzy.js";
 
     /// <summary>
     /// Layout that is applied to all pages without a layout attribute 
