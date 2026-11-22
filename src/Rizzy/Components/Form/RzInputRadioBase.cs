@@ -25,7 +25,9 @@ public partial class RzInputRadioBase<TValue> : InputRadio<TValue>
         base.OnParametersSet();
 
         var attrib = AdditionalAttributes is null ? new Dictionary<string, object>() : new Dictionary<string, object>(AdditionalAttributes);
-        attrib.TryAdd("id", Id);
+        // No id="" when no Id was given: an empty id is invalid HTML and nothing can reference it.
+        if (!string.IsNullOrEmpty(Id))
+            attrib.TryAdd("id", Id);
 
         AdditionalAttributes = new ReadOnlyDictionary<string, object>(attrib);
     }

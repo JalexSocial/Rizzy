@@ -21,6 +21,7 @@ Finding IDs (RIZZY-0xx) refer to the
 ### Fixed
 
 - **Validation errors for list items reach their fields** (RizzyUI Summit SF-044). `RzModelStateProvider` resolved any model state key with an indexer (`Model.Attendees[1].Name`) to the raw key, so a 422 for a form that edits a list showed no messages and marked every input valid. Keys now walk lists, arrays and dictionaries (`Attendees[1].Name`, `Groups[0][2].Name`, `ByCode[vip].Name`); keys the walk cannot follow still fall back to the raw key.
+- **`RzInputRadioBase` renders no `id=""`** (RizzyUI Summit SF-047). Without an `Id` every radio rendered an empty id, which is invalid HTML and cannot be referenced by a `<label for>` or `aria-*`; the attribute is left out now.
 
 ## [6.0.0-preview.3] - 2026-11-15
 
