@@ -41,7 +41,7 @@ builder.Services.AddRizzy(options =>
 
 var app = builder.Build();
 
-app.UseStaticFiles();   // serves _content/Rizzy/js/rizzy.js
+app.UseStaticFiles();   // serves /_content/Rizzy/js/rizzy.js
 app.UseRouting();
 app.UseAntiforgery();
 app.UseRizzy();

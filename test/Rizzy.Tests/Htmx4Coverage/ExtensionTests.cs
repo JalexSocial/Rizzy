@@ -99,13 +99,14 @@ public class ExtensionTests : BunitContext
         doc.RootElement.GetProperty("boostBrowserIndicator").GetBoolean().Should().BeTrue();
     }
 
-    private IRenderedComponent<T> RenderWith<T>(Action<HtmxConfig> configure, Action<RizzyConfig>? rizzy = null) where T : Microsoft.AspNetCore.Components.IComponent
+    private IRenderedComponent<T> RenderWith<T>(Action<HtmxConfig> configure, Action<RizzyConfig>? rizzy = null, string? pathBase = null) where T : Microsoft.AspNetCore.Components.IComponent
     {
         Services.AddAntiforgery();
         Services.Configure<RizzyConfig>(c => { c.AntiforgeryStrategy = AntiforgeryStrategy.None; rizzy?.Invoke(c); });
         Services.AddScoped<IRizzyNonceProvider>(_ => new FixedNonce("n0nce"));
         Services.Configure(configure);
         var accessor = new MockHttpContextAccessor(Services);
+        if (pathBase is not null) accessor.HttpContext!.Request.PathBase = pathBase;
         Services.AddSingleton<IHttpContextAccessor>(accessor);
         return Render<T>(p => p.AddCascadingValue(accessor.HttpContext!));
     }
@@ -134,7 +135,7 @@ public class ExtensionTests : BunitContext
         var scripts = cut.FindAll("script");
         scripts.Select(s => s.GetAttribute("src")).Should().Equal(
             $"https://cdn.jsdelivr.net/npm/htmx.org@{HtmxAssets.Version}/dist/htmx.min.js",
-            "_content/Rizzy/js/rizzy.js",
+            "/_content/Rizzy/js/rizzy.js",
             $"https://cdn.jsdelivr.net/npm/htmx.org@{HtmxAssets.Version}/dist/ext/hx-sse.min.js",
             "/js/my-ext.js");
 
@@ -144,6 +145,27 @@ public class ExtensionTests : BunitContext
         scripts[1].HasAttribute("integrity").Should().BeFalse();
         scripts[2].GetAttribute("integrity").Should().Be(HtmxAssets.Integrity["ext/hx-sse.min.js"]);
         scripts[3].HasAttribute("integrity").Should().BeFalse();
+    }
+
+    // RizzyUI Summit SF-017: a relative script URL broke on nested URLs (/account/sign-in loaded
+    // /account/_content/Rizzy/js/rizzy.js). The default is root-relative and gets the path base.
+    [Theory]
+    [InlineData(null, "/_content/Rizzy/js/rizzy.js")]
+    [InlineData("/app", "/app/_content/Rizzy/js/rizzy.js")]
+    public void RzScripts_loads_rizzy_from_an_absolute_url_under_the_path_base(string? pathBase, string expected)
+    {
+        var cut = RenderWith<RzScripts>(_ => { }, pathBase: pathBase);
+        cut.FindAll("script").Select(s => s.GetAttribute("src")).Should().Contain(expected);
+    }
+
+    [Theory]
+    [InlineData("https://cdn.example/rizzy.js")]
+    [InlineData("js/rizzy.js")]
+    [InlineData("/app/js/rizzy.js")]
+    public void RzScripts_keeps_a_configured_absolute_relative_or_already_based_url(string url)
+    {
+        RenderWith<RzScripts>(_ => { }, r => r.ClientScriptUrl = url, "/app")
+            .FindAll("script").Select(s => s.GetAttribute("src")).Should().Contain(url);
     }
 
     [Fact]
@@ -156,7 +178,7 @@ public class ExtensionTests : BunitContext
         });
 
         cut.FindAll("script").Select(s => s.GetAttribute("src")).Should()
-            .Equal("/lib/htmx/htmx.js", "_content/Rizzy/js/rizzy.js", "/lib/htmx/ext/hx-head.js");
+            .Equal("/lib/htmx/htmx.js", "/_content/Rizzy/js/rizzy.js", "/lib/htmx/ext/hx-head.js");
         cut.FindAll("script[integrity]").Should().BeEmpty();
     }
 
@@ -194,7 +216,7 @@ public class ExtensionTests : BunitContext
     public void RzScripts_without_htmx_loads_only_rizzy_and_extensions()
     {
         var cut = RenderWith<RzScripts>(c => c.Scripts = new HtmxScriptOptions { IncludeHtmx = false });
-        cut.FindAll("script").Select(s => s.GetAttribute("src")).Should().Equal("_content/Rizzy/js/rizzy.js");
+        cut.FindAll("script").Select(s => s.GetAttribute("src")).Should().Equal("/_content/Rizzy/js/rizzy.js");
     }
 
     [Fact]

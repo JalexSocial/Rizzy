@@ -35,6 +35,8 @@ public sealed class ErrorHandlingTests : IAsyncLifetime
             ctx.Response.StatusCode = 500;
             return ctx.Response.WriteAsync("<html><body><h1>Something went wrong</h1></body></html>");
         }));
+        // Status pages re-execute empty error responses; an htmx redirect must survive them (SF-020).
+        app.UseStatusCodePagesWithReExecute("/status/{0}");
         app.UseAuthentication();
         app.UseAuthorization();
 
@@ -50,6 +52,7 @@ public sealed class ErrorHandlingTests : IAsyncLifetime
             return Results.Content("<form id=\"form\"><span>Name is required</span></form>", "text/html");
         });
         app.MapGet("/secure", () => "secret").RequireAuthorization();
+        app.MapGet("/status/{code:int}", (int code) => Results.Content($"<h1>Status page {code}</h1>", "text/html"));
 
         await app.StartAsync();
         _app = app;
@@ -132,6 +135,9 @@ public sealed class ErrorHandlingTests : IAsyncLifetime
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         Header(response, "HX-Redirect").Should().StartWith("http://localhost/Account/Login?ReturnUrl=");
         response.Headers.Location.Should().BeNull();
+        // RizzyUI Summit SF-020: status code pages replaced the empty 401 with an error page, which
+        // htmx swapped into the target instead of following HX-Redirect.
+        (await response.Content.ReadAsStringAsync()).Should().BeEmpty();
     }
 
     [Fact]

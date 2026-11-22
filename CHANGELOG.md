@@ -21,11 +21,13 @@ Finding IDs (RIZZY-0xx) refer to the
 ### Changed
 
 - **`HtmxResponse` setters do nothing outside htmx requests** (decision D-30, RizzyUI Summit SF-043). Every method that sets an `HX-*` header, and `EmptyBody()`, threw `InvalidOperationException` on a normal request, so an action that serves both a bookmarked URL and boosted navigation needed a guard around each header, and forgetting one turned the direct page load into a 500. They now skip the header and log at Debug level. `ValidationFailed()` sets its 422 on any request and adds `HX-Retarget`/`HX-Reswap` only for htmx. This reverses RIZZY-030's throwing policy.
+- **The Rizzy script loads from an absolute URL** (RizzyUI Summit SF-017). `RizzyConfig.ClientScriptUrl` defaults to `/_content/Rizzy/js/rizzy.js`, and `<RzScripts />` prefixes a root-relative URL with the request's path base. The relative default broke on nested URLs (`/account/sign-in` loaded `/account/_content/...`) unless the page had `<base href="/">`. Absolute and relative URLs you configure are used as given.
 
 ### Fixed
 
 - **Validation errors for list items reach their fields** (RizzyUI Summit SF-044). `RzModelStateProvider` resolved any model state key with an indexer (`Model.Attendees[1].Name`) to the raw key, so a 422 for a form that edits a list showed no messages and marked every input valid. Keys now walk lists, arrays and dictionaries (`Attendees[1].Name`, `Groups[0][2].Name`, `ByCode[vip].Name`); keys the walk cannot follow still fall back to the raw key.
 - **`RzInputRadioBase` renders no `id=""`** (RizzyUI Summit SF-047). Without an `Id` every radio rendered an empty id, which is invalid HTML and cannot be referenced by a `<label for>` or `aria-*`; the attribute is left out now.
+- **`UseHtmxRedirects` survives status code pages** (RizzyUI Summit SF-020). With `UseStatusCodePagesWithReExecute`, the empty 401/403 that carries `HX-Redirect` was replaced by an error page, which htmx swapped into the target instead of redirecting. The redirect now disables status code pages for its response.
 
 ## [6.0.0-preview.3] - 2026-11-15
 
