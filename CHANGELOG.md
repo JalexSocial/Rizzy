@@ -18,6 +18,10 @@ Finding IDs (RIZZY-0xx) refer to the
 
 ## [Unreleased]
 
+### Fixed
+
+- **Validation errors for list items reach their fields** (RizzyUI Summit SF-044). `RzModelStateProvider` resolved any model state key with an indexer (`Model.Attendees[1].Name`) to the raw key, so a 422 for a form that edits a list showed no messages and marked every input valid. Keys now walk lists, arrays and dictionaries (`Attendees[1].Name`, `Groups[0][2].Name`, `ByCode[vip].Name`); keys the walk cannot follow still fall back to the raw key.
+
 ## [6.0.0-preview.3] - 2026-11-15
 
 The third preview of Rizzy 6.0.0 lets a label that renders before its input point at it.
