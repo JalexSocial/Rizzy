@@ -18,6 +18,10 @@ Finding IDs (RIZZY-0xx) refer to the
 
 ## [Unreleased]
 
+## [6.0.0-preview.4] - 2026-11-22
+
+The fourth preview of Rizzy 6.0.0 fixes the problems the RizzyUI Summit demo found: `HtmxResponse` outside htmx requests, the client script URL on nested pages, validation errors for list items, empty radio ids and htmx redirects behind status code pages.
+
 ### Changed
 
 - **`HtmxResponse` setters do nothing outside htmx requests** (decision D-30, RizzyUI Summit SF-043). Every method that sets an `HX-*` header, and `EmptyBody()`, threw `InvalidOperationException` on a normal request, so an action that serves both a bookmarked URL and boosted navigation needed a guard around each header, and forgetting one turned the direct page load into a 500. They now skip the header and log at Debug level. `ValidationFailed()` sets its 422 on any request and adds `HX-Retarget`/`HX-Reswap` only for htmx. This reverses RIZZY-030's throwing policy.
@@ -197,7 +201,8 @@ it; upgrade to 6.0.0.
 
 See the [GitHub releases](https://github.com/JalexSocial/Rizzy/releases) and tags.
 
-[Unreleased]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.3...HEAD
+[Unreleased]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.4...HEAD
+[6.0.0-preview.4]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.3...v6.0.0-preview.4
 [6.0.0-preview.3]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.2...v6.0.0-preview.3
 [6.0.0-preview.2]: https://github.com/JalexSocial/Rizzy/compare/v6.0.0-preview.1...v6.0.0-preview.2
 [6.0.0-preview.1]: https://github.com/JalexSocial/Rizzy/compare/v5.2.0...v6.0.0-preview.1
